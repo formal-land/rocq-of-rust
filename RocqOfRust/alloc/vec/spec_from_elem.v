@@ -34,7 +34,10 @@ Module vec.
                     [],
                     []
                   |),
-                  [ M.read (| n |); M.read (| alloc |) ]
+                  [
+                    M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                    M.value_with_ty (M.read (| alloc |)) A
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -45,7 +48,16 @@ Module vec.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, v |); M.read (| n |); M.read (| elem |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, v |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ] ]);
+                    M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                    M.value_with_ty (M.read (| elem |)) T
+                  ]
                 |) in
               v
             |)))
@@ -108,7 +120,11 @@ Module vec.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, elem |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, elem |))
+                                        (Ty.apply (Ty.path "&") [] [ T ])
+                                    ]
                                   |)
                                 |)) in
                             let _ :=
@@ -116,24 +132,30 @@ Module vec.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.mkStructRecord
-                                    "alloc::vec::Vec"
-                                    []
-                                    [ T; A ]
-                                    [
-                                      ("buf",
-                                        M.call_closure (|
-                                          Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ],
-                                          M.get_associated_function (|
+                                  M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "alloc::vec::Vec"
+                                      [
+                                        ("buf",
+                                          M.call_closure (|
                                             Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ],
-                                            "with_capacity_zeroed_in",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| n |); M.read (| alloc |) ]
-                                        |));
-                                      ("len", M.read (| n |))
-                                    ]
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "alloc::raw_vec::RawVec")
+                                                []
+                                                [ T; A ],
+                                              "with_capacity_zeroed_in",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                                              M.value_with_ty (M.read (| alloc |)) A
+                                            ]
+                                          |));
+                                        ("len", M.read (| n |))
+                                      ])
+                                    (Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ])
                                 |)
                               |)
                             |)));
@@ -149,7 +171,10 @@ Module vec.
                         [],
                         []
                       |),
-                      [ M.read (| n |); M.read (| alloc |) ]
+                      [
+                        M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                        M.value_with_ty (M.read (| alloc |)) A
+                      ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.call_closure (|
@@ -160,7 +185,16 @@ Module vec.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.MutRef, v |); M.read (| n |); M.read (| elem |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, v |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ] ]);
+                        M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                        M.value_with_ty (M.read (| elem |)) T
+                      ]
                     |) in
                   v
                 |)))
@@ -226,30 +260,33 @@ Module vec.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.mkStructRecord
-                                    "alloc::vec::Vec"
-                                    []
-                                    [ Ty.path "i8"; A ]
-                                    [
-                                      ("buf",
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "alloc::raw_vec::RawVec")
-                                            []
-                                            [ Ty.path "i8"; A ],
-                                          M.get_associated_function (|
+                                  M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "alloc::vec::Vec"
+                                      [
+                                        ("buf",
+                                          M.call_closure (|
                                             Ty.apply
                                               (Ty.path "alloc::raw_vec::RawVec")
                                               []
                                               [ Ty.path "i8"; A ],
-                                            "with_capacity_zeroed_in",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| n |); M.read (| alloc |) ]
-                                        |));
-                                      ("len", M.read (| n |))
-                                    ]
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "alloc::raw_vec::RawVec")
+                                                []
+                                                [ Ty.path "i8"; A ],
+                                              "with_capacity_zeroed_in",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                                              M.value_with_ty (M.read (| alloc |)) A
+                                            ]
+                                          |));
+                                        ("len", M.read (| n |))
+                                      ])
+                                    (Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "i8"; A ])
                                 |)
                               |)
                             |)));
@@ -265,7 +302,10 @@ Module vec.
                         [],
                         []
                       |),
-                      [ M.read (| n |); M.read (| alloc |) ]
+                      [
+                        M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                        M.value_with_ty (M.read (| alloc |)) A
+                      ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.read (|
@@ -278,18 +318,30 @@ Module vec.
                             [ Ty.path "i8" ]
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "i8"; A ],
-                                "as_mut_ptr",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.MutRef, v |) ]
-                            |);
-                            M.cast (Ty.path "u8") (M.read (| elem |));
-                            M.read (| n |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "i8"; A ],
+                                  "as_mut_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.MutRef, v |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "i8"; A ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                            M.value_with_ty
+                              (M.cast (Ty.path "u8") (M.read (| elem |)))
+                              (Ty.path "u8");
+                            M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -301,7 +353,15 @@ Module vec.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.MutRef, v |); M.read (| n |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, v |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "i8"; A ] ]);
+                            M.value_with_ty (M.read (| n |)) (Ty.path "usize")
+                          ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                     |) in
@@ -368,30 +428,33 @@ Module vec.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.mkStructRecord
-                                    "alloc::vec::Vec"
-                                    []
-                                    [ Ty.path "u8"; A ]
-                                    [
-                                      ("buf",
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "alloc::raw_vec::RawVec")
-                                            []
-                                            [ Ty.path "u8"; A ],
-                                          M.get_associated_function (|
+                                  M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "alloc::vec::Vec"
+                                      [
+                                        ("buf",
+                                          M.call_closure (|
                                             Ty.apply
                                               (Ty.path "alloc::raw_vec::RawVec")
                                               []
                                               [ Ty.path "u8"; A ],
-                                            "with_capacity_zeroed_in",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| n |); M.read (| alloc |) ]
-                                        |));
-                                      ("len", M.read (| n |))
-                                    ]
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "alloc::raw_vec::RawVec")
+                                                []
+                                                [ Ty.path "u8"; A ],
+                                              "with_capacity_zeroed_in",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                                              M.value_with_ty (M.read (| alloc |)) A
+                                            ]
+                                          |));
+                                        ("len", M.read (| n |))
+                                      ])
+                                    (Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "u8"; A ])
                                 |)
                               |)
                             |)));
@@ -407,7 +470,10 @@ Module vec.
                         [],
                         []
                       |),
-                      [ M.read (| n |); M.read (| alloc |) ]
+                      [
+                        M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                        M.value_with_ty (M.read (| alloc |)) A
+                      ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.read (|
@@ -420,18 +486,28 @@ Module vec.
                             [ Ty.path "u8" ]
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "u8"; A ],
-                                "as_mut_ptr",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.MutRef, v |) ]
-                            |);
-                            M.read (| elem |);
-                            M.read (| n |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "u8"; A ],
+                                  "as_mut_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.MutRef, v |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "u8"; A ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                            M.value_with_ty (M.read (| elem |)) (Ty.path "u8");
+                            M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -443,7 +519,15 @@ Module vec.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.MutRef, v |); M.read (| n |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, v |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.path "u8"; A ] ]);
+                            M.value_with_ty (M.read (| n |)) (Ty.path "usize")
+                          ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                     |) in
@@ -493,7 +577,10 @@ Module vec.
                     [],
                     []
                   |),
-                  [ M.read (| n |); M.read (| alloc |) ]
+                  [
+                    M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                    M.value_with_ty (M.read (| alloc |)) A
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
@@ -506,7 +593,15 @@ Module vec.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.MutRef, v |); M.read (| n |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, v |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ Ty.tuple []; A ] ]);
+                        M.value_with_ty (M.read (| n |)) (Ty.path "usize")
+                      ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in

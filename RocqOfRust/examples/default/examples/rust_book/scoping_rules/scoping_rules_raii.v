@@ -33,7 +33,7 @@ Definition create_box (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
               [],
               []
             |),
-            [ Value.Integer IntegerKind.I32 3 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.I32 3) (Ty.path "i32") ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))
@@ -91,7 +91,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ Value.Integer IntegerKind.I32 5 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.I32 5) (Ty.path "i32") ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.read (|
@@ -114,7 +114,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [],
                   []
                 |),
-                [ Value.Integer IntegerKind.I32 4 ]
+                [ M.value_with_ty (Value.Integer IntegerKind.I32 4) (Ty.path "i32") ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |) in
@@ -137,14 +137,16 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     []
                   |),
                   [
-                    Value.mkStructRecord
-                      "core::ops::range::Range"
-                      []
-                      [ Ty.path "u32" ]
-                      [
-                        ("start", Value.Integer IntegerKind.U32 0);
-                        ("end_", Value.Integer IntegerKind.U32 1000)
-                      ]
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::Range"
+                          [
+                            ("start", Value.Integer IntegerKind.U32 0);
+                            ("end_", Value.Integer IntegerKind.U32 1000)
+                          ])
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u32" ]))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u32" ])
                   ]
                 |)
               |),
@@ -178,10 +180,20 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::Range")
+                                            []
+                                            [ Ty.path "u32" ]
+                                        ])
                                   ]
                                 |)
                               |),

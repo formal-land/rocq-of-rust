@@ -26,7 +26,7 @@ Module boxed.
                 [],
                 []
               |),
-              [ M.read (| t |) ]
+              [ M.value_with_ty (M.read (| t |)) T ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -70,7 +70,11 @@ Module boxed.
                 [],
                 []
               |),
-              [ M.read (| boxed |) ]
+              [
+                M.value_with_ty
+                  (M.read (| boxed |))
+                  (Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -122,16 +126,22 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "slice") [] [ T ],
-                    "to_vec",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "slice") [] [ T ],
+                      "to_vec",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -184,7 +194,11 @@ Module boxed.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                  ]
                 |) in
               let~ buf :
                   Ty.apply
@@ -205,37 +219,57 @@ Module boxed.
                     [],
                     []
                   |),
-                  [ M.read (| len |) ]
+                  [ M.value_with_ty (M.read (| len |)) (Ty.path "usize") ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
                   M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ T ],
-                        "as_ptr",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::raw_vec::RawVec")
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*const") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ T ],
+                          "as_ptr",
+                          [],
                           []
-                          [ T; Ty.path "alloc::alloc::Global" ],
-                        "ptr",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                    |);
-                    M.read (| len |)
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::raw_vec::RawVec")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          "ptr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, buf |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::raw_vec::RawVec")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -264,8 +298,60 @@ Module boxed.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::raw_vec::RawVec")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          "into_box",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| buf |))
+                            (Ty.apply
+                              (Ty.path "alloc::raw_vec::RawVec")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                "len",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| slice |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
+                            |))
+                            (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "alloc::boxed::Box")
                         []
                         [
@@ -274,30 +360,7 @@ Module boxed.
                             []
                             [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ];
                           Ty.path "alloc::alloc::Global"
-                        ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::raw_vec::RawVec")
-                          []
-                          [ T; Ty.path "alloc::alloc::Global" ],
-                        "into_box",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (| buf |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ T ],
-                            "len",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
-                        |)
-                      ]
-                    |)
+                        ])
                   ]
                 |)
               |)
@@ -354,7 +417,11 @@ Module boxed.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -409,7 +476,11 @@ Module boxed.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -487,7 +558,11 @@ Module boxed.
                         [],
                         []
                       |),
-                      [ M.read (| slice |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| slice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -523,7 +598,14 @@ Module boxed.
                         [],
                         []
                       |),
-                      [ M.read (| slice |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| slice |))
+                          (Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ])
+                      ]
                     |)))
               ]
             |)))
@@ -562,14 +644,8 @@ Module boxed.
                 [ Ty.path "str"; Ty.path "alloc::alloc::Global" ],
               M.get_function (| "alloc::str::from_boxed_utf8_unchecked", [], [] |),
               [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]; Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::convert::From",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::boxed::Box")
                       []
@@ -577,21 +653,47 @@ Module boxed.
                         Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ];
                         Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                    ],
-                    "from",
-                    [],
+                    M.get_trait_method (|
+                      "core::convert::From",
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                      ],
+                      "from",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "alloc::boxed::Box")
                     []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                    |)
-                  ]
-                |)
+                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]; Ty.path "alloc::alloc::Global"
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -637,7 +739,11 @@ Module boxed.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -702,7 +808,11 @@ Module boxed.
                         [],
                         []
                       |),
-                      [ M.read (| s |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| s |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -726,7 +836,7 @@ Module boxed.
                         [],
                         []
                       |),
-                      [ M.read (| s |) ]
+                      [ M.value_with_ty (M.read (| s |)) (Ty.path "alloc::string::String") ]
                     |)))
               ]
             |)))
@@ -778,7 +888,11 @@ Module boxed.
                     [],
                     []
                   |),
-                  [ M.read (| s |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| s |))
+                      (Ty.apply (Ty.path "alloc::boxed::Box") [] [ Ty.path "str"; A ])
+                  ]
                 |)
               |),
               [
@@ -803,13 +917,18 @@ Module boxed.
                         []
                       |),
                       [
-                        M.cast
+                        M.value_with_ty
+                          (M.cast
+                            (Ty.apply
+                              (Ty.path "*mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            (M.read (| raw |)))
                           (Ty.apply
                             (Ty.path "*mut")
                             []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
-                          (M.read (| raw |));
-                        M.read (| alloc |)
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                        M.value_with_ty (M.read (| alloc |)) A
                       ]
                     |)))
               ]
@@ -882,7 +1001,7 @@ Module boxed.
                     [],
                     []
                   |),
-                  [ M.read (| array |) ]
+                  [ M.value_with_ty (M.read (| array |)) (Ty.apply (Ty.path "array") [ N ] [ T ]) ]
                 |)
               ]
             |)))
@@ -959,10 +1078,15 @@ Module boxed.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| boxed_slice |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| boxed_slice |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                         ]
                                       |)
                                     |)
@@ -1022,11 +1146,11 @@ Module boxed.
                                           M.never_to_any (|
                                             M.read (|
                                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                                Value.StructTuple
-                                                  "core::panicking::AssertKind::Eq"
-                                                  []
-                                                  []
-                                                  [] in
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::panicking::AssertKind::Eq"
+                                                    [])
+                                                  (Ty.path "core::panicking::AssertKind") in
                                               M.alloc (|
                                                 Ty.path "never",
                                                 M.call_closure (|
@@ -1037,30 +1161,50 @@ Module boxed.
                                                     [ Ty.path "usize"; Ty.path "usize" ]
                                                   |),
                                                   [
-                                                    M.read (| kind |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| left_val |) |)
+                                                    M.value_with_ty
+                                                      (M.read (| kind |))
+                                                      (Ty.path "core::panicking::AssertKind");
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| left_val |) |)
+                                                          |)
                                                         |)
-                                                      |)
-                                                    |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| right_val |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.path "usize" ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| right_val |) |)
+                                                          |)
                                                         |)
-                                                      |)
-                                                    |);
-                                                    Value.StructTuple
-                                                      "core::option::Option::None"
-                                                      []
-                                                      [ Ty.path "core::fmt::Arguments" ]
-                                                      []
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.path "usize" ]);
+                                                    M.value_with_ty
+                                                      (M.value_with_ty
+                                                        (Value.StructTuple
+                                                          "core::option::Option::None"
+                                                          [])
+                                                        (Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [ Ty.path "core::fmt::Arguments" ]))
+                                                      (Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [ Ty.path "core::fmt::Arguments" ])
                                                   ]
                                                 |)
                                               |)
@@ -1101,7 +1245,14 @@ Module boxed.
                       [],
                       []
                     |),
-                    [ M.read (| boxed_slice |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| boxed_slice |))
+                        (Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ T ]; A ])
+                    ]
                   |)
                 |),
                 [
@@ -1130,13 +1281,18 @@ Module boxed.
                           []
                         |),
                         [
-                          M.cast
+                          M.value_with_ty
+                            (M.cast
+                              (Ty.apply
+                                (Ty.path "*mut")
+                                []
+                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                              (M.read (| ptr |)))
                             (Ty.apply
                               (Ty.path "*mut")
                               []
-                              [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
-                            (M.read (| ptr |));
-                          M.read (| alloc |)
+                              [ Ty.apply (Ty.path "array") [ N ] [ T ] ]);
+                          M.value_with_ty (M.read (| alloc |)) A
                         ]
                       |)))
                 ]
@@ -1230,10 +1386,15 @@ Module boxed.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| boxed_slice |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| boxed_slice |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                 ]
                               |);
                               N
@@ -1241,52 +1402,68 @@ Module boxed.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
-                          ];
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ T ]; Ty.path "alloc::alloc::Global" ]
-                      ]
-                      [
-                        M.call_closure (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Ok"
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.apply (Ty.path "array") [ N ] [ T ];
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            M.get_function (|
+                              "alloc::boxed::convert::boxed_slice_as_array_unchecked",
+                              [ N ],
+                              [ T; Ty.path "alloc::alloc::Global" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| boxed_slice |))
+                                (Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.apply (Ty.path "slice") [] [ T ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
                             [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
-                            ],
-                          M.get_function (|
-                            "alloc::boxed::convert::boxed_slice_as_array_unchecked",
-                            [ N ],
-                            [ T; Ty.path "alloc::alloc::Global" ]
-                          |),
-                          [ M.read (| boxed_slice |) ]
-                        |)
-                      ]));
+                            ];
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ T ]; Ty.path "alloc::alloc::Global" ]
+                        ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
-                          ];
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ T ]; Ty.path "alloc::alloc::Global" ]
-                      ]
-                      [ M.read (| boxed_slice |) ]))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| boxed_slice |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
+                            ];
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ T ]; Ty.path "alloc::alloc::Global" ]
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1383,7 +1560,19 @@ Module boxed.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, vec |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, vec |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ T; Ty.path "alloc::alloc::Global" ]
+                                      ])
+                                ]
                               |);
                               N
                             ]
@@ -1411,7 +1600,14 @@ Module boxed.
                             [],
                             []
                           |),
-                          [ M.read (| vec |) ]
+                          [
+                            M.value_with_ty
+                              (M.read (| vec |))
+                              (Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ])
+                          ]
                         |) in
                       M.alloc (|
                         Ty.apply
@@ -1430,58 +1626,72 @@ Module boxed.
                               []
                               [ T; Ty.path "alloc::alloc::Global" ]
                           ],
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.apply (Ty.path "array") [ N ] [ T ];
-                                Ty.path "alloc::alloc::Global"
-                              ];
-                            Ty.apply
-                              (Ty.path "alloc::vec::Vec")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ]
-                          ]
-                          [
-                            M.call_closure (|
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Ok"
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.apply (Ty.path "array") [ N ] [ T ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ],
+                                M.get_function (|
+                                  "alloc::boxed::convert::boxed_slice_as_array_unchecked",
+                                  [ N ],
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| boxed_slice |))
+                                    (Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.apply (Ty.path "slice") [] [ T ];
+                                        Ty.path "alloc::alloc::Global"
+                                      ])
+                                ]
+                              |)
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "alloc::boxed::Box")
                                 []
                                 [
                                   Ty.apply (Ty.path "array") [ N ] [ T ];
                                   Ty.path "alloc::alloc::Global"
-                                ],
-                              M.get_function (|
-                                "alloc::boxed::convert::boxed_slice_as_array_unchecked",
-                                [ N ],
+                                ];
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
                                 [ T; Ty.path "alloc::alloc::Global" ]
-                              |),
-                              [ M.read (| boxed_slice |) ]
-                            |)
-                          ]
+                            ])
                       |)
                     |)));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
-                          ];
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
-                          []
-                          [ T; Ty.path "alloc::alloc::Global" ]
-                      ]
-                      [ M.read (| vec |) ]))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| vec |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [ Ty.apply (Ty.path "array") [ N ] [ T ]; Ty.path "alloc::alloc::Global"
+                            ];
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ]
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1551,66 +1761,86 @@ Module boxed.
                               [],
                               [ T ]
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::any::Any::Trait", []) ] ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
-                      ]
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ],
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Ok"
+                        [
+                          M.call_closure (|
+                            Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                              "downcast_unchecked",
+                              [],
+                              [ T ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
+                        ])));
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
                               [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
-                            "downcast_unchecked",
-                            [],
-                            [ T ]
-                          |),
-                          [ M.read (| self |) ]
-                        |)
-                      ]));
-                fun γ =>
-                  ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
-                      ]
-                      [
-                        M.call_closure (|
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ])
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]),
+                            [ M.read (| self |) ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ])
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]),
-                          [ M.read (| self |) ]
-                        |)
-                      ]))
+                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1684,10 +1914,15 @@ Module boxed.
                                                   [ T ]
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| self |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.dyn [ ("core::any::Any::Trait", []) ] ])
                                                 ]
                                               |)
                                             ]
@@ -1702,7 +1937,11 @@ Module boxed.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: self.is::<T>()" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: self.is::<T>()" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1737,23 +1976,28 @@ Module boxed.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ])
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]),
+                            [ M.read (| self |) ]
+                          |))
+                          (Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ])
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ]),
-                          [ M.read (| self |) ]
-                        |)
+                            [ Ty.dyn [ ("core::any::Any::Trait", []) ]; A ])
                       ]
                     |)
                   |),
@@ -1780,8 +2024,10 @@ Module boxed.
                             []
                           |),
                           [
-                            M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| raw |));
-                            M.read (| alloc |)
+                            M.value_with_ty
+                              (M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| raw |)))
+                              (Ty.apply (Ty.path "*mut") [] [ T ]);
+                            M.value_with_ty (M.read (| alloc |)) A
                           ]
                         |)))
                   ]
@@ -1861,29 +2107,86 @@ Module boxed.
                               [],
                               [ T ]
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.dyn
+                                      [
+                                        ("core::any::Any::Trait", []);
+                                        ("core::marker::Send::AutoTrait", [])
+                                      ]
+                                  ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.dyn
-                              [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", [])
-                              ];
-                            A
-                          ]
-                      ]
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ],
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Ok"
+                        [
+                          M.call_closure (|
+                            Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ],
+                              "downcast_unchecked",
+                              [],
+                              [ T ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.dyn
+                                      [
+                                        ("core::any::Any::Trait", []);
+                                        ("core::marker::Send::AutoTrait", [])
+                                      ];
+                                    A
+                                  ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [
+                              Ty.dyn
+                                [
+                                  ("core::any::Any::Trait", []);
+                                  ("core::marker::Send::AutoTrait", [])
+                                ];
+                              A
+                            ]
+                        ])));
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
@@ -1895,32 +2198,38 @@ Module boxed.
                                   ];
                                 A
                               ],
-                            "downcast_unchecked",
-                            [],
-                            [ T ]
-                          |),
-                          [ M.read (| self |) ]
-                        |)
-                      ]));
-                fun γ =>
-                  ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.dyn
-                              [ ("core::any::Any::Trait", []); ("core::marker::Send::AutoTrait", [])
-                              ];
-                            A
-                          ]
-                      ]
-                      [
-                        M.call_closure (|
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ])
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ]),
+                            [ M.read (| self |) ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
@@ -1931,34 +2240,8 @@ Module boxed.
                                   ("core::marker::Send::AutoTrait", [])
                                 ];
                               A
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn
-                                  [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
-                                  ];
-                                A
-                              ])
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn
-                                  [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
-                                  ];
-                                A
-                              ]),
-                          [ M.read (| self |) ]
-                        |)
-                      ]))
+                            ]
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2039,10 +2322,21 @@ Module boxed.
                                                   [ T ]
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| self |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.dyn
+                                                          [
+                                                            ("core::any::Any::Trait", []);
+                                                            ("core::marker::Send::AutoTrait", [])
+                                                          ]
+                                                      ])
                                                 ]
                                               |)
                                             ]
@@ -2057,7 +2351,11 @@ Module boxed.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: self.is::<T>()" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: self.is::<T>()" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2115,8 +2413,46 @@ Module boxed.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.dyn
+                                  [
+                                    ("core::any::Any::Trait", []);
+                                    ("core::marker::Send::AutoTrait", [])
+                                  ];
+                                A
+                              ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ])
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ]),
+                            [ M.read (| self |) ]
+                          |))
+                          (Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
@@ -2126,33 +2462,7 @@ Module boxed.
                                   ("core::marker::Send::AutoTrait", [])
                                 ];
                               A
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn
-                                  [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
-                                  ];
-                                A
-                              ])
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn
-                                  [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Send::AutoTrait", [])
-                                  ];
-                                A
-                              ]),
-                          [ M.read (| self |) ]
-                        |)
+                            ])
                       ]
                     |)
                   |),
@@ -2185,8 +2495,10 @@ Module boxed.
                             []
                           |),
                           [
-                            M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| raw |));
-                            M.read (| alloc |)
+                            M.value_with_ty
+                              (M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| raw |)))
+                              (Ty.apply (Ty.path "*mut") [] [ T ]);
+                            M.value_with_ty (M.read (| alloc |)) A
                           ]
                         |)))
                   ]
@@ -2284,32 +2596,90 @@ Module boxed.
                               [],
                               [ T ]
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.dyn
+                                      [
+                                        ("core::any::Any::Trait", []);
+                                        ("core::marker::Sync::AutoTrait", []);
+                                        ("core::marker::Send::AutoTrait", [])
+                                      ]
+                                  ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
-                              ];
-                            A
-                          ]
-                      ]
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ],
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Ok"
+                        [
+                          M.call_closure (|
+                            Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Sync::AutoTrait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ],
+                              "downcast_unchecked",
+                              [],
+                              [ T ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.dyn
+                                      [
+                                        ("core::any::Any::Trait", []);
+                                        ("core::marker::Sync::AutoTrait", []);
+                                        ("core::marker::Send::AutoTrait", [])
+                                      ];
+                                    A
+                                  ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [
+                              Ty.dyn
+                                [
+                                  ("core::any::Any::Trait", []);
+                                  ("core::marker::Sync::AutoTrait", []);
+                                  ("core::marker::Send::AutoTrait", [])
+                                ];
+                              A
+                            ]
+                        ])));
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
@@ -2322,35 +2692,40 @@ Module boxed.
                                   ];
                                 A
                               ],
-                            "downcast_unchecked",
-                            [],
-                            [ T ]
-                          |),
-                          [ M.read (| self |) ]
-                        |)
-                      ]));
-                fun γ =>
-                  ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.dyn
-                              [
-                                ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
-                              ];
-                            A
-                          ]
-                      ]
-                      [
-                        M.call_closure (|
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Sync::AutoTrait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ])
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Sync::AutoTrait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ]),
+                            [ M.read (| self |) ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::boxed::Box") [] [ T; A ];
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
@@ -2362,36 +2737,8 @@ Module boxed.
                                   ("core::marker::Send::AutoTrait", [])
                                 ];
                               A
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn
-                                  [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
-                                  ];
-                                A
-                              ])
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn
-                                  [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
-                                  ];
-                                A
-                              ]),
-                          [ M.read (| self |) ]
-                        |)
-                      ]))
+                            ]
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2479,10 +2826,22 @@ Module boxed.
                                                   [ T ]
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| self |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.dyn
+                                                          [
+                                                            ("core::any::Any::Trait", []);
+                                                            ("core::marker::Sync::AutoTrait", []);
+                                                            ("core::marker::Send::AutoTrait", [])
+                                                          ]
+                                                      ])
                                                 ]
                                               |)
                                             ]
@@ -2497,7 +2856,11 @@ Module boxed.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: self.is::<T>()" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: self.is::<T>()" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2562,8 +2925,49 @@ Module boxed.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.dyn
+                                  [
+                                    ("core::any::Any::Trait", []);
+                                    ("core::marker::Sync::AutoTrait", []);
+                                    ("core::marker::Send::AutoTrait", [])
+                                  ];
+                                A
+                              ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Sync::AutoTrait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ])
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn
+                                    [
+                                      ("core::any::Any::Trait", []);
+                                      ("core::marker::Sync::AutoTrait", []);
+                                      ("core::marker::Send::AutoTrait", [])
+                                    ];
+                                  A
+                                ]),
+                            [ M.read (| self |) ]
+                          |))
+                          (Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
@@ -2574,35 +2978,7 @@ Module boxed.
                                   ("core::marker::Send::AutoTrait", [])
                                 ];
                               A
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn
-                                  [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
-                                  ];
-                                A
-                              ])
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn
-                                  [
-                                    ("core::any::Any::Trait", []);
-                                    ("core::marker::Sync::AutoTrait", []);
-                                    ("core::marker::Send::AutoTrait", [])
-                                  ];
-                                A
-                              ]),
-                          [ M.read (| self |) ]
-                        |)
+                            ])
                       ]
                     |)
                   |),
@@ -2636,8 +3012,10 @@ Module boxed.
                             []
                           |),
                           [
-                            M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| raw |));
-                            M.read (| alloc |)
+                            M.value_with_ty
+                              (M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| raw |)))
+                              (Ty.apply (Ty.path "*mut") [] [ T ]);
+                            M.value_with_ty (M.read (| alloc |)) A
                           ]
                         |)))
                   ]
@@ -2720,7 +3098,7 @@ Module boxed.
                         [],
                         []
                       |),
-                      [ M.read (| err |) ]
+                      [ M.value_with_ty (M.read (| err |)) E ]
                     |)
                   ]
                 |)
@@ -2851,7 +3229,7 @@ Module boxed.
                         [],
                         []
                       |),
-                      [ M.read (| err |) ]
+                      [ M.value_with_ty (M.read (| err |)) E ]
                     |)
                   ]
                 |)
@@ -3013,11 +3391,13 @@ Module boxed.
                         []
                       |),
                       [
-                        Value.StructTuple
-                          "alloc::boxed::convert::from::StringError"
-                          []
-                          []
-                          [ M.read (| err |) ]
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple
+                              "alloc::boxed::convert::from::StringError"
+                              [ M.read (| err |) ])
+                            (Ty.path "alloc::boxed::convert::from::StringError"))
+                          (Ty.path "alloc::boxed::convert::from::StringError")
                       ]
                     |)
                   ]
@@ -3118,7 +3498,7 @@ Module boxed.
                         [],
                         []
                       |),
-                      [ M.read (| str_err |) ]
+                      [ M.value_with_ty (M.read (| str_err |)) (Ty.path "alloc::string::String") ]
                     |) in
                   let~ err2 :
                       Ty.apply
@@ -3306,19 +3686,25 @@ Module boxed.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.path "alloc::string::String",
-                      M.get_trait_method (|
-                        "core::convert::From",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "alloc::string::String",
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        "from",
-                        [],
-                        []
-                      |),
-                      [ M.read (| err |) ]
-                    |)
+                        M.get_trait_method (|
+                          "core::convert::From",
+                          Ty.path "alloc::string::String",
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                          "from",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| err |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |))
+                      (Ty.path "alloc::string::String")
                   ]
                 |)
               ]
@@ -3388,19 +3774,25 @@ Module boxed.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.path "alloc::string::String",
-                      M.get_trait_method (|
-                        "core::convert::From",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "alloc::string::String",
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        "from",
-                        [],
-                        []
-                      |),
-                      [ M.read (| err |) ]
-                    |)
+                        M.get_trait_method (|
+                          "core::convert::From",
+                          Ty.path "alloc::string::String",
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                          "from",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| err |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |))
+                      (Ty.path "alloc::string::String")
                   ]
                 |)
               ]
@@ -3517,19 +3909,25 @@ Module boxed.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.path "alloc::string::String",
-                      M.get_trait_method (|
-                        "core::convert::From",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "alloc::string::String",
-                        [],
-                        [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                        "from",
-                        [],
-                        []
-                      |),
-                      [ M.read (| err |) ]
-                    |)
+                        M.get_trait_method (|
+                          "core::convert::From",
+                          Ty.path "alloc::string::String",
+                          [],
+                          [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                          "from",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| err |))
+                            (Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ])
+                        ]
+                      |))
+                      (Ty.path "alloc::string::String")
                   ]
                 |)
               ]
@@ -3601,19 +3999,25 @@ Module boxed.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.path "alloc::string::String",
-                      M.get_trait_method (|
-                        "core::convert::From",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "alloc::string::String",
-                        [],
-                        [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                        "from",
-                        [],
-                        []
-                      |),
-                      [ M.read (| err |) ]
-                    |)
+                        M.get_trait_method (|
+                          "core::convert::From",
+                          Ty.path "alloc::string::String",
+                          [],
+                          [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                          "from",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| err |))
+                            (Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ])
+                        ]
+                      |))
+                      (Ty.path "alloc::string::String")
                   ]
                 |)
               ]
@@ -3685,7 +4089,14 @@ Module boxed.
                               [],
                               [ T ]
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -3729,32 +4140,40 @@ Module boxed.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                        Ty.path "alloc::alloc::Global"
+                                      ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.Unsize
+                                      (Ty.apply
+                                        (Ty.path "alloc::boxed::Box")
+                                        []
+                                        [
+                                          Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                          Ty.path "alloc::alloc::Global"
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "alloc::boxed::Box")
+                                        []
+                                        [
+                                          Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                          Ty.path "alloc::alloc::Global"
+                                        ]),
+                                    [ M.read (| self |) ]
+                                  |))
+                                  (Ty.apply
                                     (Ty.path "alloc::boxed::Box")
                                     []
                                     [
                                       Ty.dyn [ ("core::error::Error::Trait", []) ];
                                       Ty.path "alloc::alloc::Global"
-                                    ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
-                                    (Ty.apply
-                                      (Ty.path "alloc::boxed::Box")
-                                      []
-                                      [
-                                        Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                        Ty.path "alloc::alloc::Global"
-                                      ])
-                                    (Ty.apply
-                                      (Ty.path "alloc::boxed::Box")
-                                      []
-                                      [
-                                        Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                        Ty.path "alloc::alloc::Global"
-                                      ]),
-                                  [ M.read (| self |) ]
-                                |)
+                                    ])
                               ]
                             |)
                           ]
@@ -3776,88 +4195,98 @@ Module boxed.
                                 Ty.path "alloc::alloc::Global"
                               ]
                           ],
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [ T; Ty.path "alloc::alloc::Global" ];
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Ok"
+                            [
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ],
+                                  "from_raw",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| raw |)))
+                                    (Ty.apply (Ty.path "*mut") [] [ T ])
+                                ]
+                              |)
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ];
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                  Ty.path "alloc::alloc::Global"
+                                ]
+                            ])
+                      |)
+                    |)));
+                fun γ =>
+                  ltac:(M.monadic
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
                               [
                                 Ty.dyn [ ("core::error::Error::Trait", []) ];
                                 Ty.path "alloc::alloc::Global"
-                              ]
-                          ]
-                          [
-                            M.call_closure (|
-                              Ty.apply
+                              ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
                                 (Ty.path "alloc::boxed::Box")
                                 []
-                                [ T; Ty.path "alloc::alloc::Global" ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "alloc::boxed::Box")
-                                  []
-                                  [ T; Ty.path "alloc::alloc::Global" ],
-                                "from_raw",
-                                [],
+                                [
+                                  Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                  Ty.path "alloc::alloc::Global"
+                                ])
+                              (Ty.apply
+                                (Ty.path "alloc::boxed::Box")
                                 []
-                              |),
-                              [ M.cast (Ty.apply (Ty.path "*mut") [] [ T ]) (M.read (| raw |)) ]
-                            |)
-                          ]
-                      |)
-                    |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [ T; Ty.path "alloc::alloc::Global" ];
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.dyn [ ("core::error::Error::Trait", []) ];
-                            Ty.path "alloc::alloc::Global"
-                          ]
-                      ]
-                      [
-                        M.call_closure (|
+                                [
+                                  Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                  Ty.path "alloc::alloc::Global"
+                                ]),
+                            [ M.read (| self |) ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ];
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
                               Ty.dyn [ ("core::error::Error::Trait", []) ];
                               Ty.path "alloc::alloc::Global"
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                Ty.path "alloc::alloc::Global"
-                              ])
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                Ty.path "alloc::alloc::Global"
-                              ]),
-                          [ M.read (| self |) ]
-                        |)
-                      ]))
+                            ]
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4021,8 +4450,68 @@ Module boxed.
                     ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ];
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.dyn [ ("core::error::Error::Trait", []) ],
+                          "downcast",
+                          [],
+                          [ T ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ]),
+                              [ M.read (| err |) ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.path "alloc::alloc::Global"
+                              ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::result::Result")
                         []
                         [
@@ -4037,123 +4526,65 @@ Module boxed.
                               Ty.dyn [ ("core::error::Error::Trait", []) ];
                               Ty.path "alloc::alloc::Global"
                             ]
-                        ],
-                      M.get_associated_function (|
-                        Ty.dyn [ ("core::error::Error::Trait", []) ],
-                        "downcast",
-                        [],
-                        [ T ]
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [
-                              Ty.dyn [ ("core::error::Error::Trait", []) ];
-                              Ty.path "alloc::alloc::Global"
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                Ty.path "alloc::alloc::Global"
-                              ])
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                Ty.path "alloc::alloc::Global"
-                              ]),
-                          [ M.read (| err |) ]
-                        |)
-                      ]
-                    |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply
-                                  (Ty.path "alloc::boxed::Box")
-                                  []
-                                  [
-                                    Ty.dyn
-                                      [
-                                        ("core::error::Error::Trait", []);
-                                        ("core::marker::Send::AutoTrait", [])
-                                      ];
-                                    Ty.path "alloc::alloc::Global"
-                                  ],
-                                M.alloc (|
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
                                   Ty.apply
                                     (Ty.path "alloc::boxed::Box")
                                     []
                                     [
-                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                      Ty.dyn
+                                        [
+                                          ("core::error::Error::Trait", []);
+                                          ("core::marker::Send::AutoTrait", [])
+                                        ];
                                       Ty.path "alloc::alloc::Global"
                                     ],
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let s :=
-                                        M.copy (|
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                        Ty.path "alloc::alloc::Global"
+                                      ],
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let s :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            γ
+                                          |) in
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
                                             [
-                                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                              Ty.dyn
+                                                [
+                                                  ("core::error::Error::Trait", []);
+                                                  ("core::marker::Send::AutoTrait", [])
+                                                ];
                                               Ty.path "alloc::alloc::Global"
                                             ],
-                                          γ
-                                        |) in
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "alloc::boxed::Box")
-                                          []
-                                          [
-                                            Ty.dyn
-                                              [
-                                                ("core::error::Error::Trait", []);
-                                                ("core::marker::Send::AutoTrait", [])
-                                              ];
-                                            Ty.path "alloc::alloc::Global"
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "alloc::boxed::Box")
-                                            []
-                                            [
-                                              Ty.dyn
-                                                [
-                                                  ("core::error::Error::Trait", []);
-                                                  ("core::marker::Send::AutoTrait", [])
-                                                ];
-                                              Ty.path "alloc::alloc::Global"
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "alloc::boxed::Box")
-                                            []
-                                            [
-                                              Ty.dyn
-                                                [
-                                                  ("core::error::Error::Trait", []);
-                                                  ("core::marker::Send::AutoTrait", [])
-                                                ];
-                                              Ty.path "alloc::alloc::Global"
-                                            ]),
-                                        [
-                                          M.call_closure (|
-                                            Ty.apply
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
                                               (Ty.path "alloc::boxed::Box")
                                               []
                                               [
@@ -4163,42 +4594,86 @@ Module boxed.
                                                     ("core::marker::Send::AutoTrait", [])
                                                   ];
                                                 Ty.path "alloc::alloc::Global"
-                                              ],
-                                            M.get_function (|
-                                              "core::intrinsics::transmute",
-                                              [],
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
                                               [
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
+                                                Ty.dyn
                                                   [
-                                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                                    Ty.path "alloc::alloc::Global"
+                                                    ("core::error::Error::Trait", []);
+                                                    ("core::marker::Send::AutoTrait", [])
                                                   ];
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
-                                                  [
-                                                    Ty.dyn
+                                                Ty.path "alloc::alloc::Global"
+                                              ]),
+                                          [
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "alloc::boxed::Box")
+                                                []
+                                                [
+                                                  Ty.dyn
+                                                    [
+                                                      ("core::error::Error::Trait", []);
+                                                      ("core::marker::Send::AutoTrait", [])
+                                                    ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ],
+                                              M.get_function (|
+                                                "core::intrinsics::transmute",
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::boxed::Box")
+                                                    []
+                                                    [
+                                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ];
+                                                  Ty.apply
+                                                    (Ty.path "alloc::boxed::Box")
+                                                    []
+                                                    [
+                                                      Ty.dyn
+                                                        [
+                                                          ("core::error::Error::Trait", []);
+                                                          ("core::marker::Send::AutoTrait", [])
+                                                        ];
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ]
+                                                ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "alloc::boxed::Box")
+                                                      []
                                                       [
-                                                        ("core::error::Error::Trait", []);
-                                                        ("core::marker::Send::AutoTrait", [])
-                                                      ];
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
-                                              ]
-                                            |),
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
-                                                  [
-                                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ],
-                                                M.pointer_coercion
-                                                  M.PointerCoercion.Unsize
+                                                        Ty.dyn
+                                                          [ ("core::error::Error::Trait", []) ];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ],
+                                                    M.pointer_coercion
+                                                      M.PointerCoercion.Unsize
+                                                      (Ty.apply
+                                                        (Ty.path "alloc::boxed::Box")
+                                                        []
+                                                        [
+                                                          Ty.dyn
+                                                            [ ("core::error::Error::Trait", []) ];
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "alloc::boxed::Box")
+                                                        []
+                                                        [
+                                                          Ty.dyn
+                                                            [ ("core::error::Error::Trait", []) ];
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]),
+                                                    [ M.read (| s |) ]
+                                                  |))
                                                   (Ty.apply
                                                     (Ty.path "alloc::boxed::Box")
                                                     []
@@ -4206,23 +4681,35 @@ Module boxed.
                                                       Ty.dyn [ ("core::error::Error::Trait", []) ];
                                                       Ty.path "alloc::alloc::Global"
                                                     ])
-                                                  (Ty.apply
-                                                    (Ty.path "alloc::boxed::Box")
-                                                    []
-                                                    [
-                                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                                      Ty.path "alloc::alloc::Global"
-                                                    ]),
-                                                [ M.read (| s |) ]
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                              ]
+                                            |)
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [
+                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                              Ty.path "alloc::alloc::Global"
+                            ]
+                        ]
+                        (Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.dyn
+                              [
+                                ("core::error::Error::Trait", []);
+                                ("core::marker::Send::AutoTrait", [])
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ]))
                   ]
                 |)
               |)
@@ -4406,8 +4893,68 @@ Module boxed.
                     ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ];
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.dyn [ ("core::error::Error::Trait", []) ],
+                          "downcast",
+                          [],
+                          [ T ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ]),
+                              [ M.read (| err |) ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                Ty.path "alloc::alloc::Global"
+                              ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::result::Result")
                         []
                         [
@@ -4422,127 +4969,67 @@ Module boxed.
                               Ty.dyn [ ("core::error::Error::Trait", []) ];
                               Ty.path "alloc::alloc::Global"
                             ]
-                        ],
-                      M.get_associated_function (|
-                        Ty.dyn [ ("core::error::Error::Trait", []) ],
-                        "downcast",
-                        [],
-                        [ T ]
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [
-                              Ty.dyn [ ("core::error::Error::Trait", []) ];
-                              Ty.path "alloc::alloc::Global"
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                Ty.path "alloc::alloc::Global"
-                              ])
-                            (Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                Ty.path "alloc::alloc::Global"
-                              ]),
-                          [ M.read (| err |) ]
-                        |)
-                      ]
-                    |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply
-                                  (Ty.path "alloc::boxed::Box")
-                                  []
-                                  [
-                                    Ty.dyn
-                                      [
-                                        ("core::error::Error::Trait", []);
-                                        ("core::marker::Sync::AutoTrait", []);
-                                        ("core::marker::Send::AutoTrait", [])
-                                      ];
-                                    Ty.path "alloc::alloc::Global"
-                                  ],
-                                M.alloc (|
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
                                   Ty.apply
                                     (Ty.path "alloc::boxed::Box")
                                     []
                                     [
-                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                      Ty.dyn
+                                        [
+                                          ("core::error::Error::Trait", []);
+                                          ("core::marker::Sync::AutoTrait", []);
+                                          ("core::marker::Send::AutoTrait", [])
+                                        ];
                                       Ty.path "alloc::alloc::Global"
                                     ],
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let s :=
-                                        M.copy (|
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                        Ty.path "alloc::alloc::Global"
+                                      ],
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let s :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            γ
+                                          |) in
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
                                             [
-                                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                              Ty.dyn
+                                                [
+                                                  ("core::error::Error::Trait", []);
+                                                  ("core::marker::Sync::AutoTrait", []);
+                                                  ("core::marker::Send::AutoTrait", [])
+                                                ];
                                               Ty.path "alloc::alloc::Global"
                                             ],
-                                          γ
-                                        |) in
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "alloc::boxed::Box")
-                                          []
-                                          [
-                                            Ty.dyn
-                                              [
-                                                ("core::error::Error::Trait", []);
-                                                ("core::marker::Sync::AutoTrait", []);
-                                                ("core::marker::Send::AutoTrait", [])
-                                              ];
-                                            Ty.path "alloc::alloc::Global"
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "alloc::boxed::Box")
-                                            []
-                                            [
-                                              Ty.dyn
-                                                [
-                                                  ("core::error::Error::Trait", []);
-                                                  ("core::marker::Sync::AutoTrait", []);
-                                                  ("core::marker::Send::AutoTrait", [])
-                                                ];
-                                              Ty.path "alloc::alloc::Global"
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "alloc::boxed::Box")
-                                            []
-                                            [
-                                              Ty.dyn
-                                                [
-                                                  ("core::error::Error::Trait", []);
-                                                  ("core::marker::Sync::AutoTrait", []);
-                                                  ("core::marker::Send::AutoTrait", [])
-                                                ];
-                                              Ty.path "alloc::alloc::Global"
-                                            ]),
-                                        [
-                                          M.call_closure (|
-                                            Ty.apply
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
                                               (Ty.path "alloc::boxed::Box")
                                               []
                                               [
@@ -4553,43 +5040,89 @@ Module boxed.
                                                     ("core::marker::Send::AutoTrait", [])
                                                   ];
                                                 Ty.path "alloc::alloc::Global"
-                                              ],
-                                            M.get_function (|
-                                              "core::intrinsics::transmute",
-                                              [],
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
                                               [
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
+                                                Ty.dyn
                                                   [
-                                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                                    Ty.path "alloc::alloc::Global"
+                                                    ("core::error::Error::Trait", []);
+                                                    ("core::marker::Sync::AutoTrait", []);
+                                                    ("core::marker::Send::AutoTrait", [])
                                                   ];
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
-                                                  [
-                                                    Ty.dyn
+                                                Ty.path "alloc::alloc::Global"
+                                              ]),
+                                          [
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "alloc::boxed::Box")
+                                                []
+                                                [
+                                                  Ty.dyn
+                                                    [
+                                                      ("core::error::Error::Trait", []);
+                                                      ("core::marker::Sync::AutoTrait", []);
+                                                      ("core::marker::Send::AutoTrait", [])
+                                                    ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ],
+                                              M.get_function (|
+                                                "core::intrinsics::transmute",
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::boxed::Box")
+                                                    []
+                                                    [
+                                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ];
+                                                  Ty.apply
+                                                    (Ty.path "alloc::boxed::Box")
+                                                    []
+                                                    [
+                                                      Ty.dyn
+                                                        [
+                                                          ("core::error::Error::Trait", []);
+                                                          ("core::marker::Sync::AutoTrait", []);
+                                                          ("core::marker::Send::AutoTrait", [])
+                                                        ];
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ]
+                                                ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "alloc::boxed::Box")
+                                                      []
                                                       [
-                                                        ("core::error::Error::Trait", []);
-                                                        ("core::marker::Sync::AutoTrait", []);
-                                                        ("core::marker::Send::AutoTrait", [])
-                                                      ];
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
-                                              ]
-                                            |),
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
-                                                  [
-                                                    Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ],
-                                                M.pointer_coercion
-                                                  M.PointerCoercion.Unsize
+                                                        Ty.dyn
+                                                          [ ("core::error::Error::Trait", []) ];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ],
+                                                    M.pointer_coercion
+                                                      M.PointerCoercion.Unsize
+                                                      (Ty.apply
+                                                        (Ty.path "alloc::boxed::Box")
+                                                        []
+                                                        [
+                                                          Ty.dyn
+                                                            [ ("core::error::Error::Trait", []) ];
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "alloc::boxed::Box")
+                                                        []
+                                                        [
+                                                          Ty.dyn
+                                                            [ ("core::error::Error::Trait", []) ];
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]),
+                                                    [ M.read (| s |) ]
+                                                  |))
                                                   (Ty.apply
                                                     (Ty.path "alloc::boxed::Box")
                                                     []
@@ -4597,23 +5130,36 @@ Module boxed.
                                                       Ty.dyn [ ("core::error::Error::Trait", []) ];
                                                       Ty.path "alloc::alloc::Global"
                                                     ])
-                                                  (Ty.apply
-                                                    (Ty.path "alloc::boxed::Box")
-                                                    []
-                                                    [
-                                                      Ty.dyn [ ("core::error::Error::Trait", []) ];
-                                                      Ty.path "alloc::alloc::Global"
-                                                    ]),
-                                                [ M.read (| s |) ]
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                              ]
+                                            |)
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [
+                              Ty.dyn [ ("core::error::Error::Trait", []) ];
+                              Ty.path "alloc::alloc::Global"
+                            ]
+                        ]
+                        (Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.dyn
+                              [
+                                ("core::error::Error::Trait", []);
+                                ("core::marker::Sync::AutoTrait", []);
+                                ("core::marker::Send::AutoTrait", [])
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ]))
                   ]
                 |)
               |)

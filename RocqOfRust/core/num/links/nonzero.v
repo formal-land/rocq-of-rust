@@ -12,7 +12,7 @@ Module NonZero.
   Instance IsLink {T : Set} `{Link T} : Link (t T) := {
     Φ := Ty.path "core::num::NonZero";
     φ x :=
-      Value.StructTuple "core::num::NonZero" [] [Φ T] [
+      Value.StructTuple "core::num::NonZero" [
         φ x.(value)
       ];
   }.

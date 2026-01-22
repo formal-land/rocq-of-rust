@@ -44,7 +44,7 @@ Module Interpreter.
       Link (t WIRE WIRE_types) := {
     Φ := Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ Φ WIRE ];
     φ x :=
-      Value.StructRecord "revm_interpreter::interpreter::Interpreter" [] [] [
+      Value.StructRecord "revm_interpreter::interpreter::Interpreter" [
         ("bytecode", φ x.(bytecode));
         ("stack", φ x.(stack));
         ("return_data", φ x.(return_data));

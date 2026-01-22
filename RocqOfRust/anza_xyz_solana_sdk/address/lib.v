@@ -81,25 +81,28 @@ Module Impl_core_default_Default_for_solana_address_Address.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "solana_address::Address"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "solana_address::Address"
+            [
+              M.call_closure (|
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 32 ]
+                    [ Ty.path "u8" ],
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "solana_address::Address")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -168,32 +171,44 @@ Module Impl_core_cmp_Ord_for_solana_address_Address.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "solana_address::Address",
-                    0
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "solana_address::Address",
+                      0
+                    |)
                   |)
                 |)
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "solana_address::Address",
-                    0
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "solana_address::Address",
+                      0
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -244,22 +259,34 @@ Module Impl_core_cmp_PartialEq_solana_address_Address_for_solana_address_Address
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_tuple_field (|
-                M.deref (| M.read (| self |) |),
-                "solana_address::Address",
-                0
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_tuple_field (|
-                M.deref (| M.read (| other |) |),
-                "solana_address::Address",
-                0
-              |)
-            |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_tuple_field (|
+                  M.deref (| M.read (| self |) |),
+                  "solana_address::Address",
+                  0
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_tuple_field (|
+                  M.deref (| M.read (| other |) |),
+                  "solana_address::Address",
+                  0
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -298,32 +325,44 @@ Module Impl_core_cmp_PartialOrd_solana_address_Address_for_solana_address_Addres
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "solana_address::Address",
-                    0
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "solana_address::Address",
+                      0
+                    |)
                   |)
                 |)
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "solana_address::Address",
-                    0
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "solana_address::Address",
+                      0
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -359,47 +398,58 @@ Module Impl_core_hash_Hash_for_solana_address_Address.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 32 ]
-                          [ Ty.path "u8" ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
-                            (Ty.path "&")
-                            []
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [ Ty.path "u8" ]
+                        ])
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                  [ Ty.path "u8" ]
+                              ],
+                            M.get_associated_function (|
+                              Ty.path "solana_address::Address",
+                              "as_array",
+                              [],
+                              []
+                            |),
                             [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 32 ]
-                                [ Ty.path "u8" ]
-                            ],
-                          M.get_associated_function (|
-                            Ty.path "solana_address::Address",
-                            "as_array",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ])
+                            ]
+                          |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -461,7 +511,9 @@ Module Impl_core_convert_From_array_Usize_32_u8_for_solana_address_Address.
             Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
             from
           |) in
-        Value.StructTuple "solana_address::Address" [] [] [ M.read (| from |) ]))
+        M.value_with_ty
+          (Value.StructTuple "solana_address::Address" [ M.read (| from |) ])
+          (Ty.path "solana_address::Address")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -519,8 +571,37 @@ Module Impl_core_convert_TryFrom_ref__slice_u8_for_solana_address_Address.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [ Ty.path "u8" ];
+                    Ty.path "core::array::TryFromSliceError"
+                  ],
+                M.get_trait_method (|
+                  "core::convert::TryFrom",
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 32 ]
+                    [ Ty.path "u8" ],
+                  [],
+                  [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ] ],
+                  "try_from",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.read (| address |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::result::Result")
                 []
                 [
@@ -529,28 +610,22 @@ Module Impl_core_convert_TryFrom_ref__slice_u8_for_solana_address_Address.
                     [ Value.Integer IntegerKind.Usize 32 ]
                     [ Ty.path "u8" ];
                   Ty.path "core::array::TryFromSliceError"
-                ],
-              M.get_trait_method (|
-                "core::convert::TryFrom",
-                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
+                ]);
+            M.value_with_ty
+              (M.get_trait_method (|
+                "core::convert::From",
+                Ty.path "solana_address::Address",
                 [],
-                [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ] ],
-                "try_from",
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ],
+                "from",
                 [],
                 []
-              |),
-              [ M.read (| address |) ]
-            |);
-            M.get_trait_method (|
-              "core::convert::From",
-              Ty.path "solana_address::Address",
-              [],
-              [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
-              ],
-              "from",
-              [],
-              []
-            |)
+              |))
+              (Ty.function
+                [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+                ]
+                (Ty.path "solana_address::Address"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -584,7 +659,9 @@ Module Impl_solana_address_Address.
             Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
             address_array
           |) in
-        Value.StructTuple "solana_address::Address" [] [] [ M.read (| address_array |) ]))
+        M.value_with_ty
+          (Value.StructTuple "solana_address::Address" [ M.read (| address_array |) ])
+          (Ty.path "solana_address::Address")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -678,15 +755,29 @@ Module Impl_core_convert_AsRef_slice_u8_for_solana_address_Address.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "solana_address::Address",
-                        0
-                      |)
-                    |);
-                    Value.StructTuple "core::ops::range::RangeFull" [] [] []
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "solana_address::Address",
+                          0
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [ Ty.path "u8" ]
+                        ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple "core::ops::range::RangeFull" [])
+                        (Ty.path "core::ops::range::RangeFull"))
+                      (Ty.path "core::ops::range::RangeFull")
                   ]
                 |)
               |)
@@ -746,15 +837,29 @@ Module Impl_core_convert_AsMut_slice_u8_for_solana_address_Address.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "solana_address::Address",
-                            0
-                          |)
-                        |);
-                        Value.StructTuple "core::ops::range::RangeFull" [] [] []
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "solana_address::Address",
+                              0
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ]
+                            ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple "core::ops::range::RangeFull" [])
+                            (Ty.path "core::ops::range::RangeFull"))
+                          (Ty.path "core::ops::range::RangeFull")
                       ]
                     |)
                   |)

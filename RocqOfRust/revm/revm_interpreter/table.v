@@ -253,7 +253,24 @@ Module table.
                         [],
                         []
                       |),
-                      [ M.read (| instruction |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| instruction |))
+                          (Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                    []
+                                    [ WIRE ]
+                                ];
+                              Ty.apply (Ty.path "&mut") [] [ H ]
+                            ]
+                            (Ty.tuple []))
+                      ]
                     |)
                   |)))
             ]
@@ -331,71 +348,119 @@ Module table.
                       ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.closure
-                        (fun γ =>
-                          ltac:(M.monadic
-                            match γ with
-                            | [ α0 ] =>
-                              ltac:(M.monadic
-                                (M.match_operator (|
-                                  CI,
-                                  M.alloc (|
-                                    Ty.function
-                                      [
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "revm_interpreter::interpreter::Interpreter")
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "revm_interpreter::table::InstructionTables")
+                              []
+                              [ WIRE; H; CI ]
+                          ]);
+                      M.value_with_ty
+                        (M.closure
+                          (fun γ =>
+                            ltac:(M.monadic
+                              match γ with
+                              | [ α0 ] =>
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    CI,
+                                    M.alloc (|
+                                      Ty.function
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path
+                                                  "revm_interpreter::interpreter::Interpreter")
+                                                []
+                                                [ WIRE ]
+                                            ];
+                                          Ty.apply (Ty.path "&mut") [] [ H ]
+                                        ]
+                                        (Ty.tuple []),
+                                      α0
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let i :=
+                                            M.copy (|
+                                              Ty.function
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "revm_interpreter::interpreter::Interpreter")
+                                                        []
+                                                        [ WIRE ]
+                                                    ];
+                                                  Ty.apply (Ty.path "&mut") [] [ H ]
+                                                ]
+                                                (Ty.tuple []),
+                                              γ
+                                            |) in
+                                          M.call_closure (|
+                                            CI,
+                                            M.get_trait_method (|
+                                              "revm_interpreter::table::CustomInstruction",
+                                              CI,
+                                              [],
+                                              [],
+                                              "from_base",
+                                              [],
                                               []
-                                              [ WIRE ]
-                                          ];
-                                        Ty.apply (Ty.path "&mut") [] [ H ]
-                                      ]
-                                      (Ty.tuple []),
-                                    α0
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let i :=
-                                          M.copy (|
-                                            Ty.function
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "&mut")
-                                                  []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| i |))
+                                                (Ty.function
                                                   [
                                                     Ty.apply
-                                                      (Ty.path
-                                                        "revm_interpreter::interpreter::Interpreter")
+                                                      (Ty.path "&mut")
                                                       []
-                                                      [ WIRE ]
-                                                  ];
-                                                Ty.apply (Ty.path "&mut") [] [ H ]
-                                              ]
-                                              (Ty.tuple []),
-                                            γ
-                                          |) in
-                                        M.call_closure (|
-                                          CI,
-                                          M.get_trait_method (|
-                                            "revm_interpreter::table::CustomInstruction",
-                                            CI,
-                                            [],
-                                            [],
-                                            "from_base",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| i |) ]
-                                        |)))
-                                  ]
-                                |)))
-                            | _ => M.impossible "wrong number of arguments"
-                            end))
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "revm_interpreter::interpreter::Interpreter")
+                                                          []
+                                                          [ WIRE ]
+                                                      ];
+                                                    Ty.apply (Ty.path "&mut") [] [ H ]
+                                                  ]
+                                                  (Ty.tuple []))
+                                            ]
+                                          |)))
+                                    ]
+                                  |)))
+                              | _ => M.impossible "wrong number of arguments"
+                              end)))
+                        (Ty.function
+                          [
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                      []
+                                      [ WIRE ]
+                                  ];
+                                Ty.apply (Ty.path "&mut") [] [ H ]
+                              ]
+                              (Ty.tuple [])
+                          ]
+                          CI)
                     ]
                   |)
                 |)
@@ -487,11 +552,21 @@ Module table.
                                   [ F ]
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| self |) |)
-                                  |);
-                                  M.read (| f |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "revm_interpreter::table::InstructionTables")
+                                          []
+                                          [ WIRE; H; CI ]
+                                      ]);
+                                  M.value_with_ty (M.read (| f |)) F
                                 ]
                               |)
                             |)
@@ -636,23 +711,11 @@ Module table.
                         let~ _ : Ty.tuple [] :=
                           M.write (|
                             M.deref (| M.read (| self |) |),
-                            Value.StructTuple
-                              "revm_interpreter::table::InstructionTables::Custom"
-                              []
-                              [ WIRE; H; CI ]
-                              [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 256 ]
-                                        [ CI ];
-                                      Ty.path "alloc::alloc::Global"
-                                    ],
-                                  M.get_associated_function (|
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "revm_interpreter::table::InstructionTables::Custom"
+                                [
+                                  M.call_closure (|
                                     Ty.apply
                                       (Ty.path "alloc::boxed::Box")
                                       []
@@ -663,34 +726,80 @@ Module table.
                                           [ CI ];
                                         Ty.path "alloc::alloc::Global"
                                       ],
-                                    "new",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
+                                    M.get_associated_function (|
                                       Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 256 ]
-                                        [ CI ],
-                                      M.get_function (|
-                                        "revm_interpreter::table::make_custom_instruction_table",
-                                        [],
-                                        [ WIRE; H; F; CI ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.read (| M.deref (| M.read (| table |) |) |)
-                                          |)
-                                        |);
-                                        M.read (| f |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              ]
+                                        (Ty.path "alloc::boxed::Box")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 256 ]
+                                            [ CI ];
+                                          Ty.path "alloc::alloc::Global"
+                                        ],
+                                      "new",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 256 ]
+                                            [ CI ],
+                                          M.get_function (|
+                                            "revm_interpreter::table::make_custom_instruction_table",
+                                            [],
+                                            [ WIRE; H; F; CI ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.read (| M.deref (| M.read (| table |) |) |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 256 ]
+                                                    [
+                                                      Ty.function
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "revm_interpreter::interpreter::Interpreter")
+                                                                []
+                                                                [ WIRE ]
+                                                            ];
+                                                          Ty.apply (Ty.path "&mut") [] [ H ]
+                                                        ]
+                                                        (Ty.tuple [])
+                                                    ]
+                                                ]);
+                                            M.value_with_ty (M.read (| f |)) F
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 256 ]
+                                          [ CI ])
+                                    ]
+                                  |)
+                                ])
+                              (Ty.apply
+                                (Ty.path "revm_interpreter::table::InstructionTables")
+                                []
+                                [ WIRE; H; CI ])
                           |) in
                         M.alloc (|
                           Ty.apply
@@ -751,7 +860,11 @@ Module table.
                                   (M.call_closure (|
                                     Ty.path "never",
                                     M.get_function (| "core::panicking::panic", [], [] |),
-                                    [ mk_str (| "internal error: entered unreachable code" |) ]
+                                    [
+                                      M.value_with_ty
+                                        (mk_str (| "internal error: entered unreachable code" |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
                                   |)))
                             ]
                           |)
@@ -762,7 +875,11 @@ Module table.
                       (M.call_closure (|
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic", [], [] |),
-                        [ mk_str (| "internal error: entered unreachable code" |) ]
+                        [
+                          M.value_with_ty
+                            (mk_str (| "internal error: entered unreachable code" |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
                       |)))
                 ]
               |)
@@ -834,7 +951,19 @@ Module table.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "revm_interpreter::table::InstructionTables")
+                                    []
+                                    [ WIRE; H; CI ]
+                                ])
+                          ]
                         |)
                       |),
                       M.cast (Ty.path "usize") (M.read (| opcode |))
@@ -895,8 +1024,18 @@ Module table.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| opcode |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "revm_interpreter::table::InstructionTables")
+                              []
+                              [ WIRE; H; CI ]
+                          ]);
+                      M.value_with_ty (M.read (| opcode |)) (Ty.path "u8")
                     ]
                   |)
                 |),
@@ -943,28 +1082,40 @@ Module table.
             CI,
             M.get_function (| "core::mem::replace", [], [ CI ] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ CI ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "revm_interpreter::table::InstructionTables")
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&mut") [] [ CI ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "revm_interpreter::table::InstructionTables")
+                          []
+                          [ WIRE; H; CI ],
+                        "get_custom",
+                        [],
                         []
-                        [ WIRE; H; CI ],
-                      "get_custom",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| opcode |)
-                    ]
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "revm_interpreter::table::InstructionTables")
+                                []
+                                [ WIRE; H; CI ]
+                            ]);
+                        M.value_with_ty (M.read (| opcode |)) (Ty.path "u8")
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.read (| instruction |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ CI ]);
+              M.value_with_ty (M.read (| instruction |)) CI
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1077,66 +1228,89 @@ Module table.
             [ CI; Ty.function [ Ty.path "usize" ] CI ]
           |),
           [
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        CI,
-                        M.alloc (| Ty.path "usize", α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let i := M.copy (| Ty.path "usize", γ |) in
-                              M.call_closure (|
-                                CI,
-                                M.get_trait_method (|
-                                  "core::ops::function::FnMut",
-                                  FN,
-                                  [],
-                                  [
-                                    Ty.tuple
-                                      [
-                                        Ty.function
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "revm_interpreter::interpreter::Interpreter")
-                                                  []
-                                                  [ W ]
-                                              ];
-                                            Ty.apply (Ty.path "&mut") [] [ H ]
-                                          ]
-                                          (Ty.tuple [])
-                                      ]
-                                  ],
-                                  "call_mut",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                  Value.Tuple
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          CI,
+                          M.alloc (| Ty.path "usize", α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let i := M.copy (| Ty.path "usize", γ |) in
+                                M.call_closure (|
+                                  CI,
+                                  M.get_trait_method (|
+                                    "core::ops::function::FnMut",
+                                    FN,
+                                    [],
                                     [
-                                      M.read (|
-                                        M.SubPointer.get_array_field (|
-                                          M.deref (| M.read (| table |) |),
-                                          M.read (| i |)
-                                        |)
-                                      |)
-                                    ]
-                                ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                      Ty.tuple
+                                        [
+                                          Ty.function
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "revm_interpreter::interpreter::Interpreter")
+                                                    []
+                                                    [ W ]
+                                                ];
+                                              Ty.apply (Ty.path "&mut") [] [ H ]
+                                            ]
+                                            (Ty.tuple [])
+                                        ]
+                                    ],
+                                    "call_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, f |))
+                                      (Ty.apply (Ty.path "&mut") [] [ FN ]);
+                                    M.value_with_ty
+                                      (Value.Tuple
+                                        [
+                                          M.read (|
+                                            M.SubPointer.get_array_field (|
+                                              M.deref (| M.read (| table |) |),
+                                              M.read (| i |)
+                                            |)
+                                          |)
+                                        ])
+                                      (Ty.tuple
+                                        [
+                                          Ty.function
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "revm_interpreter::interpreter::Interpreter")
+                                                    []
+                                                    [ W ]
+                                                ];
+                                              Ty.apply (Ty.path "&mut") [] [ H ]
+                                            ]
+                                            (Ty.tuple [])
+                                        ])
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function [ Ty.path "usize" ] CI)
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

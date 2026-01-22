@@ -43,56 +43,79 @@ Module future.
                 [ Ty.associated_in_trait "core::future::future::Future" [] [] F "Output" ],
               M.get_trait_method (| "core::future::future::Future", F, [], [], "poll", [], [] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ F ] ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ F ] ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ F ] ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.MutRef,
                           M.deref (|
-                            M.read (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
                               M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "&mut") [] [ F ] ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::DerefMut",
-                                    Ty.apply
-                                      (Ty.path "core::pin::Pin")
-                                      []
-                                      [
+                                M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "&mut") [] [ F ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::DerefMut",
                                         Ty.apply
-                                          (Ty.path "&mut")
+                                          (Ty.path "core::pin::Pin")
                                           []
-                                          [ Ty.apply (Ty.path "&mut") [] [ F ] ]
-                                      ],
-                                    [],
-                                    [],
-                                    "deref_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "&mut") [] [ F ] ]
+                                          ],
+                                        [],
+                                        [],
+                                        "deref_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.MutRef, self |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::pin::Pin")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&mut") [] [ F ] ]
+                                                ]
+                                            ])
+                                      ]
+                                    |)
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ F ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ F ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -166,8 +189,38 @@ Module future.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::pin::Pin")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] P "Target" ]
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::pin::Pin") [] [ P ],
+                      "as_deref_mut",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply
+                          (Ty.path "core::pin::Pin")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::pin::Pin") [] [ P ] ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::pin::Pin")
                     []
                     [
@@ -175,16 +228,10 @@ Module future.
                         (Ty.path "&mut")
                         []
                         [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] P "Target" ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::pin::Pin") [] [ P ],
-                    "as_deref_mut",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |)
+                    ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

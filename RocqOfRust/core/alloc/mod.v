@@ -129,8 +129,12 @@ Module alloc.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AllocError" |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AllocError" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -180,8 +184,15 @@ Module alloc.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "memory allocation failed" |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| mk_str (| "memory allocation failed" |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -283,8 +294,37 @@ Module alloc.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                                  Ty.path "core::alloc::AllocError"
+                                ],
+                              M.get_trait_method (|
+                                "core::alloc::Allocator",
+                                Self,
+                                [],
+                                [],
+                                "allocate",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ]);
+                                M.value_with_ty
+                                  (M.read (| layout |))
+                                  (Ty.path "core::alloc::layout::Layout")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -293,21 +333,7 @@ Module alloc.
                                   []
                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                                 Ty.path "core::alloc::AllocError"
-                              ],
-                            M.get_trait_method (|
-                              "core::alloc::Allocator",
-                              Self,
-                              [],
-                              [],
-                              "allocate",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              M.read (| layout |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -371,7 +397,17 @@ Module alloc.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::alloc::AllocError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -405,44 +441,70 @@ Module alloc.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                          "as_ptr",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                          M.get_associated_function (|
                             Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  "as_non_null_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| ptr |))
+                                    (Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
+                              |))
+                              (Ty.apply
                                 (Ty.path "core::ptr::non_null::NonNull")
                                 []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              "as_non_null_ptr",
-                              [],
+                                [ Ty.path "u8" ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                      M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
                               []
-                            |),
-                            [ M.read (| ptr |) ]
-                          |)
-                        ]
-                      |);
-                      Value.Integer IntegerKind.U8 0;
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "core::ptr::non_null::NonNull")
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            "len",
+                            [],
                             []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          "len",
-                          [],
-                          []
-                        |),
-                        [ M.read (| ptr |) ]
-                      |)
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| ptr |))
+                              (Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                          ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |) in
                 M.alloc (|
@@ -456,17 +518,18 @@ Module alloc.
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                       Ty.path "core::alloc::AllocError"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
-                      Ty.path "core::alloc::AllocError"
-                    ]
-                    [ M.read (| ptr |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| ptr |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                        Ty.path "core::alloc::AllocError"
+                      ])
                 |)
               |)))
           |)))
@@ -538,7 +601,17 @@ Module alloc.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, new_layout |)
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            new_layout
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "core::alloc::layout::Layout"
+                                                            ])
                                                       ]
                                                     |);
                                                     M.call_closure (|
@@ -549,7 +622,17 @@ Module alloc.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, old_layout |)
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            old_layout
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "core::alloc::layout::Layout"
+                                                            ])
                                                       ]
                                                     |)
                                                   ]
@@ -567,21 +650,46 @@ Module alloc.
                                           Ty.path "never",
                                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::Arguments",
-                                              M.get_associated_function (|
+                                            M.value_with_ty
+                                              (M.call_closure (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  "new_const",
+                                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.alloc (|
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "str" ]
+                                                              ],
+                                                            Value.Array
+                                                              [
+                                                                mk_str (|
+                                                                  "`new_layout.size()` must be greater than or equal to `old_layout.size()`"
+                                                                |)
+                                                              ]
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
                                                         Ty.apply
                                                           (Ty.path "array")
                                                           [ Value.Integer IntegerKind.Usize 1 ]
@@ -590,19 +698,11 @@ Module alloc.
                                                               (Ty.path "&")
                                                               []
                                                               [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [
-                                                            mk_str (|
-                                                              "`new_layout.size()` must be greater than or equal to `old_layout.size()`"
-                                                            |)
                                                           ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.path "core::fmt::Arguments")
                                           ]
                                         |)
                                       |)));
@@ -675,8 +775,37 @@ Module alloc.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                                  Ty.path "core::alloc::AllocError"
+                                ],
+                              M.get_trait_method (|
+                                "core::alloc::Allocator",
+                                Self,
+                                [],
+                                [],
+                                "allocate",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ]);
+                                M.value_with_ty
+                                  (M.read (| new_layout |))
+                                  (Ty.path "core::alloc::layout::Layout")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -685,21 +814,7 @@ Module alloc.
                                   []
                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                                 Ty.path "core::alloc::AllocError"
-                              ],
-                            M.get_trait_method (|
-                              "core::alloc::Allocator",
-                              Self,
-                              [],
-                              [],
-                              "allocate",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              M.read (| new_layout |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -763,7 +878,17 @@ Module alloc.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::alloc::AllocError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -798,51 +923,78 @@ Module alloc.
                           [ Ty.path "u8" ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                            M.pointer_coercion
-                              M.PointerCoercion.MutToConstPointer
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
-                                  Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                              M.pointer_coercion
+                                M.PointerCoercion.MutToConstPointer
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                              [
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [ Ty.path "u8" ],
+                                    "as_ptr",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| ptr |))
+                                      (Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.path "u8" ])
+                                  ]
+                                |)
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                "as_mut_ptr",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| new_ptr |))
+                                  (Ty.apply
                                     (Ty.path "core::ptr::non_null::NonNull")
                                     []
-                                    [ Ty.path "u8" ],
-                                  "as_ptr",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| ptr |) ]
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::ptr::non_null::NonNull")
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.path "core::alloc::layout::Layout",
+                                "size",
+                                [],
                                 []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              "as_mut_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.read (| new_ptr |) ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.path "core::alloc::layout::Layout",
-                              "size",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, old_layout |) ]
-                          |)
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, old_layout |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::alloc::layout::Layout" ])
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
@@ -858,9 +1010,15 @@ Module alloc.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                          M.read (| ptr |);
-                          M.read (| old_layout |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Self ]);
+                          M.value_with_ty
+                            (M.read (| ptr |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.read (| old_layout |))
+                            (Ty.path "core::alloc::layout::Layout")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -876,17 +1034,18 @@ Module alloc.
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                       Ty.path "core::alloc::AllocError"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
-                      Ty.path "core::alloc::AllocError"
-                    ]
-                    [ M.read (| new_ptr |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| new_ptr |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                        Ty.path "core::alloc::AllocError"
+                      ])
                 |)
               |)))
           |)))
@@ -962,7 +1121,17 @@ Module alloc.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, new_layout |)
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            new_layout
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "core::alloc::layout::Layout"
+                                                            ])
                                                       ]
                                                     |);
                                                     M.call_closure (|
@@ -973,7 +1142,17 @@ Module alloc.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, old_layout |)
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            old_layout
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "core::alloc::layout::Layout"
+                                                            ])
                                                       ]
                                                     |)
                                                   ]
@@ -991,21 +1170,46 @@ Module alloc.
                                           Ty.path "never",
                                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::Arguments",
-                                              M.get_associated_function (|
+                                            M.value_with_ty
+                                              (M.call_closure (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  "new_const",
+                                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.alloc (|
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "str" ]
+                                                              ],
+                                                            Value.Array
+                                                              [
+                                                                mk_str (|
+                                                                  "`new_layout.size()` must be greater than or equal to `old_layout.size()`"
+                                                                |)
+                                                              ]
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
                                                         Ty.apply
                                                           (Ty.path "array")
                                                           [ Value.Integer IntegerKind.Usize 1 ]
@@ -1014,19 +1218,11 @@ Module alloc.
                                                               (Ty.path "&")
                                                               []
                                                               [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [
-                                                            mk_str (|
-                                                              "`new_layout.size()` must be greater than or equal to `old_layout.size()`"
-                                                            |)
                                                           ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.path "core::fmt::Arguments")
                                           ]
                                         |)
                                       |)));
@@ -1099,8 +1295,37 @@ Module alloc.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                                  Ty.path "core::alloc::AllocError"
+                                ],
+                              M.get_trait_method (|
+                                "core::alloc::Allocator",
+                                Self,
+                                [],
+                                [],
+                                "allocate_zeroed",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ]);
+                                M.value_with_ty
+                                  (M.read (| new_layout |))
+                                  (Ty.path "core::alloc::layout::Layout")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -1109,21 +1334,7 @@ Module alloc.
                                   []
                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                                 Ty.path "core::alloc::AllocError"
-                              ],
-                            M.get_trait_method (|
-                              "core::alloc::Allocator",
-                              Self,
-                              [],
-                              [],
-                              "allocate_zeroed",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              M.read (| new_layout |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -1187,7 +1398,17 @@ Module alloc.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::alloc::AllocError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -1222,51 +1443,78 @@ Module alloc.
                           [ Ty.path "u8" ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                            M.pointer_coercion
-                              M.PointerCoercion.MutToConstPointer
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
-                                  Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                              M.pointer_coercion
+                                M.PointerCoercion.MutToConstPointer
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                              [
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [ Ty.path "u8" ],
+                                    "as_ptr",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| ptr |))
+                                      (Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.path "u8" ])
+                                  ]
+                                |)
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                "as_mut_ptr",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| new_ptr |))
+                                  (Ty.apply
                                     (Ty.path "core::ptr::non_null::NonNull")
                                     []
-                                    [ Ty.path "u8" ],
-                                  "as_ptr",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| ptr |) ]
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::ptr::non_null::NonNull")
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.path "core::alloc::layout::Layout",
+                                "size",
+                                [],
                                 []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              "as_mut_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.read (| new_ptr |) ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.path "core::alloc::layout::Layout",
-                              "size",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, old_layout |) ]
-                          |)
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, old_layout |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::alloc::layout::Layout" ])
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
@@ -1282,9 +1530,15 @@ Module alloc.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                          M.read (| ptr |);
-                          M.read (| old_layout |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Self ]);
+                          M.value_with_ty
+                            (M.read (| ptr |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.read (| old_layout |))
+                            (Ty.path "core::alloc::layout::Layout")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1300,17 +1554,18 @@ Module alloc.
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                       Ty.path "core::alloc::AllocError"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
-                      Ty.path "core::alloc::AllocError"
-                    ]
-                    [ M.read (| new_ptr |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| new_ptr |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                        Ty.path "core::alloc::AllocError"
+                      ])
                 |)
               |)))
           |)))
@@ -1382,7 +1637,17 @@ Module alloc.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, new_layout |)
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            new_layout
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "core::alloc::layout::Layout"
+                                                            ])
                                                       ]
                                                     |);
                                                     M.call_closure (|
@@ -1393,7 +1658,17 @@ Module alloc.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, old_layout |)
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            old_layout
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "core::alloc::layout::Layout"
+                                                            ])
                                                       ]
                                                     |)
                                                   ]
@@ -1411,21 +1686,46 @@ Module alloc.
                                           Ty.path "never",
                                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::Arguments",
-                                              M.get_associated_function (|
+                                            M.value_with_ty
+                                              (M.call_closure (|
                                                 Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  "new_const",
+                                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
                                                       Pointer.Kind.Ref,
-                                                      M.alloc (|
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "str" ]
+                                                              ],
+                                                            Value.Array
+                                                              [
+                                                                mk_str (|
+                                                                  "`new_layout.size()` must be smaller than or equal to `old_layout.size()`"
+                                                                |)
+                                                              ]
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
                                                         Ty.apply
                                                           (Ty.path "array")
                                                           [ Value.Integer IntegerKind.Usize 1 ]
@@ -1434,19 +1734,11 @@ Module alloc.
                                                               (Ty.path "&")
                                                               []
                                                               [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [
-                                                            mk_str (|
-                                                              "`new_layout.size()` must be smaller than or equal to `old_layout.size()`"
-                                                            |)
                                                           ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.path "core::fmt::Arguments")
                                           ]
                                         |)
                                       |)));
@@ -1519,8 +1811,37 @@ Module alloc.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                                  Ty.path "core::alloc::AllocError"
+                                ],
+                              M.get_trait_method (|
+                                "core::alloc::Allocator",
+                                Self,
+                                [],
+                                [],
+                                "allocate",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ]);
+                                M.value_with_ty
+                                  (M.read (| new_layout |))
+                                  (Ty.path "core::alloc::layout::Layout")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -1529,21 +1850,7 @@ Module alloc.
                                   []
                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                                 Ty.path "core::alloc::AllocError"
-                              ],
-                            M.get_trait_method (|
-                              "core::alloc::Allocator",
-                              Self,
-                              [],
-                              [],
-                              "allocate",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              M.read (| new_layout |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -1607,7 +1914,17 @@ Module alloc.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::alloc::AllocError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -1642,51 +1959,78 @@ Module alloc.
                           [ Ty.path "u8" ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                            M.pointer_coercion
-                              M.PointerCoercion.MutToConstPointer
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
-                                  Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                              M.pointer_coercion
+                                M.PointerCoercion.MutToConstPointer
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                              [
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [ Ty.path "u8" ],
+                                    "as_ptr",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| ptr |))
+                                      (Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.path "u8" ])
+                                  ]
+                                |)
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                "as_mut_ptr",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| new_ptr |))
+                                  (Ty.apply
                                     (Ty.path "core::ptr::non_null::NonNull")
                                     []
-                                    [ Ty.path "u8" ],
-                                  "as_ptr",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| ptr |) ]
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::ptr::non_null::NonNull")
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.path "core::alloc::layout::Layout",
+                                "size",
+                                [],
                                 []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              "as_mut_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.read (| new_ptr |) ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.path "core::alloc::layout::Layout",
-                              "size",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, new_layout |) ]
-                          |)
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, new_layout |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::alloc::layout::Layout" ])
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
@@ -1702,9 +2046,15 @@ Module alloc.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                          M.read (| ptr |);
-                          M.read (| old_layout |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Self ]);
+                          M.value_with_ty
+                            (M.read (| ptr |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.read (| old_layout |))
+                            (Ty.path "core::alloc::layout::Layout")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1720,17 +2070,18 @@ Module alloc.
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                       Ty.path "core::alloc::AllocError"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
-                      Ty.path "core::alloc::AllocError"
-                    ]
-                    [ M.read (| new_ptr |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| new_ptr |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                        Ty.path "core::alloc::AllocError"
+                      ])
                 |)
               |)))
           |)))
@@ -1779,11 +2130,13 @@ Module alloc.
               ],
             M.get_trait_method (| "core::alloc::Allocator", A, [], [], "allocate", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| layout |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ]);
+              M.value_with_ty (M.read (| layout |)) (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1820,11 +2173,13 @@ Module alloc.
               ],
             M.get_trait_method (| "core::alloc::Allocator", A, [], [], "allocate_zeroed", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| layout |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ]);
+              M.value_with_ty (M.read (| layout |)) (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1853,12 +2208,16 @@ Module alloc.
             Ty.tuple [],
             M.get_trait_method (| "core::alloc::Allocator", A, [], [], "deallocate", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| ptr |);
-              M.read (| layout |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ]);
+              M.value_with_ty
+                (M.read (| ptr |))
+                (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ]);
+              M.value_with_ty (M.read (| layout |)) (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1902,13 +2261,17 @@ Module alloc.
               ],
             M.get_trait_method (| "core::alloc::Allocator", A, [], [], "grow", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| ptr |);
-              M.read (| old_layout |);
-              M.read (| new_layout |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ]);
+              M.value_with_ty
+                (M.read (| ptr |))
+                (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ]);
+              M.value_with_ty (M.read (| old_layout |)) (Ty.path "core::alloc::layout::Layout");
+              M.value_with_ty (M.read (| new_layout |)) (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1952,13 +2315,17 @@ Module alloc.
               ],
             M.get_trait_method (| "core::alloc::Allocator", A, [], [], "grow_zeroed", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| ptr |);
-              M.read (| old_layout |);
-              M.read (| new_layout |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ]);
+              M.value_with_ty
+                (M.read (| ptr |))
+                (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ]);
+              M.value_with_ty (M.read (| old_layout |)) (Ty.path "core::alloc::layout::Layout");
+              M.value_with_ty (M.read (| new_layout |)) (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2002,13 +2369,17 @@ Module alloc.
               ],
             M.get_trait_method (| "core::alloc::Allocator", A, [], [], "shrink", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| ptr |);
-              M.read (| old_layout |);
-              M.read (| new_layout |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ]);
+              M.value_with_ty
+                (M.read (| ptr |))
+                (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ]);
+              M.value_with_ty (M.read (| old_layout |)) (Ty.path "core::alloc::layout::Layout");
+              M.value_with_ty (M.read (| new_layout |)) (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

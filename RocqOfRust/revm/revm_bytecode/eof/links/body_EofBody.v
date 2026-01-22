@@ -25,7 +25,7 @@ Module EofBody.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_bytecode::eof::body::EofBody";
     φ x :=
-      Value.StructRecord "revm_bytecode::eof::body::EofBody" [] [] [
+      Value.StructRecord "revm_bytecode::eof::body::EofBody" [
         ("code", φ x.(code));
         ("code_section", φ x.(code_section));
         ("container_section", φ x.(container_section));
@@ -49,7 +49,7 @@ Module EofBody.
       (is_data_filled' : Value.t) {H_is_data_filled : OfValueWith.C (bool) is_data_filled'}
       (types_section' : Value.t) {H_types_section : OfValueWith.C (Vec.t TypesSection.t Global.t) types_section'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::body::EofBody" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::body::EofBody" [
       ("code", code');
       ("code_section", code_section');
       ("container_section", container_section');
@@ -77,7 +77,7 @@ Module EofBody.
       (is_data_filled' : Value.t) {H_is_data_filled : OfValueWith.C (bool) is_data_filled'}
       (types_section' : Value.t) {H_types_section : OfValueWith.C (Vec.t TypesSection.t Global.t) types_section'}
       :
-    OfValue.C (Value.StructRecord "revm_bytecode::eof::body::EofBody" [] [] [
+    OfValue.C (Value.StructRecord "revm_bytecode::eof::body::EofBody" [
       ("code", code');
       ("code_section", code_section');
       ("container_section", container_section');

@@ -40,63 +40,68 @@ Module bls12_381.
             []
           |),
           [
-            Value.Array
-              [
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::g1_add::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
+            M.value_with_ty
+              (Value.Array
+                [
+                  M.read (|
+                    get_constant (|
+                      "revm_precompile::bls12_381::g1_add::PRECOMPILE",
+                      Ty.path "revm_precompile::PrecompileWithAddress"
+                    |)
+                  |);
+                  M.read (|
+                    get_constant (|
+                      "revm_precompile::bls12_381::g1_mul::PRECOMPILE",
+                      Ty.path "revm_precompile::PrecompileWithAddress"
+                    |)
+                  |);
+                  M.read (|
+                    get_constant (|
+                      "revm_precompile::bls12_381::g1_msm::PRECOMPILE",
+                      Ty.path "revm_precompile::PrecompileWithAddress"
+                    |)
+                  |);
+                  M.read (|
+                    get_constant (|
+                      "revm_precompile::bls12_381::g2_add::PRECOMPILE",
+                      Ty.path "revm_precompile::PrecompileWithAddress"
+                    |)
+                  |);
+                  M.read (|
+                    get_constant (|
+                      "revm_precompile::bls12_381::g2_mul::PRECOMPILE",
+                      Ty.path "revm_precompile::PrecompileWithAddress"
+                    |)
+                  |);
+                  M.read (|
+                    get_constant (|
+                      "revm_precompile::bls12_381::g2_msm::PRECOMPILE",
+                      Ty.path "revm_precompile::PrecompileWithAddress"
+                    |)
+                  |);
+                  M.read (|
+                    get_constant (|
+                      "revm_precompile::bls12_381::pairing::PRECOMPILE",
+                      Ty.path "revm_precompile::PrecompileWithAddress"
+                    |)
+                  |);
+                  M.read (|
+                    get_constant (|
+                      "revm_precompile::bls12_381::map_fp_to_g1::PRECOMPILE",
+                      Ty.path "revm_precompile::PrecompileWithAddress"
+                    |)
+                  |);
+                  M.read (|
+                    get_constant (|
+                      "revm_precompile::bls12_381::map_fp2_to_g2::PRECOMPILE",
+                      Ty.path "revm_precompile::PrecompileWithAddress"
+                    |)
                   |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::g1_mul::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::g1_msm::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::g2_add::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::g2_mul::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::g2_msm::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::pairing::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::map_fp_to_g1::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |);
-                M.read (|
-                  get_constant (|
-                    "revm_precompile::bls12_381::map_fp2_to_g2::PRECOMPILE",
-                    Ty.path "revm_precompile::PrecompileWithAddress"
-                  |)
-                |)
-              ]
+                ])
+              (Ty.apply
+                (Ty.path "array")
+                [ Value.Integer IntegerKind.Usize 9 ]
+                [ Ty.path "revm_precompile::PrecompileWithAddress" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

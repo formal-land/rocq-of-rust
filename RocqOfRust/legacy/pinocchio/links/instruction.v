@@ -30,7 +30,7 @@ Module AccountMeta.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::instruction::AccountMeta";
     φ x :=
-      Value.StructRecord "pinocchio::instruction::AccountMeta" [] [] [
+      Value.StructRecord "pinocchio::instruction::AccountMeta" [
         ("pubkey"     , φ x.(pubkey));
         ("is_writable", φ x.(is_writable));
         ("is_signer"  , φ x.(is_signer))
@@ -67,7 +67,7 @@ Module Instruction.
   Global Instance IsLink : Link t :=
   { Φ := Ty.path "pinocchio::instruction::Instruction";
     φ x :=
-      Value.StructRecord "pinocchio::instruction::Instruction" [] [] [
+      Value.StructRecord "pinocchio::instruction::Instruction" [
         ("program_id", φ x.(program_id));
         ("data"      , φ x.(data));
         ("accounts"  , φ x.(accounts))
@@ -88,7 +88,7 @@ Module ProcessedSiblingInstruction.
   Global Instance IsLink : Link t :=
   { Φ := Ty.path "pinocchio::instruction::ProcessedSiblingInstruction";
     φ x :=
-      Value.StructRecord "pinocchio::instruction::ProcessedSiblingInstruction" [] [] [
+      Value.StructRecord "pinocchio::instruction::ProcessedSiblingInstruction" [
         ("data_len"    , φ x.(data_len));
         ("accounts_len", φ x.(accounts_len))
       ];
@@ -117,7 +117,7 @@ Module cpi.
     Global Instance IsLink : Link t :=
     { Φ := Ty.path "pinocchio::instruction::Account";
       φ x :=
-        Value.StructRecord "pinocchio::instruction::Account" [] [] [
+        Value.StructRecord "pinocchio::instruction::Account" [
           ("key"         , φ x.(key));
           ("lamports"    , φ x.(lamports));
           ("data_len"    , φ x.(data_len));
@@ -257,7 +257,7 @@ Module Seed.
   Global Instance IsLink : Link t :=
   { Φ := Ty.path "pinocchio::instruction::Seed";
     φ x :=
-      Value.StructRecord "pinocchio::instruction::Seed" [] [] [
+      Value.StructRecord "pinocchio::instruction::Seed" [
         ("seed"  , φ x.(seed));
         ("len"   , φ x.(len));
         ("_bytes", φ x.(_bytes))
@@ -347,7 +347,7 @@ Module Signer.
   Global Instance IsLink : Link t :=
   { Φ := Ty.path "pinocchio::instruction::Signer";
     φ x :=
-      Value.StructRecord "pinocchio::instruction::Signer" [] [] [
+      Value.StructRecord "pinocchio::instruction::Signer" [
         ("seeds", φ x.(seeds));
         ("len"  , φ x.(len));
         ("_seeds", φ x.(_seeds))

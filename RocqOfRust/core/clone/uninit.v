@@ -33,12 +33,18 @@ Module clone.
                   Ty.tuple [],
                   M.get_function (| "core::ptr::write", [], [ T ] |),
                   [
-                    M.read (| dst |);
-                    M.call_closure (|
-                      T,
-                      M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |) ]
-                    |)
+                    M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        T,
+                        M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ T ])
+                        ]
+                      |))
+                      T
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -98,7 +104,11 @@ Module clone.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -137,7 +147,14 @@ Module clone.
                                             [],
                                             []
                                           |),
-                                          [ M.read (| dst |) ]
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| dst |))
+                                              (Ty.apply
+                                                (Ty.path "*mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                          ]
                                         |)
                                       |)
                                     |)
@@ -195,11 +212,11 @@ Module clone.
                                             M.never_to_any (|
                                               M.read (|
                                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                                  Value.StructTuple
-                                                    "core::panicking::AssertKind::Eq"
-                                                    []
-                                                    []
-                                                    [] in
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::panicking::AssertKind::Eq"
+                                                      [])
+                                                    (Ty.path "core::panicking::AssertKind") in
                                                 M.alloc (|
                                                   Ty.path "never",
                                                   M.call_closure (|
@@ -210,71 +227,114 @@ Module clone.
                                                       [ Ty.path "usize"; Ty.path "usize" ]
                                                     |),
                                                     [
-                                                      M.read (| kind |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| left_val |) |)
+                                                      M.value_with_ty
+                                                        (M.read (| kind |))
+                                                        (Ty.path "core::panicking::AssertKind");
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| left_val |) |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| right_val |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ]);
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| right_val |) |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      Value.StructTuple
-                                                        "core::option::Option::Some"
-                                                        []
-                                                        [ Ty.path "core::fmt::Arguments" ]
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "core::fmt::Arguments",
-                                                            M.get_associated_function (|
-                                                              Ty.path "core::fmt::Arguments",
-                                                              "new_const",
-                                                              [ Value.Integer IntegerKind.Usize 1 ],
-                                                              []
-                                                            |),
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ]);
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::option::Option::Some"
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.alloc (|
-                                                                      Ty.apply
-                                                                        (Ty.path "array")
-                                                                        [
-                                                                          Value.Integer
-                                                                            IntegerKind.Usize
-                                                                            1
-                                                                        ]
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [ Ty.path "str" ]
-                                                                        ],
-                                                                      Value.Array
-                                                                        [
-                                                                          mk_str (|
-                                                                            "clone_to_uninit() source and destination must have equal lengths"
+                                                              M.call_closure (|
+                                                                Ty.path "core::fmt::Arguments",
+                                                                M.get_associated_function (|
+                                                                  Ty.path "core::fmt::Arguments",
+                                                                  "new_const",
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.alloc (|
+                                                                            Ty.apply
+                                                                              (Ty.path "array")
+                                                                              [
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  1
+                                                                              ]
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [ Ty.path "str" ]
+                                                                              ],
+                                                                            Value.Array
+                                                                              [
+                                                                                mk_str (|
+                                                                                  "clone_to_uninit() source and destination must have equal lengths"
+                                                                                |)
+                                                                              ]
                                                                           |)
-                                                                        ]
-                                                                    |)
-                                                                  |)
-                                                                |)
+                                                                        |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Ty.path "str" ]
+                                                                          ]
+                                                                      ])
+                                                                ]
                                                               |)
-                                                            ]
-                                                          |)
-                                                        ]
+                                                            ])
+                                                          (Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "core::fmt::Arguments" ]))
+                                                        (Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [ Ty.path "core::fmt::Arguments" ])
                                                     ]
                                                   |)
                                                 |)
@@ -332,7 +392,19 @@ Module clone.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| uninit_ref |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| uninit_ref |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                        ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
@@ -354,7 +426,11 @@ Module clone.
                               [],
                               []
                             |),
-                            [ M.read (| src |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| src |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                            ]
                           |)
                         |),
                         [
@@ -389,12 +465,22 @@ Module clone.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::Iter")
+                                                      []
+                                                      [ T ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -435,28 +521,45 @@ Module clone.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        initializing
-                                                      |);
-                                                      M.call_closure (|
-                                                        T,
-                                                        M.get_trait_method (|
-                                                          "core::clone::Clone",
-                                                          T,
-                                                          [],
-                                                          [],
-                                                          "clone",
-                                                          [],
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          initializing
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| element_ref |) |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::clone::uninit::InitializingSlice")
+                                                              []
+                                                              [ T ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          T,
+                                                          M.get_trait_method (|
+                                                            "core::clone::Clone",
+                                                            T,
+                                                            [],
+                                                            [],
+                                                            "clone",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.read (| element_ref |)
+                                                                |)
+                                                              |))
+                                                              (Ty.apply (Ty.path "&") [] [ T ])
+                                                          ]
+                                                        |))
+                                                        T
                                                     ]
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -478,7 +581,11 @@ Module clone.
                     [],
                     [ Ty.apply (Ty.path "core::clone::uninit::InitializingSlice") [] [ T ] ]
                   |),
-                  [ M.read (| initializing |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| initializing |))
+                      (Ty.apply (Ty.path "core::clone::uninit::InitializingSlice") [] [ T ])
+                  ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -524,9 +631,11 @@ Module clone.
                   Ty.tuple [],
                   M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
                   [
-                    M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| src |) |) |);
-                    M.read (| dst |);
-                    Value.Integer IntegerKind.Usize 1
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| src |) |) |))
+                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                    M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -576,7 +685,11 @@ Module clone.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -615,7 +728,14 @@ Module clone.
                                             [],
                                             []
                                           |),
-                                          [ M.read (| dst |) ]
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| dst |))
+                                              (Ty.apply
+                                                (Ty.path "*mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                          ]
                                         |)
                                       |)
                                     |)
@@ -673,11 +793,11 @@ Module clone.
                                             M.never_to_any (|
                                               M.read (|
                                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                                  Value.StructTuple
-                                                    "core::panicking::AssertKind::Eq"
-                                                    []
-                                                    []
-                                                    [] in
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::panicking::AssertKind::Eq"
+                                                      [])
+                                                    (Ty.path "core::panicking::AssertKind") in
                                                 M.alloc (|
                                                   Ty.path "never",
                                                   M.call_closure (|
@@ -688,71 +808,114 @@ Module clone.
                                                       [ Ty.path "usize"; Ty.path "usize" ]
                                                     |),
                                                     [
-                                                      M.read (| kind |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| left_val |) |)
+                                                      M.value_with_ty
+                                                        (M.read (| kind |))
+                                                        (Ty.path "core::panicking::AssertKind");
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| left_val |) |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| right_val |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ]);
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| right_val |) |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      Value.StructTuple
-                                                        "core::option::Option::Some"
-                                                        []
-                                                        [ Ty.path "core::fmt::Arguments" ]
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "core::fmt::Arguments",
-                                                            M.get_associated_function (|
-                                                              Ty.path "core::fmt::Arguments",
-                                                              "new_const",
-                                                              [ Value.Integer IntegerKind.Usize 1 ],
-                                                              []
-                                                            |),
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ]);
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::option::Option::Some"
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.alloc (|
-                                                                      Ty.apply
-                                                                        (Ty.path "array")
-                                                                        [
-                                                                          Value.Integer
-                                                                            IntegerKind.Usize
-                                                                            1
-                                                                        ]
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [ Ty.path "str" ]
-                                                                        ],
-                                                                      Value.Array
-                                                                        [
-                                                                          mk_str (|
-                                                                            "clone_to_uninit() source and destination must have equal lengths"
+                                                              M.call_closure (|
+                                                                Ty.path "core::fmt::Arguments",
+                                                                M.get_associated_function (|
+                                                                  Ty.path "core::fmt::Arguments",
+                                                                  "new_const",
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.alloc (|
+                                                                            Ty.apply
+                                                                              (Ty.path "array")
+                                                                              [
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  1
+                                                                              ]
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [ Ty.path "str" ]
+                                                                              ],
+                                                                            Value.Array
+                                                                              [
+                                                                                mk_str (|
+                                                                                  "clone_to_uninit() source and destination must have equal lengths"
+                                                                                |)
+                                                                              ]
                                                                           |)
-                                                                        ]
-                                                                    |)
-                                                                  |)
-                                                                |)
+                                                                        |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Ty.path "str" ]
+                                                                          ]
+                                                                      ])
+                                                                ]
                                                               |)
-                                                            ]
-                                                          |)
-                                                        ]
+                                                            ])
+                                                          (Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "core::fmt::Arguments" ]))
+                                                        (Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [ Ty.path "core::fmt::Arguments" ])
                                                     ]
                                                   |)
                                                 |)
@@ -773,27 +936,39 @@ Module clone.
                   Ty.tuple [],
                   M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ T ],
-                        "as_ptr",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |) ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                        "as_mut_ptr",
-                        [],
-                        []
-                      |),
-                      [ M.read (| dst |) ]
-                    |);
-                    M.read (| len |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*const") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ T ],
+                          "as_ptr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                          "as_mut_ptr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| dst |))
+                            (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -868,14 +1043,14 @@ Module clone.
                   ],
                 data
               |) in
-            Value.mkStructRecord
-              "core::clone::uninit::InitializingSlice"
-              []
-              [ T ]
-              [
-                ("data", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |));
-                ("initialized_len", Value.Integer IntegerKind.Usize 0)
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::clone::uninit::InitializingSlice"
+                [
+                  ("data", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |));
+                  ("initialized_len", Value.Integer IntegerKind.Usize 0)
+                ])
+              (Ty.apply (Ty.path "core::clone::uninit::InitializingSlice") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -916,33 +1091,38 @@ Module clone.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::clone::uninit::InitializingSlice",
+                                    "data"
+                                  |)
+                                |)
+                              |),
                               M.read (|
                                 M.SubPointer.get_struct_record_field (|
                                   M.deref (| M.read (| self |) |),
                                   "core::clone::uninit::InitializingSlice",
-                                  "data"
+                                  "initialized_len"
                                 |)
-                              |)
-                            |),
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::clone::uninit::InitializingSlice",
-                                "initialized_len"
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.read (| value |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]);
+                    M.value_with_ty (M.read (| value |)) T
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1011,36 +1191,55 @@ Module clone.
                   Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                   M.get_function (| "core::ptr::slice_from_raw_parts_mut", [], [ T ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                        "slice_as_mut_ptr",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::clone::uninit::InitializingSlice",
-                                "data"
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                          "slice_as_mut_ptr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::clone::uninit::InitializingSlice",
+                                    "data"
+                                  |)
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::clone::uninit::InitializingSlice",
+                          "initialized_len"
                         |)
-                      ]
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::clone::uninit::InitializingSlice",
-                        "initialized_len"
-                      |)
-                    |)
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1051,7 +1250,11 @@ Module clone.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ T ] ]
                   |),
-                  [ M.read (| initialized_slice |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| initialized_slice |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                  ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

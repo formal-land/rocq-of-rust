@@ -60,77 +60,109 @@ Module limits.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
+                  M.get_associated_function (|
+                    Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
+                    "verify_module_impl",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "move_vm_config::verifier::VerifierConfig" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
-                  [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                M.get_associated_function (|
-                  Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
-                  "verify_module_impl",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |)
-                ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "move_binary_format::errors::VMError",
-                          M.alloc (| Ty.path "move_binary_format::errors::PartialVMError", α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let e :=
-                                  M.copy (|
-                                    Ty.path "move_binary_format::errors::PartialVMError",
-                                    γ
-                                  |) in
-                                M.call_closure (|
-                                  Ty.path "move_binary_format::errors::VMError",
-                                  M.get_associated_function (|
-                                    Ty.path "move_binary_format::errors::PartialVMError",
-                                    "finish",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (| e |);
-                                    Value.StructTuple
-                                      "move_binary_format::errors::Location::Module"
+                  [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "move_binary_format::errors::VMError",
+                            M.alloc (| Ty.path "move_binary_format::errors::PartialVMError", α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let e :=
+                                    M.copy (|
+                                      Ty.path "move_binary_format::errors::PartialVMError",
+                                      γ
+                                    |) in
+                                  M.call_closure (|
+                                    Ty.path "move_binary_format::errors::VMError",
+                                    M.get_associated_function (|
+                                      Ty.path "move_binary_format::errors::PartialVMError",
+                                      "finish",
+                                      [],
                                       []
-                                      []
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "move_core_types::language_storage::ModuleId",
-                                          M.get_associated_function (|
-                                            Ty.path
-                                              "move_binary_format::file_format::CompiledModule",
-                                            "self_id",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| module |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| e |))
+                                        (Ty.path "move_binary_format::errors::PartialVMError");
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple
+                                            "move_binary_format::errors::Location::Module"
+                                            [
+                                              M.call_closure (|
+                                                Ty.path
+                                                  "move_core_types::language_storage::ModuleId",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format::CompiledModule",
+                                                  "self_id",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| module |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_binary_format::file_format::CompiledModule"
+                                                      ])
+                                                ]
+                                              |)
+                                            ])
+                                          (Ty.path "move_binary_format::errors::Location"))
+                                        (Ty.path "move_binary_format::errors::Location")
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [ Ty.path "move_binary_format::errors::PartialVMError" ]
+                  (Ty.path "move_binary_format::errors::VMError"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -180,11 +212,11 @@ Module limits.
             ltac:(M.monadic
               (M.read (|
                 let~ limit_check : Ty.path "move_bytecode_verifier::limits::LimitsVerifier" :=
-                  Value.mkStructRecord
-                    "move_bytecode_verifier::limits::LimitsVerifier"
-                    []
-                    []
-                    [ ("module", M.read (| module |)) ] in
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "move_bytecode_verifier::limits::LimitsVerifier"
+                      [ ("module", M.read (| module |)) ])
+                    (Ty.path "move_bytecode_verifier::limits::LimitsVerifier") in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
                     Ty.tuple [],
@@ -229,22 +261,41 @@ Module limits.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
+                                ],
+                              M.get_associated_function (|
+                                Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
+                                "verify_constants",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, limit_check |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_bytecode_verifier::limits::LimitsVerifier" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| config |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_vm_config::verifier::VerifierConfig" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                            M.get_associated_function (|
-                              Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
-                              "verify_constants",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, limit_check |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                         ]
                       |)
                     |),
@@ -302,7 +353,17 @@ Module limits.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "move_binary_format::errors::PartialVMError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -363,22 +424,41 @@ Module limits.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
+                                ],
+                              M.get_associated_function (|
+                                Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
+                                "verify_function_handles",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, limit_check |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_bytecode_verifier::limits::LimitsVerifier" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| config |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_vm_config::verifier::VerifierConfig" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                            M.get_associated_function (|
-                              Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
-                              "verify_function_handles",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, limit_check |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                         ]
                       |)
                     |),
@@ -436,7 +516,17 @@ Module limits.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "move_binary_format::errors::PartialVMError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -497,22 +587,41 @@ Module limits.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
+                                ],
+                              M.get_associated_function (|
+                                Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
+                                "verify_struct_handles",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, limit_check |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_bytecode_verifier::limits::LimitsVerifier" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| config |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_vm_config::verifier::VerifierConfig" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                            M.get_associated_function (|
-                              Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
-                              "verify_struct_handles",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, limit_check |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                         ]
                       |)
                     |),
@@ -570,7 +679,17 @@ Module limits.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "move_binary_format::errors::PartialVMError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -631,22 +750,41 @@ Module limits.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
+                                ],
+                              M.get_associated_function (|
+                                Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
+                                "verify_type_nodes",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, limit_check |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_bytecode_verifier::limits::LimitsVerifier" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| config |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_vm_config::verifier::VerifierConfig" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                            M.get_associated_function (|
-                              Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
-                              "verify_type_nodes",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, limit_check |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                         ]
                       |)
                     |),
@@ -704,7 +842,17 @@ Module limits.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "move_binary_format::errors::PartialVMError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -765,22 +913,41 @@ Module limits.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
+                                ],
+                              M.get_associated_function (|
+                                Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
+                                "verify_identifiers",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, limit_check |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_bytecode_verifier::limits::LimitsVerifier" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| config |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_vm_config::verifier::VerifierConfig" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                            M.get_associated_function (|
-                              Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
-                              "verify_identifiers",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, limit_check |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                         ]
                       |)
                     |),
@@ -838,7 +1005,17 @@ Module limits.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "move_binary_format::errors::PartialVMError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -872,8 +1049,18 @@ Module limits.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, limit_check |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, limit_check |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_bytecode_verifier::limits::LimitsVerifier" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_vm_config::verifier::VerifierConfig" ])
                     ]
                   |)
                 |)
@@ -995,36 +1182,22 @@ Module limits.
                                         []
                                       |),
                                       [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::slice::iter::Iter")
-                                                []
-                                                [
-                                                  Ty.path
-                                                    "move_binary_format::file_format::StructHandle"
-                                                ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::iter::traits::iterator::Iterator",
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.apply
-                                              (Ty.path "core::slice::iter::Iter")
+                                              (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                               []
                                               [
-                                                Ty.path
-                                                  "move_binary_format::file_format::StructHandle"
+                                                Ty.apply
+                                                  (Ty.path "core::slice::iter::Iter")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_binary_format::file_format::StructHandle"
+                                                  ]
                                               ],
-                                            [],
-                                            [],
-                                            "enumerate",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
+                                            M.get_trait_method (|
+                                              "core::iter::traits::iterator::Iterator",
                                               Ty.apply
                                                 (Ty.path "core::slice::iter::Iter")
                                                 []
@@ -1032,24 +1205,87 @@ Module limits.
                                                   Ty.path
                                                     "move_binary_format::file_format::StructHandle"
                                                 ],
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "slice")
-                                                  []
+                                              [],
+                                              [],
+                                              "enumerate",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "core::slice::iter::Iter")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_binary_format::file_format::StructHandle"
+                                                    ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_binary_format::file_format::StructHandle"
+                                                      ],
+                                                    "iter",
+                                                    [],
+                                                    []
+                                                  |),
                                                   [
-                                                    Ty.path
-                                                      "move_binary_format::file_format::StructHandle"
-                                                  ],
-                                                "iter",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_binary_format::file_format::StructHandle"
+                                                                  ]
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.path
+                                                                "move_binary_format::file_format::CompiledModule",
+                                                              "struct_handles",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.read (|
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |),
+                                                                        "move_bytecode_verifier::limits::LimitsVerifier",
+                                                                        "module"
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_binary_format::file_format::CompiledModule"
+                                                                  ])
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
                                                         (Ty.path "&")
                                                         []
                                                         [
@@ -1060,35 +1296,30 @@ Module limits.
                                                               Ty.path
                                                                 "move_binary_format::file_format::StructHandle"
                                                             ]
-                                                        ],
-                                                      M.get_associated_function (|
-                                                        Ty.path
-                                                          "move_binary_format::file_format::CompiledModule",
-                                                        "struct_handles",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "move_bytecode_verifier::limits::LimitsVerifier",
-                                                                "module"
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                                        ])
+                                                  ]
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "core::slice::iter::Iter")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_binary_format::file_format::StructHandle"
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::slice::iter::Iter")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_binary_format::file_format::StructHandle"
+                                                ]
+                                            ])
                                       ]
                                     |)
                                   |),
@@ -1172,12 +1403,35 @@ Module limits.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                          |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                iter
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::iter::adapters::enumerate::Enumerate")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::slice::iter::Iter")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_binary_format::file_format::StructHandle"
+                                                                    ]
+                                                                ]
+                                                            ])
                                                       ]
                                                     |)
                                                   |),
@@ -1255,18 +1509,34 @@ Module limits.
                                                                               []
                                                                             |),
                                                                             [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.SubPointer.get_struct_record_field (|
-                                                                                  M.deref (|
-                                                                                    M.read (|
-                                                                                      struct_handle
-                                                                                    |)
-                                                                                  |),
-                                                                                  "move_binary_format::file_format::StructHandle",
-                                                                                  "type_parameters"
-                                                                                |)
-                                                                              |)
+                                                                              M.value_with_ty
+                                                                                (M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        struct_handle
+                                                                                      |)
+                                                                                    |),
+                                                                                    "move_binary_format::file_format::StructHandle",
+                                                                                    "type_parameters"
+                                                                                  |)
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "alloc::vec::Vec")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "move_binary_format::file_format::StructTypeParameter";
+                                                                                        Ty.path
+                                                                                          "alloc::alloc::Global"
+                                                                                      ]
+                                                                                  ])
                                                                             ]
                                                                           |);
                                                                           M.read (| limit |)
@@ -1281,55 +1551,74 @@ Module limits.
                                                                 M.never_to_any (|
                                                                   M.read (|
                                                                     M.return_ (|
-                                                                      Value.StructTuple
-                                                                        "core::result::Result::Err"
-                                                                        []
-                                                                        [
-                                                                          Ty.tuple [];
-                                                                          Ty.path
-                                                                            "move_binary_format::errors::PartialVMError"
-                                                                        ]
-                                                                        [
-                                                                          M.call_closure (|
-                                                                            Ty.path
-                                                                              "move_binary_format::errors::PartialVMError",
-                                                                            M.get_associated_function (|
+                                                                      M.value_with_ty
+                                                                        (Value.StructTuple
+                                                                          "core::result::Result::Err"
+                                                                          [
+                                                                            M.call_closure (|
                                                                               Ty.path
                                                                                 "move_binary_format::errors::PartialVMError",
-                                                                              "at_index",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.call_closure (|
+                                                                              M.get_associated_function (|
                                                                                 Ty.path
                                                                                   "move_binary_format::errors::PartialVMError",
-                                                                                M.get_associated_function (|
-                                                                                  Ty.path
-                                                                                    "move_binary_format::errors::PartialVMError",
-                                                                                  "new",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
-                                                                                [
-                                                                                  Value.StructTuple
-                                                                                    "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_PARAMETERS"
-                                                                                    []
-                                                                                    []
-                                                                                    []
-                                                                                ]
-                                                                              |);
-                                                                              Value.StructTuple
-                                                                                "move_binary_format::IndexKind::StructHandle"
+                                                                                "at_index",
+                                                                                [],
                                                                                 []
-                                                                                []
-                                                                                [];
-                                                                              M.cast
-                                                                                (Ty.path "u16")
-                                                                                (M.read (| idx |))
-                                                                            ]
-                                                                          |)
-                                                                        ]
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.call_closure (|
+                                                                                    Ty.path
+                                                                                      "move_binary_format::errors::PartialVMError",
+                                                                                    M.get_associated_function (|
+                                                                                      Ty.path
+                                                                                        "move_binary_format::errors::PartialVMError",
+                                                                                      "new",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (M.value_with_ty
+                                                                                          (Value.StructTuple
+                                                                                            "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_PARAMETERS"
+                                                                                            [])
+                                                                                          (Ty.path
+                                                                                            "move_core_types::vm_status::StatusCode"))
+                                                                                        (Ty.path
+                                                                                          "move_core_types::vm_status::StatusCode")
+                                                                                    ]
+                                                                                  |))
+                                                                                  (Ty.path
+                                                                                    "move_binary_format::errors::PartialVMError");
+                                                                                M.value_with_ty
+                                                                                  (M.value_with_ty
+                                                                                    (Value.StructTuple
+                                                                                      "move_binary_format::IndexKind::StructHandle"
+                                                                                      [])
+                                                                                    (Ty.path
+                                                                                      "move_binary_format::IndexKind"))
+                                                                                  (Ty.path
+                                                                                    "move_binary_format::IndexKind");
+                                                                                M.value_with_ty
+                                                                                  (M.cast
+                                                                                    (Ty.path "u16")
+                                                                                    (M.read (|
+                                                                                      idx
+                                                                                    |)))
+                                                                                  (Ty.path "u16")
+                                                                              ]
+                                                                            |)
+                                                                          ])
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.tuple [];
+                                                                            Ty.path
+                                                                              "move_binary_format::errors::PartialVMError"
+                                                                          ])
                                                                     |)
                                                                   |)
                                                                 |)));
@@ -1354,11 +1643,12 @@ Module limits.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                 |)
               |)))
           |)))
@@ -1458,54 +1748,106 @@ Module limits.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::slice::iter::Iter")
-                                        []
-                                        [ Ty.path "move_binary_format::file_format::FunctionHandle"
-                                        ]
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::iter::traits::iterator::Iterator",
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "core::slice::iter::Iter")
+                                      (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::FunctionHandle" ],
-                                    [],
-                                    [],
-                                    "enumerate",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_binary_format::file_format::FunctionHandle"
+                                          ]
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::iter::traits::iterator::Iterator",
                                       Ty.apply
                                         (Ty.path "core::slice::iter::Iter")
                                         []
                                         [ Ty.path "move_binary_format::file_format::FunctionHandle"
                                         ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
+                                      [],
+                                      [],
+                                      "enumerate",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::slice::iter::Iter")
+                                            []
+                                            [
+                                              Ty.path
+                                                "move_binary_format::file_format::FunctionHandle"
+                                            ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_binary_format::file_format::FunctionHandle"
+                                              ],
+                                            "iter",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.path
-                                              "move_binary_format::file_format::FunctionHandle"
-                                          ],
-                                        "iter",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_binary_format::file_format::FunctionHandle"
+                                                          ]
+                                                      ],
+                                                    M.get_associated_function (|
+                                                      Ty.path
+                                                        "move_binary_format::file_format::CompiledModule",
+                                                      "function_handles",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "move_bytecode_verifier::limits::LimitsVerifier",
+                                                                "module"
+                                                              |)
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_binary_format::file_format::CompiledModule"
+                                                          ])
+                                                    ]
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "&")
                                                 []
                                                 [
@@ -1516,35 +1858,28 @@ Module limits.
                                                       Ty.path
                                                         "move_binary_format::file_format::FunctionHandle"
                                                     ]
-                                                ],
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format::CompiledModule",
-                                                "function_handles",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "move_bytecode_verifier::limits::LimitsVerifier",
-                                                        "module"
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_binary_format::file_format::FunctionHandle"
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
+                                        [ Ty.path "move_binary_format::file_format::FunctionHandle"
+                                        ]
+                                    ])
                               ]
                             |)
                           |),
@@ -1628,12 +1963,31 @@ Module limits.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::iter::adapters::enumerate::Enumerate")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "core::slice::iter::Iter")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_binary_format::file_format::FunctionHandle"
+                                                            ]
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -1727,18 +2081,34 @@ Module limits.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.SubPointer.get_struct_record_field (|
-                                                                                      M.deref (|
-                                                                                        M.read (|
-                                                                                          function_handle
-                                                                                        |)
-                                                                                      |),
-                                                                                      "move_binary_format::file_format::FunctionHandle",
-                                                                                      "type_parameters"
-                                                                                    |)
-                                                                                  |)
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.SubPointer.get_struct_record_field (|
+                                                                                        M.deref (|
+                                                                                          M.read (|
+                                                                                            function_handle
+                                                                                          |)
+                                                                                        |),
+                                                                                        "move_binary_format::file_format::FunctionHandle",
+                                                                                        "type_parameters"
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::vec::Vec")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "move_binary_format::file_format::AbilitySet";
+                                                                                            Ty.path
+                                                                                              "alloc::alloc::Global"
+                                                                                          ]
+                                                                                      ])
                                                                                 ]
                                                                               |);
                                                                               M.read (| limit |)
@@ -1753,57 +2123,76 @@ Module limits.
                                                                     M.never_to_any (|
                                                                       M.read (|
                                                                         M.return_ (|
-                                                                          Value.StructTuple
-                                                                            "core::result::Result::Err"
-                                                                            []
-                                                                            [
-                                                                              Ty.tuple [];
-                                                                              Ty.path
-                                                                                "move_binary_format::errors::PartialVMError"
-                                                                            ]
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path
-                                                                                  "move_binary_format::errors::PartialVMError",
-                                                                                M.get_associated_function (|
+                                                                          M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "core::result::Result::Err"
+                                                                              [
+                                                                                M.call_closure (|
                                                                                   Ty.path
                                                                                     "move_binary_format::errors::PartialVMError",
-                                                                                  "at_index",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
-                                                                                [
-                                                                                  M.call_closure (|
+                                                                                  M.get_associated_function (|
                                                                                     Ty.path
                                                                                       "move_binary_format::errors::PartialVMError",
-                                                                                    M.get_associated_function (|
-                                                                                      Ty.path
-                                                                                        "move_binary_format::errors::PartialVMError",
-                                                                                      "new",
-                                                                                      [],
-                                                                                      []
-                                                                                    |),
-                                                                                    [
-                                                                                      Value.StructTuple
-                                                                                        "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_PARAMETERS"
-                                                                                        []
-                                                                                        []
-                                                                                        []
-                                                                                    ]
-                                                                                  |);
-                                                                                  Value.StructTuple
-                                                                                    "move_binary_format::IndexKind::FunctionHandle"
+                                                                                    "at_index",
+                                                                                    [],
                                                                                     []
-                                                                                    []
-                                                                                    [];
-                                                                                  M.cast
-                                                                                    (Ty.path "u16")
-                                                                                    (M.read (|
-                                                                                      idx
-                                                                                    |))
-                                                                                ]
-                                                                              |)
-                                                                            ]
+                                                                                  |),
+                                                                                  [
+                                                                                    M.value_with_ty
+                                                                                      (M.call_closure (|
+                                                                                        Ty.path
+                                                                                          "move_binary_format::errors::PartialVMError",
+                                                                                        M.get_associated_function (|
+                                                                                          Ty.path
+                                                                                            "move_binary_format::errors::PartialVMError",
+                                                                                          "new",
+                                                                                          [],
+                                                                                          []
+                                                                                        |),
+                                                                                        [
+                                                                                          M.value_with_ty
+                                                                                            (M.value_with_ty
+                                                                                              (Value.StructTuple
+                                                                                                "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_PARAMETERS"
+                                                                                                [])
+                                                                                              (Ty.path
+                                                                                                "move_core_types::vm_status::StatusCode"))
+                                                                                            (Ty.path
+                                                                                              "move_core_types::vm_status::StatusCode")
+                                                                                        ]
+                                                                                      |))
+                                                                                      (Ty.path
+                                                                                        "move_binary_format::errors::PartialVMError");
+                                                                                    M.value_with_ty
+                                                                                      (M.value_with_ty
+                                                                                        (Value.StructTuple
+                                                                                          "move_binary_format::IndexKind::FunctionHandle"
+                                                                                          [])
+                                                                                        (Ty.path
+                                                                                          "move_binary_format::IndexKind"))
+                                                                                      (Ty.path
+                                                                                        "move_binary_format::IndexKind");
+                                                                                    M.value_with_ty
+                                                                                      (M.cast
+                                                                                        (Ty.path
+                                                                                          "u16")
+                                                                                        (M.read (|
+                                                                                          idx
+                                                                                        |)))
+                                                                                      (Ty.path
+                                                                                        "u16")
+                                                                                  ]
+                                                                                |)
+                                                                              ])
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::result::Result")
+                                                                              []
+                                                                              [
+                                                                                Ty.tuple [];
+                                                                                Ty.path
+                                                                                  "move_binary_format::errors::PartialVMError"
+                                                                              ])
                                                                         |)
                                                                       |)
                                                                     |)));
@@ -1870,61 +2259,89 @@ Module limits.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.SubPointer.get_struct_tuple_field (|
-                                                                                      M.deref (|
-                                                                                        M.call_closure (|
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "&")
-                                                                                            []
-                                                                                            [
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.SubPointer.get_struct_tuple_field (|
+                                                                                        M.deref (|
+                                                                                          M.call_closure (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "move_binary_format::file_format::Signature"
+                                                                                              ],
+                                                                                            M.get_associated_function (|
                                                                                               Ty.path
-                                                                                                "move_binary_format::file_format::Signature"
-                                                                                            ],
-                                                                                          M.get_associated_function (|
-                                                                                            Ty.path
-                                                                                              "move_binary_format::file_format::CompiledModule",
-                                                                                            "signature_at",
-                                                                                            [],
-                                                                                            []
-                                                                                          |),
-                                                                                          [
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.read (|
+                                                                                                "move_binary_format::file_format::CompiledModule",
+                                                                                              "signature_at",
+                                                                                              [],
+                                                                                              []
+                                                                                            |),
+                                                                                            [
+                                                                                              M.value_with_ty
+                                                                                                (M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  M.deref (|
+                                                                                                    M.read (|
+                                                                                                      M.SubPointer.get_struct_record_field (|
+                                                                                                        M.deref (|
+                                                                                                          M.read (|
+                                                                                                            self
+                                                                                                          |)
+                                                                                                        |),
+                                                                                                        "move_bytecode_verifier::limits::LimitsVerifier",
+                                                                                                        "module"
+                                                                                                      |)
+                                                                                                    |)
+                                                                                                  |)
+                                                                                                |))
+                                                                                                (Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "move_binary_format::file_format::CompiledModule"
+                                                                                                  ]);
+                                                                                              M.value_with_ty
+                                                                                                (M.read (|
                                                                                                   M.SubPointer.get_struct_record_field (|
                                                                                                     M.deref (|
                                                                                                       M.read (|
-                                                                                                        self
+                                                                                                        function_handle
                                                                                                       |)
                                                                                                     |),
-                                                                                                    "move_bytecode_verifier::limits::LimitsVerifier",
-                                                                                                    "module"
+                                                                                                    "move_binary_format::file_format::FunctionHandle",
+                                                                                                    "parameters"
                                                                                                   |)
-                                                                                                |)
-                                                                                              |)
-                                                                                            |);
-                                                                                            M.read (|
-                                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                                M.deref (|
-                                                                                                  M.read (|
-                                                                                                    function_handle
-                                                                                                  |)
-                                                                                                |),
-                                                                                                "move_binary_format::file_format::FunctionHandle",
-                                                                                                "parameters"
-                                                                                              |)
-                                                                                            |)
+                                                                                                |))
+                                                                                                (Ty.path
+                                                                                                  "move_binary_format::file_format::SignatureIndex")
+                                                                                            ]
+                                                                                          |)
+                                                                                        |),
+                                                                                        "move_binary_format::file_format::Signature",
+                                                                                        0
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::vec::Vec")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "move_binary_format::file_format::SignatureToken";
+                                                                                            Ty.path
+                                                                                              "alloc::alloc::Global"
                                                                                           ]
-                                                                                        |)
-                                                                                      |),
-                                                                                      "move_binary_format::file_format::Signature",
-                                                                                      0
-                                                                                    |)
-                                                                                  |)
+                                                                                      ])
                                                                                 ]
                                                                               |);
                                                                               M.read (| limit |)
@@ -1939,57 +2356,76 @@ Module limits.
                                                                     M.never_to_any (|
                                                                       M.read (|
                                                                         M.return_ (|
-                                                                          Value.StructTuple
-                                                                            "core::result::Result::Err"
-                                                                            []
-                                                                            [
-                                                                              Ty.tuple [];
-                                                                              Ty.path
-                                                                                "move_binary_format::errors::PartialVMError"
-                                                                            ]
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path
-                                                                                  "move_binary_format::errors::PartialVMError",
-                                                                                M.get_associated_function (|
+                                                                          M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "core::result::Result::Err"
+                                                                              [
+                                                                                M.call_closure (|
                                                                                   Ty.path
                                                                                     "move_binary_format::errors::PartialVMError",
-                                                                                  "at_index",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
-                                                                                [
-                                                                                  M.call_closure (|
+                                                                                  M.get_associated_function (|
                                                                                     Ty.path
                                                                                       "move_binary_format::errors::PartialVMError",
-                                                                                    M.get_associated_function (|
-                                                                                      Ty.path
-                                                                                        "move_binary_format::errors::PartialVMError",
-                                                                                      "new",
-                                                                                      [],
-                                                                                      []
-                                                                                    |),
-                                                                                    [
-                                                                                      Value.StructTuple
-                                                                                        "move_core_types::vm_status::StatusCode::TOO_MANY_PARAMETERS"
-                                                                                        []
-                                                                                        []
-                                                                                        []
-                                                                                    ]
-                                                                                  |);
-                                                                                  Value.StructTuple
-                                                                                    "move_binary_format::IndexKind::FunctionHandle"
+                                                                                    "at_index",
+                                                                                    [],
                                                                                     []
-                                                                                    []
-                                                                                    [];
-                                                                                  M.cast
-                                                                                    (Ty.path "u16")
-                                                                                    (M.read (|
-                                                                                      idx
-                                                                                    |))
-                                                                                ]
-                                                                              |)
-                                                                            ]
+                                                                                  |),
+                                                                                  [
+                                                                                    M.value_with_ty
+                                                                                      (M.call_closure (|
+                                                                                        Ty.path
+                                                                                          "move_binary_format::errors::PartialVMError",
+                                                                                        M.get_associated_function (|
+                                                                                          Ty.path
+                                                                                            "move_binary_format::errors::PartialVMError",
+                                                                                          "new",
+                                                                                          [],
+                                                                                          []
+                                                                                        |),
+                                                                                        [
+                                                                                          M.value_with_ty
+                                                                                            (M.value_with_ty
+                                                                                              (Value.StructTuple
+                                                                                                "move_core_types::vm_status::StatusCode::TOO_MANY_PARAMETERS"
+                                                                                                [])
+                                                                                              (Ty.path
+                                                                                                "move_core_types::vm_status::StatusCode"))
+                                                                                            (Ty.path
+                                                                                              "move_core_types::vm_status::StatusCode")
+                                                                                        ]
+                                                                                      |))
+                                                                                      (Ty.path
+                                                                                        "move_binary_format::errors::PartialVMError");
+                                                                                    M.value_with_ty
+                                                                                      (M.value_with_ty
+                                                                                        (Value.StructTuple
+                                                                                          "move_binary_format::IndexKind::FunctionHandle"
+                                                                                          [])
+                                                                                        (Ty.path
+                                                                                          "move_binary_format::IndexKind"))
+                                                                                      (Ty.path
+                                                                                        "move_binary_format::IndexKind");
+                                                                                    M.value_with_ty
+                                                                                      (M.cast
+                                                                                        (Ty.path
+                                                                                          "u16")
+                                                                                        (M.read (|
+                                                                                          idx
+                                                                                        |)))
+                                                                                      (Ty.path
+                                                                                        "u16")
+                                                                                  ]
+                                                                                |)
+                                                                              ])
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::result::Result")
+                                                                              []
+                                                                              [
+                                                                                Ty.tuple [];
+                                                                                Ty.path
+                                                                                  "move_binary_format::errors::PartialVMError"
+                                                                              ])
                                                                         |)
                                                                       |)
                                                                     |)));
@@ -2016,11 +2452,12 @@ Module limits.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                 |)
               |)))
           |)))
@@ -2114,8 +2551,47 @@ Module limits.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [ Ty.path "move_binary_format::file_format::Signature" ]
+                                      ],
+                                    M.get_associated_function (|
+                                      Ty.path "move_binary_format::file_format::CompiledModule",
+                                      "signatures",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "move_bytecode_verifier::limits::LimitsVerifier",
+                                                "module"
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_binary_format::file_format::CompiledModule"
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply
                                     (Ty.path "&")
                                     []
                                     [
@@ -2123,28 +2599,7 @@ Module limits.
                                         (Ty.path "slice")
                                         []
                                         [ Ty.path "move_binary_format::file_format::Signature" ]
-                                    ],
-                                  M.get_associated_function (|
-                                    Ty.path "move_binary_format::file_format::CompiledModule",
-                                    "signatures",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "move_bytecode_verifier::limits::LimitsVerifier",
-                                            "module"
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                    ])
                               ]
                             |)
                           |),
@@ -2206,12 +2661,25 @@ Module limits.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::Iter")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format::Signature"
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -2287,14 +2755,29 @@ Module limits.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_tuple_field (|
-                                                                  M.deref (| M.read (| sign |) |),
-                                                                  "move_binary_format::file_format::Signature",
-                                                                  0
-                                                                |)
-                                                              |)
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_tuple_field (|
+                                                                    M.deref (| M.read (| sign |) |),
+                                                                    "move_binary_format::file_format::Signature",
+                                                                    0
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::vec::Vec")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_binary_format::file_format::SignatureToken";
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ]
+                                                                  ])
                                                             ]
                                                           |)
                                                         |),
@@ -2363,15 +2846,29 @@ Module limits.
                                                                               []
                                                                             |),
                                                                             [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.MutRef,
-                                                                                M.deref (|
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.MutRef,
-                                                                                    iter
+                                                                              M.value_with_ty
+                                                                                (M.borrow (|
+                                                                                  Pointer.Kind.MutRef,
+                                                                                  M.deref (|
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.MutRef,
+                                                                                      iter
+                                                                                    |)
                                                                                   |)
-                                                                                |)
-                                                                              |)
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path "&mut")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::slice::iter::Iter")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "move_binary_format::file_format::SignatureToken"
+                                                                                      ]
+                                                                                  ])
                                                                             ]
                                                                           |)
                                                                         |),
@@ -2464,8 +2961,80 @@ Module limits.
                                                                                       []
                                                                                     |),
                                                                                     [
-                                                                                      M.call_closure (|
-                                                                                        Ty.apply
+                                                                                      M.value_with_ty
+                                                                                        (M.call_closure (|
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "core::result::Result")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.tuple
+                                                                                                [];
+                                                                                              Ty.path
+                                                                                                "move_binary_format::errors::PartialVMError"
+                                                                                            ],
+                                                                                          M.get_associated_function (|
+                                                                                            Ty.path
+                                                                                              "move_bytecode_verifier::limits::LimitsVerifier",
+                                                                                            "verify_type_node",
+                                                                                            [],
+                                                                                            []
+                                                                                          |),
+                                                                                          [
+                                                                                            M.value_with_ty
+                                                                                              (M.borrow (|
+                                                                                                Pointer.Kind.Ref,
+                                                                                                M.deref (|
+                                                                                                  M.read (|
+                                                                                                    self
+                                                                                                  |)
+                                                                                                |)
+                                                                                              |))
+                                                                                              (Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "&")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "move_bytecode_verifier::limits::LimitsVerifier"
+                                                                                                ]);
+                                                                                            M.value_with_ty
+                                                                                              (M.borrow (|
+                                                                                                Pointer.Kind.Ref,
+                                                                                                M.deref (|
+                                                                                                  M.read (|
+                                                                                                    config
+                                                                                                  |)
+                                                                                                |)
+                                                                                              |))
+                                                                                              (Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "&")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "move_vm_config::verifier::VerifierConfig"
+                                                                                                ]);
+                                                                                            M.value_with_ty
+                                                                                              (M.borrow (|
+                                                                                                Pointer.Kind.Ref,
+                                                                                                M.deref (|
+                                                                                                  M.read (|
+                                                                                                    ty
+                                                                                                  |)
+                                                                                                |)
+                                                                                              |))
+                                                                                              (Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "&")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "move_binary_format::file_format::SignatureToken"
+                                                                                                ])
+                                                                                          ]
+                                                                                        |))
+                                                                                        (Ty.apply
                                                                                           (Ty.path
                                                                                             "core::result::Result")
                                                                                           []
@@ -2474,41 +3043,7 @@ Module limits.
                                                                                               [];
                                                                                             Ty.path
                                                                                               "move_binary_format::errors::PartialVMError"
-                                                                                          ],
-                                                                                        M.get_associated_function (|
-                                                                                          Ty.path
-                                                                                            "move_bytecode_verifier::limits::LimitsVerifier",
-                                                                                          "verify_type_node",
-                                                                                          [],
-                                                                                          []
-                                                                                        |),
-                                                                                        [
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                self
-                                                                                              |)
-                                                                                            |)
-                                                                                          |);
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                config
-                                                                                              |)
-                                                                                            |)
-                                                                                          |);
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                ty
-                                                                                              |)
-                                                                                            |)
-                                                                                          |)
-                                                                                        ]
-                                                                                      |)
+                                                                                          ])
                                                                                     ]
                                                                                   |)
                                                                                 |),
@@ -2580,9 +3115,20 @@ Module limits.
                                                                                                 []
                                                                                               |),
                                                                                               [
-                                                                                                M.read (|
-                                                                                                  residual
-                                                                                                |)
+                                                                                                M.value_with_ty
+                                                                                                  (M.read (|
+                                                                                                    residual
+                                                                                                  |))
+                                                                                                  (Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "core::result::Result")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.path
+                                                                                                        "core::convert::Infallible";
+                                                                                                      Ty.path
+                                                                                                        "move_binary_format::errors::PartialVMError"
+                                                                                                    ])
                                                                                               ]
                                                                                             |)
                                                                                           |)
@@ -2663,8 +3209,47 @@ Module limits.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [ Ty.path "move_binary_format::file_format::Constant" ]
+                                      ],
+                                    M.get_associated_function (|
+                                      Ty.path "move_binary_format::file_format::CompiledModule",
+                                      "constant_pool",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "move_bytecode_verifier::limits::LimitsVerifier",
+                                                "module"
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_binary_format::file_format::CompiledModule"
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply
                                     (Ty.path "&")
                                     []
                                     [
@@ -2672,28 +3257,7 @@ Module limits.
                                         (Ty.path "slice")
                                         []
                                         [ Ty.path "move_binary_format::file_format::Constant" ]
-                                    ],
-                                  M.get_associated_function (|
-                                    Ty.path "move_binary_format::file_format::CompiledModule",
-                                    "constant_pool",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "move_bytecode_verifier::limits::LimitsVerifier",
-                                            "module"
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                    ])
                               ]
                             |)
                           |),
@@ -2755,12 +3319,25 @@ Module limits.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::Iter")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format::Constant"
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -2843,46 +3420,81 @@ Module limits.
                                                         []
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.apply
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.tuple [];
+                                                                Ty.path
+                                                                  "move_binary_format::errors::PartialVMError"
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.path
+                                                                "move_bytecode_verifier::limits::LimitsVerifier",
+                                                              "verify_type_node",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| self |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_bytecode_verifier::limits::LimitsVerifier"
+                                                                  ]);
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| config |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_vm_config::verifier::VerifierConfig"
+                                                                  ]);
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| cons |)
+                                                                        |),
+                                                                        "move_binary_format::file_format::Constant",
+                                                                        "type_"
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_binary_format::file_format::SignatureToken"
+                                                                  ])
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
                                                             (Ty.path "core::result::Result")
                                                             []
                                                             [
                                                               Ty.tuple [];
                                                               Ty.path
                                                                 "move_binary_format::errors::PartialVMError"
-                                                            ],
-                                                          M.get_associated_function (|
-                                                            Ty.path
-                                                              "move_bytecode_verifier::limits::LimitsVerifier",
-                                                            "verify_type_node",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| self |) |)
-                                                            |);
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| config |) |)
-                                                            |);
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    M.deref (| M.read (| cons |) |),
-                                                                    "move_binary_format::file_format::Constant",
-                                                                    "type_"
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                            ])
                                                       ]
                                                     |)
                                                   |),
@@ -2946,7 +3558,20 @@ Module limits.
                                                                   [],
                                                                   []
                                                                 |),
-                                                                [ M.read (| residual |) ]
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.read (| residual |))
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::result::Result")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "core::convert::Infallible";
+                                                                        Ty.path
+                                                                          "move_binary_format::errors::PartialVMError"
+                                                                      ])
+                                                                ]
                                                               |)
                                                             |)
                                                           |)
@@ -2999,18 +3624,23 @@ Module limits.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_bytecode_verifier::limits::LimitsVerifier",
-                              "module"
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_bytecode_verifier::limits::LimitsVerifier",
+                                "module"
+                              |)
                             |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_binary_format::file_format::CompiledModule" ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -3048,7 +3678,22 @@ Module limits.
                                 [],
                                 []
                               |),
-                              [ M.read (| sdefs |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| sdefs |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [
+                                          Ty.path
+                                            "move_binary_format::file_format::StructDefinition"
+                                        ]
+                                    ])
+                              ]
                             |)
                           |),
                           [
@@ -3110,12 +3755,25 @@ Module limits.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::Iter")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format::StructDefinition"
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -3242,7 +3900,25 @@ Module limits.
                                                                       [],
                                                                       []
                                                                     |),
-                                                                    [ M.read (| fdefs |) ]
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (| fdefs |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "alloc::vec::Vec")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "move_binary_format::file_format::FieldDefinition";
+                                                                                Ty.path
+                                                                                  "alloc::alloc::Global"
+                                                                              ]
+                                                                          ])
+                                                                    ]
                                                                   |)
                                                                 |),
                                                                 [
@@ -3312,15 +3988,30 @@ Module limits.
                                                                                       []
                                                                                     |),
                                                                                     [
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.MutRef,
-                                                                                        M.deref (|
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.MutRef,
-                                                                                            iter
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.MutRef,
+                                                                                          M.deref (|
+                                                                                            M.borrow (|
+                                                                                              Pointer.Kind.MutRef,
+                                                                                              iter
+                                                                                            |)
                                                                                           |)
-                                                                                        |)
-                                                                                      |)
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&mut")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::slice::iter::Iter")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "move_binary_format::file_format::FieldDefinition"
+                                                                                              ]
+                                                                                          ])
                                                                                     ]
                                                                                   |)
                                                                                 |),
@@ -3416,8 +4107,93 @@ Module limits.
                                                                                               []
                                                                                             |),
                                                                                             [
-                                                                                              M.call_closure (|
-                                                                                                Ty.apply
+                                                                                              M.value_with_ty
+                                                                                                (M.call_closure (|
+                                                                                                  Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "core::result::Result")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.tuple
+                                                                                                        [];
+                                                                                                      Ty.path
+                                                                                                        "move_binary_format::errors::PartialVMError"
+                                                                                                    ],
+                                                                                                  M.get_associated_function (|
+                                                                                                    Ty.path
+                                                                                                      "move_bytecode_verifier::limits::LimitsVerifier",
+                                                                                                    "verify_type_node",
+                                                                                                    [],
+                                                                                                    []
+                                                                                                  |),
+                                                                                                  [
+                                                                                                    M.value_with_ty
+                                                                                                      (M.borrow (|
+                                                                                                        Pointer.Kind.Ref,
+                                                                                                        M.deref (|
+                                                                                                          M.read (|
+                                                                                                            self
+                                                                                                          |)
+                                                                                                        |)
+                                                                                                      |))
+                                                                                                      (Ty.apply
+                                                                                                        (Ty.path
+                                                                                                          "&")
+                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.path
+                                                                                                            "move_bytecode_verifier::limits::LimitsVerifier"
+                                                                                                        ]);
+                                                                                                    M.value_with_ty
+                                                                                                      (M.borrow (|
+                                                                                                        Pointer.Kind.Ref,
+                                                                                                        M.deref (|
+                                                                                                          M.read (|
+                                                                                                            config
+                                                                                                          |)
+                                                                                                        |)
+                                                                                                      |))
+                                                                                                      (Ty.apply
+                                                                                                        (Ty.path
+                                                                                                          "&")
+                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.path
+                                                                                                            "move_vm_config::verifier::VerifierConfig"
+                                                                                                        ]);
+                                                                                                    M.value_with_ty
+                                                                                                      (M.borrow (|
+                                                                                                        Pointer.Kind.Ref,
+                                                                                                        M.deref (|
+                                                                                                          M.borrow (|
+                                                                                                            Pointer.Kind.Ref,
+                                                                                                            M.SubPointer.get_struct_tuple_field (|
+                                                                                                              M.SubPointer.get_struct_record_field (|
+                                                                                                                M.deref (|
+                                                                                                                  M.read (|
+                                                                                                                    fdef
+                                                                                                                  |)
+                                                                                                                |),
+                                                                                                                "move_binary_format::file_format::FieldDefinition",
+                                                                                                                "signature"
+                                                                                                              |),
+                                                                                                              "move_binary_format::file_format::TypeSignature",
+                                                                                                              0
+                                                                                                            |)
+                                                                                                          |)
+                                                                                                        |)
+                                                                                                      |))
+                                                                                                      (Ty.apply
+                                                                                                        (Ty.path
+                                                                                                          "&")
+                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.path
+                                                                                                            "move_binary_format::file_format::SignatureToken"
+                                                                                                        ])
+                                                                                                  ]
+                                                                                                |))
+                                                                                                (Ty.apply
                                                                                                   (Ty.path
                                                                                                     "core::result::Result")
                                                                                                   []
@@ -3426,54 +4202,7 @@ Module limits.
                                                                                                       [];
                                                                                                     Ty.path
                                                                                                       "move_binary_format::errors::PartialVMError"
-                                                                                                  ],
-                                                                                                M.get_associated_function (|
-                                                                                                  Ty.path
-                                                                                                    "move_bytecode_verifier::limits::LimitsVerifier",
-                                                                                                  "verify_type_node",
-                                                                                                  [],
-                                                                                                  []
-                                                                                                |),
-                                                                                                [
-                                                                                                  M.borrow (|
-                                                                                                    Pointer.Kind.Ref,
-                                                                                                    M.deref (|
-                                                                                                      M.read (|
-                                                                                                        self
-                                                                                                      |)
-                                                                                                    |)
-                                                                                                  |);
-                                                                                                  M.borrow (|
-                                                                                                    Pointer.Kind.Ref,
-                                                                                                    M.deref (|
-                                                                                                      M.read (|
-                                                                                                        config
-                                                                                                      |)
-                                                                                                    |)
-                                                                                                  |);
-                                                                                                  M.borrow (|
-                                                                                                    Pointer.Kind.Ref,
-                                                                                                    M.deref (|
-                                                                                                      M.borrow (|
-                                                                                                        Pointer.Kind.Ref,
-                                                                                                        M.SubPointer.get_struct_tuple_field (|
-                                                                                                          M.SubPointer.get_struct_record_field (|
-                                                                                                            M.deref (|
-                                                                                                              M.read (|
-                                                                                                                fdef
-                                                                                                              |)
-                                                                                                            |),
-                                                                                                            "move_binary_format::file_format::FieldDefinition",
-                                                                                                            "signature"
-                                                                                                          |),
-                                                                                                          "move_binary_format::file_format::TypeSignature",
-                                                                                                          0
-                                                                                                        |)
-                                                                                                      |)
-                                                                                                    |)
-                                                                                                  |)
-                                                                                                ]
-                                                                                              |)
+                                                                                                  ])
                                                                                             ]
                                                                                           |)
                                                                                         |),
@@ -3546,9 +4275,20 @@ Module limits.
                                                                                                         []
                                                                                                       |),
                                                                                                       [
-                                                                                                        M.read (|
-                                                                                                          residual
-                                                                                                        |)
+                                                                                                        M.value_with_ty
+                                                                                                          (M.read (|
+                                                                                                            residual
+                                                                                                          |))
+                                                                                                          (Ty.apply
+                                                                                                            (Ty.path
+                                                                                                              "core::result::Result")
+                                                                                                            []
+                                                                                                            [
+                                                                                                              Ty.path
+                                                                                                                "core::convert::Infallible";
+                                                                                                              Ty.path
+                                                                                                                "move_binary_format::errors::PartialVMError"
+                                                                                                            ])
                                                                                                       ]
                                                                                                     |)
                                                                                                   |)
@@ -3604,11 +4344,12 @@ Module limits.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                 |)
               |)))
           |)))
@@ -3740,23 +4481,34 @@ Module limits.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path
-                                                "move_binary_format::file_format::SignatureTokenPreorderTraversalIter",
-                                              M.get_associated_function (|
+                                            M.value_with_ty
+                                              (M.call_closure (|
                                                 Ty.path
-                                                  "move_binary_format::file_format::SignatureToken",
-                                                "preorder_traversal",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| ty |) |)
-                                                |)
-                                              ]
-                                            |)
+                                                  "move_binary_format::file_format::SignatureTokenPreorderTraversalIter",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format::SignatureToken",
+                                                  "preorder_traversal",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| ty |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_binary_format::file_format::SignatureToken"
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.path
+                                                "move_binary_format::file_format::SignatureTokenPreorderTraversalIter")
                                           ]
                                         |)
                                       |),
@@ -3811,15 +4563,23 @@ Module limits.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  iter
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    iter
+                                                                  |)
                                                                 |)
-                                                              |)
-                                                            |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_binary_format::file_format::SignatureTokenPreorderTraversalIter"
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -4000,33 +4760,41 @@ Module limits.
                                       M.never_to_any (|
                                         M.read (|
                                           M.return_ (|
-                                            Value.StructTuple
-                                              "core::result::Result::Err"
-                                              []
-                                              [
-                                                Ty.tuple [];
-                                                Ty.path "move_binary_format::errors::PartialVMError"
-                                              ]
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path
-                                                    "move_binary_format::errors::PartialVMError",
-                                                  M.get_associated_function (|
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::result::Result::Err"
+                                                [
+                                                  M.call_closure (|
                                                     Ty.path
                                                       "move_binary_format::errors::PartialVMError",
-                                                    "new",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    Value.StructTuple
-                                                      "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_NODES"
+                                                    M.get_associated_function (|
+                                                      Ty.path
+                                                        "move_binary_format::errors::PartialVMError",
+                                                      "new",
+                                                      [],
                                                       []
-                                                      []
-                                                      []
-                                                  ]
-                                                |)
-                                              ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_NODES"
+                                                            [])
+                                                          (Ty.path
+                                                            "move_core_types::vm_status::StatusCode"))
+                                                        (Ty.path
+                                                          "move_core_types::vm_status::StatusCode")
+                                                    ]
+                                                  |)
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.tuple [];
+                                                  Ty.path
+                                                    "move_binary_format::errors::PartialVMError"
+                                                ])
                                           |)
                                         |)
                                       |)));
@@ -4043,11 +4811,12 @@ Module limits.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                 |)
               |)))
           |)))
@@ -4146,18 +4915,23 @@ Module limits.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_bytecode_verifier::limits::LimitsVerifier",
-                              "module"
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_bytecode_verifier::limits::LimitsVerifier",
+                                "module"
+                              |)
                             |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_binary_format::file_format::CompiledModule" ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -4209,10 +4983,23 @@ Module limits.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| defs |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| defs |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "slice")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format::FunctionDefinition"
+                                                        ]
+                                                    ])
                                               ]
                                             |);
                                             M.read (| max_function_definitions |)
@@ -4227,32 +5014,40 @@ Module limits.
                                   M.never_to_any (|
                                     M.read (|
                                       M.return_ (|
-                                        Value.StructTuple
-                                          "core::result::Result::Err"
-                                          []
-                                          [
-                                            Ty.tuple [];
-                                            Ty.path "move_binary_format::errors::PartialVMError"
-                                          ]
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "move_binary_format::errors::PartialVMError",
-                                              M.get_associated_function (|
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "core::result::Result::Err"
+                                            [
+                                              M.call_closure (|
                                                 Ty.path
                                                   "move_binary_format::errors::PartialVMError",
-                                                "new",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                Value.StructTuple
-                                                  "move_core_types::vm_status::StatusCode::MAX_FUNCTION_DEFINITIONS_REACHED"
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::errors::PartialVMError",
+                                                  "new",
+                                                  [],
                                                   []
-                                                  []
-                                                  []
-                                              ]
-                                            |)
-                                          ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "move_core_types::vm_status::StatusCode::MAX_FUNCTION_DEFINITIONS_REACHED"
+                                                        [])
+                                                      (Ty.path
+                                                        "move_core_types::vm_status::StatusCode"))
+                                                    (Ty.path
+                                                      "move_core_types::vm_status::StatusCode")
+                                                ]
+                                              |)
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.tuple [];
+                                              Ty.path "move_binary_format::errors::PartialVMError"
+                                            ])
                                       |)
                                     |)
                                   |)));
@@ -4289,18 +5084,23 @@ Module limits.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_bytecode_verifier::limits::LimitsVerifier",
-                              "module"
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_bytecode_verifier::limits::LimitsVerifier",
+                                "module"
+                              |)
                             |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_binary_format::file_format::CompiledModule" ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -4352,10 +5152,23 @@ Module limits.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| defs |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| defs |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "slice")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format::StructDefinition"
+                                                        ]
+                                                    ])
                                               ]
                                             |);
                                             M.read (| max_struct_definitions |)
@@ -4370,32 +5183,40 @@ Module limits.
                                   M.never_to_any (|
                                     M.read (|
                                       M.return_ (|
-                                        Value.StructTuple
-                                          "core::result::Result::Err"
-                                          []
-                                          [
-                                            Ty.tuple [];
-                                            Ty.path "move_binary_format::errors::PartialVMError"
-                                          ]
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "move_binary_format::errors::PartialVMError",
-                                              M.get_associated_function (|
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "core::result::Result::Err"
+                                            [
+                                              M.call_closure (|
                                                 Ty.path
                                                   "move_binary_format::errors::PartialVMError",
-                                                "new",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                Value.StructTuple
-                                                  "move_core_types::vm_status::StatusCode::MAX_STRUCT_DEFINITIONS_REACHED"
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::errors::PartialVMError",
+                                                  "new",
+                                                  [],
                                                   []
-                                                  []
-                                                  []
-                                              ]
-                                            |)
-                                          ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "move_core_types::vm_status::StatusCode::MAX_STRUCT_DEFINITIONS_REACHED"
+                                                        [])
+                                                      (Ty.path
+                                                        "move_core_types::vm_status::StatusCode"))
+                                                    (Ty.path
+                                                      "move_core_types::vm_status::StatusCode")
+                                                ]
+                                              |)
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.tuple [];
+                                              Ty.path "move_binary_format::errors::PartialVMError"
+                                            ])
                                       |)
                                     |)
                                   |)));
@@ -4465,7 +5286,22 @@ Module limits.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| defs |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| defs |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_binary_format::file_format::StructDefinition"
+                                                ]
+                                            ])
+                                      ]
                                     |)
                                   |),
                                   [
@@ -4529,12 +5365,28 @@ Module limits.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                          |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                iter
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::slice::iter::Iter")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_binary_format::file_format::StructDefinition"
+                                                                ]
+                                                            ])
                                                       ]
                                                     |)
                                                   |),
@@ -4662,14 +5514,31 @@ Module limits.
                                                                                       []
                                                                                     |),
                                                                                     [
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        M.deref (|
-                                                                                          M.read (|
-                                                                                            fields
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              fields
+                                                                                            |)
                                                                                           |)
-                                                                                        |)
-                                                                                      |)
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "alloc::vec::Vec")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "move_binary_format::file_format::FieldDefinition";
+                                                                                                Ty.path
+                                                                                                  "alloc::alloc::Global"
+                                                                                              ]
+                                                                                          ])
                                                                                     ]
                                                                                   |);
                                                                                   M.read (|
@@ -4686,34 +5555,42 @@ Module limits.
                                                                         M.never_to_any (|
                                                                           M.read (|
                                                                             M.return_ (|
-                                                                              Value.StructTuple
-                                                                                "core::result::Result::Err"
-                                                                                []
-                                                                                [
-                                                                                  Ty.tuple [];
-                                                                                  Ty.path
-                                                                                    "move_binary_format::errors::PartialVMError"
-                                                                                ]
-                                                                                [
-                                                                                  M.call_closure (|
-                                                                                    Ty.path
-                                                                                      "move_binary_format::errors::PartialVMError",
-                                                                                    M.get_associated_function (|
+                                                                              M.value_with_ty
+                                                                                (Value.StructTuple
+                                                                                  "core::result::Result::Err"
+                                                                                  [
+                                                                                    M.call_closure (|
                                                                                       Ty.path
                                                                                         "move_binary_format::errors::PartialVMError",
-                                                                                      "new",
-                                                                                      [],
-                                                                                      []
-                                                                                    |),
-                                                                                    [
-                                                                                      Value.StructTuple
-                                                                                        "move_core_types::vm_status::StatusCode::MAX_FIELD_DEFINITIONS_REACHED"
+                                                                                      M.get_associated_function (|
+                                                                                        Ty.path
+                                                                                          "move_binary_format::errors::PartialVMError",
+                                                                                        "new",
+                                                                                        [],
                                                                                         []
-                                                                                        []
-                                                                                        []
-                                                                                    ]
-                                                                                  |)
-                                                                                ]
+                                                                                      |),
+                                                                                      [
+                                                                                        M.value_with_ty
+                                                                                          (M.value_with_ty
+                                                                                            (Value.StructTuple
+                                                                                              "move_core_types::vm_status::StatusCode::MAX_FIELD_DEFINITIONS_REACHED"
+                                                                                              [])
+                                                                                            (Ty.path
+                                                                                              "move_core_types::vm_status::StatusCode"))
+                                                                                          (Ty.path
+                                                                                            "move_core_types::vm_status::StatusCode")
+                                                                                      ]
+                                                                                    |)
+                                                                                  ])
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::result::Result")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.tuple [];
+                                                                                    Ty.path
+                                                                                      "move_binary_format::errors::PartialVMError"
+                                                                                  ])
                                                                             |)
                                                                           |)
                                                                         |)));
@@ -4741,11 +5618,12 @@ Module limits.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                 |)
               |)))
           |)))
@@ -4857,49 +5735,97 @@ Module limits.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::slice::iter::Iter")
-                                        []
-                                        [ Ty.path "move_binary_format::file_format::Constant" ]
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::iter::traits::iterator::Iterator",
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "core::slice::iter::Iter")
+                                      (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::Constant" ],
-                                    [],
-                                    [],
-                                    "enumerate",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [ Ty.path "move_binary_format::file_format::Constant" ]
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::iter::traits::iterator::Iterator",
                                       Ty.apply
                                         (Ty.path "core::slice::iter::Iter")
                                         []
                                         [ Ty.path "move_binary_format::file_format::Constant" ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
-                                          [ Ty.path "move_binary_format::file_format::Constant" ],
-                                        "iter",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
+                                      [],
+                                      [],
+                                      "enumerate",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::slice::iter::Iter")
+                                            []
+                                            [ Ty.path "move_binary_format::file_format::Constant" ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [ Ty.path "move_binary_format::file_format::Constant"
+                                              ],
+                                            "iter",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_binary_format::file_format::Constant"
+                                                          ]
+                                                      ],
+                                                    M.get_associated_function (|
+                                                      Ty.path
+                                                        "move_binary_format::file_format::CompiledModule",
+                                                      "constant_pool",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "move_bytecode_verifier::limits::LimitsVerifier",
+                                                                "module"
+                                                              |)
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_binary_format::file_format::CompiledModule"
+                                                          ])
+                                                    ]
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "&")
                                                 []
                                                 [
@@ -4910,35 +5836,24 @@ Module limits.
                                                       Ty.path
                                                         "move_binary_format::file_format::Constant"
                                                     ]
-                                                ],
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format::CompiledModule",
-                                                "constant_pool",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "move_bytecode_verifier::limits::LimitsVerifier",
-                                                        "module"
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [ Ty.path "move_binary_format::file_format::Constant" ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
+                                        [ Ty.path "move_binary_format::file_format::Constant" ]
+                                    ])
                               ]
                             |)
                           |),
@@ -5019,12 +5934,31 @@ Module limits.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::iter::adapters::enumerate::Enumerate")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "core::slice::iter::Iter")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_binary_format::file_format::Constant"
+                                                            ]
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -5149,39 +6083,19 @@ Module limits.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.call_closure (|
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "core::result::Result")
-                                                                                []
-                                                                                [
-                                                                                  Ty.path
-                                                                                    "move_core_types::runtime_value::MoveValue";
-                                                                                  Ty.path
-                                                                                    "move_binary_format::errors::PartialVMError"
-                                                                                ],
-                                                                              M.get_associated_function (|
+                                                                            M.value_with_ty
+                                                                              (M.call_closure (|
                                                                                 Ty.apply
                                                                                   (Ty.path
-                                                                                    "core::option::Option")
+                                                                                    "core::result::Result")
                                                                                   []
                                                                                   [
                                                                                     Ty.path
-                                                                                      "move_core_types::runtime_value::MoveValue"
+                                                                                      "move_core_types::runtime_value::MoveValue";
+                                                                                    Ty.path
+                                                                                      "move_binary_format::errors::PartialVMError"
                                                                                   ],
-                                                                                "ok_or_else",
-                                                                                [],
-                                                                                [
-                                                                                  Ty.path
-                                                                                    "move_binary_format::errors::PartialVMError";
-                                                                                  Ty.function
-                                                                                    []
-                                                                                    (Ty.path
-                                                                                      "move_binary_format::errors::PartialVMError")
-                                                                                ]
-                                                                              |),
-                                                                              [
-                                                                                M.call_closure (|
+                                                                                M.get_associated_function (|
                                                                                   Ty.apply
                                                                                     (Ty.path
                                                                                       "core::option::Option")
@@ -5190,77 +6104,144 @@ Module limits.
                                                                                       Ty.path
                                                                                         "move_core_types::runtime_value::MoveValue"
                                                                                     ],
-                                                                                  M.get_associated_function (|
-                                                                                    Ty.path
-                                                                                      "move_binary_format::file_format::Constant",
-                                                                                    "deserialize_constant",
-                                                                                    [],
-                                                                                    []
-                                                                                  |),
+                                                                                  "ok_or_else",
+                                                                                  [],
                                                                                   [
-                                                                                    M.borrow (|
-                                                                                      Pointer.Kind.Ref,
-                                                                                      M.deref (|
-                                                                                        M.read (|
-                                                                                          constant
-                                                                                        |)
-                                                                                      |)
-                                                                                    |)
+                                                                                    Ty.path
+                                                                                      "move_binary_format::errors::PartialVMError";
+                                                                                    Ty.function
+                                                                                      []
+                                                                                      (Ty.path
+                                                                                        "move_binary_format::errors::PartialVMError")
                                                                                   ]
-                                                                                |);
-                                                                                M.closure
-                                                                                  (fun γ =>
-                                                                                    ltac:(M.monadic
-                                                                                      match γ with
-                                                                                      | [ α0 ] =>
-                                                                                        ltac:(M.monadic
-                                                                                          (M.match_operator (|
-                                                                                            Ty.path
-                                                                                              "move_binary_format::errors::PartialVMError",
-                                                                                            M.alloc (|
-                                                                                              Ty.tuple
-                                                                                                [],
-                                                                                              α0
-                                                                                            |),
+                                                                                |),
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (M.call_closure (|
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "core::option::Option")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "move_core_types::runtime_value::MoveValue"
+                                                                                        ],
+                                                                                      M.get_associated_function (|
+                                                                                        Ty.path
+                                                                                          "move_binary_format::file_format::Constant",
+                                                                                        "deserialize_constant",
+                                                                                        [],
+                                                                                        []
+                                                                                      |),
+                                                                                      [
+                                                                                        M.value_with_ty
+                                                                                          (M.borrow (|
+                                                                                            Pointer.Kind.Ref,
+                                                                                            M.deref (|
+                                                                                              M.read (|
+                                                                                                constant
+                                                                                              |)
+                                                                                            |)
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&")
+                                                                                            []
                                                                                             [
-                                                                                              fun
-                                                                                                  γ =>
-                                                                                                ltac:(M.monadic
-                                                                                                  (M.call_closure (|
-                                                                                                    Ty.path
-                                                                                                      "move_binary_format::errors::PartialVMError",
-                                                                                                    M.get_function (|
-                                                                                                      "move_binary_format::errors::verification_error",
-                                                                                                      [],
-                                                                                                      []
-                                                                                                    |),
-                                                                                                    [
-                                                                                                      Value.StructTuple
-                                                                                                        "move_core_types::vm_status::StatusCode::MALFORMED_CONSTANT_DATA"
-                                                                                                        []
-                                                                                                        []
-                                                                                                        [];
-                                                                                                      Value.StructTuple
-                                                                                                        "move_binary_format::IndexKind::ConstantPool"
-                                                                                                        []
-                                                                                                        []
-                                                                                                        [];
-                                                                                                      M.cast
-                                                                                                        (Ty.path
-                                                                                                          "u16")
-                                                                                                        (M.read (|
-                                                                                                          idx
-                                                                                                        |))
-                                                                                                    ]
-                                                                                                  |)))
-                                                                                            ]
-                                                                                          |)))
-                                                                                      | _ =>
-                                                                                        M.impossible
-                                                                                          "wrong number of arguments"
-                                                                                      end))
-                                                                              ]
-                                                                            |)
+                                                                                              Ty.path
+                                                                                                "move_binary_format::file_format::Constant"
+                                                                                            ])
+                                                                                      ]
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::option::Option")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "move_core_types::runtime_value::MoveValue"
+                                                                                      ]);
+                                                                                  M.value_with_ty
+                                                                                    (M.closure
+                                                                                      (fun γ =>
+                                                                                        ltac:(M.monadic
+                                                                                          match γ
+                                                                                          with
+                                                                                          | [ α0
+                                                                                              ] =>
+                                                                                            ltac:(M.monadic
+                                                                                              (M.match_operator (|
+                                                                                                Ty.path
+                                                                                                  "move_binary_format::errors::PartialVMError",
+                                                                                                M.alloc (|
+                                                                                                  Ty.tuple
+                                                                                                    [],
+                                                                                                  α0
+                                                                                                |),
+                                                                                                [
+                                                                                                  fun
+                                                                                                      γ =>
+                                                                                                    ltac:(M.monadic
+                                                                                                      (M.call_closure (|
+                                                                                                        Ty.path
+                                                                                                          "move_binary_format::errors::PartialVMError",
+                                                                                                        M.get_function (|
+                                                                                                          "move_binary_format::errors::verification_error",
+                                                                                                          [],
+                                                                                                          []
+                                                                                                        |),
+                                                                                                        [
+                                                                                                          M.value_with_ty
+                                                                                                            (M.value_with_ty
+                                                                                                              (Value.StructTuple
+                                                                                                                "move_core_types::vm_status::StatusCode::MALFORMED_CONSTANT_DATA"
+                                                                                                                [])
+                                                                                                              (Ty.path
+                                                                                                                "move_core_types::vm_status::StatusCode"))
+                                                                                                            (Ty.path
+                                                                                                              "move_core_types::vm_status::StatusCode");
+                                                                                                          M.value_with_ty
+                                                                                                            (M.value_with_ty
+                                                                                                              (Value.StructTuple
+                                                                                                                "move_binary_format::IndexKind::ConstantPool"
+                                                                                                                [])
+                                                                                                              (Ty.path
+                                                                                                                "move_binary_format::IndexKind"))
+                                                                                                            (Ty.path
+                                                                                                              "move_binary_format::IndexKind");
+                                                                                                          M.value_with_ty
+                                                                                                            (M.cast
+                                                                                                              (Ty.path
+                                                                                                                "u16")
+                                                                                                              (M.read (|
+                                                                                                                idx
+                                                                                                              |)))
+                                                                                                            (Ty.path
+                                                                                                              "u16")
+                                                                                                        ]
+                                                                                                      |)))
+                                                                                                ]
+                                                                                              |)))
+                                                                                          | _ =>
+                                                                                            M.impossible
+                                                                                              "wrong number of arguments"
+                                                                                          end)))
+                                                                                    (Ty.function
+                                                                                      []
+                                                                                      (Ty.path
+                                                                                        "move_binary_format::errors::PartialVMError"))
+                                                                                ]
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "move_core_types::runtime_value::MoveValue";
+                                                                                  Ty.path
+                                                                                    "move_binary_format::errors::PartialVMError"
+                                                                                ])
                                                                           ]
                                                                         |)
                                                                       |),
@@ -5330,9 +6311,20 @@ Module limits.
                                                                                       []
                                                                                     |),
                                                                                     [
-                                                                                      M.read (|
-                                                                                        residual
-                                                                                      |)
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          residual
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "core::result::Result")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "core::convert::Infallible";
+                                                                                            Ty.path
+                                                                                              "move_binary_format::errors::PartialVMError"
+                                                                                          ])
                                                                                     ]
                                                                                   |)
                                                                                 |)
@@ -5441,10 +6433,27 @@ Module limits.
                                                                                               []
                                                                                             |),
                                                                                             [
-                                                                                              M.borrow (|
-                                                                                                Pointer.Kind.Ref,
-                                                                                                cons
-                                                                                              |)
+                                                                                              M.value_with_ty
+                                                                                                (M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  cons
+                                                                                                |))
+                                                                                                (Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "alloc::vec::Vec")
+                                                                                                      []
+                                                                                                      [
+                                                                                                        Ty.path
+                                                                                                          "move_core_types::runtime_value::MoveValue";
+                                                                                                        Ty.path
+                                                                                                          "alloc::alloc::Global"
+                                                                                                      ]
+                                                                                                  ])
                                                                                             ]
                                                                                           |);
                                                                                           M.cast
@@ -5464,184 +6473,257 @@ Module limits.
                                                                                 M.never_to_any (|
                                                                                   M.read (|
                                                                                     M.return_ (|
-                                                                                      Value.StructTuple
-                                                                                        "core::result::Result::Err"
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.tuple
-                                                                                            [];
-                                                                                          Ty.path
-                                                                                            "move_binary_format::errors::PartialVMError"
-                                                                                        ]
-                                                                                        [
-                                                                                          M.call_closure (|
-                                                                                            Ty.path
-                                                                                              "move_binary_format::errors::PartialVMError",
-                                                                                            M.get_associated_function (|
+                                                                                      M.value_with_ty
+                                                                                        (Value.StructTuple
+                                                                                          "core::result::Result::Err"
+                                                                                          [
+                                                                                            M.call_closure (|
                                                                                               Ty.path
                                                                                                 "move_binary_format::errors::PartialVMError",
-                                                                                              "with_message",
-                                                                                              [],
-                                                                                              []
-                                                                                            |),
-                                                                                            [
-                                                                                              M.call_closure (|
+                                                                                              M.get_associated_function (|
                                                                                                 Ty.path
                                                                                                   "move_binary_format::errors::PartialVMError",
-                                                                                                M.get_associated_function (|
-                                                                                                  Ty.path
-                                                                                                    "move_binary_format::errors::PartialVMError",
-                                                                                                  "new",
-                                                                                                  [],
-                                                                                                  []
-                                                                                                |),
-                                                                                                [
-                                                                                                  Value.StructTuple
-                                                                                                    "move_core_types::vm_status::StatusCode::TOO_MANY_VECTOR_ELEMENTS"
-                                                                                                    []
-                                                                                                    []
-                                                                                                    []
-                                                                                                ]
-                                                                                              |);
-                                                                                              M.call_closure (|
-                                                                                                Ty.path
-                                                                                                  "alloc::string::String",
-                                                                                                M.get_function (|
-                                                                                                  "core::hint::must_use",
-                                                                                                  [],
-                                                                                                  [
+                                                                                                "with_message",
+                                                                                                [],
+                                                                                                []
+                                                                                              |),
+                                                                                              [
+                                                                                                M.value_with_ty
+                                                                                                  (M.call_closure (|
                                                                                                     Ty.path
-                                                                                                      "alloc::string::String"
-                                                                                                  ]
-                                                                                                |),
-                                                                                                [
-                                                                                                  M.read (|
-                                                                                                    let~
-                                                                                                          res :
+                                                                                                      "move_binary_format::errors::PartialVMError",
+                                                                                                    M.get_associated_function (|
+                                                                                                      Ty.path
+                                                                                                        "move_binary_format::errors::PartialVMError",
+                                                                                                      "new",
+                                                                                                      [],
+                                                                                                      []
+                                                                                                    |),
+                                                                                                    [
+                                                                                                      M.value_with_ty
+                                                                                                        (M.value_with_ty
+                                                                                                          (Value.StructTuple
+                                                                                                            "move_core_types::vm_status::StatusCode::TOO_MANY_VECTOR_ELEMENTS"
+                                                                                                            [])
+                                                                                                          (Ty.path
+                                                                                                            "move_core_types::vm_status::StatusCode"))
+                                                                                                        (Ty.path
+                                                                                                          "move_core_types::vm_status::StatusCode")
+                                                                                                    ]
+                                                                                                  |))
+                                                                                                  (Ty.path
+                                                                                                    "move_binary_format::errors::PartialVMError");
+                                                                                                M.value_with_ty
+                                                                                                  (M.call_closure (|
+                                                                                                    Ty.path
+                                                                                                      "alloc::string::String",
+                                                                                                    M.get_function (|
+                                                                                                      "core::hint::must_use",
+                                                                                                      [],
+                                                                                                      [
                                                                                                         Ty.path
-                                                                                                          "alloc::string::String" :=
-                                                                                                      M.call_closure (|
-                                                                                                        Ty.path
-                                                                                                          "alloc::string::String",
-                                                                                                        M.get_function (|
-                                                                                                          "alloc::fmt::format",
-                                                                                                          [],
-                                                                                                          []
-                                                                                                        |),
-                                                                                                        [
-                                                                                                          M.call_closure (|
-                                                                                                            Ty.path
-                                                                                                              "core::fmt::Arguments",
-                                                                                                            M.get_associated_function (|
+                                                                                                          "alloc::string::String"
+                                                                                                      ]
+                                                                                                    |),
+                                                                                                    [
+                                                                                                      M.value_with_ty
+                                                                                                        (M.read (|
+                                                                                                          let~
+                                                                                                                res :
                                                                                                               Ty.path
-                                                                                                                "core::fmt::Arguments",
-                                                                                                              "new_v1",
+                                                                                                                "alloc::string::String" :=
+                                                                                                            M.call_closure (|
+                                                                                                              Ty.path
+                                                                                                                "alloc::string::String",
+                                                                                                              M.get_function (|
+                                                                                                                "alloc::fmt::format",
+                                                                                                                [],
+                                                                                                                []
+                                                                                                              |),
                                                                                                               [
-                                                                                                                Value.Integer
-                                                                                                                  IntegerKind.Usize
-                                                                                                                  1;
-                                                                                                                Value.Integer
-                                                                                                                  IntegerKind.Usize
-                                                                                                                  1
-                                                                                                              ],
-                                                                                                              []
-                                                                                                            |),
-                                                                                                            [
-                                                                                                              M.borrow (|
-                                                                                                                Pointer.Kind.Ref,
-                                                                                                                M.deref (|
-                                                                                                                  M.borrow (|
-                                                                                                                    Pointer.Kind.Ref,
-                                                                                                                    M.alloc (|
-                                                                                                                      Ty.apply
-                                                                                                                        (Ty.path
-                                                                                                                          "array")
-                                                                                                                        [
-                                                                                                                          Value.Integer
-                                                                                                                            IntegerKind.Usize
-                                                                                                                            1
-                                                                                                                        ]
-                                                                                                                        [
-                                                                                                                          Ty.apply
-                                                                                                                            (Ty.path
-                                                                                                                              "&")
-                                                                                                                            []
-                                                                                                                            [
-                                                                                                                              Ty.path
-                                                                                                                                "str"
-                                                                                                                            ]
-                                                                                                                        ],
-                                                                                                                      Value.Array
-                                                                                                                        [
-                                                                                                                          mk_str (|
-                                                                                                                            "vector size limit is "
+                                                                                                                M.value_with_ty
+                                                                                                                  (M.call_closure (|
+                                                                                                                    Ty.path
+                                                                                                                      "core::fmt::Arguments",
+                                                                                                                    M.get_associated_function (|
+                                                                                                                      Ty.path
+                                                                                                                        "core::fmt::Arguments",
+                                                                                                                      "new_v1",
+                                                                                                                      [
+                                                                                                                        Value.Integer
+                                                                                                                          IntegerKind.Usize
+                                                                                                                          1;
+                                                                                                                        Value.Integer
+                                                                                                                          IntegerKind.Usize
+                                                                                                                          1
+                                                                                                                      ],
+                                                                                                                      []
+                                                                                                                    |),
+                                                                                                                    [
+                                                                                                                      M.value_with_ty
+                                                                                                                        (M.borrow (|
+                                                                                                                          Pointer.Kind.Ref,
+                                                                                                                          M.deref (|
+                                                                                                                            M.borrow (|
+                                                                                                                              Pointer.Kind.Ref,
+                                                                                                                              M.alloc (|
+                                                                                                                                Ty.apply
+                                                                                                                                  (Ty.path
+                                                                                                                                    "array")
+                                                                                                                                  [
+                                                                                                                                    Value.Integer
+                                                                                                                                      IntegerKind.Usize
+                                                                                                                                      1
+                                                                                                                                  ]
+                                                                                                                                  [
+                                                                                                                                    Ty.apply
+                                                                                                                                      (Ty.path
+                                                                                                                                        "&")
+                                                                                                                                      []
+                                                                                                                                      [
+                                                                                                                                        Ty.path
+                                                                                                                                          "str"
+                                                                                                                                      ]
+                                                                                                                                  ],
+                                                                                                                                Value.Array
+                                                                                                                                  [
+                                                                                                                                    mk_str (|
+                                                                                                                                      "vector size limit is "
+                                                                                                                                    |)
+                                                                                                                                  ]
+                                                                                                                              |)
+                                                                                                                            |)
                                                                                                                           |)
-                                                                                                                        ]
-                                                                                                                    |)
-                                                                                                                  |)
-                                                                                                                |)
-                                                                                                              |);
-                                                                                                              M.borrow (|
-                                                                                                                Pointer.Kind.Ref,
-                                                                                                                M.deref (|
-                                                                                                                  M.borrow (|
-                                                                                                                    Pointer.Kind.Ref,
-                                                                                                                    M.alloc (|
-                                                                                                                      Ty.apply
-                                                                                                                        (Ty.path
-                                                                                                                          "array")
-                                                                                                                        [
-                                                                                                                          Value.Integer
-                                                                                                                            IntegerKind.Usize
-                                                                                                                            1
-                                                                                                                        ]
-                                                                                                                        [
-                                                                                                                          Ty.path
-                                                                                                                            "core::fmt::rt::Argument"
-                                                                                                                        ],
-                                                                                                                      Value.Array
-                                                                                                                        [
-                                                                                                                          M.call_closure (|
-                                                                                                                            Ty.path
-                                                                                                                              "core::fmt::rt::Argument",
-                                                                                                                            M.get_associated_function (|
-                                                                                                                              Ty.path
-                                                                                                                                "core::fmt::rt::Argument",
-                                                                                                                              "new_display",
-                                                                                                                              [],
+                                                                                                                        |))
+                                                                                                                        (Ty.apply
+                                                                                                                          (Ty.path
+                                                                                                                            "&")
+                                                                                                                          []
+                                                                                                                          [
+                                                                                                                            Ty.apply
+                                                                                                                              (Ty.path
+                                                                                                                                "array")
+                                                                                                                              [
+                                                                                                                                Value.Integer
+                                                                                                                                  IntegerKind.Usize
+                                                                                                                                  1
+                                                                                                                              ]
+                                                                                                                              [
+                                                                                                                                Ty.apply
+                                                                                                                                  (Ty.path
+                                                                                                                                    "&")
+                                                                                                                                  []
+                                                                                                                                  [
+                                                                                                                                    Ty.path
+                                                                                                                                      "str"
+                                                                                                                                  ]
+                                                                                                                              ]
+                                                                                                                          ]);
+                                                                                                                      M.value_with_ty
+                                                                                                                        (M.borrow (|
+                                                                                                                          Pointer.Kind.Ref,
+                                                                                                                          M.deref (|
+                                                                                                                            M.borrow (|
+                                                                                                                              Pointer.Kind.Ref,
+                                                                                                                              M.alloc (|
+                                                                                                                                Ty.apply
+                                                                                                                                  (Ty.path
+                                                                                                                                    "array")
+                                                                                                                                  [
+                                                                                                                                    Value.Integer
+                                                                                                                                      IntegerKind.Usize
+                                                                                                                                      1
+                                                                                                                                  ]
+                                                                                                                                  [
+                                                                                                                                    Ty.path
+                                                                                                                                      "core::fmt::rt::Argument"
+                                                                                                                                  ],
+                                                                                                                                Value.Array
+                                                                                                                                  [
+                                                                                                                                    M.call_closure (|
+                                                                                                                                      Ty.path
+                                                                                                                                        "core::fmt::rt::Argument",
+                                                                                                                                      M.get_associated_function (|
+                                                                                                                                        Ty.path
+                                                                                                                                          "core::fmt::rt::Argument",
+                                                                                                                                        "new_display",
+                                                                                                                                        [],
+                                                                                                                                        [
+                                                                                                                                          Ty.path
+                                                                                                                                            "u64"
+                                                                                                                                        ]
+                                                                                                                                      |),
+                                                                                                                                      [
+                                                                                                                                        M.value_with_ty
+                                                                                                                                          (M.borrow (|
+                                                                                                                                            Pointer.Kind.Ref,
+                                                                                                                                            M.deref (|
+                                                                                                                                              M.borrow (|
+                                                                                                                                                Pointer.Kind.Ref,
+                                                                                                                                                lim
+                                                                                                                                              |)
+                                                                                                                                            |)
+                                                                                                                                          |))
+                                                                                                                                          (Ty.apply
+                                                                                                                                            (Ty.path
+                                                                                                                                              "&")
+                                                                                                                                            []
+                                                                                                                                            [
+                                                                                                                                              Ty.path
+                                                                                                                                                "u64"
+                                                                                                                                            ])
+                                                                                                                                      ]
+                                                                                                                                    |)
+                                                                                                                                  ]
+                                                                                                                              |)
+                                                                                                                            |)
+                                                                                                                          |)
+                                                                                                                        |))
+                                                                                                                        (Ty.apply
+                                                                                                                          (Ty.path
+                                                                                                                            "&")
+                                                                                                                          []
+                                                                                                                          [
+                                                                                                                            Ty.apply
+                                                                                                                              (Ty.path
+                                                                                                                                "array")
+                                                                                                                              [
+                                                                                                                                Value.Integer
+                                                                                                                                  IntegerKind.Usize
+                                                                                                                                  1
+                                                                                                                              ]
                                                                                                                               [
                                                                                                                                 Ty.path
-                                                                                                                                  "u64"
+                                                                                                                                  "core::fmt::rt::Argument"
                                                                                                                               ]
-                                                                                                                            |),
-                                                                                                                            [
-                                                                                                                              M.borrow (|
-                                                                                                                                Pointer.Kind.Ref,
-                                                                                                                                M.deref (|
-                                                                                                                                  M.borrow (|
-                                                                                                                                    Pointer.Kind.Ref,
-                                                                                                                                    lim
-                                                                                                                                  |)
-                                                                                                                                |)
-                                                                                                                              |)
-                                                                                                                            ]
-                                                                                                                          |)
-                                                                                                                        ]
-                                                                                                                    |)
-                                                                                                                  |)
-                                                                                                                |)
-                                                                                                              |)
-                                                                                                            ]
-                                                                                                          |)
-                                                                                                        ]
-                                                                                                      |) in
-                                                                                                    res
-                                                                                                  |)
-                                                                                                ]
-                                                                                              |)
-                                                                                            ]
-                                                                                          |)
-                                                                                        ]
+                                                                                                                          ])
+                                                                                                                    ]
+                                                                                                                  |))
+                                                                                                                  (Ty.path
+                                                                                                                    "core::fmt::Arguments")
+                                                                                                              ]
+                                                                                                            |) in
+                                                                                                          res
+                                                                                                        |))
+                                                                                                        (Ty.path
+                                                                                                          "alloc::string::String")
+                                                                                                    ]
+                                                                                                  |))
+                                                                                                  (Ty.path
+                                                                                                    "alloc::string::String")
+                                                                                              ]
+                                                                                            |)
+                                                                                          ])
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "core::result::Result")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.tuple
+                                                                                              [];
+                                                                                            Ty.path
+                                                                                              "move_binary_format::errors::PartialVMError"
+                                                                                          ])
                                                                                     |)
                                                                                   |)
                                                                                 |)));
@@ -5660,40 +6742,56 @@ Module limits.
                                                                 (M.never_to_any (|
                                                                   M.read (|
                                                                     M.return_ (|
-                                                                      Value.StructTuple
-                                                                        "core::result::Result::Err"
-                                                                        []
-                                                                        [
-                                                                          Ty.tuple [];
-                                                                          Ty.path
-                                                                            "move_binary_format::errors::PartialVMError"
-                                                                        ]
-                                                                        [
-                                                                          M.call_closure (|
+                                                                      M.value_with_ty
+                                                                        (Value.StructTuple
+                                                                          "core::result::Result::Err"
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path
+                                                                                "move_binary_format::errors::PartialVMError",
+                                                                              M.get_function (|
+                                                                                "move_binary_format::errors::verification_error",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.value_with_ty
+                                                                                    (Value.StructTuple
+                                                                                      "move_core_types::vm_status::StatusCode::INVALID_CONSTANT_TYPE"
+                                                                                      [])
+                                                                                    (Ty.path
+                                                                                      "move_core_types::vm_status::StatusCode"))
+                                                                                  (Ty.path
+                                                                                    "move_core_types::vm_status::StatusCode");
+                                                                                M.value_with_ty
+                                                                                  (M.value_with_ty
+                                                                                    (Value.StructTuple
+                                                                                      "move_binary_format::IndexKind::ConstantPool"
+                                                                                      [])
+                                                                                    (Ty.path
+                                                                                      "move_binary_format::IndexKind"))
+                                                                                  (Ty.path
+                                                                                    "move_binary_format::IndexKind");
+                                                                                M.value_with_ty
+                                                                                  (M.cast
+                                                                                    (Ty.path "u16")
+                                                                                    (M.read (|
+                                                                                      idx
+                                                                                    |)))
+                                                                                  (Ty.path "u16")
+                                                                              ]
+                                                                            |)
+                                                                          ])
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.tuple [];
                                                                             Ty.path
-                                                                              "move_binary_format::errors::PartialVMError",
-                                                                            M.get_function (|
-                                                                              "move_binary_format::errors::verification_error",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              Value.StructTuple
-                                                                                "move_core_types::vm_status::StatusCode::INVALID_CONSTANT_TYPE"
-                                                                                []
-                                                                                []
-                                                                                [];
-                                                                              Value.StructTuple
-                                                                                "move_binary_format::IndexKind::ConstantPool"
-                                                                                []
-                                                                                []
-                                                                                [];
-                                                                              M.cast
-                                                                                (Ty.path "u16")
-                                                                                (M.read (| idx |))
-                                                                            ]
-                                                                          |)
-                                                                        ]
+                                                                              "move_binary_format::errors::PartialVMError"
+                                                                          ])
                                                                     |)
                                                                   |)
                                                                 |)))
@@ -5716,11 +6814,12 @@ Module limits.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                 |)
               |)))
           |)))
@@ -5836,54 +6935,108 @@ Module limits.
                                         []
                                       |),
                                       [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::slice::iter::Iter")
-                                                []
-                                                [ Ty.path "move_core_types::identifier::Identifier"
-                                                ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::iter::traits::iterator::Iterator",
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.apply
-                                              (Ty.path "core::slice::iter::Iter")
+                                              (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                               []
-                                              [ Ty.path "move_core_types::identifier::Identifier" ],
-                                            [],
-                                            [],
-                                            "enumerate",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::slice::iter::Iter")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_core_types::identifier::Identifier"
+                                                  ]
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::iter::traits::iterator::Iterator",
                                               Ty.apply
                                                 (Ty.path "core::slice::iter::Iter")
                                                 []
                                                 [ Ty.path "move_core_types::identifier::Identifier"
                                                 ],
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "slice")
-                                                  []
+                                              [],
+                                              [],
+                                              "enumerate",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "core::slice::iter::Iter")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_core_types::identifier::Identifier"
+                                                    ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_core_types::identifier::Identifier"
+                                                      ],
+                                                    "iter",
+                                                    [],
+                                                    []
+                                                  |),
                                                   [
-                                                    Ty.path
-                                                      "move_core_types::identifier::Identifier"
-                                                  ],
-                                                "iter",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_core_types::identifier::Identifier"
+                                                                  ]
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.path
+                                                                "move_binary_format::file_format::CompiledModule",
+                                                              "identifiers",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.read (|
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |),
+                                                                        "move_bytecode_verifier::limits::LimitsVerifier",
+                                                                        "module"
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_binary_format::file_format::CompiledModule"
+                                                                  ])
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
                                                         (Ty.path "&")
                                                         []
                                                         [
@@ -5894,35 +7047,28 @@ Module limits.
                                                               Ty.path
                                                                 "move_core_types::identifier::Identifier"
                                                             ]
-                                                        ],
-                                                      M.get_associated_function (|
-                                                        Ty.path
-                                                          "move_binary_format::file_format::CompiledModule",
-                                                        "identifiers",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "move_bytecode_verifier::limits::LimitsVerifier",
-                                                                "module"
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                                        ])
+                                                  ]
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "core::slice::iter::Iter")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_core_types::identifier::Identifier"
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::slice::iter::Iter")
+                                                []
+                                                [ Ty.path "move_core_types::identifier::Identifier"
+                                                ]
+                                            ])
                                       ]
                                     |)
                                   |),
@@ -6006,12 +7152,35 @@ Module limits.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                          |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                iter
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::iter::adapters::enumerate::Enumerate")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::slice::iter::Iter")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_core_types::identifier::Identifier"
+                                                                    ]
+                                                                ]
+                                                            ])
                                                       ]
                                                     |)
                                                   |),
@@ -6081,40 +7250,58 @@ Module limits.
                                                                               []
                                                                             |),
                                                                             [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.call_closure (|
-                                                                                    Ty.apply
-                                                                                      (Ty.path "&")
-                                                                                      []
-                                                                                      [
+                                                                              M.value_with_ty
+                                                                                (M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.deref (|
+                                                                                    M.call_closure (|
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "move_core_types::identifier::IdentStr"
+                                                                                        ],
+                                                                                      M.get_trait_method (|
+                                                                                        "core::ops::deref::Deref",
                                                                                         Ty.path
-                                                                                          "move_core_types::identifier::IdentStr"
-                                                                                      ],
-                                                                                    M.get_trait_method (|
-                                                                                      "core::ops::deref::Deref",
-                                                                                      Ty.path
-                                                                                        "move_core_types::identifier::Identifier",
-                                                                                      [],
-                                                                                      [],
-                                                                                      "deref",
-                                                                                      [],
-                                                                                      []
-                                                                                    |),
-                                                                                    [
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        M.deref (|
-                                                                                          M.read (|
-                                                                                            identifier
-                                                                                          |)
-                                                                                        |)
-                                                                                      |)
-                                                                                    ]
+                                                                                          "move_core_types::identifier::Identifier",
+                                                                                        [],
+                                                                                        [],
+                                                                                        "deref",
+                                                                                        [],
+                                                                                        []
+                                                                                      |),
+                                                                                      [
+                                                                                        M.value_with_ty
+                                                                                          (M.borrow (|
+                                                                                            Pointer.Kind.Ref,
+                                                                                            M.deref (|
+                                                                                              M.read (|
+                                                                                                identifier
+                                                                                              |)
+                                                                                            |)
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "move_core_types::identifier::Identifier"
+                                                                                            ])
+                                                                                      ]
+                                                                                    |)
                                                                                   |)
-                                                                                |)
-                                                                              |)
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "move_core_types::identifier::IdentStr"
+                                                                                  ])
                                                                             ]
                                                                           |);
                                                                           M.cast
@@ -6133,40 +7320,56 @@ Module limits.
                                                                 M.never_to_any (|
                                                                   M.read (|
                                                                     M.return_ (|
-                                                                      Value.StructTuple
-                                                                        "core::result::Result::Err"
-                                                                        []
-                                                                        [
-                                                                          Ty.tuple [];
-                                                                          Ty.path
-                                                                            "move_binary_format::errors::PartialVMError"
-                                                                        ]
-                                                                        [
-                                                                          M.call_closure (|
+                                                                      M.value_with_ty
+                                                                        (Value.StructTuple
+                                                                          "core::result::Result::Err"
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path
+                                                                                "move_binary_format::errors::PartialVMError",
+                                                                              M.get_function (|
+                                                                                "move_binary_format::errors::verification_error",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.value_with_ty
+                                                                                    (Value.StructTuple
+                                                                                      "move_core_types::vm_status::StatusCode::IDENTIFIER_TOO_LONG"
+                                                                                      [])
+                                                                                    (Ty.path
+                                                                                      "move_core_types::vm_status::StatusCode"))
+                                                                                  (Ty.path
+                                                                                    "move_core_types::vm_status::StatusCode");
+                                                                                M.value_with_ty
+                                                                                  (M.value_with_ty
+                                                                                    (Value.StructTuple
+                                                                                      "move_binary_format::IndexKind::Identifier"
+                                                                                      [])
+                                                                                    (Ty.path
+                                                                                      "move_binary_format::IndexKind"))
+                                                                                  (Ty.path
+                                                                                    "move_binary_format::IndexKind");
+                                                                                M.value_with_ty
+                                                                                  (M.cast
+                                                                                    (Ty.path "u16")
+                                                                                    (M.read (|
+                                                                                      idx
+                                                                                    |)))
+                                                                                  (Ty.path "u16")
+                                                                              ]
+                                                                            |)
+                                                                          ])
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.tuple [];
                                                                             Ty.path
-                                                                              "move_binary_format::errors::PartialVMError",
-                                                                            M.get_function (|
-                                                                              "move_binary_format::errors::verification_error",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              Value.StructTuple
-                                                                                "move_core_types::vm_status::StatusCode::IDENTIFIER_TOO_LONG"
-                                                                                []
-                                                                                []
-                                                                                [];
-                                                                              Value.StructTuple
-                                                                                "move_binary_format::IndexKind::Identifier"
-                                                                                []
-                                                                                []
-                                                                                [];
-                                                                              M.cast
-                                                                                (Ty.path "u16")
-                                                                                (M.read (| idx |))
-                                                                            ]
-                                                                          |)
-                                                                        ]
+                                                                              "move_binary_format::errors::PartialVMError"
+                                                                          ])
                                                                     |)
                                                                   |)
                                                                 |)));
@@ -6191,11 +7394,12 @@ Module limits.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                 |)
               |)))
           |)))

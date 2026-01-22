@@ -182,7 +182,7 @@ Module num.
                         [],
                         []
                       |),
-                      [ Value.Integer IntegerKind.I32 0 ]
+                      [ M.value_with_ty (Value.Integer IntegerKind.I32 0) (Ty.path "i32") ]
                     |) in
                   let~ fp_inf : Ty.path "core::num::dec2flt::common::BiasedFp" :=
                     M.call_closure (|
@@ -194,19 +194,28 @@ Module num.
                         []
                       |),
                       [
-                        M.read (|
-                          get_constant (|
-                            "core::num::dec2flt::float::RawFloat::INFINITE_POWER",
-                            Ty.path "i32"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.read (|
+                            get_constant (|
+                              "core::num::dec2flt::float::RawFloat::INFINITE_POWER",
+                              Ty.path "i32"
+                            |)
+                          |))
+                          (Ty.path "i32")
                       ]
                     |) in
                   let~ d : Ty.path "core::num::dec2flt::decimal::Decimal" :=
                     M.call_closure (|
                       Ty.path "core::num::dec2flt::decimal::Decimal",
                       M.get_function (| "core::num::dec2flt::decimal::parse_decimal", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.match_operator (|
@@ -358,8 +367,16 @@ Module num.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.Ref, get_shift |);
-                                            Value.Tuple [ M.read (| n |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, get_shift |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.function [ Ty.path "usize" ] (Ty.path "usize")
+                                                ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| n |) ])
+                                              (Ty.tuple [ Ty.path "usize" ])
                                           ]
                                         |) in
                                       let~ _ : Ty.tuple [] :=
@@ -372,8 +389,13 @@ Module num.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, d |);
-                                            M.read (| shift |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, d |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "core::num::dec2flt::decimal::Decimal" ]);
+                                            M.value_with_ty (M.read (| shift |)) (Ty.path "usize")
                                           ]
                                         |) in
                                       let~ _ : Ty.tuple [] :=
@@ -615,25 +637,36 @@ Module num.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (| Pointer.Kind.Ref, get_shift |);
-                                                    Value.Tuple
-                                                      [
-                                                        M.cast
-                                                          (Ty.path "usize")
-                                                          (M.call_closure (|
-                                                            Ty.path "i32",
-                                                            UnOp.neg,
-                                                            [
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  d,
-                                                                  "core::num::dec2flt::decimal::Decimal",
-                                                                  "decimal_point"
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, get_shift |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.function
+                                                            [ Ty.path "usize" ]
+                                                            (Ty.path "usize")
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (Value.Tuple
+                                                        [
+                                                          M.cast
+                                                            (Ty.path "usize")
+                                                            (M.call_closure (|
+                                                              Ty.path "i32",
+                                                              UnOp.neg,
+                                                              [
+                                                                M.read (|
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    d,
+                                                                    "core::num::dec2flt::decimal::Decimal",
+                                                                    "decimal_point"
+                                                                  |)
                                                                 |)
-                                                              |)
-                                                            ]
-                                                          |))
-                                                      ]
+                                                              ]
+                                                            |))
+                                                        ])
+                                                      (Ty.tuple [ Ty.path "usize" ])
                                                   ]
                                                 |)))
                                           ]
@@ -648,8 +681,13 @@ Module num.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, d |);
-                                            M.read (| shift |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, d |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "core::num::dec2flt::decimal::Decimal" ]);
+                                            M.value_with_ty (M.read (| shift |)) (Ty.path "usize")
                                           ]
                                         |) in
                                       let~ _ : Ty.tuple [] :=
@@ -857,7 +895,15 @@ Module num.
                                             [],
                                             []
                                           |),
-                                          [ M.borrow (| Pointer.Kind.MutRef, d |); M.read (| n |) ]
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, d |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "core::num::dec2flt::decimal::Decimal" ]);
+                                            M.value_with_ty (M.read (| n |)) (Ty.path "usize")
+                                          ]
                                         |) in
                                       let~ _ : Ty.tuple [] :=
                                         let β := exp2 in
@@ -941,20 +987,27 @@ Module num.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, d |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          BinOp.Wrap.add,
-                          [
-                            M.read (|
-                              get_constant (|
-                                "core::num::dec2flt::float::RawFloat::MANTISSA_EXPLICIT_BITS",
-                                Ty.path "usize"
-                              |)
-                            |);
-                            Value.Integer IntegerKind.Usize 1
-                          ]
-                        |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, d |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.path "core::num::dec2flt::decimal::Decimal" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.add,
+                            [
+                              M.read (|
+                                get_constant (|
+                                  "core::num::dec2flt::float::RawFloat::MANTISSA_EXPLICIT_BITS",
+                                  Ty.path "usize"
+                                |)
+                              |);
+                              Value.Integer IntegerKind.Usize 1
+                            ]
+                          |))
+                          (Ty.path "usize")
                       ]
                     |) in
                   let~ mantissa : Ty.path "u64" :=
@@ -966,7 +1019,14 @@ Module num.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, d |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, d |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "core::num::dec2flt::decimal::Decimal" ])
+                      ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.match_operator (|
@@ -1020,8 +1080,15 @@ Module num.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.MutRef, d |);
-                                    Value.Integer IntegerKind.Usize 1
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, d |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::num::dec2flt::decimal::Decimal" ]);
+                                    M.value_with_ty
+                                      (Value.Integer IntegerKind.Usize 1)
+                                      (Ty.path "usize")
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -1045,7 +1112,14 @@ Module num.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, d |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, d |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::num::dec2flt::decimal::Decimal" ])
+                                    ]
                                   |)
                                 |) in
                               M.alloc (|
@@ -1200,11 +1274,11 @@ Module num.
                     |) in
                   M.alloc (|
                     Ty.path "core::num::dec2flt::common::BiasedFp",
-                    Value.mkStructRecord
-                      "core::num::dec2flt::common::BiasedFp"
-                      []
-                      []
-                      [ ("f", M.read (| mantissa |)); ("e", M.read (| power2 |)) ]
+                    M.value_with_ty
+                      (Value.mkStructRecord
+                        "core::num::dec2flt::common::BiasedFp"
+                        [ ("f", M.read (| mantissa |)); ("e", M.read (| power2 |)) ])
+                      (Ty.path "core::num::dec2flt::common::BiasedFp")
                   |)
                 |)))
             |)))

@@ -286,124 +286,138 @@ Module algorithms.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Matrix" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              0
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Matrix" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                0
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              1
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                1
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              2
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                2
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              3
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                3
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_tuple_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "ruint::algorithms::gcd::matrix::Matrix",
-                                  4
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_tuple_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "ruint::algorithms::gcd::matrix::Matrix",
+                                    4
+                                  |)
                                 |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |)
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -427,17 +441,17 @@ Module algorithms.
           ltac:(M.monadic
             (M.alloc (|
               Ty.path "ruint::algorithms::gcd::matrix::Matrix",
-              Value.StructTuple
-                "ruint::algorithms::gcd::matrix::Matrix"
-                []
-                []
-                [
-                  Value.Integer IntegerKind.U64 1;
-                  Value.Integer IntegerKind.U64 0;
-                  Value.Integer IntegerKind.U64 0;
-                  Value.Integer IntegerKind.U64 1;
-                  Value.Bool true
-                ]
+              M.value_with_ty
+                (Value.StructTuple
+                  "ruint::algorithms::gcd::matrix::Matrix"
+                  [
+                    Value.Integer IntegerKind.U64 1;
+                    Value.Integer IntegerKind.U64 0;
+                    Value.Integer IntegerKind.U64 0;
+                    Value.Integer IntegerKind.U64 1;
+                    Value.Bool true
+                  ])
+                (Ty.path "ruint::algorithms::gcd::matrix::Matrix")
             |))).
         
         Global Instance AssociatedConstant_value_IDENTITY :
@@ -462,222 +476,222 @@ Module algorithms.
             ltac:(M.monadic
               (let self := M.alloc (| Ty.path "ruint::algorithms::gcd::matrix::Matrix", self |) in
               let other := M.alloc (| Ty.path "ruint::algorithms::gcd::matrix::Matrix", other |) in
-              Value.StructTuple
-                "ruint::algorithms::gcd::matrix::Matrix"
-                []
-                []
-                [
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.add,
-                    [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.mul,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              self,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              0
+              M.value_with_ty
+                (Value.StructTuple
+                  "ruint::algorithms::gcd::matrix::Matrix"
+                  [
+                    M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.add,
+                      [
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                self,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                0
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                other,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                0
+                              |)
                             |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              other,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              0
+                          ]
+                        |);
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                self,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                1
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                other,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                2
+                              |)
                             |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.mul,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              self,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              1
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              other,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              2
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.add,
-                    [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.mul,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              self,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              0
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              other,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              1
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.mul,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              self,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              1
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              other,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              3
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.add,
-                    [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.mul,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              self,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              2
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              other,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              0
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.mul,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              self,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              3
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              other,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              2
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.add,
-                    [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.mul,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              self,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              2
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              other,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              1
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.mul,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              self,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              3
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              other,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              3
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "bool",
-                    BinOp.Wrap.bit_xor,
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_tuple_field (|
-                          self,
-                          "ruint::algorithms::gcd::matrix::Matrix",
-                          4
+                          ]
                         |)
-                      |);
-                      M.call_closure (|
-                        Ty.path "bool",
-                        UnOp.not,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              other,
-                              "ruint::algorithms::gcd::matrix::Matrix",
-                              4
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.add,
+                      [
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                self,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                0
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                other,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                1
+                              |)
                             |)
+                          ]
+                        |);
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                self,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                1
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                other,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                3
+                              |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.add,
+                      [
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                self,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                2
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                other,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                0
+                              |)
+                            |)
+                          ]
+                        |);
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                self,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                3
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                other,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                2
+                              |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.add,
+                      [
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                self,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                2
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                other,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                1
+                              |)
+                            |)
+                          ]
+                        |);
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                self,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                3
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                other,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                3
+                              |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |);
+                    M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.Wrap.bit_xor,
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "ruint::algorithms::gcd::matrix::Matrix",
+                            4
                           |)
-                        ]
-                      |)
-                    ]
-                  |)
-                ]))
+                        |);
+                        M.call_closure (|
+                          Ty.path "bool",
+                          UnOp.not,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                other,
+                                "ruint::algorithms::gcd::matrix::Matrix",
+                                4
+                              |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |)
+                  ])
+                (Ty.path "ruint::algorithms::gcd::matrix::Matrix")))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -809,80 +823,122 @@ Module algorithms.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_trait_method (|
-                                              "core::ops::arith::Mul",
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ],
-                                              "mul",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
                                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                M.get_associated_function (|
+                                                [],
+                                                [
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
-                                                    [],
-                                                  "from",
-                                                  [],
-                                                  [ Ty.path "u64" ]
-                                                |),
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "ruint::algorithms::gcd::matrix::Matrix",
-                                                      0
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| M.deref (| M.read (| a |) |) |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_trait_method (|
-                                              "core::ops::arith::Mul",
+                                                    []
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "from",
+                                                      [],
+                                                      [ Ty.path "u64" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                            0
+                                                          |)
+                                                        |))
+                                                        (Ty.path "u64")
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []);
+                                                M.value_with_ty
+                                                  (M.read (| M.deref (| M.read (| a |) |) |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [])
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ],
-                                              "mul",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
                                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                M.get_associated_function (|
+                                                [],
+                                                [
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
-                                                    [],
-                                                  "from",
-                                                  [],
-                                                  [ Ty.path "u64" ]
-                                                |),
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "ruint::algorithms::gcd::matrix::Matrix",
-                                                      1
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| M.deref (| M.read (| b |) |) |)
-                                            ]
-                                          |)
+                                                    []
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "from",
+                                                      [],
+                                                      [ Ty.path "u64" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                            1
+                                                          |)
+                                                        |))
+                                                        (Ty.path "u64")
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []);
+                                                M.value_with_ty
+                                                  (M.read (| M.deref (| M.read (| b |) |) |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [])
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                                         ]
                                       |);
                                       M.call_closure (|
@@ -897,80 +953,122 @@ Module algorithms.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_trait_method (|
-                                              "core::ops::arith::Mul",
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ],
-                                              "mul",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
                                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                M.get_associated_function (|
+                                                [],
+                                                [
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
-                                                    [],
-                                                  "from",
-                                                  [],
-                                                  [ Ty.path "u64" ]
-                                                |),
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "ruint::algorithms::gcd::matrix::Matrix",
-                                                      3
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| M.deref (| M.read (| b |) |) |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_trait_method (|
-                                              "core::ops::arith::Mul",
+                                                    []
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "from",
+                                                      [],
+                                                      [ Ty.path "u64" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                            3
+                                                          |)
+                                                        |))
+                                                        (Ty.path "u64")
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []);
+                                                M.value_with_ty
+                                                  (M.read (| M.deref (| M.read (| b |) |) |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [])
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ],
-                                              "mul",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
                                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                M.get_associated_function (|
+                                                [],
+                                                [
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
-                                                    [],
-                                                  "from",
-                                                  [],
-                                                  [ Ty.path "u64" ]
-                                                |),
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "ruint::algorithms::gcd::matrix::Matrix",
-                                                      2
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| M.deref (| M.read (| a |) |) |)
-                                            ]
-                                          |)
+                                                    []
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "from",
+                                                      [],
+                                                      [ Ty.path "u64" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                            2
+                                                          |)
+                                                        |))
+                                                        (Ty.path "u64")
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []);
+                                                M.value_with_ty
+                                                  (M.read (| M.deref (| M.read (| a |) |) |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [])
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                                         ]
                                       |)
                                     ]));
@@ -990,80 +1088,122 @@ Module algorithms.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_trait_method (|
-                                              "core::ops::arith::Mul",
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ],
-                                              "mul",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
                                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                M.get_associated_function (|
+                                                [],
+                                                [
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
-                                                    [],
-                                                  "from",
-                                                  [],
-                                                  [ Ty.path "u64" ]
-                                                |),
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "ruint::algorithms::gcd::matrix::Matrix",
-                                                      1
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| M.deref (| M.read (| b |) |) |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_trait_method (|
-                                              "core::ops::arith::Mul",
+                                                    []
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "from",
+                                                      [],
+                                                      [ Ty.path "u64" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                            1
+                                                          |)
+                                                        |))
+                                                        (Ty.path "u64")
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []);
+                                                M.value_with_ty
+                                                  (M.read (| M.deref (| M.read (| b |) |) |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [])
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ],
-                                              "mul",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
                                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                M.get_associated_function (|
+                                                [],
+                                                [
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
-                                                    [],
-                                                  "from",
-                                                  [],
-                                                  [ Ty.path "u64" ]
-                                                |),
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "ruint::algorithms::gcd::matrix::Matrix",
-                                                      0
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| M.deref (| M.read (| a |) |) |)
-                                            ]
-                                          |)
+                                                    []
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "from",
+                                                      [],
+                                                      [ Ty.path "u64" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                            0
+                                                          |)
+                                                        |))
+                                                        (Ty.path "u64")
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []);
+                                                M.value_with_ty
+                                                  (M.read (| M.deref (| M.read (| a |) |) |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [])
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                                         ]
                                       |);
                                       M.call_closure (|
@@ -1078,80 +1218,122 @@ Module algorithms.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_trait_method (|
-                                              "core::ops::arith::Mul",
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ],
-                                              "mul",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
                                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                M.get_associated_function (|
+                                                [],
+                                                [
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
-                                                    [],
-                                                  "from",
-                                                  [],
-                                                  [ Ty.path "u64" ]
-                                                |),
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "ruint::algorithms::gcd::matrix::Matrix",
-                                                      2
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| M.deref (| M.read (| a |) |) |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_trait_method (|
-                                              "core::ops::arith::Mul",
+                                                    []
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "from",
+                                                      [],
+                                                      [ Ty.path "u64" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                            2
+                                                          |)
+                                                        |))
+                                                        (Ty.path "u64")
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []);
+                                                M.value_with_ty
+                                                  (M.read (| M.deref (| M.read (| a |) |) |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [])
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ],
-                                              "mul",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                              M.get_trait_method (|
+                                                "core::ops::arith::Mul",
                                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                M.get_associated_function (|
+                                                [],
+                                                [
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
-                                                    [],
-                                                  "from",
-                                                  [],
-                                                  [ Ty.path "u64" ]
-                                                |),
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "ruint::algorithms::gcd::matrix::Matrix",
-                                                      3
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.read (| M.deref (| M.read (| b |) |) |)
-                                            ]
-                                          |)
+                                                    []
+                                                ],
+                                                "mul",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "from",
+                                                      [],
+                                                      [ Ty.path "u64" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                                            3
+                                                          |)
+                                                        |))
+                                                        (Ty.path "u64")
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []);
+                                                M.value_with_ty
+                                                  (M.read (| M.deref (| M.read (| b |) |) |))
+                                                  (Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [])
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                                         ]
                                       |)
                                     ]))
@@ -1248,96 +1430,112 @@ Module algorithms.
                             Ty.path "u128",
                             M.get_associated_function (| Ty.path "u128", "wrapping_sub", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u128",
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "u128",
-                                  "wrapping_mul",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.cast
-                                    (Ty.path "u128")
-                                    (M.read (|
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "ruint::algorithms::gcd::matrix::Matrix",
-                                        0
-                                      |)
-                                    |));
-                                  M.read (| a |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "u128",
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.path "u128",
+                                    "wrapping_mul",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.cast
+                                        (Ty.path "u128")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                            0
+                                          |)
+                                        |)))
+                                      (Ty.path "u128");
+                                    M.value_with_ty (M.read (| a |)) (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.path "u128");
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "u128",
-                                  "wrapping_mul",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.cast
-                                    (Ty.path "u128")
-                                    (M.read (|
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "ruint::algorithms::gcd::matrix::Matrix",
-                                        1
-                                      |)
-                                    |));
-                                  M.read (| b |)
-                                ]
-                              |)
+                                  M.get_associated_function (|
+                                    Ty.path "u128",
+                                    "wrapping_mul",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.cast
+                                        (Ty.path "u128")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                            1
+                                          |)
+                                        |)))
+                                      (Ty.path "u128");
+                                    M.value_with_ty (M.read (| b |)) (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.path "u128")
                             ]
                           |);
                           M.call_closure (|
                             Ty.path "u128",
                             M.get_associated_function (| Ty.path "u128", "wrapping_sub", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u128",
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "u128",
-                                  "wrapping_mul",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.cast
-                                    (Ty.path "u128")
-                                    (M.read (|
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "ruint::algorithms::gcd::matrix::Matrix",
-                                        3
-                                      |)
-                                    |));
-                                  M.read (| b |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "u128",
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.path "u128",
+                                    "wrapping_mul",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.cast
+                                        (Ty.path "u128")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                            3
+                                          |)
+                                        |)))
+                                      (Ty.path "u128");
+                                    M.value_with_ty (M.read (| b |)) (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.path "u128");
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "u128",
-                                  "wrapping_mul",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.cast
-                                    (Ty.path "u128")
-                                    (M.read (|
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "ruint::algorithms::gcd::matrix::Matrix",
-                                        2
-                                      |)
-                                    |));
-                                  M.read (| a |)
-                                ]
-                              |)
+                                  M.get_associated_function (|
+                                    Ty.path "u128",
+                                    "wrapping_mul",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.cast
+                                        (Ty.path "u128")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                            2
+                                          |)
+                                        |)))
+                                      (Ty.path "u128");
+                                    M.value_with_ty (M.read (| a |)) (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.path "u128")
                             ]
                           |)
                         ]));
@@ -1349,96 +1547,112 @@ Module algorithms.
                             Ty.path "u128",
                             M.get_associated_function (| Ty.path "u128", "wrapping_sub", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u128",
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "u128",
-                                  "wrapping_mul",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.cast
-                                    (Ty.path "u128")
-                                    (M.read (|
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "ruint::algorithms::gcd::matrix::Matrix",
-                                        1
-                                      |)
-                                    |));
-                                  M.read (| b |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "u128",
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.path "u128",
+                                    "wrapping_mul",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.cast
+                                        (Ty.path "u128")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                            1
+                                          |)
+                                        |)))
+                                      (Ty.path "u128");
+                                    M.value_with_ty (M.read (| b |)) (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.path "u128");
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "u128",
-                                  "wrapping_mul",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.cast
-                                    (Ty.path "u128")
-                                    (M.read (|
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "ruint::algorithms::gcd::matrix::Matrix",
-                                        0
-                                      |)
-                                    |));
-                                  M.read (| a |)
-                                ]
-                              |)
+                                  M.get_associated_function (|
+                                    Ty.path "u128",
+                                    "wrapping_mul",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.cast
+                                        (Ty.path "u128")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                            0
+                                          |)
+                                        |)))
+                                      (Ty.path "u128");
+                                    M.value_with_ty (M.read (| a |)) (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.path "u128")
                             ]
                           |);
                           M.call_closure (|
                             Ty.path "u128",
                             M.get_associated_function (| Ty.path "u128", "wrapping_sub", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u128",
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "u128",
-                                  "wrapping_mul",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.cast
-                                    (Ty.path "u128")
-                                    (M.read (|
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "ruint::algorithms::gcd::matrix::Matrix",
-                                        2
-                                      |)
-                                    |));
-                                  M.read (| a |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "u128",
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.path "u128",
+                                    "wrapping_mul",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.cast
+                                        (Ty.path "u128")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                            2
+                                          |)
+                                        |)))
+                                      (Ty.path "u128");
+                                    M.value_with_ty (M.read (| a |)) (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.path "u128");
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "u128",
-                                  "wrapping_mul",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.cast
-                                    (Ty.path "u128")
-                                    (M.read (|
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "ruint::algorithms::gcd::matrix::Matrix",
-                                        3
-                                      |)
-                                    |));
-                                  M.read (| b |)
-                                ]
-                              |)
+                                  M.get_associated_function (|
+                                    Ty.path "u128",
+                                    "wrapping_mul",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.cast
+                                        (Ty.path "u128")
+                                        (M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "ruint::algorithms::gcd::matrix::Matrix",
+                                            3
+                                          |)
+                                        |)))
+                                      (Ty.path "u128");
+                                    M.value_with_ty (M.read (| b |)) (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.path "u128")
                             ]
                           |)
                         ]))
@@ -1506,8 +1720,19 @@ Module algorithms.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, a |);
-                                        M.borrow (| Pointer.Kind.Ref, b |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, a |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, b |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |)
                                   ]
@@ -1519,7 +1744,11 @@ Module algorithms.
                             M.call_closure (|
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic", [], [] |),
-                              [ mk_str (| "assertion failed: a >= b" |) ]
+                              [
+                                M.value_with_ty
+                                  (mk_str (| "assertion failed: a >= b" |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
                           |)));
                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1534,7 +1763,14 @@ Module algorithms.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, a |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, a |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                    ]
                   |) in
                 M.alloc (|
                   Ty.path "ruint::algorithms::gcd::matrix::Matrix",
@@ -1565,25 +1801,10 @@ Module algorithms.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [
-                                      Ty.path "u64";
-                                      Ty.apply
-                                        (Ty.path "ruint::from::FromUintError")
-                                        []
-                                        [ Ty.path "u64" ]
-                                    ],
-                                  "unwrap",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  M.get_associated_function (|
                                     Ty.apply
                                       (Ty.path "core::result::Result")
                                       []
@@ -1594,38 +1815,55 @@ Module algorithms.
                                           []
                                           [ Ty.path "u64" ]
                                       ],
-                                    M.get_trait_method (|
-                                      "core::convert::TryInto",
-                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                      [],
-                                      [ Ty.path "u64" ],
-                                      "try_into",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| a |) ]
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "u64",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
+                                    "unwrap",
+                                    [],
                                     []
-                                    [
-                                      Ty.path "u64";
-                                      Ty.apply
-                                        (Ty.path "ruint::from::FromUintError")
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "u64";
+                                            Ty.apply
+                                              (Ty.path "ruint::from::FromUintError")
+                                              []
+                                              [ Ty.path "u64" ]
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::convert::TryInto",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          [],
+                                          [ Ty.path "u64" ],
+                                          "try_into",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| a |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
                                         []
-                                        [ Ty.path "u64" ]
-                                    ],
-                                  "unwrap",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
+                                        [
+                                          Ty.path "u64";
+                                          Ty.apply
+                                            (Ty.path "ruint::from::FromUintError")
+                                            []
+                                            [ Ty.path "u64" ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  M.get_associated_function (|
                                     Ty.apply
                                       (Ty.path "core::result::Result")
                                       []
@@ -1636,19 +1874,51 @@ Module algorithms.
                                           []
                                           [ Ty.path "u64" ]
                                       ],
-                                    M.get_trait_method (|
-                                      "core::convert::TryInto",
-                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                      [],
-                                      [ Ty.path "u64" ],
-                                      "try_into",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| b |) ]
-                                  |)
-                                ]
-                              |)
+                                    "unwrap",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "u64";
+                                            Ty.apply
+                                              (Ty.path "ruint::from::FromUintError")
+                                              []
+                                              [ Ty.path "u64" ]
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::convert::TryInto",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          [],
+                                          [ Ty.path "u64" ],
+                                          "try_into",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| b |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "u64";
+                                          Ty.apply
+                                            (Ty.path "ruint::from::FromUintError")
+                                            []
+                                            [ Ty.path "u64" ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.path "u64")
                             ]
                           |)));
                       fun γ =>
@@ -1683,25 +1953,10 @@ Module algorithms.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "u128",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [
-                                              Ty.path "u128";
-                                              Ty.apply
-                                                (Ty.path "ruint::from::FromUintError")
-                                                []
-                                                [ Ty.path "u128" ]
-                                            ],
-                                          "unwrap",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "u128",
+                                          M.get_associated_function (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
@@ -1712,38 +1967,61 @@ Module algorithms.
                                                   []
                                                   [ Ty.path "u128" ]
                                               ],
-                                            M.get_trait_method (|
-                                              "core::convert::TryInto",
-                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.path "u128" ],
-                                              "try_into",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| a |) ]
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "u128",
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
+                                            "unwrap",
+                                            [],
                                             []
-                                            [
-                                              Ty.path "u128";
-                                              Ty.apply
-                                                (Ty.path "ruint::from::FromUintError")
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path "u128";
+                                                    Ty.apply
+                                                      (Ty.path "ruint::from::FromUintError")
+                                                      []
+                                                      [ Ty.path "u128" ]
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::convert::TryInto",
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [],
+                                                  [],
+                                                  [ Ty.path "u128" ],
+                                                  "try_into",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
                                                 []
-                                                [ Ty.path "u128" ]
-                                            ],
-                                          "unwrap",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
+                                                [
+                                                  Ty.path "u128";
+                                                  Ty.apply
+                                                    (Ty.path "ruint::from::FromUintError")
+                                                    []
+                                                    [ Ty.path "u128" ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.path "u128");
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "u128",
+                                          M.get_associated_function (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
@@ -1754,19 +2032,57 @@ Module algorithms.
                                                   []
                                                   [ Ty.path "u128" ]
                                               ],
-                                            M.get_trait_method (|
-                                              "core::convert::TryInto",
-                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              [],
-                                              [ Ty.path "u128" ],
-                                              "try_into",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| b |) ]
-                                          |)
-                                        ]
-                                      |)
+                                            "unwrap",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path "u128";
+                                                    Ty.apply
+                                                      (Ty.path "ruint::from::FromUintError")
+                                                      []
+                                                      [ Ty.path "u128" ]
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::convert::TryInto",
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [],
+                                                  [],
+                                                  [ Ty.path "u128" ],
+                                                  "try_into",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "u128";
+                                                  Ty.apply
+                                                    (Ty.path "ruint::from::FromUintError")
+                                                    []
+                                                    [ Ty.path "u128" ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.path "u128")
                                     ]
                                   |)));
                               fun γ =>
@@ -1785,12 +2101,17 @@ Module algorithms.
                                           []
                                         |),
                                         [
-                                          M.read (| a |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.sub,
-                                            [ M.read (| s |); Value.Integer IntegerKind.Usize 128 ]
-                                          |)
+                                          M.value_with_ty
+                                            (M.read (| a |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.sub,
+                                              [ M.read (| s |); Value.Integer IntegerKind.Usize 128
+                                              ]
+                                            |))
+                                            (Ty.path "usize")
                                         ]
                                       |) in
                                     let~ b : Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] :=
@@ -1806,12 +2127,17 @@ Module algorithms.
                                           []
                                         |),
                                         [
-                                          M.read (| b |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.sub,
-                                            [ M.read (| s |); Value.Integer IntegerKind.Usize 128 ]
-                                          |)
+                                          M.value_with_ty
+                                            (M.read (| b |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.sub,
+                                              [ M.read (| s |); Value.Integer IntegerKind.Usize 128
+                                              ]
+                                            |))
+                                            (Ty.path "usize")
                                         ]
                                       |) in
                                     M.alloc (|
@@ -1825,25 +2151,10 @@ Module algorithms.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.path "u128",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.path "u128";
-                                                  Ty.apply
-                                                    (Ty.path "ruint::from::FromUintError")
-                                                    []
-                                                    [ Ty.path "u128" ]
-                                                ],
-                                              "unwrap",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "u128",
+                                              M.get_associated_function (|
                                                 Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
@@ -1854,41 +2165,61 @@ Module algorithms.
                                                       []
                                                       [ Ty.path "u128" ]
                                                   ],
-                                                M.get_trait_method (|
-                                                  "core::convert::TryInto",
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    [],
-                                                  [],
-                                                  [ Ty.path "u128" ],
-                                                  "try_into",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| a |) ]
-                                              |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "u128",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
+                                                "unwrap",
+                                                [],
                                                 []
-                                                [
-                                                  Ty.path "u128";
-                                                  Ty.apply
-                                                    (Ty.path "ruint::from::FromUintError")
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path "u128";
+                                                        Ty.apply
+                                                          (Ty.path "ruint::from::FromUintError")
+                                                          []
+                                                          [ Ty.path "u128" ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "core::convert::TryInto",
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      [],
+                                                      [ Ty.path "u128" ],
+                                                      "try_into",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| a |))
+                                                        (Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [ BITS; LIMBS ]
+                                                          [])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
                                                     []
-                                                    [ Ty.path "u128" ]
-                                                ],
-                                              "unwrap",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
+                                                    [
+                                                      Ty.path "u128";
+                                                      Ty.apply
+                                                        (Ty.path "ruint::from::FromUintError")
+                                                        []
+                                                        [ Ty.path "u128" ]
+                                                    ])
+                                              ]
+                                            |))
+                                            (Ty.path "u128");
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "u128",
+                                              M.get_associated_function (|
                                                 Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
@@ -1899,22 +2230,57 @@ Module algorithms.
                                                       []
                                                       [ Ty.path "u128" ]
                                                   ],
-                                                M.get_trait_method (|
-                                                  "core::convert::TryInto",
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    [],
-                                                  [],
-                                                  [ Ty.path "u128" ],
-                                                  "try_into",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| b |) ]
-                                              |)
-                                            ]
-                                          |)
+                                                "unwrap",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path "u128";
+                                                        Ty.apply
+                                                          (Ty.path "ruint::from::FromUintError")
+                                                          []
+                                                          [ Ty.path "u128" ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "core::convert::TryInto",
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      [],
+                                                      [ Ty.path "u128" ],
+                                                      "try_into",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| b |))
+                                                        (Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [ BITS; LIMBS ]
+                                                          [])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "u128";
+                                                      Ty.apply
+                                                        (Ty.path "ruint::from::FromUintError")
+                                                        []
+                                                        [ Ty.path "u128" ]
+                                                    ])
+                                              ]
+                                            |))
+                                            (Ty.path "u128")
                                         ]
                                       |)
                                     |)
@@ -2013,7 +2379,11 @@ Module algorithms.
                                             M.call_closure (|
                                               Ty.path "never",
                                               M.get_function (| "core::panicking::panic", [], [] |),
-                                              [ mk_str (| "assertion failed: r0 >= r1" |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (mk_str (| "assertion failed: r0 >= r1" |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
                                             |)
                                           |)));
                                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2152,17 +2522,17 @@ Module algorithms.
                                         M.never_to_any (|
                                           M.read (|
                                             M.return_ (|
-                                              Value.StructTuple
-                                                "ruint::algorithms::gcd::matrix::Matrix"
-                                                []
-                                                []
-                                                [
-                                                  M.read (| q10 |);
-                                                  M.read (| q11 |);
-                                                  M.read (| q00 |);
-                                                  M.read (| q01 |);
-                                                  Value.Bool false
-                                                ]
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "ruint::algorithms::gcd::matrix::Matrix"
+                                                  [
+                                                    M.read (| q10 |);
+                                                    M.read (| q11 |);
+                                                    M.read (| q00 |);
+                                                    M.read (| q01 |);
+                                                    Value.Bool false
+                                                  ])
+                                                (Ty.path "ruint::algorithms::gcd::matrix::Matrix")
                                             |)
                                           |)
                                         |)));
@@ -2252,17 +2622,17 @@ Module algorithms.
                                         M.never_to_any (|
                                           M.read (|
                                             M.return_ (|
-                                              Value.StructTuple
-                                                "ruint::algorithms::gcd::matrix::Matrix"
-                                                []
-                                                []
-                                                [
-                                                  M.read (| q00 |);
-                                                  M.read (| q01 |);
-                                                  M.read (| q10 |);
-                                                  M.read (| q11 |);
-                                                  Value.Bool true
-                                                ]
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "ruint::algorithms::gcd::matrix::Matrix"
+                                                  [
+                                                    M.read (| q00 |);
+                                                    M.read (| q01 |);
+                                                    M.read (| q10 |);
+                                                    M.read (| q11 |);
+                                                    Value.Bool true
+                                                  ])
+                                                (Ty.path "ruint::algorithms::gcd::matrix::Matrix")
                                             |)
                                           |)
                                         |)));
@@ -2468,7 +2838,13 @@ Module algorithms.
                                             M.call_closure (|
                                               Ty.path "never",
                                               M.get_function (| "core::panicking::panic", [], [] |),
-                                              [ mk_str (| "assertion failed: a0 >= 1_u64 << 63" |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (mk_str (|
+                                                    "assertion failed: a0 >= 1_u64 << 63"
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
                                             |)
                                           |)));
                                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2522,7 +2898,11 @@ Module algorithms.
                                             M.call_closure (|
                                               Ty.path "never",
                                               M.get_function (| "core::panicking::panic", [], [] |),
-                                              [ mk_str (| "assertion failed: a0 >= a1" |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (mk_str (| "assertion failed: a0 >= a1" |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
                                             |)
                                           |)));
                                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2705,17 +3085,17 @@ Module algorithms.
                                           M.never_to_any (|
                                             M.read (|
                                               M.return_ (|
-                                                Value.StructTuple
-                                                  "ruint::algorithms::gcd::matrix::Matrix"
-                                                  []
-                                                  []
-                                                  [
-                                                    Value.Integer IntegerKind.U64 0;
-                                                    Value.Integer IntegerKind.U64 1;
-                                                    M.read (| u2 |);
-                                                    M.read (| v2 |);
-                                                    Value.Bool false
-                                                  ]
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "ruint::algorithms::gcd::matrix::Matrix"
+                                                    [
+                                                      Value.Integer IntegerKind.U64 0;
+                                                      Value.Integer IntegerKind.U64 1;
+                                                      M.read (| u2 |);
+                                                      M.read (| v2 |);
+                                                      Value.Bool false
+                                                    ])
+                                                  (Ty.path "ruint::algorithms::gcd::matrix::Matrix")
                                               |)
                                             |)
                                           |)));
@@ -2877,9 +3257,14 @@ Module algorithms.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    mk_str (|
-                                                                      "assertion failed: a2 < a3"
-                                                                    |)
+                                                                    M.value_with_ty
+                                                                      (mk_str (|
+                                                                        "assertion failed: a2 < a3"
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ Ty.path "str" ])
                                                                   ]
                                                                 |)
                                                               |)));
@@ -2952,9 +3337,14 @@ Module algorithms.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    mk_str (|
-                                                                      "assertion failed: a2 > 0"
-                                                                    |)
+                                                                    M.value_with_ty
+                                                                      (mk_str (|
+                                                                        "assertion failed: a2 > 0"
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ Ty.path "str" ])
                                                                   ]
                                                                 |)
                                                               |)));
@@ -3112,9 +3502,14 @@ Module algorithms.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    mk_str (|
-                                                                      "assertion failed: a2 < a3"
-                                                                    |)
+                                                                    M.value_with_ty
+                                                                      (mk_str (|
+                                                                        "assertion failed: a2 < a3"
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ Ty.path "str" ])
                                                                   ]
                                                                 |)
                                                               |)));
@@ -3187,9 +3582,14 @@ Module algorithms.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    mk_str (|
-                                                                      "assertion failed: a2 > 0"
-                                                                    |)
+                                                                    M.value_with_ty
+                                                                      (mk_str (|
+                                                                        "assertion failed: a2 > 0"
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ Ty.path "str" ])
                                                                   ]
                                                                 |)
                                                               |)));
@@ -3388,7 +3788,11 @@ Module algorithms.
                                             M.call_closure (|
                                               Ty.path "never",
                                               M.get_function (| "core::panicking::panic", [], [] |),
-                                              [ mk_str (| "assertion failed: a2 >= LIMIT" |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (mk_str (| "assertion failed: a2 >= LIMIT" |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
                                             |)
                                           |)));
                                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -3450,7 +3854,11 @@ Module algorithms.
                                             M.call_closure (|
                                               Ty.path "never",
                                               M.get_function (| "core::panicking::panic", [], [] |),
-                                              [ mk_str (| "assertion failed: a3 < LIMIT" |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (mk_str (| "assertion failed: a3 < LIMIT" |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
                                             |)
                                           |)));
                                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -3526,9 +3934,14 @@ Module algorithms.
                                                             []
                                                           |),
                                                           [
-                                                            mk_str (|
-                                                              "assertion failed: a2 >= v2"
-                                                            |)
+                                                            M.value_with_ty
+                                                              (mk_str (|
+                                                                "assertion failed: a2 >= v2"
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [ Ty.path "str" ])
                                                           ]
                                                         |)
                                                       |)));
@@ -3616,45 +4029,47 @@ Module algorithms.
                                                       M.read (| γ |),
                                                       Value.Bool true
                                                     |) in
-                                                  Value.StructTuple
-                                                    "ruint::algorithms::gcd::matrix::Matrix"
-                                                    []
-                                                    []
-                                                    [
-                                                      M.read (| u2 |);
-                                                      M.read (| v2 |);
-                                                      M.read (| u3 |);
-                                                      M.read (| v3 |);
-                                                      Value.Bool true
-                                                    ]));
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "ruint::algorithms::gcd::matrix::Matrix"
+                                                      [
+                                                        M.read (| u2 |);
+                                                        M.read (| v2 |);
+                                                        M.read (| u3 |);
+                                                        M.read (| v3 |);
+                                                        Value.Bool true
+                                                      ])
+                                                    (Ty.path
+                                                      "ruint::algorithms::gcd::matrix::Matrix")));
                                               fun γ =>
                                                 ltac:(M.monadic
-                                                  (Value.StructTuple
-                                                    "ruint::algorithms::gcd::matrix::Matrix"
-                                                    []
-                                                    []
-                                                    [
-                                                      M.read (| u1 |);
-                                                      M.read (| v1 |);
-                                                      M.read (| u2 |);
-                                                      M.read (| v2 |);
-                                                      Value.Bool false
-                                                    ]))
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "ruint::algorithms::gcd::matrix::Matrix"
+                                                      [
+                                                        M.read (| u1 |);
+                                                        M.read (| v1 |);
+                                                        M.read (| u2 |);
+                                                        M.read (| v2 |);
+                                                        Value.Bool false
+                                                      ])
+                                                    (Ty.path
+                                                      "ruint::algorithms::gcd::matrix::Matrix")))
                                             ]
                                           |)));
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (Value.StructTuple
-                                            "ruint::algorithms::gcd::matrix::Matrix"
-                                            []
-                                            []
-                                            [
-                                              M.read (| u0 |);
-                                              M.read (| v0 |);
-                                              M.read (| u1 |);
-                                              M.read (| v1 |);
-                                              Value.Bool true
-                                            ]))
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "ruint::algorithms::gcd::matrix::Matrix"
+                                              [
+                                                M.read (| u0 |);
+                                                M.read (| v0 |);
+                                                M.read (| u1 |);
+                                                M.read (| v1 |);
+                                                Value.Bool true
+                                              ])
+                                            (Ty.path "ruint::algorithms::gcd::matrix::Matrix")))
                                     ]
                                   |)
                                 |)
@@ -3715,9 +4130,14 @@ Module algorithms.
                                                             []
                                                           |),
                                                           [
-                                                            mk_str (|
-                                                              "assertion failed: a2 >= u2"
-                                                            |)
+                                                            M.value_with_ty
+                                                              (mk_str (|
+                                                                "assertion failed: a2 >= u2"
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [ Ty.path "str" ])
                                                           ]
                                                         |)
                                                       |)));
@@ -3805,45 +4225,47 @@ Module algorithms.
                                                       M.read (| γ |),
                                                       Value.Bool true
                                                     |) in
-                                                  Value.StructTuple
-                                                    "ruint::algorithms::gcd::matrix::Matrix"
-                                                    []
-                                                    []
-                                                    [
-                                                      M.read (| u2 |);
-                                                      M.read (| v2 |);
-                                                      M.read (| u3 |);
-                                                      M.read (| v3 |);
-                                                      Value.Bool false
-                                                    ]));
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "ruint::algorithms::gcd::matrix::Matrix"
+                                                      [
+                                                        M.read (| u2 |);
+                                                        M.read (| v2 |);
+                                                        M.read (| u3 |);
+                                                        M.read (| v3 |);
+                                                        Value.Bool false
+                                                      ])
+                                                    (Ty.path
+                                                      "ruint::algorithms::gcd::matrix::Matrix")));
                                               fun γ =>
                                                 ltac:(M.monadic
-                                                  (Value.StructTuple
-                                                    "ruint::algorithms::gcd::matrix::Matrix"
-                                                    []
-                                                    []
-                                                    [
-                                                      M.read (| u1 |);
-                                                      M.read (| v1 |);
-                                                      M.read (| u2 |);
-                                                      M.read (| v2 |);
-                                                      Value.Bool true
-                                                    ]))
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "ruint::algorithms::gcd::matrix::Matrix"
+                                                      [
+                                                        M.read (| u1 |);
+                                                        M.read (| v1 |);
+                                                        M.read (| u2 |);
+                                                        M.read (| v2 |);
+                                                        Value.Bool true
+                                                      ])
+                                                    (Ty.path
+                                                      "ruint::algorithms::gcd::matrix::Matrix")))
                                             ]
                                           |)));
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (Value.StructTuple
-                                            "ruint::algorithms::gcd::matrix::Matrix"
-                                            []
-                                            []
-                                            [
-                                              M.read (| u0 |);
-                                              M.read (| v0 |);
-                                              M.read (| u1 |);
-                                              M.read (| v1 |);
-                                              Value.Bool false
-                                            ]))
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "ruint::algorithms::gcd::matrix::Matrix"
+                                              [
+                                                M.read (| u0 |);
+                                                M.read (| v0 |);
+                                                M.read (| u1 |);
+                                                M.read (| v1 |);
+                                                Value.Bool false
+                                              ])
+                                            (Ty.path "ruint::algorithms::gcd::matrix::Matrix")))
                                     ]
                                   |)
                                 |)
@@ -3940,7 +4362,11 @@ Module algorithms.
                                             M.call_closure (|
                                               Ty.path "never",
                                               M.get_function (| "core::panicking::panic", [], [] |),
-                                              [ mk_str (| "assertion failed: r0 >= r1" |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (mk_str (| "assertion failed: r0 >= r1" |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
                                             |)
                                           |)));
                                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -3955,7 +4381,7 @@ Module algorithms.
                       M.call_closure (|
                         Ty.path "u32",
                         M.get_associated_function (| Ty.path "u128", "leading_zeros", [], [] |),
-                        [ M.read (| r0 |) ]
+                        [ M.value_with_ty (M.read (| r0 |)) (Ty.path "u128") ]
                       |) in
                     let~ r0s : Ty.path "u128" :=
                       M.call_closure (|
@@ -3979,20 +4405,24 @@ Module algorithms.
                           []
                         |),
                         [
-                          M.cast
+                          M.value_with_ty
+                            (M.cast
+                              (Ty.path "u64")
+                              (M.call_closure (|
+                                Ty.path "u128",
+                                BinOp.Wrap.shr,
+                                [ M.read (| r0s |); Value.Integer IntegerKind.I32 64 ]
+                              |)))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.cast
+                              (Ty.path "u64")
+                              (M.call_closure (|
+                                Ty.path "u128",
+                                BinOp.Wrap.shr,
+                                [ M.read (| r1s |); Value.Integer IntegerKind.I32 64 ]
+                              |)))
                             (Ty.path "u64")
-                            (M.call_closure (|
-                              Ty.path "u128",
-                              BinOp.Wrap.shr,
-                              [ M.read (| r0s |); Value.Integer IntegerKind.I32 64 ]
-                            |));
-                          M.cast
-                            (Ty.path "u64")
-                            (M.call_closure (|
-                              Ty.path "u128",
-                              BinOp.Wrap.shr,
-                              [ M.read (| r1s |); Value.Integer IntegerKind.I32 64 ]
-                            |))
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
@@ -4018,15 +4448,25 @@ Module algorithms.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, q |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          get_associated_constant (|
-                                            Ty.path "ruint::algorithms::gcd::matrix::Matrix",
-                                            "IDENTITY",
-                                            Ty.path "ruint::algorithms::gcd::matrix::Matrix"
-                                          |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, q |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "ruint::algorithms::gcd::matrix::Matrix" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            get_associated_constant (|
+                                              Ty.path "ruint::algorithms::gcd::matrix::Matrix",
+                                              "IDENTITY",
+                                              Ty.path "ruint::algorithms::gcd::matrix::Matrix"
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "ruint::algorithms::gcd::matrix::Matrix" ])
                                       ]
                                     |)
                                   |)) in

@@ -58,20 +58,26 @@ Module slice.
                               []
                             |),
                             [
-                              M.cast
-                                (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                (M.read (| data |));
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                []
-                              |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_function (| "core::mem::align_of", [], [ T ] |),
-                                []
-                              |);
-                              M.read (| len |)
+                              M.value_with_ty
+                                (M.cast
+                                  (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                  (M.read (| data |)))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_function (| "core::mem::size_of", [], [ T ] |),
+                                  []
+                                |))
+                                (Ty.path "usize");
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                  []
+                                |))
+                                (Ty.path "usize");
+                              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -90,7 +96,12 @@ Module slice.
                       M.call_closure (|
                         Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                         M.get_function (| "core::ptr::slice_from_raw_parts", [], [ T ] |),
-                        [ M.read (| data |); M.read (| len |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| data |))
+                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                          M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                        ]
                       |)
                     |)
                   |)
@@ -172,20 +183,26 @@ Module slice.
                                       []
                                     |),
                                     [
-                                      M.cast
-                                        (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                        (M.read (| data |));
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                        []
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_function (| "core::mem::align_of", [], [ T ] |),
-                                        []
-                                      |);
-                                      M.read (| len |)
+                                      M.value_with_ty
+                                        (M.cast
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                          (M.read (| data |)))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_function (| "core::mem::size_of", [], [ T ] |),
+                                          []
+                                        |))
+                                        (Ty.path "usize");
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                          []
+                                        |))
+                                        (Ty.path "usize");
+                                      M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -211,7 +228,12 @@ Module slice.
                                   [],
                                   [ T ]
                                 |),
-                                [ M.read (| data |); M.read (| len |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| data |))
+                                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                  M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                                ]
                               |)
                             |)
                           |)
@@ -260,7 +282,11 @@ Module slice.
                       []
                       [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ T ] ],
                     M.get_function (| "core::array::from_ref", [], [ T ] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ T ])
+                    ]
                   |)
                 |)
               |)
@@ -307,7 +333,11 @@ Module slice.
                           [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ T ]
                           ],
                         M.get_function (| "core::array::from_mut", [], [ T ] |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| s |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| s |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ T ])
+                        ]
                       |)
                     |)
                   |)
@@ -348,38 +378,46 @@ Module slice.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                 M.get_function (| "core::slice::raw::from_raw_parts", [], [ T ] |),
                 [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      range,
-                      "core::ops::range::Range",
-                      "start"
-                    |)
-                  |);
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "*const") [] [ T ],
-                      "sub_ptr",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          range,
-                          "core::ops::range::Range",
-                          "end"
-                        |)
-                      |);
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          range,
-                          "core::ops::range::Range",
-                          "start"
-                        |)
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        range,
+                        "core::ops::range::Range",
+                        "start"
                       |)
-                    ]
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "*const") [] [ T ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "*const") [] [ T ],
+                        "sub_ptr",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              range,
+                              "core::ops::range::Range",
+                              "end"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "*const") [] [ T ]);
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              range,
+                              "core::ops::range::Range",
+                              "start"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "*const") [] [ T ])
+                      ]
+                    |))
+                    (Ty.path "usize")
                 ]
               |)
             |)
@@ -423,47 +461,55 @@ Module slice.
                         Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                         M.get_function (| "core::slice::raw::from_raw_parts_mut", [], [ T ] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              range,
-                              "core::ops::range::Range",
-                              "start"
-                            |)
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "*mut") [] [ T ],
-                              "sub_ptr",
-                              [],
-                              []
-                            |),
-                            [
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  range,
-                                  "core::ops::range::Range",
-                                  "end"
-                                |)
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ T ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.MutToConstPointer
-                                  (Ty.apply (Ty.path "*mut") [] [ T ])
-                                  (Ty.apply (Ty.path "*const") [] [ T ]),
-                                [
-                                  M.read (|
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                range,
+                                "core::ops::range::Range",
+                                "start"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                "sub_ptr",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (|
                                     M.SubPointer.get_struct_record_field (|
                                       range,
                                       "core::ops::range::Range",
-                                      "start"
+                                      "end"
                                     |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
+                                  |))
+                                  (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ T ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ T ])
+                                      (Ty.apply (Ty.path "*const") [] [ T ]),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          range,
+                                          "core::ops::range::Range",
+                                          "start"
+                                        |)
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ T ])
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |)

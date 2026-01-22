@@ -42,7 +42,11 @@ Definition division (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M
                     [],
                     [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
                   |),
-                  [ mk_str (| "division by zero" |) ]
+                  [
+                    M.value_with_ty
+                      (mk_str (| "division by zero" |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                  ]
                 |)
               |)));
           fun γ =>
@@ -98,13 +102,16 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ Value.Integer IntegerKind.I32 0 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.I32 0) (Ty.path "i32") ]
           |) in
         let~ _ : Ty.path "i32" :=
           M.call_closure (|
             Ty.path "i32",
             M.get_function (| "panic::division", [], [] |),
-            [ Value.Integer IntegerKind.I32 3; Value.Integer IntegerKind.I32 0 ]
+            [
+              M.value_with_ty (Value.Integer IntegerKind.I32 3) (Ty.path "i32");
+              M.value_with_ty (Value.Integer IntegerKind.I32 0) (Ty.path "i32")
+            ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.read (|
@@ -113,33 +120,45 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_const",
-                      [ Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_const",
+                        [ Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array [ mk_str (| "This point won't be reached!
+" |) ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "This point won't be reached!
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)

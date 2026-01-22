@@ -119,63 +119,78 @@ Module alloc.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Layout" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "size" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::alloc::layout::Layout",
-                            "size"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Layout" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "size" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::alloc::layout::Layout",
+                              "size"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "align" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::Alignment" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::Alignment" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::alloc::layout::Layout",
-                                "align"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "align" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::Alignment" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::ptr::alignment::Alignment" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::alloc::layout::Layout",
+                                  "align"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -254,22 +269,26 @@ Module alloc.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::alloc::layout::Layout",
-                        "align"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "core::alloc::layout::Layout",
-                        "align"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::alloc::layout::Layout",
+                          "align"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::Alignment" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "core::alloc::layout::Layout",
+                          "align"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::Alignment" ])
                   ]
                 |)))
             |)))
@@ -356,20 +375,24 @@ Module alloc.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::alloc::layout::Layout",
-                            "size"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::alloc::layout::Layout",
+                              "size"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -386,20 +409,24 @@ Module alloc.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::alloc::layout::Layout",
-                            "align"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::alloc::layout::Layout",
+                              "align"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::Alignment" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -457,46 +484,59 @@ Module alloc.
                               [],
                               []
                             |),
-                            [ M.read (| size |); M.read (| align |) ]
+                            [
+                              M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                              M.value_with_ty (M.read (| align |)) (Ty.path "usize")
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.path "core::alloc::layout::Layout";
-                        Ty.path "core::alloc::layout::LayoutError"
-                      ]
-                      [
-                        Value.mkStructRecord
-                          "core::alloc::layout::Layout"
-                          []
-                          []
-                          [
-                            ("size", M.read (| size |));
-                            ("align",
-                              M.call_closure (|
-                                Ty.path "core::ptr::alignment::Alignment",
-                                M.get_function (|
-                                  "core::intrinsics::transmute",
-                                  [],
-                                  [ Ty.path "usize"; Ty.path "core::ptr::alignment::Alignment" ]
-                                |),
-                                [ M.read (| align |) ]
-                              |))
-                          ]
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Ok"
+                        [
+                          M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::alloc::layout::Layout"
+                              [
+                                ("size", M.read (| size |));
+                                ("align",
+                                  M.call_closure (|
+                                    Ty.path "core::ptr::alignment::Alignment",
+                                    M.get_function (|
+                                      "core::intrinsics::transmute",
+                                      [],
+                                      [ Ty.path "usize"; Ty.path "core::ptr::alignment::Alignment" ]
+                                    |),
+                                    [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
+                                  |))
+                              ])
+                            (Ty.path "core::alloc::layout::Layout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "core::alloc::layout::Layout";
+                          Ty.path "core::alloc::layout::LayoutError"
+                        ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.path "core::alloc::layout::Layout";
-                        Ty.path "core::alloc::layout::LayoutError"
-                      ]
-                      [ Value.StructTuple "core::alloc::layout::LayoutError" [] [] [] ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::alloc::layout::LayoutError" [])
+                            (Ty.path "core::alloc::layout::LayoutError")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "core::alloc::layout::Layout";
+                          Ty.path "core::alloc::layout::LayoutError"
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -542,7 +582,7 @@ Module alloc.
                         [],
                         []
                       |),
-                      [ M.read (| align |) ]
+                      [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
                     |)
                   |),
                   [
@@ -580,7 +620,11 @@ Module alloc.
                                                   [],
                                                   []
                                                 |),
-                                                [ M.read (| align |) ]
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| align |))
+                                                    (Ty.path "core::ptr::alignment::Alignment")
+                                                ]
                                               |)
                                             ]
                                           |)
@@ -641,28 +685,36 @@ Module alloc.
               Ty.path "usize",
               M.get_function (| "core::intrinsics::unchecked_sub", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.add,
-                  [
-                    M.cast
-                      (Ty.path "usize")
-                      (M.read (|
-                        get_associated_constant (| Ty.path "isize", "MAX", Ty.path "isize" |)
-                      |));
-                    Value.Integer IntegerKind.Usize 1
-                  ]
-                |);
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (|
-                    Ty.path "core::ptr::alignment::Alignment",
-                    "as_usize",
-                    [],
-                    []
-                  |),
-                  [ M.read (| align |) ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.add,
+                    [
+                      M.cast
+                        (Ty.path "usize")
+                        (M.read (|
+                          get_associated_constant (| Ty.path "isize", "MAX", Ty.path "isize" |)
+                        |));
+                      Value.Integer IntegerKind.Usize 1
+                    ]
+                  |))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (|
+                      Ty.path "core::ptr::alignment::Alignment",
+                      "as_usize",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| align |))
+                        (Ty.path "core::ptr::alignment::Alignment")
+                    ]
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -721,7 +773,11 @@ Module alloc.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| align |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| align |))
+                                            (Ty.path "core::ptr::alignment::Alignment")
+                                        ]
                                       |)
                                     ]
                                   |)
@@ -731,15 +787,21 @@ Module alloc.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.path "core::alloc::layout::Layout";
-                                      Ty.path "core::alloc::layout::LayoutError"
-                                    ]
-                                    [ Value.StructTuple "core::alloc::layout::LayoutError" [] [] []
-                                    ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [
+                                        M.value_with_ty
+                                          (Value.StructTuple "core::alloc::layout::LayoutError" [])
+                                          (Ty.path "core::alloc::layout::LayoutError")
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::alloc::layout::Layout";
+                                        Ty.path "core::alloc::layout::LayoutError"
+                                      ])
                                 |)
                               |)
                             |)));
@@ -754,20 +816,23 @@ Module alloc.
                         Ty.path "core::alloc::layout::Layout";
                         Ty.path "core::alloc::layout::LayoutError"
                       ],
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.path "core::alloc::layout::Layout";
-                        Ty.path "core::alloc::layout::LayoutError"
-                      ]
-                      [
-                        Value.mkStructRecord
-                          "core::alloc::layout::Layout"
-                          []
-                          []
-                          [ ("size", M.read (| size |)); ("align", M.read (| align |)) ]
-                      ]
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Ok"
+                        [
+                          M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::alloc::layout::Layout"
+                              [ ("size", M.read (| size |)); ("align", M.read (| align |)) ])
+                            (Ty.path "core::alloc::layout::Layout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "core::alloc::layout::Layout";
+                          Ty.path "core::alloc::layout::LayoutError"
+                        ])
                   |)
                 |)))
             |)))
@@ -833,7 +898,10 @@ Module alloc.
                                 [],
                                 []
                               |),
-                              [ M.read (| size |); M.read (| align |) ]
+                              [
+                                M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                                M.value_with_ty (M.read (| align |)) (Ty.path "usize")
+                              ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -842,23 +910,23 @@ Module alloc.
                 |) in
               M.alloc (|
                 Ty.path "core::alloc::layout::Layout",
-                Value.mkStructRecord
-                  "core::alloc::layout::Layout"
-                  []
-                  []
-                  [
-                    ("size", M.read (| size |));
-                    ("align",
-                      M.call_closure (|
-                        Ty.path "core::ptr::alignment::Alignment",
-                        M.get_function (|
-                          "core::intrinsics::transmute",
-                          [],
-                          [ Ty.path "usize"; Ty.path "core::ptr::alignment::Alignment" ]
-                        |),
-                        [ M.read (| align |) ]
-                      |))
-                  ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::alloc::layout::Layout"
+                    [
+                      ("size", M.read (| size |));
+                      ("align",
+                        M.call_closure (|
+                          Ty.path "core::ptr::alignment::Alignment",
+                          M.get_function (|
+                            "core::intrinsics::transmute",
+                            [],
+                            [ Ty.path "usize"; Ty.path "core::ptr::alignment::Alignment" ]
+                          |),
+                          [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
+                        |))
+                    ])
+                  (Ty.path "core::alloc::layout::Layout")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -920,13 +988,15 @@ Module alloc.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::alloc::layout::Layout",
-                    "align"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::alloc::layout::Layout",
+                      "align"
+                    |)
+                  |))
+                  (Ty.path "core::ptr::alignment::Alignment")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -974,7 +1044,10 @@ Module alloc.
                         [],
                         []
                       |),
-                      [ M.read (| size |); M.read (| align |) ]
+                      [
+                        M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                        M.value_with_ty (M.read (| align |)) (Ty.path "usize")
+                      ]
                     |)))
               ]
             |)))
@@ -1006,12 +1079,20 @@ Module alloc.
                     M.call_closure (|
                       Ty.path "usize",
                       M.get_function (| "core::mem::size_of_val", [], [ T ] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ T ])
+                      ]
                     |);
                     M.call_closure (|
                       Ty.path "usize",
                       M.get_function (| "core::mem::align_of_val", [], [ T ] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ T ])
+                      ]
                     |)
                   ]
               |),
@@ -1030,7 +1111,10 @@ Module alloc.
                         [],
                         []
                       |),
-                      [ M.read (| size |); M.read (| align |) ]
+                      [
+                        M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                        M.value_with_ty (M.read (| align |)) (Ty.path "usize")
+                      ]
                     |)))
               ]
             |)))
@@ -1064,12 +1148,12 @@ Module alloc.
                     M.call_closure (|
                       Ty.path "usize",
                       M.get_function (| "core::mem::size_of_val_raw", [], [ T ] |),
-                      [ M.read (| t |) ]
+                      [ M.value_with_ty (M.read (| t |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
                     |);
                     M.call_closure (|
                       Ty.path "usize",
                       M.get_function (| "core::mem::align_of_val_raw", [], [ T ] |),
-                      [ M.read (| t |) ]
+                      [ M.value_with_ty (M.read (| t |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
                     |)
                   ]
               |),
@@ -1088,7 +1172,10 @@ Module alloc.
                         [],
                         []
                       |),
-                      [ M.read (| size |); M.read (| align |) ]
+                      [
+                        M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                        M.value_with_ty (M.read (| align |)) (Ty.path "usize")
+                      ]
                     |)))
               ]
             |)))
@@ -1124,22 +1211,30 @@ Module alloc.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_function (| "core::ptr::without_provenance_mut", [], [ Ty.path "u8" ] |),
-                  [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.path "core::alloc::layout::Layout",
-                        "align",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
-                  ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_function (| "core::ptr::without_provenance_mut", [], [ Ty.path "u8" ] |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.path "core::alloc::layout::Layout",
+                            "align",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ])
+                          ]
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1196,7 +1291,7 @@ Module alloc.
                             [],
                             []
                           |),
-                          [ M.read (| align |) ]
+                          [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
                         |)
                       |) in
                     let γ0_0 :=
@@ -1221,44 +1316,59 @@ Module alloc.
                         []
                       |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::alloc::layout::Layout",
-                            "size"
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.path "core::ptr::alignment::Alignment",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::alloc::layout::Layout",
+                              "size"
+                            |)
+                          |))
+                          (Ty.path "usize");
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::ptr::alignment::Alignment",
-                            "max",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::alloc::layout::Layout",
-                                "align"
-                              |)
-                            |);
-                            M.read (| align |)
-                          ]
-                        |)
+                            M.get_associated_function (|
+                              Ty.path "core::ptr::alignment::Alignment",
+                              "max",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::alloc::layout::Layout",
+                                    "align"
+                                  |)
+                                |))
+                                (Ty.path "core::ptr::alignment::Alignment");
+                              M.value_with_ty
+                                (M.read (| align |))
+                                (Ty.path "core::ptr::alignment::Alignment")
+                            ]
+                          |))
+                          (Ty.path "core::ptr::alignment::Alignment")
                       ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.path "core::alloc::layout::Layout";
-                        Ty.path "core::alloc::layout::LayoutError"
-                      ]
-                      [ Value.StructTuple "core::alloc::layout::LayoutError" [] [] [] ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::alloc::layout::LayoutError" [])
+                            (Ty.path "core::alloc::layout::LayoutError")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "core::alloc::layout::Layout";
+                          Ty.path "core::alloc::layout::LayoutError"
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1308,7 +1418,7 @@ Module alloc.
                         [],
                         []
                       |),
-                      [ M.read (| align |) ]
+                      [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
                     |)
                   |),
                   [
@@ -1332,8 +1442,15 @@ Module alloc.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.read (| align |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::alloc::layout::Layout" ]);
+                                M.value_with_ty
+                                  (M.read (| align |))
+                                  (Ty.path "core::ptr::alignment::Alignment")
                               ]
                             |) in
                           M.alloc (|
@@ -1346,14 +1463,16 @@ Module alloc.
                                 [ Ty.path "usize" ]
                               |),
                               [
-                                M.read (| len_rounded_up |);
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::alloc::layout::Layout",
-                                    "size"
-                                  |)
-                                |)
+                                M.value_with_ty (M.read (| len_rounded_up |)) (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::alloc::layout::Layout",
+                                      "size"
+                                    |)
+                                  |))
+                                  (Ty.path "usize")
                               ]
                             |)
                           |)
@@ -1425,17 +1544,23 @@ Module alloc.
                   Ty.path "usize",
                   M.get_function (| "core::intrinsics::unchecked_sub", [], [ Ty.path "usize" ] |),
                   [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.path "core::ptr::alignment::Alignment",
-                        "as_usize",
-                        [],
-                        []
-                      |),
-                      [ M.read (| align |) ]
-                    |);
-                    Value.Integer IntegerKind.Usize 1
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.path "core::ptr::alignment::Alignment",
+                          "as_usize",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| align |))
+                            (Ty.path "core::ptr::alignment::Alignment")
+                        ]
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                   ]
                 |) in
               let~ size_rounded_up : Ty.path "usize" :=
@@ -1451,14 +1576,16 @@ Module alloc.
                         [ Ty.path "usize" ]
                       |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::alloc::layout::Layout",
-                            "size"
-                          |)
-                        |);
-                        M.read (| align_m1 |)
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::alloc::layout::Layout",
+                              "size"
+                            |)
+                          |))
+                          (Ty.path "usize");
+                        M.value_with_ty (M.read (| align_m1 |)) (Ty.path "usize")
                       ]
                     |);
                     M.call_closure (| Ty.path "usize", UnOp.not, [ M.read (| align_m1 |) ] |)
@@ -1509,14 +1636,18 @@ Module alloc.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::alloc::layout::Layout",
-                        "align"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::alloc::layout::Layout",
+                          "align"
+                        |)
+                      |))
+                      (Ty.path "core::ptr::alignment::Alignment")
                   ]
                 |) in
               M.alloc (|
@@ -1530,17 +1661,23 @@ Module alloc.
                     []
                   |),
                   [
-                    M.read (| new_size |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.path "core::alloc::layout::Layout",
-                        "align",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
+                    M.value_with_ty (M.read (| new_size |)) (Ty.path "usize");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.path "core::alloc::layout::Layout",
+                          "align",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ])
+                        ]
+                      |))
+                      (Ty.path "usize")
                   ]
                 |)
               |)
@@ -1583,7 +1720,11 @@ Module alloc.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply
@@ -1628,7 +1769,15 @@ Module alloc.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, padded |); M.read (| n |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, padded |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::alloc::layout::Layout" ]);
+                                M.value_with_ty (M.read (| n |)) (Ty.path "usize")
+                              ]
                             |)
                           |) in
                         let γ0_0 :=
@@ -1638,39 +1787,56 @@ Module alloc.
                             0
                           |) in
                         let repeated := M.copy (| Ty.path "core::alloc::layout::Layout", γ0_0 |) in
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [
-                            Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
-                            Ty.path "core::alloc::layout::LayoutError"
-                          ]
-                          [
-                            Value.Tuple
-                              [
-                                M.read (| repeated |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
-                                    Ty.path "core::alloc::layout::Layout",
-                                    "size",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, padded |) ]
-                                |)
-                              ]
-                          ]));
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Ok"
+                            [
+                              Value.Tuple
+                                [
+                                  M.read (| repeated |);
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.path "core::alloc::layout::Layout",
+                                      "size",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, padded |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::alloc::layout::Layout" ])
+                                    ]
+                                  |)
+                                ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
+                              Ty.path "core::alloc::layout::LayoutError"
+                            ])));
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::result::Result::Err"
-                          []
-                          [
-                            Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
-                            Ty.path "core::alloc::layout::LayoutError"
-                          ]
-                          [ Value.StructTuple "core::alloc::layout::LayoutError" [] [] [] ]))
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Err"
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple "core::alloc::layout::LayoutError" [])
+                                (Ty.path "core::alloc::layout::LayoutError")
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
+                              Ty.path "core::alloc::layout::LayoutError"
+                            ])))
                   ]
                 |)
               |)
@@ -1721,20 +1887,24 @@ Module alloc.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::alloc::layout::Layout",
-                        "align"
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        next,
-                        "core::alloc::layout::Layout",
-                        "align"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::alloc::layout::Layout",
+                          "align"
+                        |)
+                      |))
+                      (Ty.path "core::ptr::alignment::Alignment");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          next,
+                          "core::alloc::layout::Layout",
+                          "align"
+                        |)
+                      |))
+                      (Ty.path "core::ptr::alignment::Alignment")
                   ]
                 |) in
               let~ offset : Ty.path "usize" :=
@@ -1747,14 +1917,18 @@ Module alloc.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        next,
-                        "core::alloc::layout::Layout",
-                        "align"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          next,
+                          "core::alloc::layout::Layout",
+                          "align"
+                        |)
+                      |))
+                      (Ty.path "core::ptr::alignment::Alignment")
                   ]
                 |) in
               let~ new_size : Ty.path "usize" :=
@@ -1762,14 +1936,16 @@ Module alloc.
                   Ty.path "usize",
                   M.get_function (| "core::intrinsics::unchecked_add", [], [ Ty.path "usize" ] |),
                   [
-                    M.read (| offset |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        next,
-                        "core::alloc::layout::Layout",
-                        "size"
-                      |)
-                    |)
+                    M.value_with_ty (M.read (| offset |)) (Ty.path "usize");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          next,
+                          "core::alloc::layout::Layout",
+                          "size"
+                        |)
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -1815,7 +1991,12 @@ Module alloc.
                                 [],
                                 []
                               |),
-                              [ M.read (| new_size |); M.read (| new_align |) ]
+                              [
+                                M.value_with_ty (M.read (| new_size |)) (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.read (| new_align |))
+                                  (Ty.path "core::ptr::alignment::Alignment")
+                              ]
                             |)
                           |) in
                         let γ0_0 :=
@@ -1825,24 +2006,34 @@ Module alloc.
                             0
                           |) in
                         let layout := M.copy (| Ty.path "core::alloc::layout::Layout", γ0_0 |) in
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [
-                            Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
-                            Ty.path "core::alloc::layout::LayoutError"
-                          ]
-                          [ Value.Tuple [ M.read (| layout |); M.read (| offset |) ] ]));
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Ok"
+                            [ Value.Tuple [ M.read (| layout |); M.read (| offset |) ] ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
+                              Ty.path "core::alloc::layout::LayoutError"
+                            ])));
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::result::Result::Err"
-                          []
-                          [
-                            Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
-                            Ty.path "core::alloc::layout::LayoutError"
-                          ]
-                          [ Value.StructTuple "core::alloc::layout::LayoutError" [] [] [] ]))
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Err"
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple "core::alloc::layout::LayoutError" [])
+                                (Ty.path "core::alloc::layout::LayoutError")
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
+                              Ty.path "core::alloc::layout::LayoutError"
+                            ])))
                   ]
                 |)
               |)
@@ -1891,14 +2082,16 @@ Module alloc.
                           Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
                           M.get_associated_function (| Ty.path "usize", "checked_mul", [], [] |),
                           [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::alloc::layout::Layout",
-                                "size"
-                              |)
-                            |);
-                            M.read (| n |)
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::alloc::layout::Layout",
+                                  "size"
+                                |)
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                           ]
                         |)
                       |) in
@@ -1924,26 +2117,35 @@ Module alloc.
                         []
                       |),
                       [
-                        M.read (| size |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::alloc::layout::Layout",
-                            "align"
-                          |)
-                        |)
+                        M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::alloc::layout::Layout",
+                              "align"
+                            |)
+                          |))
+                          (Ty.path "core::ptr::alignment::Alignment")
                       ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.path "core::alloc::layout::Layout";
-                        Ty.path "core::alloc::layout::LayoutError"
-                      ]
-                      [ Value.StructTuple "core::alloc::layout::LayoutError" [] [] [] ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::alloc::layout::LayoutError" [])
+                            (Ty.path "core::alloc::layout::LayoutError")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "core::alloc::layout::Layout";
+                          Ty.path "core::alloc::layout::LayoutError"
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1979,20 +2181,24 @@ Module alloc.
                   Ty.path "usize",
                   M.get_function (| "core::intrinsics::unchecked_add", [], [ Ty.path "usize" ] |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::alloc::layout::Layout",
-                        "size"
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        next,
-                        "core::alloc::layout::Layout",
-                        "size"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::alloc::layout::Layout",
+                          "size"
+                        |)
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          next,
+                          "core::alloc::layout::Layout",
+                          "size"
+                        |)
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -2018,14 +2224,16 @@ Module alloc.
                     []
                   |),
                   [
-                    M.read (| new_size |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::alloc::layout::Layout",
-                        "align"
-                      |)
-                    |)
+                    M.value_with_ty (M.read (| new_size |)) (Ty.path "usize");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::alloc::layout::Layout",
+                          "align"
+                        |)
+                      |))
+                      (Ty.path "core::ptr::alignment::Alignment")
                   ]
                 |)
               |)
@@ -2095,13 +2303,15 @@ Module alloc.
                           ],
                         M.get_associated_function (| Self, "inner.array", [], [] |),
                         [
-                          M.read (|
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::LAYOUT",
-                              Ty.path "core::alloc::layout::Layout"
-                            |)
-                          |);
-                          M.read (| n |)
+                          M.value_with_ty
+                            (M.read (|
+                              get_constant (|
+                                "core::mem::SizedTypeProperties::LAYOUT",
+                                Ty.path "core::alloc::layout::Layout"
+                              |)
+                            |))
+                            (Ty.path "core::alloc::layout::Layout");
+                          M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                         ]
                       |)
                     |)
@@ -2140,7 +2350,9 @@ Module alloc.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::LayoutError" ],
                 self
               |) in
-            Value.StructTuple "core::alloc::layout::LayoutError" [] [] []))
+            M.value_with_ty
+              (Value.StructTuple "core::alloc::layout::LayoutError" [])
+              (Ty.path "core::alloc::layout::LayoutError")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2249,8 +2461,12 @@ Module alloc.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LayoutError" |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LayoutError" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2303,11 +2519,15 @@ Module alloc.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| mk_str (| "invalid parameters to Layout::from_size_align" |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "invalid parameters to Layout::from_size_align" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

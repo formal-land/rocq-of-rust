@@ -39,7 +39,14 @@ Module add.
                     [],
                     []
                   |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
                 |)
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -99,8 +106,12 @@ Module add.
                     []
                   |),
                   [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                   ]
                 |)
               |) in
@@ -153,7 +164,14 @@ Module add.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -209,7 +227,14 @@ Module add.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| M.deref (| M.read (| rhs |) |) |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -266,7 +291,14 @@ Module add.
               [],
               []
             |),
-            [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -327,8 +359,12 @@ Module add.
               []
             |),
             [
-              M.read (| M.deref (| M.read (| self |) |) |);
-              M.read (| M.deref (| M.read (| rhs |) |) |)
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -386,7 +422,14 @@ Module add.
                     [],
                     []
                   |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
                 |)
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -446,8 +489,12 @@ Module add.
                     []
                   |),
                   [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                   ]
                 |)
               |) in
@@ -500,7 +547,14 @@ Module add.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -556,7 +610,14 @@ Module add.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| M.deref (| M.read (| rhs |) |) |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -613,7 +674,14 @@ Module add.
               [],
               []
             |),
-            [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -674,8 +742,12 @@ Module add.
               []
             |),
             [
-              M.read (| M.deref (| M.read (| self |) |) |);
-              M.read (| M.deref (| M.read (| rhs |) |) |)
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -735,7 +807,14 @@ Module div.
                     [],
                     []
                   |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
                 |)
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -795,8 +874,12 @@ Module div.
                     []
                   |),
                   [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                   ]
                 |)
               |) in
@@ -849,7 +932,14 @@ Module div.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -905,7 +995,14 @@ Module div.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| M.deref (| M.read (| rhs |) |) |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -962,7 +1059,14 @@ Module div.
               [],
               []
             |),
-            [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1023,8 +1127,12 @@ Module div.
               []
             |),
             [
-              M.read (| M.deref (| M.read (| self |) |) |);
-              M.read (| M.deref (| M.read (| rhs |) |) |)
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1082,7 +1190,14 @@ Module div.
                     [],
                     []
                   |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
                 |)
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1142,8 +1257,12 @@ Module div.
                     []
                   |),
                   [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                   ]
                 |)
               |) in
@@ -1196,7 +1315,14 @@ Module div.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1252,7 +1378,14 @@ Module div.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| M.deref (| M.read (| rhs |) |) |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1309,7 +1442,14 @@ Module div.
               [],
               []
             |),
-            [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1370,8 +1510,12 @@ Module div.
               []
             |),
             [
-              M.read (| M.deref (| M.read (| self |) |) |);
-              M.read (| M.deref (| M.read (| rhs |) |) |)
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1431,7 +1575,14 @@ Module mul.
                     [],
                     []
                   |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
                 |)
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1491,8 +1642,12 @@ Module mul.
                     []
                   |),
                   [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                   ]
                 |)
               |) in
@@ -1545,7 +1700,14 @@ Module mul.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1601,7 +1763,14 @@ Module mul.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| M.deref (| M.read (| rhs |) |) |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1658,7 +1827,14 @@ Module mul.
               [],
               []
             |),
-            [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1719,8 +1895,12 @@ Module mul.
               []
             |),
             [
-              M.read (| M.deref (| M.read (| self |) |) |);
-              M.read (| M.deref (| M.read (| rhs |) |) |)
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| rhs |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

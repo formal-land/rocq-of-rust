@@ -16,7 +16,9 @@ Module future.
       | [], [ T; F ], [ f ] =>
         ltac:(M.monadic
           (let f := M.alloc (| F, f |) in
-          Value.mkStructRecord "core::future::poll_fn::PollFn" [] [ F ] [ ("f", M.read (| f |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord "core::future::poll_fn::PollFn" [ ("f", M.read (| f |)) ])
+            (Ty.apply (Ty.path "core::future::poll_fn::PollFn") [] [ F ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -83,25 +85,31 @@ Module future.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.alloc (|
-                    Ty.path "core::fmt::builders::DebugStruct",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.alloc (|
                       Ty.path "core::fmt::builders::DebugStruct",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Formatter",
-                        "debug_struct",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PollFn" |) |) |)
-                      ]
+                      M.call_closure (|
+                        Ty.path "core::fmt::builders::DebugStruct",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Formatter",
+                          "debug_struct",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PollFn" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -166,42 +174,66 @@ Module future.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.apply (Ty.path "core::future::poll_fn::PollFn") [] [ F ] ],
-                            M.get_associated_function (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (|
+                            M.call_closure (|
                               Ty.apply
-                                (Ty.path "core::pin::Pin")
+                                (Ty.path "&mut")
                                 []
-                                [
-                                  Ty.apply
-                                    (Ty.path "&mut")
+                                [ Ty.apply (Ty.path "core::future::poll_fn::PollFn") [] [ F ] ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::pin::Pin")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "core::future::poll_fn::PollFn") [] [ F ]
+                                      ]
+                                  ],
+                                "get_unchecked_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| self |))
+                                  (Ty.apply
+                                    (Ty.path "core::pin::Pin")
                                     []
-                                    [ Ty.apply (Ty.path "core::future::poll_fn::PollFn") [] [ F ] ]
-                                ],
-                              "get_unchecked_mut",
-                              [],
-                              []
-                            |),
-                            [ M.read (| self |) ]
-                          |)
-                        |),
-                        "core::future::poll_fn::PollFn",
-                        "f"
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::future::poll_fn::PollFn")
+                                            []
+                                            [ F ]
+                                        ]
+                                    ])
+                              ]
+                            |)
+                          |),
+                          "core::future::poll_fn::PollFn",
+                          "f"
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                Value.Tuple [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |) ]
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ F ]);
+                M.value_with_ty
+                  (Value.Tuple
+                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |) ])
+                  (Ty.tuple
+                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

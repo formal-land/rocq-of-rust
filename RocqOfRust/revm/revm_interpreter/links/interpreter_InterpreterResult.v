@@ -22,7 +22,7 @@ Module InterpreterResult.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter::InterpreterResult";
     φ x :=
-      Value.StructRecord "revm_interpreter::interpreter::InterpreterResult" [] [] [
+      Value.StructRecord "revm_interpreter::interpreter::InterpreterResult" [
         ("gas", φ x.(gas));
         ("output", φ x.(output));
         ("result", φ x.(result))
@@ -40,7 +40,7 @@ Module InterpreterResult.
       (output' : Value.t) {H_output : OfValueWith.C (Bytes.t) output'}
       (result' : Value.t) {H_result : OfValueWith.C (InstructionResult.t) result'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter::InterpreterResult" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter::InterpreterResult" [
       ("gas", gas');
       ("output", output');
       ("result", result')
@@ -59,7 +59,7 @@ Module InterpreterResult.
       (output' : Value.t) {H_output : OfValueWith.C (Bytes.t) output'}
       (result' : Value.t) {H_result : OfValueWith.C (InstructionResult.t) result'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::interpreter::InterpreterResult" [] [] [
+    OfValue.C (Value.StructRecord "revm_interpreter::interpreter::InterpreterResult" [
       ("gas", gas');
       ("output", output');
       ("result", result')

@@ -20,7 +20,7 @@ Module EofHeader.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_bytecode::eof::header::EofHeader";
     φ x :=
-      Value.StructRecord "revm_bytecode::eof::header::EofHeader" [] [] [
+      Value.StructRecord "revm_bytecode::eof::header::EofHeader" [
         ("code_sizes", φ x.(code_sizes));
         ("container_sizes", φ x.(container_sizes));
         ("data_size", φ x.(data_size));
@@ -44,7 +44,7 @@ Module EofHeader.
       (sum_container_sizes' : Value.t) {H_sum_container_sizes : OfValueWith.C (usize) sum_container_sizes'}
       (types_size' : Value.t) {H_types_size : OfValueWith.C (u16) types_size'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::header::EofHeader" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::header::EofHeader" [
       ("code_sizes", code_sizes');
       ("container_sizes", container_sizes');
       ("data_size", data_size');
@@ -72,7 +72,7 @@ Module EofHeader.
       (sum_container_sizes' : Value.t) {H_sum_container_sizes : OfValueWith.C (usize) sum_container_sizes'}
       (types_size' : Value.t) {H_types_size : OfValueWith.C (u16) types_size'}
       :
-    OfValue.C (Value.StructRecord "revm_bytecode::eof::header::EofHeader" [] [] [
+    OfValue.C (Value.StructRecord "revm_bytecode::eof::header::EofHeader" [
       ("code_sizes", code_sizes');
       ("container_sizes", container_sizes');
       ("data_size", data_size');

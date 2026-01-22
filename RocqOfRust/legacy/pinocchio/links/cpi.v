@@ -315,7 +315,7 @@ Module ReturnData.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::cpi::ReturnData";
     φ x :=
-      Value.StructRecord "pinocchio::cpi::ReturnData" [] [] [
+      Value.StructRecord "pinocchio::cpi::ReturnData" [
         ("program_id", φ x.(program_id));
         ("data", φ x.(data));
         ("size", φ x.(size))

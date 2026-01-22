@@ -19,7 +19,7 @@ Module Numbers.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "mutations::Numbers";
     φ x :=
-      Value.StructRecord "mutations::Numbers" [] [] [
+      Value.StructRecord "mutations::Numbers" [
         ("a", φ x.(a));
         ("b", φ x.(b));
         ("c", φ x.(c))
@@ -34,7 +34,7 @@ Module Numbers.
     a' = φ a ->
     b' = φ b ->
     c' = φ c ->
-    Value.StructRecord "mutations::Numbers" [] [] [
+    Value.StructRecord "mutations::Numbers" [
       ("a", a');
       ("b", b');
       ("c", c')
@@ -47,7 +47,7 @@ Module Numbers.
     b' = φ b ->
     c' = φ c ->
     OfValue.t (
-      Value.StructRecord "mutations::Numbers" [] [] [
+      Value.StructRecord "mutations::Numbers" [
         ("a", a');
         ("b", b');
         ("c", c')

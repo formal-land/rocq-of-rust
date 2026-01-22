@@ -200,190 +200,224 @@ Module hardfork.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::FRONTIER"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FRONTIER" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::FRONTIER_THAWING"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FRONTIER_THAWING" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::HOMESTEAD"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "HOMESTEAD" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::DAO_FORK"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DAO_FORK" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::TANGERINE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TANGERINE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SPURIOUS_DRAGON" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::BYZANTIUM"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BYZANTIUM" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::CONSTANTINOPLE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CONSTANTINOPLE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::PETERSBURG"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PETERSBURG" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::ISTANBUL"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ISTANBUL" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::MUIR_GLACIER"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MUIR_GLACIER" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (| γ, "revm_specification::hardfork::SpecId::BERLIN" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BERLIN" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (| γ, "revm_specification::hardfork::SpecId::LONDON" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LONDON" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::ARROW_GLACIER"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ARROW_GLACIER" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::GRAY_GLACIER"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "GRAY_GLACIER" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (| γ, "revm_specification::hardfork::SpecId::MERGE" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MERGE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_specification::hardfork::SpecId::SHANGHAI"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SHANGHAI" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (| γ, "revm_specification::hardfork::SpecId::CANCUN" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CANCUN" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (| γ, "revm_specification::hardfork::SpecId::PRAGUE" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PRAGUE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (| γ, "revm_specification::hardfork::SpecId::OSAKA" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OSAKA" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (| γ, "revm_specification::hardfork::SpecId::LATEST" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LATEST" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::FRONTIER"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FRONTIER" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::FRONTIER_THAWING"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FRONTIER_THAWING" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::HOMESTEAD"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "HOMESTEAD" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::DAO_FORK"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DAO_FORK" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::TANGERINE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TANGERINE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SPURIOUS_DRAGON" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::BYZANTIUM"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BYZANTIUM" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::CONSTANTINOPLE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CONSTANTINOPLE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::PETERSBURG"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PETERSBURG" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::ISTANBUL"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ISTANBUL" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::MUIR_GLACIER"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MUIR_GLACIER" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::BERLIN"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BERLIN" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::LONDON"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LONDON" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::ARROW_GLACIER"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ARROW_GLACIER" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::GRAY_GLACIER"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "GRAY_GLACIER" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::MERGE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MERGE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::SHANGHAI"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SHANGHAI" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::CANCUN"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CANCUN" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::PRAGUE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PRAGUE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::OSAKA"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OSAKA" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_specification::hardfork::SpecId::LATEST"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LATEST" |) |) |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -405,7 +439,10 @@ Module hardfork.
     Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [] =>
-        ltac:(M.monadic (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] []))
+        ltac:(M.monadic
+          (M.value_with_ty
+            (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [])
+            (Ty.path "revm_specification::hardfork::SpecId")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -457,7 +494,11 @@ Module hardfork.
                   [],
                   [ Ty.path "revm_specification::hardfork::SpecId" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_specification::hardfork::SpecId" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "u8" :=
               M.call_closure (|
@@ -467,7 +508,11 @@ Module hardfork.
                   [],
                   [ Ty.path "revm_specification::hardfork::SpecId" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_specification::hardfork::SpecId" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -548,7 +593,11 @@ Module hardfork.
                   [],
                   [ Ty.path "revm_specification::hardfork::SpecId" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_specification::hardfork::SpecId" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "u8" :=
               M.call_closure (|
@@ -558,7 +607,11 @@ Module hardfork.
                   [],
                   [ Ty.path "revm_specification::hardfork::SpecId" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_specification::hardfork::SpecId" ])
+                ]
               |) in
             M.alloc (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -574,14 +627,18 @@ Module hardfork.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                 ]
               |)
             |)
@@ -625,7 +682,11 @@ Module hardfork.
                   [],
                   [ Ty.path "revm_specification::hardfork::SpecId" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_specification::hardfork::SpecId" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "u8" :=
               M.call_closure (|
@@ -635,7 +696,11 @@ Module hardfork.
                   [],
                   [ Ty.path "revm_specification::hardfork::SpecId" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_specification::hardfork::SpecId" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "core::cmp::Ordering",
@@ -643,14 +708,18 @@ Module hardfork.
                 Ty.path "core::cmp::Ordering",
                 M.get_trait_method (| "core::cmp::Ord", Ty.path "u8", [], [], "cmp", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                 ]
               |)
             |)
@@ -690,7 +759,11 @@ Module hardfork.
                   [],
                   [ Ty.path "revm_specification::hardfork::SpecId" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_specification::hardfork::SpecId" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -706,11 +779,15 @@ Module hardfork.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -750,12 +827,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 0
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -763,17 +846,20 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 1
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [
-                      Value.StructTuple
-                        "revm_specification::hardfork::SpecId::FRONTIER_THAWING"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_specification::hardfork::SpecId::FRONTIER_THAWING"
+                            [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -781,12 +867,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 2
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -794,12 +886,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 3
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -807,12 +905,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 4
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -820,17 +924,20 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 5
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [
-                      Value.StructTuple
-                        "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
+                            [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -838,12 +945,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 6
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -851,17 +964,20 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 7
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [
-                      Value.StructTuple
-                        "revm_specification::hardfork::SpecId::CONSTANTINOPLE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_specification::hardfork::SpecId::CONSTANTINOPLE"
+                            [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -869,12 +985,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 8
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -882,12 +1004,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 9
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -895,17 +1023,20 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 10
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [
-                      Value.StructTuple
-                        "revm_specification::hardfork::SpecId::MUIR_GLACIER"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_specification::hardfork::SpecId::MUIR_GLACIER"
+                            [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -913,11 +1044,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 11
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] [] ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -925,11 +1063,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 12
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [] [] [] ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -937,17 +1082,20 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 13
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [
-                      Value.StructTuple
-                        "revm_specification::hardfork::SpecId::ARROW_GLACIER"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_specification::hardfork::SpecId::ARROW_GLACIER"
+                            [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -955,17 +1103,20 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 14
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [
-                      Value.StructTuple
-                        "revm_specification::hardfork::SpecId::GRAY_GLACIER"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_specification::hardfork::SpecId::GRAY_GLACIER"
+                            [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -973,11 +1124,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 15
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [] [] [] ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -985,12 +1143,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 16
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -998,11 +1162,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 17
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [] [] [] ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1010,11 +1181,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 18
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [] [] [] ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1022,11 +1200,18 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 19
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [] [] [] ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1034,18 +1219,26 @@ Module hardfork.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 255
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    [ Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] [] ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [])
+                          (Ty.path "revm_specification::hardfork::SpecId")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "revm_specification::hardfork::SpecId" ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_specification::hardfork::SpecId" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1075,7 +1268,7 @@ Module hardfork.
               [],
               []
             |),
-            [ M.read (| spec_id |) ]
+            [ M.value_with_ty (M.read (| spec_id |)) (Ty.path "u8") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1350,7 +1543,9 @@ Module hardfork.
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Frontier" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1358,40 +1553,44 @@ Module hardfork.
                       M.read (| γ |),
                       mk_str (| "Frontier Thawing" |)
                     |) in
-                  Value.StructTuple
-                    "revm_specification::hardfork::SpecId::FRONTIER_THAWING"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Homestead" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "DAO Fork" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Tangerine" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Spurious" |) |) in
-                  Value.StructTuple
-                    "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Byzantium" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1399,82 +1598,104 @@ Module hardfork.
                       M.read (| γ |),
                       mk_str (| "Constantinople" |)
                     |) in
-                  Value.StructTuple
-                    "revm_specification::hardfork::SpecId::CONSTANTINOPLE"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Petersburg" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Istanbul" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "MuirGlacier" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Berlin" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "London" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Arrow Glacier" |) |) in
-                  Value.StructTuple
-                    "revm_specification::hardfork::SpecId::ARROW_GLACIER"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Gray Glacier" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := is_constant_or_break_match (| M.read (| γ |), mk_str (| "Merge" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Shanghai" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Cancun" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Prague" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "PragueEOF" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
                     is_constant_or_break_match (| M.read (| γ |), mk_str (| "Latest" |) |) in
-                  Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] []))
+                  (M.value_with_ty
+                    (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [])
+                    (Ty.path "revm_specification::hardfork::SpecId")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1796,85 +2017,120 @@ Module hardfork.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_v1",
+                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "" |) ]
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "" |) ]
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          Value.Array
-                            [
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                |),
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.path "core::fmt::rt::Argument" ],
+                              Value.Array
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                            M.get_trait_method (|
-                                              "core::convert::From",
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                              [],
-                                              [ Ty.path "revm_specification::hardfork::SpecId" ],
-                                              "from",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      "new_display",
+                                      [],
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                M.call_closure (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                  M.get_trait_method (|
+                                                    "core::convert::From",
+                                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                    [],
+                                                    [ Ty.path "revm_specification::hardfork::SpecId"
+                                                    ],
+                                                    "from",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| M.deref (| M.read (| self |) |) |))
+                                                      (Ty.path
+                                                        "revm_specification::hardfork::SpecId")
+                                                  ]
+                                                |)
+                                              |)
+                                            |)
                                           |)
-                                        |)
-                                      |)
-                                    |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+                                    ]
                                   |)
                                 ]
-                              |)
-                            ]
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [ Ty.path "core::fmt::rt::Argument" ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

@@ -71,7 +71,11 @@ Module algorithms.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: d >= (1 << 63)" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: d >= (1 << 63)" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -101,7 +105,7 @@ Module algorithms.
                         [],
                         []
                       |),
-                      [ M.read (| d |) ]
+                      [ M.value_with_ty (M.read (| d |)) (Ty.path "u64") ]
                     |)
                   ]
                 |) in
@@ -157,7 +161,11 @@ Module algorithms.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: r >= (1 << 64)" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: r >= (1 << 64)" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -220,7 +228,11 @@ Module algorithms.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: r < (1 << 65)" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: r < (1 << 65)" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -344,7 +356,11 @@ Module algorithms.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: d >= (1 << 63)" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: d >= (1 << 63)" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -356,11 +372,9 @@ Module algorithms.
                   ]
                 |) in
               let~ d : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "u64" ]
-                  [ M.read (| d |) ] in
+                M.value_with_ty
+                  (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| d |) ])
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]) in
               let~ d0 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
                 M.call_closure (|
                   Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
@@ -374,13 +388,17 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.read (| d |);
-                    M.read (|
-                      get_constant (|
-                        "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
-                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (| d |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                    M.value_with_ty
+                      (M.read (|
+                        get_constant (|
+                          "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
+                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                   ]
                 |) in
               let~ d9 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
@@ -395,7 +413,12 @@ Module algorithms.
                     [],
                     []
                   |),
-                  [ M.read (| d |); Value.Integer IntegerKind.Usize 55 ]
+                  [
+                    M.value_with_ty
+                      (M.read (| d |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 55) (Ty.path "usize")
+                  ]
                 |) in
               let~ d40 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
                 M.call_closure (|
@@ -410,25 +433,37 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.read (|
-                      get_constant (|
-                        "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
-                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
-                      |)
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::bit::Shr",
+                    M.value_with_ty
+                      (M.read (|
+                        get_constant (|
+                          "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
+                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.path "usize" ],
-                        "shr",
-                        [],
-                        []
-                      |),
-                      [ M.read (| d |); Value.Integer IntegerKind.Usize 24 ]
-                    |)
+                        M.get_trait_method (|
+                          "core::ops::bit::Shr",
+                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
+                          [],
+                          [ Ty.path "usize" ],
+                          "shr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| d |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 24) (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                   ]
                 |) in
               let~ d63 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
@@ -444,112 +479,135 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::arith::Add",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] ],
-                        "add",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (| d |);
-                        M.read (|
-                          get_constant (|
-                            "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
-                          |)
-                        |)
-                      ]
-                    |);
-                    Value.Integer IntegerKind.Usize 1
+                        M.get_trait_method (|
+                          "core::ops::arith::Add",
+                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
+                          [],
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                          ],
+                          "add",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| d |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty
+                            (M.read (|
+                              get_constant (|
+                                "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
+                                Ty.apply
+                                  (Ty.path "core::num::wrapping::Wrapping")
+                                  []
+                                  [ Ty.path "u64" ]
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                   ]
                 |) in
               let~ v0 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "u64" ]
-                  [
-                    M.cast
-                      (Ty.path "u64")
-                      (M.read (|
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ],
-                              "get_unchecked",
-                              [],
-                              [ Ty.path "usize" ]
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 256 ]
-                                        [ Ty.path "u16" ]
-                                    ])
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.read (|
-                                        get_constant (|
-                                          "ruint::algorithms::div::reciprocal::reciprocal_mg10::TABLE",
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::num::wrapping::Wrapping"
+                    [
+                      M.cast
+                        (Ty.path "u64")
+                        (M.read (|
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ],
+                                "get_unchecked",
+                                [],
+                                [ Ty.path "usize" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.Unsize
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
                                           Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 256 ]
+                                            [ Ty.path "u16" ]
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ]),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.read (|
+                                            get_constant (|
+                                              "ruint::algorithms::div::reciprocal::reciprocal_mg10::TABLE",
                                               Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 256 ]
-                                                [ Ty.path "u16" ]
-                                            ]
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 256 ]
+                                                    [ Ty.path "u16" ]
+                                                ]
+                                            |)
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.cast
-                                (Ty.path "usize")
-                                (M.call_closure (|
-                                  Ty.path "u64",
-                                  BinOp.Wrap.sub,
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        d9,
-                                        "core::num::wrapping::Wrapping",
-                                        0
-                                      |)
-                                    |);
-                                    Value.Integer IntegerKind.U64 256
-                                  ]
-                                |))
-                            ]
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ]);
+                                M.value_with_ty
+                                  (M.cast
+                                    (Ty.path "usize")
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.sub,
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            d9,
+                                            "core::num::wrapping::Wrapping",
+                                            0
+                                          |)
+                                        |);
+                                        Value.Integer IntegerKind.U64 256
+                                      ]
+                                    |)))
+                                  (Ty.path "usize")
+                              ]
+                            |)
                           |)
-                        |)
-                      |))
-                  ] in
+                        |))
+                    ])
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]) in
               let~ v1 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
                 M.call_closure (|
                   Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
@@ -563,44 +621,224 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::arith::Sub",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] ],
-                        "sub",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
+                        M.get_trait_method (|
+                          "core::ops::arith::Sub",
                           Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                          M.get_trait_method (|
-                            "core::ops::bit::Shl",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [ Ty.path "usize" ],
-                            "shl",
-                            [],
-                            []
-                          |),
-                          [ M.read (| v0 |); Value.Integer IntegerKind.Usize 11 ]
-                        |);
-                        M.call_closure (|
+                          [],
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                          ],
+                          "sub",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::num::wrapping::Wrapping")
+                                []
+                                [ Ty.path "u64" ],
+                              M.get_trait_method (|
+                                "core::ops::bit::Shl",
+                                Ty.apply
+                                  (Ty.path "core::num::wrapping::Wrapping")
+                                  []
+                                  [ Ty.path "u64" ],
+                                [],
+                                [ Ty.path "usize" ],
+                                "shl",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| v0 |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (Value.Integer IntegerKind.Usize 11)
+                                  (Ty.path "usize")
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::num::wrapping::Wrapping")
+                                []
+                                [ Ty.path "u64" ],
+                              M.get_trait_method (|
+                                "core::ops::bit::Shr",
+                                Ty.apply
+                                  (Ty.path "core::num::wrapping::Wrapping")
+                                  []
+                                  [ Ty.path "u64" ],
+                                [],
+                                [ Ty.path "usize" ],
+                                "shr",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::num::wrapping::Wrapping")
+                                      []
+                                      [ Ty.path "u64" ],
+                                    M.get_trait_method (|
+                                      "core::ops::arith::Mul",
+                                      Ty.apply
+                                        (Ty.path "core::num::wrapping::Wrapping")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ]
+                                      ],
+                                      "mul",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          M.get_trait_method (|
+                                            "core::ops::arith::Mul",
+                                            Ty.apply
+                                              (Ty.path "core::num::wrapping::Wrapping")
+                                              []
+                                              [ Ty.path "u64" ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::num::wrapping::Wrapping")
+                                                []
+                                                [ Ty.path "u64" ]
+                                            ],
+                                            "mul",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| v0 |))
+                                              (Ty.apply
+                                                (Ty.path "core::num::wrapping::Wrapping")
+                                                []
+                                                [ Ty.path "u64" ]);
+                                            M.value_with_ty
+                                              (M.read (| v0 |))
+                                              (Ty.apply
+                                                (Ty.path "core::num::wrapping::Wrapping")
+                                                []
+                                                [ Ty.path "u64" ])
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.read (| d40 |))
+                                        (Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (Value.Integer IntegerKind.Usize 40)
+                                  (Ty.path "usize")
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                    M.value_with_ty
+                      (M.read (|
+                        get_constant (|
+                          "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
+                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
+                  ]
+                |) in
+              let~ v2 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
+                M.call_closure (|
+                  Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
+                  M.get_trait_method (|
+                    "core::ops::arith::Add",
+                    Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
+                    [],
+                    [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] ],
+                    "add",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
+                        M.get_trait_method (|
+                          "core::ops::bit::Shl",
                           Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                          M.get_trait_method (|
-                            "core::ops::bit::Shr",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [ Ty.path "usize" ],
-                            "shr",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
+                          [],
+                          [ Ty.path "usize" ],
+                          "shl",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| v1 |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 13) (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
+                        M.get_trait_method (|
+                          "core::ops::bit::Shr",
+                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
+                          [],
+                          [ Ty.path "usize" ],
+                          "shr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply
                                 (Ty.path "core::num::wrapping::Wrapping")
                                 []
@@ -623,103 +861,201 @@ Module algorithms.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.read (| v1 |))
+                                  (Ty.apply
                                     (Ty.path "core::num::wrapping::Wrapping")
                                     []
-                                    [ Ty.path "u64" ],
-                                  M.get_trait_method (|
-                                    "core::ops::arith::Mul",
+                                    [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.apply
                                       (Ty.path "core::num::wrapping::Wrapping")
                                       []
                                       [ Ty.path "u64" ],
-                                    [],
-                                    [
+                                    M.get_trait_method (|
+                                      "core::ops::arith::Sub",
                                       Ty.apply
                                         (Ty.path "core::num::wrapping::Wrapping")
                                         []
-                                        [ Ty.path "u64" ]
-                                    ],
-                                    "mul",
-                                    [],
+                                        [ Ty.path "u64" ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ]
+                                      ],
+                                      "sub",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          M.get_trait_method (|
+                                            "core::ops::bit::Shl",
+                                            Ty.apply
+                                              (Ty.path "core::num::wrapping::Wrapping")
+                                              []
+                                              [ Ty.path "u64" ],
+                                            [],
+                                            [ Ty.path "usize" ],
+                                            "shl",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (|
+                                                get_constant (|
+                                                  "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u64" ]
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::num::wrapping::Wrapping")
+                                                []
+                                                [ Ty.path "u64" ]);
+                                            M.value_with_ty
+                                              (Value.Integer IntegerKind.Usize 60)
+                                              (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          M.get_trait_method (|
+                                            "core::ops::arith::Mul",
+                                            Ty.apply
+                                              (Ty.path "core::num::wrapping::Wrapping")
+                                              []
+                                              [ Ty.path "u64" ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::num::wrapping::Wrapping")
+                                                []
+                                                [ Ty.path "u64" ]
+                                            ],
+                                            "mul",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| v1 |))
+                                              (Ty.apply
+                                                (Ty.path "core::num::wrapping::Wrapping")
+                                                []
+                                                [ Ty.path "u64" ]);
+                                            M.value_with_ty
+                                              (M.read (| d40 |))
+                                              (Ty.apply
+                                                (Ty.path "core::num::wrapping::Wrapping")
+                                                []
+                                                [ Ty.path "u64" ])
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::num::wrapping::Wrapping")
+                                          []
+                                          [ Ty.path "u64" ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
                                     []
-                                  |),
-                                  [ M.read (| v0 |); M.read (| v0 |) ]
-                                |);
-                                M.read (| d40 |)
+                                    [ Ty.path "u64" ])
                               ]
-                            |);
-                            Value.Integer IntegerKind.Usize 40
-                          ]
-                        |)
-                      ]
-                    |);
-                    M.read (|
-                      get_constant (|
-                        "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
-                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
-                      |)
-                    |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 47) (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                   ]
                 |) in
-              let~ v2 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
+              let~ e : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
                 M.call_closure (|
                   Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                   M.get_trait_method (|
-                    "core::ops::arith::Add",
+                    "core::ops::arith::Sub",
                     Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                     [],
                     [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] ],
-                    "add",
+                    "sub",
                     [],
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::bit::Shl",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.path "usize" ],
-                        "shl",
-                        [],
-                        []
-                      |),
-                      [ M.read (| v1 |); Value.Integer IntegerKind.Usize 13 ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::bit::Shr",
-                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.path "usize" ],
-                        "shr",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
+                        M.get_trait_method (|
+                          "core::ops::bit::BitAnd",
                           Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                          M.get_trait_method (|
-                            "core::ops::arith::Mul",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [
+                          [],
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                          ],
+                          "bitand",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply
                                 (Ty.path "core::num::wrapping::Wrapping")
                                 []
-                                [ Ty.path "u64" ]
-                            ],
-                            "mul",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (| v1 |);
-                            M.call_closure (|
+                                [ Ty.path "u64" ],
+                              M.get_trait_method (|
+                                "core::ops::bit::Shr",
+                                Ty.apply
+                                  (Ty.path "core::num::wrapping::Wrapping")
+                                  []
+                                  [ Ty.path "u64" ],
+                                [],
+                                [ Ty.path "usize" ],
+                                "shr",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| v2 |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (Value.Integer IntegerKind.Usize 1)
+                                  (Ty.path "usize")
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply
                                 (Ty.path "core::num::wrapping::Wrapping")
                                 []
@@ -742,151 +1078,64 @@ Module algorithms.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::num::wrapping::Wrapping")
-                                    []
-                                    [ Ty.path "u64" ],
-                                  M.get_trait_method (|
-                                    "core::ops::bit::Shl",
-                                    Ty.apply
-                                      (Ty.path "core::num::wrapping::Wrapping")
-                                      []
-                                      [ Ty.path "u64" ],
-                                    [],
-                                    [ Ty.path "usize" ],
-                                    "shl",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      get_constant (|
-                                        "ruint::algorithms::div::reciprocal::reciprocal_mg10::ONE",
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u64" ]
-                                      |)
-                                    |);
-                                    Value.Integer IntegerKind.Usize 60
-                                  ]
-                                |);
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::num::wrapping::Wrapping")
-                                    []
-                                    [ Ty.path "u64" ],
-                                  M.get_trait_method (|
-                                    "core::ops::arith::Mul",
-                                    Ty.apply
-                                      (Ty.path "core::num::wrapping::Wrapping")
-                                      []
-                                      [ Ty.path "u64" ],
-                                    [],
-                                    [
+                                M.value_with_ty
+                                  (M.read (|
+                                    get_constant (|
+                                      "ruint::algorithms::div::reciprocal::reciprocal_mg10::ZERO",
                                       Ty.apply
                                         (Ty.path "core::num::wrapping::Wrapping")
                                         []
                                         [ Ty.path "u64" ]
-                                    ],
-                                    "mul",
-                                    [],
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
                                     []
-                                  |),
-                                  [ M.read (| v1 |); M.read (| d40 |) ]
-                                |)
+                                    [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (M.read (| d0 |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ])
                               ]
-                            |)
-                          ]
-                        |);
-                        Value.Integer IntegerKind.Usize 47
-                      ]
-                    |)
-                  ]
-                |) in
-              let~ e : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                  M.get_trait_method (|
-                    "core::ops::arith::Sub",
-                    Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                    [],
-                    [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] ],
-                    "sub",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::bit::BitAnd",
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] ],
-                        "bitand",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
+                        M.get_trait_method (|
+                          "core::ops::arith::Mul",
                           Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                          M.get_trait_method (|
-                            "core::ops::bit::Shr",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [ Ty.path "usize" ],
-                            "shr",
-                            [],
-                            []
-                          |),
-                          [ M.read (| v2 |); Value.Integer IntegerKind.Usize 1 ]
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                          M.get_trait_method (|
-                            "core::ops::arith::Sub",
-                            Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                            [],
-                            [
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ]
-                            ],
-                            "sub",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (|
-                              get_constant (|
-                                "ruint::algorithms::div::reciprocal::reciprocal_mg10::ZERO",
-                                Ty.apply
-                                  (Ty.path "core::num::wrapping::Wrapping")
-                                  []
-                                  [ Ty.path "u64" ]
-                              |)
-                            |);
-                            M.read (| d0 |)
-                          ]
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::arith::Mul",
-                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] ],
-                        "mul",
-                        [],
-                        []
-                      |),
-                      [ M.read (| v2 |); M.read (| d63 |) ]
-                    |)
+                          [],
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                          ],
+                          "mul",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| v2 |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty
+                            (M.read (| d63 |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                   ]
                 |) in
               let~ v3 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
@@ -902,39 +1151,76 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::bit::Shr",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.path "usize" ],
-                        "shr",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
+                        M.get_trait_method (|
+                          "core::ops::bit::Shr",
                           Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                          M.get_function (| "ruint::algorithms::div::reciprocal::mul_hi", [], [] |),
-                          [ M.read (| v2 |); M.read (| e |) ]
-                        |);
-                        Value.Integer IntegerKind.Usize 1
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::bit::Shl",
+                          [],
+                          [ Ty.path "usize" ],
+                          "shr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::num::wrapping::Wrapping")
+                                []
+                                [ Ty.path "u64" ],
+                              M.get_function (|
+                                "ruint::algorithms::div::reciprocal::mul_hi",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| v2 |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (M.read (| e |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ])
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.path "usize" ],
-                        "shl",
-                        [],
-                        []
-                      |),
-                      [ M.read (| v2 |); Value.Integer IntegerKind.Usize 31 ]
-                    |)
+                        M.get_trait_method (|
+                          "core::ops::bit::Shl",
+                          Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
+                          [],
+                          [ Ty.path "usize" ],
+                          "shl",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| v2 |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 31) (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                   ]
                 |) in
               let~ v4 : Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] :=
@@ -950,31 +1236,68 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                      M.get_trait_method (|
-                        "core::ops::arith::Sub",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ] ],
-                        "sub",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (| v3 |);
-                        M.call_closure (|
+                        M.get_trait_method (|
+                          "core::ops::arith::Sub",
                           Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                          M.get_function (|
-                            "ruint::algorithms::div::reciprocal::muladd_hi",
-                            [],
-                            []
-                          |),
-                          [ M.read (| v3 |); M.read (| d |); M.read (| d |) ]
-                        |)
-                      ]
-                    |);
-                    M.read (| d |)
+                          [],
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                          ],
+                          "sub",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| v3 |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::num::wrapping::Wrapping")
+                                []
+                                [ Ty.path "u64" ],
+                              M.get_function (|
+                                "ruint::algorithms::div::reciprocal::muladd_hi",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| v3 |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (M.read (| d |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (M.read (| d |))
+                                  (Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ])
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "u64" ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                    M.value_with_ty
+                      (M.read (| d |))
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                   ]
                 |) in
               M.SubPointer.get_struct_tuple_field (| v4, "core::num::wrapping::Wrapping", 0 |)
@@ -992,11 +1315,11 @@ Module algorithms.
           ltac:(M.monadic
             (M.alloc (|
               Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-              Value.StructTuple
-                "core::num::wrapping::Wrapping"
-                []
-                [ Ty.path "u64" ]
-                [ Value.Integer IntegerKind.U64 0 ]
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::num::wrapping::Wrapping"
+                  [ Value.Integer IntegerKind.U64 0 ])
+                (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
             |))).
         
         Global Instance Instance_IsConstant_value_ZERO :
@@ -1008,11 +1331,11 @@ Module algorithms.
           ltac:(M.monadic
             (M.alloc (|
               Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-              Value.StructTuple
-                "core::num::wrapping::Wrapping"
-                []
-                [ Ty.path "u64" ]
-                [ Value.Integer IntegerKind.U64 1 ]
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::num::wrapping::Wrapping"
+                  [ Value.Integer IntegerKind.U64 1 ])
+                (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
             |))).
         
         Global Instance Instance_IsConstant_value_ONE :
@@ -1387,7 +1710,11 @@ Module algorithms.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: d >= (1 << 127)" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: d >= (1 << 127)" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1415,19 +1742,24 @@ Module algorithms.
                     [],
                     []
                   |),
-                  [ M.read (| d1 |) ]
+                  [ M.value_with_ty (M.read (| d1 |)) (Ty.path "u64") ]
                 |) in
               let~ p : Ty.path "u64" :=
                 M.call_closure (|
                   Ty.path "u64",
                   M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "u64",
-                      M.get_associated_function (| Ty.path "u64", "wrapping_mul", [], [] |),
-                      [ M.read (| d1 |); M.read (| v |) ]
-                    |);
-                    M.read (| d0 |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "u64",
+                        M.get_associated_function (| Ty.path "u64", "wrapping_mul", [], [] |),
+                        [
+                          M.value_with_ty (M.read (| d1 |)) (Ty.path "u64");
+                          M.value_with_ty (M.read (| v |)) (Ty.path "u64")
+                        ]
+                      |))
+                      (Ty.path "u64");
+                    M.value_with_ty (M.read (| d0 |)) (Ty.path "u64")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1460,7 +1792,10 @@ Module algorithms.
                                   [],
                                   []
                                 |),
-                                [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
+                                [
+                                  M.value_with_ty (M.read (| v |)) (Ty.path "u64");
+                                  M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
+                                ]
                               |)
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -1497,7 +1832,12 @@ Module algorithms.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
+                                            [
+                                              M.value_with_ty (M.read (| v |)) (Ty.path "u64");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.U64 1)
+                                                (Ty.path "u64")
+                                            ]
                                           |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
@@ -1511,7 +1851,10 @@ Module algorithms.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| p |); M.read (| d1 |) ]
+                                            [
+                                              M.value_with_ty (M.read (| p |)) (Ty.path "u64");
+                                              M.value_with_ty (M.read (| d1 |)) (Ty.path "u64")
+                                            ]
                                           |)
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1530,7 +1873,10 @@ Module algorithms.
                                   [],
                                   []
                                 |),
-                                [ M.read (| p |); M.read (| d1 |) ]
+                                [
+                                  M.value_with_ty (M.read (| p |)) (Ty.path "u64");
+                                  M.value_with_ty (M.read (| d1 |)) (Ty.path "u64")
+                                ]
                               |)
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1554,7 +1900,7 @@ Module algorithms.
                         [],
                         []
                       |),
-                      [ M.read (| v |) ]
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "u64") ]
                     |);
                     M.call_closure (|
                       Ty.path "u128",
@@ -1567,7 +1913,7 @@ Module algorithms.
                         [],
                         []
                       |),
-                      [ M.read (| d0 |) ]
+                      [ M.value_with_ty (M.read (| d0 |)) (Ty.path "u64") ]
                     |)
                   ]
                 |) in
@@ -1584,7 +1930,10 @@ Module algorithms.
                 M.call_closure (|
                   Ty.path "u64",
                   M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                  [ M.read (| p |); M.read (| t1 |) ]
+                  [
+                    M.value_with_ty (M.read (| p |)) (Ty.path "u64");
+                    M.value_with_ty (M.read (| t1 |)) (Ty.path "u64")
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -1616,7 +1965,10 @@ Module algorithms.
                                   [],
                                   []
                                 |),
-                                [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
+                                [
+                                  M.value_with_ty (M.read (| v |)) (Ty.path "u64");
+                                  M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
+                                ]
                               |)
                             |) in
                           M.alloc (|
@@ -1654,7 +2006,11 @@ Module algorithms.
                                                           [],
                                                           []
                                                         |),
-                                                        [ M.read (| p |) ]
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| p |))
+                                                            (Ty.path "u64")
+                                                        ]
                                                       |);
                                                       Value.Integer IntegerKind.I32 64
                                                     ]
@@ -1670,7 +2026,11 @@ Module algorithms.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| t0 |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| t0 |))
+                                                        (Ty.path "u64")
+                                                    ]
                                                   |)
                                                 ]
                                               |);
@@ -1695,7 +2055,12 @@ Module algorithms.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
+                                            [
+                                              M.value_with_ty (M.read (| v |)) (Ty.path "u64");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.U64 1)
+                                                (Ty.path "u64")
+                                            ]
                                           |)
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1754,13 +2119,15 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        a,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          a,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |))
+                      (Ty.path "u64")
                   ]
                 |) in
               let~ b : Ty.path "u128" :=
@@ -1776,13 +2143,15 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        b,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          b,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |))
+                      (Ty.path "u64")
                   ]
                 |) in
               let~ r : Ty.path "u128" :=
@@ -1793,19 +2162,19 @@ Module algorithms.
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "u64" ]
-                  [
-                    M.cast
-                      (Ty.path "u64")
-                      (M.call_closure (|
-                        Ty.path "u128",
-                        BinOp.Wrap.shr,
-                        [ M.read (| r |); Value.Integer IntegerKind.I32 64 ]
-                      |))
-                  ]
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::num::wrapping::Wrapping"
+                    [
+                      M.cast
+                        (Ty.path "u64")
+                        (M.call_closure (|
+                          Ty.path "u128",
+                          BinOp.Wrap.shr,
+                          [ M.read (| r |); Value.Integer IntegerKind.I32 64 ]
+                        |))
+                    ])
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1858,13 +2227,15 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        a,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          a,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |))
+                      (Ty.path "u64")
                   ]
                 |) in
               let~ b : Ty.path "u128" :=
@@ -1880,13 +2251,15 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        b,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          b,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |))
+                      (Ty.path "u64")
                   ]
                 |) in
               let~ c : Ty.path "u128" :=
@@ -1902,13 +2275,15 @@ Module algorithms.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        c,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          c,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |))
+                      (Ty.path "u64")
                   ]
                 |) in
               let~ r : Ty.path "u128" :=
@@ -1926,19 +2301,19 @@ Module algorithms.
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "u64" ]
-                  [
-                    M.cast
-                      (Ty.path "u64")
-                      (M.call_closure (|
-                        Ty.path "u128",
-                        BinOp.Wrap.shr,
-                        [ M.read (| r |); Value.Integer IntegerKind.I32 64 ]
-                      |))
-                  ]
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::num::wrapping::Wrapping"
+                    [
+                      M.cast
+                        (Ty.path "u64")
+                        (M.call_closure (|
+                          Ty.path "u128",
+                          BinOp.Wrap.shr,
+                          [ M.read (| r |); Value.Integer IntegerKind.I32 64 ]
+                        |))
+                    ])
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

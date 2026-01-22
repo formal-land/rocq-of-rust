@@ -61,188 +61,245 @@ Module io.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugStruct",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.path "core::fmt::builders::DebugStruct" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::builders::DebugStruct",
-                                "field",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugStruct",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::builders::DebugStruct",
+                                    "field",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::builders::DebugStruct",
+                                              "field",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.alloc (|
+                                                    Ty.path "core::fmt::builders::DebugStruct",
+                                                    M.call_closure (|
+                                                      Ty.path "core::fmt::builders::DebugStruct",
+                                                      M.get_associated_function (|
+                                                        Ty.path "core::fmt::Formatter",
+                                                        "debug_struct",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (| M.read (| f |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [ Ty.path "core::fmt::Formatter" ]);
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| mk_str (| "BorrowedBuf" |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "str" ])
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| mk_str (| "init" |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                                  M.pointer_coercion
+                                                    M.PointerCoercion.Unsize
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ]
+                                                      ]),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "core::io::borrowed_buf::BorrowedBuf",
+                                                            "init"
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  ]
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
                                         (Ty.path "&mut")
                                         []
-                                        [ Ty.path "core::fmt::builders::DebugStruct" ],
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::builders::DebugStruct",
-                                        "field",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.alloc (|
-                                            Ty.path "core::fmt::builders::DebugStruct",
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::builders::DebugStruct",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::Formatter",
-                                                "debug_struct",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| f |) |)
-                                                |);
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| mk_str (| "BorrowedBuf" |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| mk_str (| "init" |) |)
-                                        |);
-                                        M.call_closure (|
-                                          Ty.apply
+                                        [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "filled" |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.Unsize
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                          (Ty.apply
                                             (Ty.path "&")
                                             []
-                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                          M.pointer_coercion
-                                            M.PointerCoercion.Unsize
-                                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                                            (Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::io::borrowed_buf::BorrowedBuf",
-                                                    "init"
-                                                  |)
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::io::borrowed_buf::BorrowedBuf",
+                                                  "filled"
                                                 |)
                                               |)
                                             |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
+                                          |)
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "capacity" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "filled" |) |)
-                                |);
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
-                                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                  [
+                                  M.deref (|
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::io::borrowed_buf::BorrowedBuf",
-                                            "filled"
-                                          |)
+                                      M.alloc (|
+                                        Ty.path "usize",
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.path "core::io::borrowed_buf::BorrowedBuf",
+                                            "capacity",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ])
+                                          ]
                                         |)
                                       |)
                                     |)
-                                  ]
+                                  |)
                                 |)
                               ]
-                            |)
-                          |)
-                        |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "capacity" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.path "usize",
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.path "core::io::borrowed_buf::BorrowedBuf",
-                                        "capacity",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -291,63 +348,41 @@ Module io.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "core::io::borrowed_buf::BorrowedBuf",
-                Value.mkStructRecord
-                  "core::io::borrowed_buf::BorrowedBuf"
-                  []
-                  []
-                  [
-                    ("buf",
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "slice")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                          []
-                                          [ Ty.path "u8" ]
-                                      ]
-                                  ],
-                                M.get_associated_function (|
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::io::borrowed_buf::BorrowedBuf"
+                    [
+                      ("buf",
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "core::option::Option")
+                                    (Ty.path "&mut")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "&mut")
+                                        (Ty.path "slice")
                                         []
                                         [
                                           Ty.apply
-                                            (Ty.path "slice")
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                             []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                []
-                                                [ Ty.path "u8" ]
-                                            ]
+                                            [ Ty.path "u8" ]
                                         ]
                                     ],
-                                  "unwrap",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
+                                  M.get_associated_function (|
                                     Ty.apply
                                       (Ty.path "core::option::Option")
                                       []
@@ -367,40 +402,93 @@ Module io.
                                               ]
                                           ]
                                       ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "*mut")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      "as_uninit_slice_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (|
-                                        M.use
-                                          (M.alloc (|
+                                    "unwrap",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
                                             Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "*mut")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          "as_uninit_slice_mut",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (|
+                                              M.use
+                                                (M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "*mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ],
+                                                  M.borrow (|
+                                                    Pointer.Kind.MutPointer,
+                                                    M.deref (| M.read (| slice |) |)
+                                                  |)
+                                                |))
+                                            |))
+                                            (Ty.apply
                                               (Ty.path "*mut")
                                               []
-                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                            M.borrow (|
-                                              Pointer.Kind.MutPointer,
-                                              M.deref (| M.read (| slice |) |)
-                                            |)
-                                          |))
-                                      |)
-                                    ]
-                                  |)
-                                ]
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    []
+                                                    [ Ty.path "u8" ]
+                                                ]
+                                            ]
+                                        ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
-                        |)
-                      |));
-                    ("filled", Value.Integer IntegerKind.Usize 0);
-                    ("init", M.read (| len |))
-                  ]
+                        |));
+                      ("filled", Value.Integer IntegerKind.Usize 0);
+                      ("init", M.read (| len |))
+                    ])
+                  (Ty.path "core::io::borrowed_buf::BorrowedBuf")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -446,15 +534,15 @@ Module io.
                   ],
                 buf
               |) in
-            Value.mkStructRecord
-              "core::io::borrowed_buf::BorrowedBuf"
-              []
-              []
-              [
-                ("buf", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buf |) |) |));
-                ("filled", Value.Integer IntegerKind.Usize 0);
-                ("init", Value.Integer IntegerKind.Usize 0)
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::io::borrowed_buf::BorrowedBuf"
+                [
+                  ("buf", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buf |) |) |));
+                  ("filled", Value.Integer IntegerKind.Usize 0);
+                  ("init", Value.Integer IntegerKind.Usize 0)
+                ])
+              (Ty.path "core::io::borrowed_buf::BorrowedBuf")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -507,18 +595,33 @@ Module io.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::io::borrowed_buf::BorrowedBuf",
-                        "buf"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::io::borrowed_buf::BorrowedBuf",
+                          "buf"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "slice")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                            []
+                            [ Ty.path "u8" ]
+                        ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -650,32 +753,49 @@ Module io.
                     [ Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ] ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::io::borrowed_buf::BorrowedBuf",
-                            "buf"
-                          |)
-                        |)
-                      |)
-                    |);
-                    Value.mkStructRecord
-                      "core::ops::range::RangeTo"
-                      []
-                      [ Ty.path "usize" ]
-                      [
-                        ("end_",
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
                           M.read (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "core::io::borrowed_buf::BorrowedBuf",
-                              "filled"
+                              "buf"
                             |)
-                          |))
-                      ]
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                []
+                                [ Ty.path "u8" ]
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::RangeTo"
+                          [
+                            ("end_",
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::io::borrowed_buf::BorrowedBuf",
+                                  "filled"
+                                |)
+                              |))
+                          ])
+                        (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]))
+                      (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ])
                   ]
                 |) in
               M.alloc (|
@@ -694,7 +814,24 @@ Module io.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                            ])
+                      ]
                     |)
                   |)
                 |)
@@ -778,32 +915,55 @@ Module io.
                             ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::io::borrowed_buf::BorrowedBuf",
-                                    "buf"
-                                  |)
-                                |)
-                              |)
-                            |);
-                            Value.mkStructRecord
-                              "core::ops::range::RangeTo"
-                              []
-                              [ Ty.path "usize" ]
-                              [
-                                ("end_",
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
                                   M.read (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "core::io::borrowed_buf::BorrowedBuf",
-                                      "filled"
+                                      "buf"
                                     |)
-                                  |))
-                              ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.mkStructRecord
+                                  "core::ops::range::RangeTo"
+                                  [
+                                    ("end_",
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::io::borrowed_buf::BorrowedBuf",
+                                          "filled"
+                                        |)
+                                      |))
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::RangeTo")
+                                  []
+                                  [ Ty.path "usize" ]))
+                              (Ty.apply
+                                (Ty.path "core::ops::range::RangeTo")
+                                []
+                                [ Ty.path "usize" ])
                           ]
                         |) in
                       M.alloc (|
@@ -828,7 +988,27 @@ Module io.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buf |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| buf |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ Ty.path "u8" ]
+                                        ]
+                                    ])
+                              ]
                             |)
                           |)
                         |)
@@ -906,32 +1086,49 @@ Module io.
                     [ Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ] ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            self,
-                            "core::io::borrowed_buf::BorrowedBuf",
-                            "buf"
-                          |)
-                        |)
-                      |)
-                    |);
-                    Value.mkStructRecord
-                      "core::ops::range::RangeTo"
-                      []
-                      [ Ty.path "usize" ]
-                      [
-                        ("end_",
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
                           M.read (|
                             M.SubPointer.get_struct_record_field (|
                               self,
                               "core::io::borrowed_buf::BorrowedBuf",
-                              "filled"
+                              "buf"
                             |)
-                          |))
-                      ]
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                []
+                                [ Ty.path "u8" ]
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::RangeTo"
+                          [
+                            ("end_",
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::io::borrowed_buf::BorrowedBuf",
+                                  "filled"
+                                |)
+                              |))
+                          ])
+                        (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]))
+                      (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ])
                   ]
                 |) in
               M.alloc (|
@@ -950,7 +1147,24 @@ Module io.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                            ])
+                      ]
                     |)
                   |)
                 |)
@@ -1031,32 +1245,55 @@ Module io.
                             ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    self,
-                                    "core::io::borrowed_buf::BorrowedBuf",
-                                    "buf"
-                                  |)
-                                |)
-                              |)
-                            |);
-                            Value.mkStructRecord
-                              "core::ops::range::RangeTo"
-                              []
-                              [ Ty.path "usize" ]
-                              [
-                                ("end_",
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
                                   M.read (|
                                     M.SubPointer.get_struct_record_field (|
                                       self,
                                       "core::io::borrowed_buf::BorrowedBuf",
-                                      "filled"
+                                      "buf"
                                     |)
-                                  |))
-                              ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.mkStructRecord
+                                  "core::ops::range::RangeTo"
+                                  [
+                                    ("end_",
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          self,
+                                          "core::io::borrowed_buf::BorrowedBuf",
+                                          "filled"
+                                        |)
+                                      |))
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::RangeTo")
+                                  []
+                                  [ Ty.path "usize" ]))
+                              (Ty.apply
+                                (Ty.path "core::ops::range::RangeTo")
+                                []
+                                [ Ty.path "usize" ])
                           ]
                         |) in
                       M.alloc (|
@@ -1081,7 +1318,27 @@ Module io.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buf |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| buf |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ Ty.path "u8" ]
+                                        ]
+                                    ])
+                              ]
                             |)
                           |)
                         |)
@@ -1120,52 +1377,62 @@ Module io.
                 Ty.apply (Ty.path "&mut") [] [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::io::borrowed_buf::BorrowedCursor"
-              []
-              []
-              [
-                ("start",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::io::borrowed_buf::BorrowedBuf",
-                      "filled"
-                    |)
-                  |));
-                ("buf",
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ],
-                            M.get_function (|
-                              "core::intrinsics::transmute",
-                              [],
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::io::borrowed_buf::BorrowedCursor"
+                [
+                  ("start",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::io::borrowed_buf::BorrowedBuf",
+                        "filled"
+                      |)
+                    |));
+                  ("buf",
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ],
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ]
+                                ]
+                              |),
                               [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ]
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ])
                               ]
-                            |),
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  |))
-              ]))
+                    |))
+                ])
+              (Ty.path "core::io::borrowed_buf::BorrowedCursor")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1247,14 +1514,16 @@ Module io.
                         Ty.path "usize",
                         M.get_function (| "core::cmp::max", [], [ Ty.path "usize" ] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::io::borrowed_buf::BorrowedBuf",
-                              "init"
-                            |)
-                          |);
-                          M.read (| n |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::io::borrowed_buf::BorrowedBuf",
+                                "init"
+                              |)
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                         ]
                       |)
                     |) in
@@ -1313,68 +1582,80 @@ Module io.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BorrowedCursor" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "buf" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::io::borrowed_buf::BorrowedCursor",
-                            "buf"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BorrowedCursor" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "buf" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::io::borrowed_buf::BorrowedCursor",
+                              "buf"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "start" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::io::borrowed_buf::BorrowedCursor",
-                                "start"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "start" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::io::borrowed_buf::BorrowedCursor",
+                                  "start"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1415,65 +1696,70 @@ Module io.
                 Ty.apply (Ty.path "&mut") [] [ Ty.path "core::io::borrowed_buf::BorrowedCursor" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::io::borrowed_buf::BorrowedCursor"
-              []
-              []
-              [
-                ("buf",
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ],
-                            M.get_function (|
-                              "core::intrinsics::transmute",
-                              [],
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::io::borrowed_buf::BorrowedCursor"
+                [
+                  ("buf",
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ],
+                              M.get_function (|
+                                "core::intrinsics::transmute",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ]
+                                ]
+                              |),
                               [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ]
-                              ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::io::borrowed_buf::BorrowedCursor",
-                                      "buf"
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::io::borrowed_buf::BorrowedCursor",
+                                          "buf"
+                                        |)
+                                      |)
                                     |)
-                                  |)
-                                |)
-                              |)
-                            ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ])
+                              ]
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  |));
-                ("start",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::io::borrowed_buf::BorrowedCursor",
-                      "start"
-                    |)
-                  |))
-              ]))
+                    |));
+                  ("start",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::io::borrowed_buf::BorrowedCursor",
+                        "start"
+                      |)
+                    |))
+                ])
+              (Ty.path "core::io::borrowed_buf::BorrowedCursor")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1509,18 +1795,20 @@ Module io.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::io::borrowed_buf::BorrowedCursor",
-                            "buf"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::io::borrowed_buf::BorrowedCursor",
+                              "buf"
+                            |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ])
                   ]
                 |);
                 M.read (|
@@ -1661,64 +1949,81 @@ Module io.
                     [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (|
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::io::borrowed_buf::BorrowedCursor",
-                                  "buf"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::io::borrowed_buf::BorrowedCursor",
+                                    "buf"
+                                  |)
                                 |)
-                              |)
-                            |),
-                            "core::io::borrowed_buf::BorrowedBuf",
-                            "buf"
+                              |),
+                              "core::io::borrowed_buf::BorrowedBuf",
+                              "buf"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    Value.mkStructRecord
-                      "core::ops::range::Range"
-                      []
-                      [ Ty.path "usize" ]
-                      [
-                        ("start",
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::io::borrowed_buf::BorrowedCursor",
-                                    "buf"
-                                  |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                []
+                                [ Ty.path "u8" ]
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::Range"
+                          [
+                            ("start",
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::io::borrowed_buf::BorrowedCursor",
+                                        "buf"
+                                      |)
+                                    |)
+                                  |),
+                                  "core::io::borrowed_buf::BorrowedBuf",
+                                  "filled"
                                 |)
-                              |),
-                              "core::io::borrowed_buf::BorrowedBuf",
-                              "filled"
-                            |)
-                          |));
-                        ("end_",
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::io::borrowed_buf::BorrowedCursor",
-                                    "buf"
-                                  |)
+                              |));
+                            ("end_",
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::io::borrowed_buf::BorrowedCursor",
+                                        "buf"
+                                      |)
+                                    |)
+                                  |),
+                                  "core::io::borrowed_buf::BorrowedBuf",
+                                  "init"
                                 |)
-                              |),
-                              "core::io::borrowed_buf::BorrowedBuf",
-                              "init"
-                            |)
-                          |))
-                      ]
+                              |))
+                          ])
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
                   ]
                 |) in
               M.alloc (|
@@ -1737,7 +2042,24 @@ Module io.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                            ])
+                      ]
                     |)
                   |)
                 |)
@@ -1821,64 +2143,84 @@ Module io.
                             [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (|
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::io::borrowed_buf::BorrowedCursor",
-                                          "buf"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::io::borrowed_buf::BorrowedCursor",
+                                            "buf"
+                                          |)
                                         |)
-                                      |)
-                                    |),
-                                    "core::io::borrowed_buf::BorrowedBuf",
-                                    "buf"
+                                      |),
+                                      "core::io::borrowed_buf::BorrowedBuf",
+                                      "buf"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |);
-                            Value.mkStructRecord
-                              "core::ops::range::Range"
-                              []
-                              [ Ty.path "usize" ]
-                              [
-                                ("start",
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::io::borrowed_buf::BorrowedCursor",
-                                            "buf"
-                                          |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.mkStructRecord
+                                  "core::ops::range::Range"
+                                  [
+                                    ("start",
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::io::borrowed_buf::BorrowedCursor",
+                                                "buf"
+                                              |)
+                                            |)
+                                          |),
+                                          "core::io::borrowed_buf::BorrowedBuf",
+                                          "filled"
                                         |)
-                                      |),
-                                      "core::io::borrowed_buf::BorrowedBuf",
-                                      "filled"
-                                    |)
-                                  |));
-                                ("end_",
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::io::borrowed_buf::BorrowedCursor",
-                                            "buf"
-                                          |)
+                                      |));
+                                    ("end_",
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::io::borrowed_buf::BorrowedCursor",
+                                                "buf"
+                                              |)
+                                            |)
+                                          |),
+                                          "core::io::borrowed_buf::BorrowedBuf",
+                                          "init"
                                         |)
-                                      |),
-                                      "core::io::borrowed_buf::BorrowedBuf",
-                                      "init"
-                                    |)
-                                  |))
-                              ]
+                                      |))
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ]))
+                              (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
                           ]
                         |) in
                       M.alloc (|
@@ -1903,7 +2245,27 @@ Module io.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buf |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| buf |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ Ty.path "u8" ]
+                                        ]
+                                    ])
+                              ]
                             |)
                           |)
                         |)
@@ -1980,32 +2342,10 @@ Module io.
                             ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (|
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::io::borrowed_buf::BorrowedCursor",
-                                          "buf"
-                                        |)
-                                      |)
-                                    |),
-                                    "core::io::borrowed_buf::BorrowedBuf",
-                                    "buf"
-                                  |)
-                                |)
-                              |)
-                            |);
-                            Value.mkStructRecord
-                              "core::ops::range::RangeFrom"
-                              []
-                              [ Ty.path "usize" ]
-                              [
-                                ("start",
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
                                   M.read (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (|
@@ -2018,10 +2358,55 @@ Module io.
                                         |)
                                       |),
                                       "core::io::borrowed_buf::BorrowedBuf",
-                                      "init"
+                                      "buf"
                                     |)
-                                  |))
-                              ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.mkStructRecord
+                                  "core::ops::range::RangeFrom"
+                                  [
+                                    ("start",
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::io::borrowed_buf::BorrowedCursor",
+                                                "buf"
+                                              |)
+                                            |)
+                                          |),
+                                          "core::io::borrowed_buf::BorrowedBuf",
+                                          "init"
+                                        |)
+                                      |))
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::RangeFrom")
+                                  []
+                                  [ Ty.path "usize" ]))
+                              (Ty.apply
+                                (Ty.path "core::ops::range::RangeFrom")
+                                []
+                                [ Ty.path "usize" ])
                           ]
                         |)
                       |)
@@ -2097,32 +2482,10 @@ Module io.
                             ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (|
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::io::borrowed_buf::BorrowedCursor",
-                                          "buf"
-                                        |)
-                                      |)
-                                    |),
-                                    "core::io::borrowed_buf::BorrowedBuf",
-                                    "buf"
-                                  |)
-                                |)
-                              |)
-                            |);
-                            Value.mkStructRecord
-                              "core::ops::range::RangeFrom"
-                              []
-                              [ Ty.path "usize" ]
-                              [
-                                ("start",
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
                                   M.read (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (|
@@ -2135,10 +2498,55 @@ Module io.
                                         |)
                                       |),
                                       "core::io::borrowed_buf::BorrowedBuf",
-                                      "filled"
+                                      "buf"
                                     |)
-                                  |))
-                              ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.mkStructRecord
+                                  "core::ops::range::RangeFrom"
+                                  [
+                                    ("start",
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::io::borrowed_buf::BorrowedCursor",
+                                                "buf"
+                                              |)
+                                            |)
+                                          |),
+                                          "core::io::borrowed_buf::BorrowedBuf",
+                                          "filled"
+                                        |)
+                                      |))
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::RangeFrom")
+                                  []
+                                  [ Ty.path "usize" ]))
+                              (Ty.apply
+                                (Ty.path "core::ops::range::RangeFrom")
+                                []
+                                [ Ty.path "usize" ])
                           ]
                         |)
                       |)
@@ -2182,22 +2590,24 @@ Module io.
                       Ty.path "usize",
                       M.get_associated_function (| Ty.path "usize", "strict_add", [], [] |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (|
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::io::borrowed_buf::BorrowedCursor",
-                                  "buf"
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::io::borrowed_buf::BorrowedCursor",
+                                    "buf"
+                                  |)
                                 |)
-                              |)
-                            |),
-                            "core::io::borrowed_buf::BorrowedBuf",
-                            "filled"
-                          |)
-                        |);
-                        M.read (| n |)
+                              |),
+                              "core::io::borrowed_buf::BorrowedBuf",
+                              "filled"
+                            |)
+                          |))
+                          (Ty.path "usize");
+                        M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -2246,7 +2656,11 @@ Module io.
                               M.call_closure (|
                                 Ty.path "never",
                                 M.get_function (| "core::panicking::panic", [], [] |),
-                                [ mk_str (| "assertion failed: filled <= self.buf.init" |) ]
+                                [
+                                  M.value_with_ty
+                                    (mk_str (| "assertion failed: filled <= self.buf.init" |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                ]
                               |)
                             |)));
                         fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2349,36 +2763,40 @@ Module io.
                         Ty.path "usize",
                         M.get_function (| "core::cmp::max", [], [ Ty.path "usize" ] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::io::borrowed_buf::BorrowedCursor",
-                                    "buf"
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (|
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::io::borrowed_buf::BorrowedCursor",
+                                      "buf"
+                                    |)
                                   |)
-                                |)
-                              |),
-                              "core::io::borrowed_buf::BorrowedBuf",
-                              "init"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::io::borrowed_buf::BorrowedCursor",
-                                    "buf"
+                                |),
+                                "core::io::borrowed_buf::BorrowedBuf",
+                                "init"
+                              |)
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (|
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::io::borrowed_buf::BorrowedCursor",
+                                      "buf"
+                                    |)
                                   |)
-                                |)
-                              |),
-                              "core::io::borrowed_buf::BorrowedBuf",
-                              "filled"
-                            |)
-                          |)
+                                |),
+                                "core::io::borrowed_buf::BorrowedBuf",
+                                "filled"
+                              |)
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |) in
@@ -2462,7 +2880,14 @@ Module io.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.path "core::io::borrowed_buf::BorrowedCursor" ])
+                      ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.read (|
@@ -2480,8 +2905,54 @@ Module io.
                             ]
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ],
+                                  "as_mut_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| uninit |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ Ty.path "u8" ]
+                                          ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply
                                 (Ty.path "*mut")
                                 []
                                 [
@@ -2489,47 +2960,48 @@ Module io.
                                     (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                     []
                                     [ Ty.path "u8" ]
-                                ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "slice")
+                                ]);
+                            M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ],
+                                  "len",
+                                  [],
                                   []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| uninit |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
                                       []
-                                      [ Ty.path "u8" ]
-                                  ],
-                                "as_mut_ptr",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (| M.read (| uninit |) |)
-                                |)
-                              ]
-                            |);
-                            Value.Integer IntegerKind.U8 0;
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ Ty.path "u8" ]
-                                  ],
-                                "len",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| uninit |) |) |) ]
-                            |)
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ Ty.path "u8" ]
+                                          ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2558,18 +3030,23 @@ Module io.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::io::borrowed_buf::BorrowedCursor",
-                                  "buf"
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::io::borrowed_buf::BorrowedCursor",
+                                    "buf"
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "core::io::borrowed_buf::BorrowedBuf" ])
                         ]
                       |)
                     |) in
@@ -2630,43 +3107,47 @@ Module io.
                         Ty.path "usize",
                         M.get_function (| "core::cmp::max", [], [ Ty.path "usize" ] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (|
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (|
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::io::borrowed_buf::BorrowedCursor",
+                                      "buf"
+                                    |)
+                                  |)
+                                |),
+                                "core::io::borrowed_buf::BorrowedBuf",
+                                "init"
+                              |)
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.add,
+                              [
                                 M.read (|
                                   M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::io::borrowed_buf::BorrowedCursor",
-                                    "buf"
-                                  |)
-                                |)
-                              |),
-                              "core::io::borrowed_buf::BorrowedBuf",
-                              "init"
-                            |)
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.add,
-                            [
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (|
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::io::borrowed_buf::BorrowedCursor",
-                                        "buf"
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::io::borrowed_buf::BorrowedCursor",
+                                          "buf"
+                                        |)
                                       |)
-                                    |)
-                                  |),
-                                  "core::io::borrowed_buf::BorrowedBuf",
-                                  "filled"
-                                |)
-                              |);
-                              M.read (| n |)
-                            ]
-                          |)
+                                    |),
+                                    "core::io::borrowed_buf::BorrowedBuf",
+                                    "filled"
+                                  |)
+                                |);
+                                M.read (| n |)
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |) in
@@ -2747,10 +3228,15 @@ Module io.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "core::io::borrowed_buf::BorrowedCursor" ])
                                         ]
                                       |);
                                       M.call_closure (|
@@ -2762,10 +3248,15 @@ Module io.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| buf |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| buf |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                         ]
                                       |)
                                     ]
@@ -2778,7 +3269,11 @@ Module io.
                           M.call_closure (|
                             Ty.path "never",
                             M.get_function (| "core::panicking::panic", [], [] |),
-                            [ mk_str (| "assertion failed: self.capacity() >= buf.len()" |) ]
+                            [
+                              M.value_with_ty
+                                (mk_str (| "assertion failed: self.capacity() >= buf.len()" |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                            ]
                           |)
                         |)));
                     fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2806,17 +3301,30 @@ Module io.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ Ty.path "u8" ]
+                                          ]
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::index::IndexMut",
                                       Ty.apply
                                         (Ty.path "slice")
                                         []
@@ -2825,93 +3333,142 @@ Module io.
                                             (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                             []
                                             [ Ty.path "u8" ]
-                                        ]
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::index::IndexMut",
-                                    Ty.apply
-                                      (Ty.path "slice")
-                                      []
+                                        ],
+                                      [],
                                       [
                                         Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          (Ty.path "core::ops::range::RangeTo")
                                           []
-                                          [ Ty.path "u8" ]
+                                          [ Ty.path "usize" ]
                                       ],
-                                    [],
+                                      "index_mut",
+                                      [],
+                                      []
+                                    |),
                                     [
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeTo")
-                                        []
-                                        [ Ty.path "usize" ]
-                                    ],
-                                    "index_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "slice")
+                                                (Ty.path "&mut")
                                                 []
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    (Ty.path "slice")
                                                     []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::io::borrowed_buf::BorrowedCursor",
-                                            "as_mut",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| self |) |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.path "core::io::borrowed_buf::BorrowedCursor",
+                                                "as_mut",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "core::io::borrowed_buf::BorrowedCursor"
+                                                    ])
+                                              ]
                                             |)
-                                          ]
-                                        |)
-                                      |)
-                                    |);
-                                    Value.mkStructRecord
-                                      "core::ops::range::RangeTo"
-                                      []
-                                      [ Ty.path "usize" ]
-                                      [
-                                        ("end_",
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                              "len",
-                                              [],
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "slice")
                                               []
-                                            |),
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                  []
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.mkStructRecord
+                                            "core::ops::range::RangeTo"
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| buf |) |)
-                                              |)
-                                            ]
-                                          |))
-                                      ]
-                                  ]
+                                              ("end_",
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| buf |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ])
+                                                  ]
+                                                |))
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::ops::range::RangeTo")
+                                          []
+                                          [ Ty.path "usize" ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
-                          |)
-                        |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                       ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2935,17 +3492,31 @@ Module io.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                            "len",
-                            [],
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
                             []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |) ]
-                        |)
+                            [ Ty.path "core::io::borrowed_buf::BorrowedCursor" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                              "len",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.path "usize")
                       ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2980,7 +3551,14 @@ Module io.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        ]
                       |)
                     ]
                   |)

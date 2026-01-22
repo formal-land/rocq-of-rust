@@ -677,163 +677,182 @@ Module file_format_common.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::MODULE_HANDLES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MODULE_HANDLES" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::STRUCT_HANDLES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "STRUCT_HANDLES" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::FUNCTION_HANDLES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FUNCTION_HANDLES" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::FUNCTION_INST"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FUNCTION_INST" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::SIGNATURES"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SIGNATURES" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::CONSTANT_POOL"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CONSTANT_POOL" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::IDENTIFIERS"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IDENTIFIERS" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::ADDRESS_IDENTIFIERS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ADDRESS_IDENTIFIERS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::STRUCT_DEFS"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "STRUCT_DEFS" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::STRUCT_DEF_INST"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "STRUCT_DEF_INST" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::FUNCTION_DEFS"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FUNCTION_DEFS" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::FIELD_HANDLE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FIELD_HANDLE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::FIELD_INST"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FIELD_INST" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::FRIEND_DECLS"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FRIEND_DECLS" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::TableType::METADATA"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "METADATA" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::MODULE_HANDLES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MODULE_HANDLES" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::STRUCT_HANDLES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "STRUCT_HANDLES" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::FUNCTION_HANDLES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FUNCTION_HANDLES" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::FUNCTION_INST"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FUNCTION_INST" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::SIGNATURES"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SIGNATURES" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::CONSTANT_POOL"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CONSTANT_POOL" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::IDENTIFIERS"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IDENTIFIERS" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::ADDRESS_IDENTIFIERS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ADDRESS_IDENTIFIERS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::STRUCT_DEFS"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "STRUCT_DEFS" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::STRUCT_DEF_INST"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "STRUCT_DEF_INST" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::FUNCTION_DEFS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FUNCTION_DEFS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::FIELD_HANDLE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FIELD_HANDLE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::FIELD_INST"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FIELD_INST" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::FRIEND_DECLS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FRIEND_DECLS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::TableType::METADATA"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "METADATA" |) |) |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -908,7 +927,14 @@ Module file_format_common.
                   [],
                   [ Ty.path "move_binary_format::file_format_common::TableType" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_binary_format::file_format_common::TableType" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -924,11 +950,15 @@ Module file_format_common.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -990,7 +1020,14 @@ Module file_format_common.
                   [],
                   [ Ty.path "move_binary_format::file_format_common::TableType" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_binary_format::file_format_common::TableType" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "u8" :=
               M.call_closure (|
@@ -1000,7 +1037,14 @@ Module file_format_common.
                   [],
                   [ Ty.path "move_binary_format::file_format_common::TableType" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_binary_format::file_format_common::TableType" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -1192,154 +1236,158 @@ Module file_format_common.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::BOOL"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BOOL" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::U8"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U8" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::U64"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U64" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::U128"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U128" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::ADDRESS"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ADDRESS" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::REFERENCE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "REFERENCE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::MUTABLE_REFERENCE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MUTABLE_REFERENCE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::STRUCT"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "STRUCT" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::TYPE_PARAMETER"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TYPE_PARAMETER" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::VECTOR"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VECTOR" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::STRUCT_INST"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "STRUCT_INST" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::SIGNER"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SIGNER" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::U16"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U16" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::U32"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U32" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedType::U256"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U256" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::BOOL"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BOOL" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::U8"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U8" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::U64"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U64" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::U128"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U128" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::ADDRESS"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ADDRESS" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::REFERENCE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "REFERENCE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::MUTABLE_REFERENCE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MUTABLE_REFERENCE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::STRUCT"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "STRUCT" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::TYPE_PARAMETER"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TYPE_PARAMETER" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::VECTOR"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VECTOR" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::STRUCT_INST"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "STRUCT_INST" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::SIGNER"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SIGNER" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::U16"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U16" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::U32"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U32" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedType::U256"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U256" |) |) |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1449,31 +1497,35 @@ Module file_format_common.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedNativeStructFlag::NATIVE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NATIVE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::SerializedNativeStructFlag::DECLARED"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DECLARED" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedNativeStructFlag::NATIVE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NATIVE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::SerializedNativeStructFlag::DECLARED"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DECLARED" |) |) |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2042,763 +2094,779 @@ Module file_format_common.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::POP"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "POP" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::RET"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RET" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::BR_TRUE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BR_TRUE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::BR_FALSE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BR_FALSE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::BRANCH"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BRANCH" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LD_U64"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U64" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LD_CONST"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_CONST" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LD_TRUE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_TRUE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LD_FALSE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_FALSE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::COPY_LOC"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "COPY_LOC" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MOVE_LOC"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MOVE_LOC" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::ST_LOC"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ST_LOC" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MUT_BORROW_LOC"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MUT_BORROW_LOC" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::IMM_BORROW_LOC"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "IMM_BORROW_LOC" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MUT_BORROW_FIELD"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MUT_BORROW_FIELD" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::IMM_BORROW_FIELD"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "IMM_BORROW_FIELD" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::CALL"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CALL" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::PACK"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PACK" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::UNPACK"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "UNPACK" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::READ_REF"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "READ_REF" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::WRITE_REF"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "WRITE_REF" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::ADD"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ADD" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::SUB"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SUB" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MUL"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MUL" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MOD"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MOD" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::DIV"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DIV" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::BIT_OR"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BIT_OR" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::BIT_AND"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BIT_AND" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::XOR"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "XOR" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::OR"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OR" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::AND"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AND" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::NOT"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NOT" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::EQ"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EQ" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::NEQ"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NEQ" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LT"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LT" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::GT"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "GT" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::GE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "GE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::ABORT"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ABORT" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::NOP"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NOP" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::FREEZE_REF"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FREEZE_REF" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::SHL"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SHL" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::SHR"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SHR" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LD_U8"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U8" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LD_U128"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U128" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::CAST_U8"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U8" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::CAST_U64"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U64" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::CAST_U128"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U128" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MUT_BORROW_FIELD_GENERIC"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MUT_BORROW_FIELD_GENERIC" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::IMM_BORROW_FIELD_GENERIC"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "IMM_BORROW_FIELD_GENERIC" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::CALL_GENERIC"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CALL_GENERIC" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::PACK_GENERIC"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PACK_GENERIC" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::UNPACK_GENERIC"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNPACK_GENERIC" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::VEC_PACK"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_PACK" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::VEC_LEN"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_LEN" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::VEC_IMM_BORROW"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VEC_IMM_BORROW" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::VEC_MUT_BORROW"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VEC_MUT_BORROW" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::VEC_PUSH_BACK"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_PUSH_BACK" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::VEC_POP_BACK"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_POP_BACK" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::VEC_UNPACK"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_UNPACK" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::VEC_SWAP"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_SWAP" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LD_U16"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U16" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LD_U32"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U32" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::LD_U256"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U256" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::CAST_U16"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U16" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::CAST_U32"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U32" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::CAST_U256"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U256" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::EXISTS_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EXISTS_DEPRECATED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MUT_BORROW_GLOBAL_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MUT_BORROW_GLOBAL_DEPRECATED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::IMM_BORROW_GLOBAL_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "IMM_BORROW_GLOBAL_DEPRECATED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MOVE_FROM_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVE_FROM_DEPRECATED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MOVE_TO_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVE_TO_DEPRECATED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::EXISTS_GENERIC_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EXISTS_GENERIC_DEPRECATED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MUT_BORROW_GLOBAL_GENERIC_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MUT_BORROW_GLOBAL_GENERIC_DEPRECATED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::IMM_BORROW_GLOBAL_GENERIC_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "IMM_BORROW_GLOBAL_GENERIC_DEPRECATED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MOVE_FROM_GENERIC_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVE_FROM_GENERIC_DEPRECATED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_binary_format::file_format_common::Opcodes::MOVE_TO_GENERIC_DEPRECATED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVE_TO_GENERIC_DEPRECATED" |) |)
-                      |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::POP"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "POP" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::RET"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RET" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::BR_TRUE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BR_TRUE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::BR_FALSE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BR_FALSE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::BRANCH"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BRANCH" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LD_U64"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U64" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LD_CONST"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_CONST" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LD_TRUE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_TRUE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LD_FALSE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_FALSE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::COPY_LOC"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "COPY_LOC" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MOVE_LOC"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MOVE_LOC" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::ST_LOC"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ST_LOC" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MUT_BORROW_LOC"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MUT_BORROW_LOC" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::IMM_BORROW_LOC"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "IMM_BORROW_LOC" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MUT_BORROW_FIELD"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MUT_BORROW_FIELD" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::IMM_BORROW_FIELD"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "IMM_BORROW_FIELD" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::CALL"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CALL" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::PACK"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PACK" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::UNPACK"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "UNPACK" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::READ_REF"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "READ_REF" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::WRITE_REF"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "WRITE_REF" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::ADD"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ADD" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::SUB"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SUB" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MUL"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MUL" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MOD"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MOD" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::DIV"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DIV" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::BIT_OR"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BIT_OR" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::BIT_AND"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BIT_AND" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::XOR"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "XOR" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::OR"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OR" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::AND"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AND" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::NOT"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NOT" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::EQ"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EQ" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::NEQ"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NEQ" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LT"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LT" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::GT"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "GT" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::GE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "GE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::ABORT"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ABORT" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::NOP"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NOP" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::FREEZE_REF"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FREEZE_REF" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::SHL"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SHL" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::SHR"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SHR" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LD_U8"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U8" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LD_U128"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U128" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::CAST_U8"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U8" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::CAST_U64"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U64" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::CAST_U128"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U128" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MUT_BORROW_FIELD_GENERIC"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MUT_BORROW_FIELD_GENERIC" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::IMM_BORROW_FIELD_GENERIC"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "IMM_BORROW_FIELD_GENERIC" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::CALL_GENERIC"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CALL_GENERIC" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::PACK_GENERIC"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "PACK_GENERIC" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::UNPACK_GENERIC"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNPACK_GENERIC" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::VEC_PACK"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_PACK" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::VEC_LEN"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_LEN" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::VEC_IMM_BORROW"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VEC_IMM_BORROW" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::VEC_MUT_BORROW"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VEC_MUT_BORROW" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::VEC_PUSH_BACK"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VEC_PUSH_BACK" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::VEC_POP_BACK"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VEC_POP_BACK" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::VEC_UNPACK"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_UNPACK" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::VEC_SWAP"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "VEC_SWAP" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LD_U16"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U16" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LD_U32"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U32" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::LD_U256"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LD_U256" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::CAST_U16"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U16" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::CAST_U32"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U32" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::CAST_U256"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CAST_U256" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::EXISTS_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EXISTS_DEPRECATED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MUT_BORROW_GLOBAL_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MUT_BORROW_GLOBAL_DEPRECATED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::IMM_BORROW_GLOBAL_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "IMM_BORROW_GLOBAL_DEPRECATED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MOVE_FROM_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVE_FROM_DEPRECATED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MOVE_TO_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVE_TO_DEPRECATED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::EXISTS_GENERIC_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EXISTS_GENERIC_DEPRECATED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MUT_BORROW_GLOBAL_GENERIC_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MUT_BORROW_GLOBAL_GENERIC_DEPRECATED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::IMM_BORROW_GLOBAL_GENERIC_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "IMM_BORROW_GLOBAL_GENERIC_DEPRECATED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MOVE_FROM_GENERIC_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVE_FROM_GENERIC_DEPRECATED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_binary_format::file_format_common::Opcodes::MOVE_TO_GENERIC_DEPRECATED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVE_TO_GENERIC_DEPRECATED" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2854,32 +2922,32 @@ Module file_format_common.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "move_binary_format::file_format_common::BinaryData"
-            []
-            []
-            [
-              ("_binary",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "move_binary_format::file_format_common::BinaryData"
+              [
+                ("_binary",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::vec::Vec")
                       []
                       [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "move_binary_format::file_format_common::BinaryData")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2922,58 +2990,66 @@ Module file_format_common.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BinaryData" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "_binary" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "alloc::vec::Vec")
-                            []
-                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::vec::Vec")
-                                []
-                                [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_binary_format::file_format_common::BinaryData",
-                              "_binary"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BinaryData" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "_binary" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_binary_format::file_format_common::BinaryData",
+                                "_binary"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3002,29 +3078,29 @@ Module file_format_common.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "move_binary_format::file_format_common::BinaryData"
-            []
-            []
-            [
-              ("_binary",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                  M.get_associated_function (|
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "move_binary_format::file_format_common::BinaryData"
+              [
+                ("_binary",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::vec::Vec")
                       []
                       [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                    "new",
-                    [],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                      "new",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "move_binary_format::file_format_common::BinaryData")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3067,19 +3143,29 @@ Module file_format_common.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "move_binary_format::file_format_common::BinaryData",
-                          "_binary"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "move_binary_format::file_format_common::BinaryData",
+                            "_binary"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                      ])
                 ]
               |)
             |)
@@ -3174,46 +3260,68 @@ Module file_format_common.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "usize" ],
-                                        M.call_closure (|
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
                                             [ Ty.path "usize" ],
-                                          M.get_associated_function (|
-                                            Ty.path "usize",
-                                            "checked_add",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "usize" ],
+                                            M.get_associated_function (|
                                               Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
-                                              ]
-                                            |);
-                                            Value.Integer IntegerKind.Usize 1
-                                          ]
+                                              "checked_add",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.path
+                                                      "move_binary_format::file_format_common::BinaryData",
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format_common::BinaryData"
+                                                        ])
+                                                  ]
+                                                |))
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 1)
+                                                (Ty.path "usize")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ])
                                   ]
                                 |)
                               |)) in
@@ -3233,15 +3341,25 @@ Module file_format_common.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "move_binary_format::file_format_common::BinaryData",
-                                      "_binary"
-                                    |)
-                                  |);
-                                  M.read (| item |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "move_binary_format::file_format_common::BinaryData",
+                                        "_binary"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                      ]);
+                                  M.value_with_ty (M.read (| item |)) (Ty.path "u8")
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3251,181 +3369,262 @@ Module file_format_common.
                           (M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ Ty.tuple []; Ty.path "anyhow::Error" ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "anyhow::Error",
-                                      M.get_associated_function (|
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
                                         Ty.path "anyhow::Error",
-                                        "msg",
-                                        [],
-                                        [ Ty.path "alloc::string::String" ]
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "alloc::string::String",
-                                          M.get_function (|
-                                            "core::hint::must_use",
-                                            [],
-                                            [ Ty.path "alloc::string::String" ]
-                                          |),
-                                          [
-                                            M.read (|
-                                              let~ res : Ty.path "alloc::string::String" :=
-                                                M.call_closure (|
-                                                  Ty.path "alloc::string::String",
-                                                  M.get_function (| "alloc::fmt::format", [], [] |),
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "core::fmt::Arguments",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::fmt::Arguments",
-                                                        "new_v1",
+                                        M.get_associated_function (|
+                                          Ty.path "anyhow::Error",
+                                          "msg",
+                                          [],
+                                          [ Ty.path "alloc::string::String" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "alloc::string::String",
+                                              M.get_function (|
+                                                "core::hint::must_use",
+                                                [],
+                                                [ Ty.path "alloc::string::String" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (|
+                                                    let~ res : Ty.path "alloc::string::String" :=
+                                                      M.call_closure (|
+                                                        Ty.path "alloc::string::String",
+                                                        M.get_function (|
+                                                          "alloc::fmt::format",
+                                                          [],
+                                                          []
+                                                        |),
                                                         [
-                                                          Value.Integer IntegerKind.Usize 3;
-                                                          Value.Integer IntegerKind.Usize 2
-                                                        ],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      3
-                                                                  ]
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [ Ty.path "str" ]
-                                                                  ],
-                                                                Value.Array
-                                                                  [
-                                                                    mk_str (| "binary size (" |);
-                                                                    mk_str (|
-                                                                      ") + 1 is greater than limit ("
-                                                                    |);
-                                                                    mk_str (| ")" |)
-                                                                  ]
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      2
-                                                                  ]
-                                                                  [
-                                                                    Ty.path
-                                                                      "core::fmt::rt::Argument"
-                                                                  ],
-                                                                Value.Array
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path
-                                                                        "core::fmt::rt::Argument",
-                                                                      M.get_associated_function (|
-                                                                        Ty.path
-                                                                          "core::fmt::rt::Argument",
-                                                                        "new_display",
-                                                                        [],
-                                                                        [ Ty.path "usize" ]
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.alloc (|
-                                                                                Ty.path "usize",
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  M.get_associated_function (|
-                                                                                    Ty.path
-                                                                                      "move_binary_format::file_format_common::BinaryData",
-                                                                                    "len",
-                                                                                    [],
-                                                                                    []
-                                                                                  |),
-                                                                                  [
-                                                                                    M.borrow (|
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "core::fmt::Arguments",
+                                                              M.get_associated_function (|
+                                                                Ty.path "core::fmt::Arguments",
+                                                                "new_v1",
+                                                                [
+                                                                  Value.Integer IntegerKind.Usize 3;
+                                                                  Value.Integer IntegerKind.Usize 2
+                                                                ],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.alloc (|
+                                                                          Ty.apply
+                                                                            (Ty.path "array")
+                                                                            [
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                3
+                                                                            ]
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [ Ty.path "str" ]
+                                                                            ],
+                                                                          Value.Array
+                                                                            [
+                                                                              mk_str (|
+                                                                                "binary size ("
+                                                                              |);
+                                                                              mk_str (|
+                                                                                ") + 1 is greater than limit ("
+                                                                              |);
+                                                                              mk_str (| ")" |)
+                                                                            ]
+                                                                        |)
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            3
+                                                                        ]
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ Ty.path "str" ]
+                                                                        ]
+                                                                    ]);
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.alloc (|
+                                                                          Ty.apply
+                                                                            (Ty.path "array")
+                                                                            [
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                2
+                                                                            ]
+                                                                            [
+                                                                              Ty.path
+                                                                                "core::fmt::rt::Argument"
+                                                                            ],
+                                                                          Value.Array
+                                                                            [
+                                                                              M.call_closure (|
+                                                                                Ty.path
+                                                                                  "core::fmt::rt::Argument",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::rt::Argument",
+                                                                                  "new_display",
+                                                                                  [],
+                                                                                  [ Ty.path "usize"
+                                                                                  ]
+                                                                                |),
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
                                                                                       Pointer.Kind.Ref,
                                                                                       M.deref (|
-                                                                                        M.read (|
-                                                                                          self
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.alloc (|
+                                                                                            Ty.path
+                                                                                              "usize",
+                                                                                            M.call_closure (|
+                                                                                              Ty.path
+                                                                                                "usize",
+                                                                                              M.get_associated_function (|
+                                                                                                Ty.path
+                                                                                                  "move_binary_format::file_format_common::BinaryData",
+                                                                                                "len",
+                                                                                                [],
+                                                                                                []
+                                                                                              |),
+                                                                                              [
+                                                                                                M.value_with_ty
+                                                                                                  (M.borrow (|
+                                                                                                    Pointer.Kind.Ref,
+                                                                                                    M.deref (|
+                                                                                                      M.read (|
+                                                                                                        self
+                                                                                                      |)
+                                                                                                    |)
+                                                                                                  |))
+                                                                                                  (Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "&")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.path
+                                                                                                        "move_binary_format::file_format_common::BinaryData"
+                                                                                                    ])
+                                                                                              ]
+                                                                                            |)
+                                                                                          |)
                                                                                         |)
                                                                                       |)
-                                                                                    |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "usize"
+                                                                                      ])
+                                                                                ]
+                                                                              |);
+                                                                              M.call_closure (|
+                                                                                Ty.path
+                                                                                  "core::fmt::rt::Argument",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::rt::Argument",
+                                                                                  "new_display",
+                                                                                  [],
+                                                                                  [ Ty.path "usize"
                                                                                   ]
-                                                                                |)
+                                                                                |),
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          get_constant (|
+                                                                                            "move_binary_format::file_format_common::BINARY_SIZE_LIMIT",
+                                                                                            Ty.path
+                                                                                              "usize"
+                                                                                          |)
+                                                                                        |)
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "usize"
+                                                                                      ])
+                                                                                ]
                                                                               |)
-                                                                            |)
-                                                                          |)
+                                                                            ]
                                                                         |)
-                                                                      ]
-                                                                    |);
-                                                                    M.call_closure (|
-                                                                      Ty.path
-                                                                        "core::fmt::rt::Argument",
-                                                                      M.get_associated_function (|
-                                                                        Ty.path
-                                                                          "core::fmt::rt::Argument",
-                                                                        "new_display",
-                                                                        [],
-                                                                        [ Ty.path "usize" ]
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              get_constant (|
-                                                                                "move_binary_format::file_format_common::BINARY_SIZE_LIMIT",
-                                                                                Ty.path "usize"
-                                                                              |)
-                                                                            |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
+                                                                      |)
                                                                     |)
-                                                                  ]
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |) in
-                                              res
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            2
+                                                                        ]
+                                                                        [
+                                                                          Ty.path
+                                                                            "core::fmt::rt::Argument"
+                                                                        ]
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.path "core::fmt::Arguments")
+                                                        ]
+                                                      |) in
+                                                    res
+                                                  |))
+                                                  (Ty.path "alloc::string::String")
+                                              ]
+                                            |))
+                                            (Ty.path "alloc::string::String")
+                                        ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "anyhow::Error" ])
                               |)
                             |)
                           |)))
@@ -3436,11 +3635,12 @@ Module file_format_common.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "anyhow::Error" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "anyhow::Error" ])
                 |)
               |)))
           |)))
@@ -3500,7 +3700,14 @@ Module file_format_common.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vec |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vec |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -3525,46 +3732,68 @@ Module file_format_common.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "usize" ],
-                                        M.call_closure (|
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
                                             [ Ty.path "usize" ],
-                                          M.get_associated_function (|
-                                            Ty.path "usize",
-                                            "checked_add",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "usize" ],
+                                            M.get_associated_function (|
                                               Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.read (| vec_len |)
-                                          ]
+                                              "checked_add",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.path
+                                                      "move_binary_format::file_format_common::BinaryData",
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format_common::BinaryData"
+                                                        ])
+                                                  ]
+                                                |))
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (M.read (| vec_len |))
+                                                (Ty.path "usize")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ])
                                   ]
                                 |)
                               |)) in
@@ -3592,15 +3821,30 @@ Module file_format_common.
                                   ]
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "move_binary_format::file_format_common::BinaryData",
-                                      "_binary"
-                                    |)
-                                  |);
-                                  M.read (| vec |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "move_binary_format::file_format_common::BinaryData",
+                                        "_binary"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.read (| vec |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3610,230 +3854,339 @@ Module file_format_common.
                           (M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ Ty.tuple []; Ty.path "anyhow::Error" ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "anyhow::Error",
-                                      M.get_associated_function (|
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
                                         Ty.path "anyhow::Error",
-                                        "msg",
-                                        [],
-                                        [ Ty.path "alloc::string::String" ]
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "alloc::string::String",
-                                          M.get_function (|
-                                            "core::hint::must_use",
-                                            [],
-                                            [ Ty.path "alloc::string::String" ]
-                                          |),
-                                          [
-                                            M.read (|
-                                              let~ res : Ty.path "alloc::string::String" :=
-                                                M.call_closure (|
-                                                  Ty.path "alloc::string::String",
-                                                  M.get_function (| "alloc::fmt::format", [], [] |),
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "core::fmt::Arguments",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::fmt::Arguments",
-                                                        "new_v1",
+                                        M.get_associated_function (|
+                                          Ty.path "anyhow::Error",
+                                          "msg",
+                                          [],
+                                          [ Ty.path "alloc::string::String" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "alloc::string::String",
+                                              M.get_function (|
+                                                "core::hint::must_use",
+                                                [],
+                                                [ Ty.path "alloc::string::String" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (|
+                                                    let~ res : Ty.path "alloc::string::String" :=
+                                                      M.call_closure (|
+                                                        Ty.path "alloc::string::String",
+                                                        M.get_function (|
+                                                          "alloc::fmt::format",
+                                                          [],
+                                                          []
+                                                        |),
                                                         [
-                                                          Value.Integer IntegerKind.Usize 4;
-                                                          Value.Integer IntegerKind.Usize 3
-                                                        ],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      4
-                                                                  ]
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [ Ty.path "str" ]
-                                                                  ],
-                                                                Value.Array
-                                                                  [
-                                                                    mk_str (| "binary size (" |);
-                                                                    mk_str (| ") + " |);
-                                                                    mk_str (|
-                                                                      " is greater than limit ("
-                                                                    |);
-                                                                    mk_str (| ")" |)
-                                                                  ]
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      3
-                                                                  ]
-                                                                  [
-                                                                    Ty.path
-                                                                      "core::fmt::rt::Argument"
-                                                                  ],
-                                                                Value.Array
-                                                                  [
-                                                                    M.call_closure (|
-                                                                      Ty.path
-                                                                        "core::fmt::rt::Argument",
-                                                                      M.get_associated_function (|
-                                                                        Ty.path
-                                                                          "core::fmt::rt::Argument",
-                                                                        "new_display",
-                                                                        [],
-                                                                        [ Ty.path "usize" ]
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.alloc (|
-                                                                                Ty.path "usize",
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  M.get_associated_function (|
-                                                                                    Ty.path
-                                                                                      "move_binary_format::file_format_common::BinaryData",
-                                                                                    "len",
-                                                                                    [],
-                                                                                    []
-                                                                                  |),
-                                                                                  [
-                                                                                    M.borrow (|
-                                                                                      Pointer.Kind.Ref,
-                                                                                      M.deref (|
-                                                                                        M.read (|
-                                                                                          self
-                                                                                        |)
-                                                                                      |)
-                                                                                    |)
-                                                                                  ]
-                                                                                |)
-                                                                              |)
-                                                                            |)
-                                                                          |)
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "core::fmt::Arguments",
+                                                              M.get_associated_function (|
+                                                                Ty.path "core::fmt::Arguments",
+                                                                "new_v1",
+                                                                [
+                                                                  Value.Integer IntegerKind.Usize 4;
+                                                                  Value.Integer IntegerKind.Usize 3
+                                                                ],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.alloc (|
+                                                                          Ty.apply
+                                                                            (Ty.path "array")
+                                                                            [
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                4
+                                                                            ]
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [ Ty.path "str" ]
+                                                                            ],
+                                                                          Value.Array
+                                                                            [
+                                                                              mk_str (|
+                                                                                "binary size ("
+                                                                              |);
+                                                                              mk_str (| ") + " |);
+                                                                              mk_str (|
+                                                                                " is greater than limit ("
+                                                                              |);
+                                                                              mk_str (| ")" |)
+                                                                            ]
                                                                         |)
-                                                                      ]
-                                                                    |);
-                                                                    M.call_closure (|
-                                                                      Ty.path
-                                                                        "core::fmt::rt::Argument",
-                                                                      M.get_associated_function (|
-                                                                        Ty.path
-                                                                          "core::fmt::rt::Argument",
-                                                                        "new_display",
-                                                                        [],
-                                                                        [ Ty.path "usize" ]
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.alloc (|
-                                                                                Ty.path "usize",
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  M.get_associated_function (|
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "slice")
-                                                                                      []
-                                                                                      [ Ty.path "u8"
-                                                                                      ],
-                                                                                    "len",
-                                                                                    [],
-                                                                                    []
-                                                                                  |),
-                                                                                  [
-                                                                                    M.borrow (|
-                                                                                      Pointer.Kind.Ref,
-                                                                                      M.deref (|
-                                                                                        M.read (|
-                                                                                          vec
-                                                                                        |)
-                                                                                      |)
-                                                                                    |)
-                                                                                  ]
-                                                                                |)
-                                                                              |)
-                                                                            |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
-                                                                    |);
-                                                                    M.call_closure (|
-                                                                      Ty.path
-                                                                        "core::fmt::rt::Argument",
-                                                                      M.get_associated_function (|
-                                                                        Ty.path
-                                                                          "core::fmt::rt::Argument",
-                                                                        "new_display",
-                                                                        [],
-                                                                        [ Ty.path "usize" ]
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              get_constant (|
-                                                                                "move_binary_format::file_format_common::BINARY_SIZE_LIMIT",
-                                                                                Ty.path "usize"
-                                                                              |)
-                                                                            |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
+                                                                      |)
                                                                     |)
-                                                                  ]
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |) in
-                                              res
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            4
+                                                                        ]
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ Ty.path "str" ]
+                                                                        ]
+                                                                    ]);
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.alloc (|
+                                                                          Ty.apply
+                                                                            (Ty.path "array")
+                                                                            [
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                3
+                                                                            ]
+                                                                            [
+                                                                              Ty.path
+                                                                                "core::fmt::rt::Argument"
+                                                                            ],
+                                                                          Value.Array
+                                                                            [
+                                                                              M.call_closure (|
+                                                                                Ty.path
+                                                                                  "core::fmt::rt::Argument",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::rt::Argument",
+                                                                                  "new_display",
+                                                                                  [],
+                                                                                  [ Ty.path "usize"
+                                                                                  ]
+                                                                                |),
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.alloc (|
+                                                                                            Ty.path
+                                                                                              "usize",
+                                                                                            M.call_closure (|
+                                                                                              Ty.path
+                                                                                                "usize",
+                                                                                              M.get_associated_function (|
+                                                                                                Ty.path
+                                                                                                  "move_binary_format::file_format_common::BinaryData",
+                                                                                                "len",
+                                                                                                [],
+                                                                                                []
+                                                                                              |),
+                                                                                              [
+                                                                                                M.value_with_ty
+                                                                                                  (M.borrow (|
+                                                                                                    Pointer.Kind.Ref,
+                                                                                                    M.deref (|
+                                                                                                      M.read (|
+                                                                                                        self
+                                                                                                      |)
+                                                                                                    |)
+                                                                                                  |))
+                                                                                                  (Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "&")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.path
+                                                                                                        "move_binary_format::file_format_common::BinaryData"
+                                                                                                    ])
+                                                                                              ]
+                                                                                            |)
+                                                                                          |)
+                                                                                        |)
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "usize"
+                                                                                      ])
+                                                                                ]
+                                                                              |);
+                                                                              M.call_closure (|
+                                                                                Ty.path
+                                                                                  "core::fmt::rt::Argument",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::rt::Argument",
+                                                                                  "new_display",
+                                                                                  [],
+                                                                                  [ Ty.path "usize"
+                                                                                  ]
+                                                                                |),
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.alloc (|
+                                                                                            Ty.path
+                                                                                              "usize",
+                                                                                            M.call_closure (|
+                                                                                              Ty.path
+                                                                                                "usize",
+                                                                                              M.get_associated_function (|
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "slice")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "u8"
+                                                                                                  ],
+                                                                                                "len",
+                                                                                                [],
+                                                                                                []
+                                                                                              |),
+                                                                                              [
+                                                                                                M.value_with_ty
+                                                                                                  (M.borrow (|
+                                                                                                    Pointer.Kind.Ref,
+                                                                                                    M.deref (|
+                                                                                                      M.read (|
+                                                                                                        vec
+                                                                                                      |)
+                                                                                                    |)
+                                                                                                  |))
+                                                                                                  (Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "&")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.apply
+                                                                                                        (Ty.path
+                                                                                                          "slice")
+                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.path
+                                                                                                            "u8"
+                                                                                                        ]
+                                                                                                    ])
+                                                                                              ]
+                                                                                            |)
+                                                                                          |)
+                                                                                        |)
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "usize"
+                                                                                      ])
+                                                                                ]
+                                                                              |);
+                                                                              M.call_closure (|
+                                                                                Ty.path
+                                                                                  "core::fmt::rt::Argument",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::rt::Argument",
+                                                                                  "new_display",
+                                                                                  [],
+                                                                                  [ Ty.path "usize"
+                                                                                  ]
+                                                                                |),
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          get_constant (|
+                                                                                            "move_binary_format::file_format_common::BINARY_SIZE_LIMIT",
+                                                                                            Ty.path
+                                                                                              "usize"
+                                                                                          |)
+                                                                                        |)
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "usize"
+                                                                                      ])
+                                                                                ]
+                                                                              |)
+                                                                            ]
+                                                                        |)
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            3
+                                                                        ]
+                                                                        [
+                                                                          Ty.path
+                                                                            "core::fmt::rt::Argument"
+                                                                        ]
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.path "core::fmt::Arguments")
+                                                        ]
+                                                      |) in
+                                                    res
+                                                  |))
+                                                  (Ty.path "alloc::string::String")
+                                              ]
+                                            |))
+                                            (Ty.path "alloc::string::String")
+                                        ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "anyhow::Error" ])
                               |)
                             |)
                           |)))
@@ -3844,11 +4197,12 @@ Module file_format_common.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "anyhow::Error" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "anyhow::Error" ])
                 |)
               |)))
           |)))
@@ -3888,14 +4242,24 @@ Module file_format_common.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "move_binary_format::file_format_common::BinaryData",
-                  "_binary"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "move_binary_format::file_format_common::BinaryData",
+                    "_binary"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3934,14 +4298,24 @@ Module file_format_common.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "move_binary_format::file_format_common::BinaryData",
-                  "_binary"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "move_binary_format::file_format_common::BinaryData",
+                    "_binary"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3982,14 +4356,24 @@ Module file_format_common.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "move_binary_format::file_format_common::BinaryData",
-                      "_binary"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "move_binary_format::file_format_common::BinaryData",
+                        "_binary"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                      ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4022,11 +4406,11 @@ Module file_format_common.
                 [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
               vec
             |) in
-          Value.mkStructRecord
-            "move_binary_format::file_format_common::BinaryData"
-            []
-            []
-            [ ("_binary", M.read (| vec |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_binary_format::file_format_common::BinaryData"
+              [ ("_binary", M.read (| vec |)) ])
+            (Ty.path "move_binary_format::file_format_common::BinaryData")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4151,35 +4535,50 @@ Module file_format_common.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "push",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| binary |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_binary_format::file_format_common::BinaryData"
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.cast
+                                                      (Ty.path "u8")
+                                                      (M.call_closure (|
+                                                        Ty.path "u64",
+                                                        BinOp.Wrap.bit_or,
+                                                        [
+                                                          M.read (| cur |);
+                                                          Value.Integer IntegerKind.U64 128
+                                                        ]
+                                                      |)))
+                                                    (Ty.path "u8")
+                                                ]
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "core::result::Result")
                                                 []
-                                                [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "push",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |);
-                                                M.cast
-                                                  (Ty.path "u8")
-                                                  (M.call_closure (|
-                                                    Ty.path "u64",
-                                                    BinOp.Wrap.bit_or,
-                                                    [
-                                                      M.read (| cur |);
-                                                      Value.Integer IntegerKind.U64 128
-                                                    ]
-                                                  |))
-                                              ]
-                                            |)
+                                                [ Ty.tuple []; Ty.path "anyhow::Error" ])
                                           ]
                                         |)
                                       |),
@@ -4231,7 +4630,17 @@ Module file_format_common.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| residual |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| residual |))
+                                                        (Ty.apply
+                                                          (Ty.path "core::result::Result")
+                                                          []
+                                                          [
+                                                            Ty.path "core::convert::Infallible";
+                                                            Ty.path "anyhow::Error"
+                                                          ])
+                                                    ]
                                                   |)
                                                 |)
                                               |)
@@ -4308,26 +4717,41 @@ Module file_format_common.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.apply
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                  M.get_associated_function (|
+                                                    Ty.path
+                                                      "move_binary_format::file_format_common::BinaryData",
+                                                    "push",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (| M.read (| binary |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format_common::BinaryData"
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.cast (Ty.path "u8") (M.read (| cur |)))
+                                                      (Ty.path "u8")
+                                                  ]
+                                                |))
+                                                (Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_associated_function (|
-                                                  Ty.path
-                                                    "move_binary_format::file_format_common::BinaryData",
-                                                  "push",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| binary |) |)
-                                                  |);
-                                                  M.cast (Ty.path "u8") (M.read (| cur |))
-                                                ]
-                                              |)
+                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ])
                                             ]
                                           |)
                                         |),
@@ -4379,7 +4803,17 @@ Module file_format_common.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.read (| residual |) ]
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| residual |))
+                                                          (Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path "core::convert::Infallible";
+                                                              Ty.path "anyhow::Error"
+                                                            ])
+                                                      ]
                                                     |)
                                                   |)
                                                 |)
@@ -4409,11 +4843,12 @@ Module file_format_common.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "anyhow::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "anyhow::Error" ])
               |)
             |)))
         |)))
@@ -4454,46 +4889,53 @@ Module file_format_common.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 2 ]
-                      [ Ty.path "u8" ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 2 ]
-                          [ Ty.path "u8" ],
-                        M.call_closure (|
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.path "move_binary_format::file_format_common::BinaryData" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 2 ]
+                        [ Ty.path "u8" ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 2 ]
                             [ Ty.path "u8" ],
-                          M.get_associated_function (| Ty.path "u16", "to_le_bytes", [], [] |),
-                          [ M.read (| value |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "u8" ],
+                            M.get_associated_function (| Ty.path "u16", "to_le_bytes", [], [] |),
+                            [ M.value_with_ty (M.read (| value |)) (Ty.path "u16") ]
+                          |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4531,46 +4973,53 @@ Module file_format_common.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 4 ]
-                      [ Ty.path "u8" ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 4 ]
-                          [ Ty.path "u8" ],
-                        M.call_closure (|
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.path "move_binary_format::file_format_common::BinaryData" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 4 ]
+                        [ Ty.path "u8" ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 4 ]
                             [ Ty.path "u8" ],
-                          M.get_associated_function (| Ty.path "u32", "to_le_bytes", [], [] |),
-                          [ M.read (| value |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 4 ]
+                              [ Ty.path "u8" ],
+                            M.get_associated_function (| Ty.path "u32", "to_le_bytes", [], [] |),
+                            [ M.value_with_ty (M.read (| value |)) (Ty.path "u32") ]
+                          |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4608,46 +5057,53 @@ Module file_format_common.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 8 ]
-                      [ Ty.path "u8" ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 8 ]
-                          [ Ty.path "u8" ],
-                        M.call_closure (|
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.path "move_binary_format::file_format_common::BinaryData" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 8 ]
+                        [ Ty.path "u8" ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 8 ]
                             [ Ty.path "u8" ],
-                          M.get_associated_function (| Ty.path "u64", "to_le_bytes", [], [] |),
-                          [ M.read (| value |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 8 ]
+                              [ Ty.path "u8" ],
+                            M.get_associated_function (| Ty.path "u64", "to_le_bytes", [], [] |),
+                            [ M.value_with_ty (M.read (| value |)) (Ty.path "u64") ]
+                          |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4685,46 +5141,53 @@ Module file_format_common.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 16 ]
-                      [ Ty.path "u8" ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 16 ]
-                          [ Ty.path "u8" ],
-                        M.call_closure (|
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.path "move_binary_format::file_format_common::BinaryData" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "u8" ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 16 ]
                             [ Ty.path "u8" ],
-                          M.get_associated_function (| Ty.path "u128", "to_le_bytes", [], [] |),
-                          [ M.read (| value |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 16 ]
+                              [ Ty.path "u8" ],
+                            M.get_associated_function (| Ty.path "u128", "to_le_bytes", [], [] |),
+                            [ M.value_with_ty (M.read (| value |)) (Ty.path "u128") ]
+                          |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4765,51 +5228,62 @@ Module file_format_common.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 32 ]
-                      [ Ty.path "u8" ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 32 ]
-                          [ Ty.path "u8" ],
-                        M.call_closure (|
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| binary |) |) |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.path "move_binary_format::file_format_common::BinaryData" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 32 ]
                             [ Ty.path "u8" ],
-                          M.get_associated_function (|
-                            Ty.path "move_core_types::u256::U256",
-                            "to_le_bytes",
-                            [],
-                            []
-                          |),
-                          [ M.read (| value |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [ Ty.path "u8" ],
+                            M.get_associated_function (|
+                              Ty.path "move_core_types::u256::U256",
+                              "to_le_bytes",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| value |))
+                                (Ty.path "move_core_types::u256::U256")
+                            ]
+                          |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4899,59 +5373,87 @@ Module file_format_common.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.tuple []; Ty.path "std::io::error::Error" ],
-                          M.get_trait_method (|
-                            "std::io::Read",
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
-                              (Ty.path "std::io::cursor::Cursor")
+                              (Ty.path "core::result::Result")
                               []
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                              ],
-                            [],
-                            [],
-                            "read_exact",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cursor |) |) |);
-                            M.call_closure (|
+                              [ Ty.tuple []; Ty.path "std::io::error::Error" ],
+                            M.get_trait_method (|
+                              "std::io::Read",
                               Ty.apply
-                                (Ty.path "&mut")
+                                (Ty.path "std::io::cursor::Cursor")
                                 []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                ],
+                              [],
+                              [],
+                              "read_exact",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| cursor |) |)
+                                |))
                                 (Ty.apply
                                   (Ty.path "&mut")
                                   []
                                   [
                                     Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.path "u8" ]
-                                  ])
+                                      (Ty.path "std::io::cursor::Cursor")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.path "u8" ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                                    |)
+                                  ]
+                                |))
                                 (Ty.apply
                                   (Ty.path "&mut")
                                   []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                                |)
-                              ]
-                            |)
-                          ]
-                        |)
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "std::io::error::Error" ])
                       ]
                     |)
                   |),
@@ -5001,7 +5503,17 @@ Module file_format_common.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "std::io::error::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -5023,15 +5535,18 @@ Module file_format_common.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.path "u8"; Ty.path "anyhow::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.path "u8"; Ty.path "anyhow::Error" ]
-                  [
-                    M.read (|
-                      M.SubPointer.get_array_field (| buf, Value.Integer IntegerKind.Usize 0 |)
-                    |)
-                  ]
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.read (|
+                        M.SubPointer.get_array_field (| buf, Value.Integer IntegerKind.Usize 0 |)
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "u8"; Ty.path "anyhow::Error" ])
               |)
             |)))
         |)))
@@ -5122,59 +5637,87 @@ Module file_format_common.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.tuple []; Ty.path "std::io::error::Error" ],
-                          M.get_trait_method (|
-                            "std::io::Read",
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
-                              (Ty.path "std::io::cursor::Cursor")
+                              (Ty.path "core::result::Result")
                               []
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                              ],
-                            [],
-                            [],
-                            "read_exact",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cursor |) |) |);
-                            M.call_closure (|
+                              [ Ty.tuple []; Ty.path "std::io::error::Error" ],
+                            M.get_trait_method (|
+                              "std::io::Read",
                               Ty.apply
-                                (Ty.path "&mut")
+                                (Ty.path "std::io::cursor::Cursor")
                                 []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                ],
+                              [],
+                              [],
+                              "read_exact",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| cursor |) |)
+                                |))
                                 (Ty.apply
                                   (Ty.path "&mut")
                                   []
                                   [
                                     Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 4 ]
-                                      [ Ty.path "u8" ]
-                                  ])
+                                      (Ty.path "std::io::cursor::Cursor")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 4 ]
+                                          [ Ty.path "u8" ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                                    |)
+                                  ]
+                                |))
                                 (Ty.apply
                                   (Ty.path "&mut")
                                   []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                                |)
-                              ]
-                            |)
-                          ]
-                        |)
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "std::io::error::Error" ])
                       ]
                     |)
                   |),
@@ -5224,7 +5767,17 @@ Module file_format_common.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "std::io::error::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -5246,17 +5799,27 @@ Module file_format_common.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.path "u32"; Ty.path "anyhow::Error" ]
-                  [
-                    M.call_closure (|
-                      Ty.path "u32",
-                      M.get_associated_function (| Ty.path "u32", "from_le_bytes", [], [] |),
-                      [ M.read (| buf |) ]
-                    |)
-                  ]
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
+                        Ty.path "u32",
+                        M.get_associated_function (| Ty.path "u32", "from_le_bytes", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.read (| buf |))
+                            (Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 4 ]
+                              [ Ty.path "u8" ])
+                        ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "u32"; Ty.path "anyhow::Error" ])
               |)
             |)))
         |)))
@@ -5351,10 +5914,30 @@ Module file_format_common.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| cursor |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| cursor |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "std::io::cursor::Cursor")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ]
+                                              ])
                                         ]
                                       |)
                                     |) in
@@ -5414,70 +5997,102 @@ Module file_format_common.
                                               M.never_to_any (|
                                                 M.read (|
                                                   M.return_ (|
-                                                    Value.StructTuple
-                                                      "core::result::Result::Err"
-                                                      []
-                                                      [ Ty.path "u64"; Ty.path "anyhow::Error" ]
-                                                      [
-                                                        M.read (|
-                                                          let~ error : Ty.path "anyhow::Error" :=
-                                                            M.call_closure (|
-                                                              Ty.path "anyhow::Error",
-                                                              M.get_function (|
-                                                                "anyhow::__private::format_err",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "core::fmt::Arguments",
-                                                                  M.get_associated_function (|
-                                                                    Ty.path "core::fmt::Arguments",
-                                                                    "new_const",
-                                                                    [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        1
-                                                                    ],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.alloc (|
-                                                                            Ty.apply
-                                                                              (Ty.path "array")
-                                                                              [
-                                                                                Value.Integer
-                                                                                  IntegerKind.Usize
-                                                                                  1
-                                                                              ]
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path "&")
-                                                                                  []
-                                                                                  [ Ty.path "str" ]
-                                                                              ],
-                                                                            Value.Array
-                                                                              [
-                                                                                mk_str (|
-                                                                                  "invalid ULEB128 repr for usize"
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::result::Result::Err"
+                                                        [
+                                                          M.read (|
+                                                            let~ error : Ty.path "anyhow::Error" :=
+                                                              M.call_closure (|
+                                                                Ty.path "anyhow::Error",
+                                                                M.get_function (|
+                                                                  "anyhow::__private::format_err",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.path
+                                                                        "core::fmt::Arguments",
+                                                                      M.get_associated_function (|
+                                                                        Ty.path
+                                                                          "core::fmt::Arguments",
+                                                                        "new_const",
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            1
+                                                                        ],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.alloc (|
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "array")
+                                                                                    [
+                                                                                      Value.Integer
+                                                                                        IntegerKind.Usize
+                                                                                        1
+                                                                                    ]
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "str"
+                                                                                        ]
+                                                                                    ],
+                                                                                  Value.Array
+                                                                                    [
+                                                                                      mk_str (|
+                                                                                        "invalid ULEB128 repr for usize"
+                                                                                      |)
+                                                                                    ]
                                                                                 |)
-                                                                              ]
-                                                                          |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |) in
-                                                          error
-                                                        |)
-                                                      ]
+                                                                              |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "array")
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    1
+                                                                                ]
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [ Ty.path "str"
+                                                                                    ]
+                                                                                ]
+                                                                            ])
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.path "core::fmt::Arguments")
+                                                                ]
+                                                              |) in
+                                                            error
+                                                          |)
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [ Ty.path "u64"; Ty.path "anyhow::Error" ])
                                                   |)
                                                 |)
                                               |)));
@@ -5578,82 +6193,115 @@ Module file_format_common.
                                                             M.never_to_any (|
                                                               M.read (|
                                                                 M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "core::result::Result::Err"
-                                                                    []
-                                                                    [
-                                                                      Ty.path "u64";
-                                                                      Ty.path "anyhow::Error"
-                                                                    ]
-                                                                    [
-                                                                      M.read (|
-                                                                        let~ error :
-                                                                            Ty.path
-                                                                              "anyhow::Error" :=
-                                                                          M.call_closure (|
-                                                                            Ty.path "anyhow::Error",
-                                                                            M.get_function (|
-                                                                              "anyhow::__private::format_err",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path
-                                                                                  "core::fmt::Arguments",
-                                                                                M.get_associated_function (|
-                                                                                  Ty.path
-                                                                                    "core::fmt::Arguments",
-                                                                                  "new_const",
-                                                                                  [
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      1
-                                                                                  ],
-                                                                                  []
-                                                                                |),
-                                                                                [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        M.alloc (|
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "array")
-                                                                                            [
-                                                                                              Value.Integer
-                                                                                                IntegerKind.Usize
-                                                                                                1
-                                                                                            ]
-                                                                                            [
-                                                                                              Ty.apply
-                                                                                                (Ty.path
-                                                                                                  "&")
-                                                                                                []
-                                                                                                [
-                                                                                                  Ty.path
-                                                                                                    "str"
-                                                                                                ]
-                                                                                            ],
-                                                                                          Value.Array
-                                                                                            [
-                                                                                              mk_str (|
-                                                                                                "invalid ULEB128 repr for usize"
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::result::Result::Err"
+                                                                      [
+                                                                        M.read (|
+                                                                          let~ error :
+                                                                              Ty.path
+                                                                                "anyhow::Error" :=
+                                                                            M.call_closure (|
+                                                                              Ty.path
+                                                                                "anyhow::Error",
+                                                                              M.get_function (|
+                                                                                "anyhow::__private::format_err",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.call_closure (|
+                                                                                    Ty.path
+                                                                                      "core::fmt::Arguments",
+                                                                                    M.get_associated_function (|
+                                                                                      Ty.path
+                                                                                        "core::fmt::Arguments",
+                                                                                      "new_const",
+                                                                                      [
+                                                                                        Value.Integer
+                                                                                          IntegerKind.Usize
+                                                                                          1
+                                                                                      ],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.borrow (|
+                                                                                              Pointer.Kind.Ref,
+                                                                                              M.alloc (|
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "array")
+                                                                                                  [
+                                                                                                    Value.Integer
+                                                                                                      IntegerKind.Usize
+                                                                                                      1
+                                                                                                  ]
+                                                                                                  [
+                                                                                                    Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "&")
+                                                                                                      []
+                                                                                                      [
+                                                                                                        Ty.path
+                                                                                                          "str"
+                                                                                                      ]
+                                                                                                  ],
+                                                                                                Value.Array
+                                                                                                  [
+                                                                                                    mk_str (|
+                                                                                                      "invalid ULEB128 repr for usize"
+                                                                                                    |)
+                                                                                                  ]
                                                                                               |)
-                                                                                            ]
-                                                                                        |)
-                                                                                      |)
-                                                                                    |)
-                                                                                  |)
-                                                                                ]
-                                                                              |)
-                                                                            ]
-                                                                          |) in
-                                                                        error
-                                                                      |)
-                                                                    ]
+                                                                                            |)
+                                                                                          |)
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "array")
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.Usize
+                                                                                                  1
+                                                                                              ]
+                                                                                              [
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "str"
+                                                                                                  ]
+                                                                                              ]
+                                                                                          ])
+                                                                                    ]
+                                                                                  |))
+                                                                                  (Ty.path
+                                                                                    "core::fmt::Arguments")
+                                                                              ]
+                                                                            |) in
+                                                                          error
+                                                                        |)
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::result::Result")
+                                                                      []
+                                                                      [
+                                                                        Ty.path "u64";
+                                                                        Ty.path "anyhow::Error"
+                                                                      ])
                                                                 |)
                                                               |)
                                                             |)));
@@ -5661,11 +6309,14 @@ Module file_format_common.
                                                       ]
                                                     |) in
                                                   M.return_ (|
-                                                    Value.StructTuple
-                                                      "core::result::Result::Ok"
-                                                      []
-                                                      [ Ty.path "u64"; Ty.path "anyhow::Error" ]
-                                                      [ M.read (| value |) ]
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::result::Result::Ok"
+                                                        [ M.read (| value |) ])
+                                                      (Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [ Ty.path "u64"; Ty.path "anyhow::Error" ])
                                                   |)
                                                 |)
                                               |)));
@@ -5735,49 +6386,64 @@ Module file_format_common.
                     |)
                   |) in
                 M.return_ (|
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [ Ty.path "u64"; Ty.path "anyhow::Error" ]
-                    [
-                      M.read (|
-                        let~ error : Ty.path "anyhow::Error" :=
-                          M.call_closure (|
-                            Ty.path "anyhow::Error",
-                            M.get_function (| "anyhow::__private::format_err", [], [] |),
-                            [
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [ mk_str (| "invalid ULEB128 repr for usize" |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |) in
-                        error
-                      |)
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.read (|
+                          let~ error : Ty.path "anyhow::Error" :=
+                            M.call_closure (|
+                              Ty.path "anyhow::Error",
+                              M.get_function (| "anyhow::__private::format_err", [], [] |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array
+                                                  [ mk_str (| "invalid ULEB128 repr for usize" |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
+                              ]
+                            |) in
+                          error
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.path "u64"; Ty.path "anyhow::Error" ])
                 |)
               |)
             |)))
@@ -5964,21 +6630,17 @@ Module file_format_common.
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Pop" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::POP"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::POP" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Ret" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::RET"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::RET" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -5988,11 +6650,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::BrTrue",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::BR_TRUE"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::BR_TRUE"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6002,11 +6664,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::BrFalse",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::BR_FALSE"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::BR_FALSE"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6016,11 +6678,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::Branch",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::BRANCH"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::BRANCH"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6030,11 +6692,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::LdU8",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LD_U8"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::LD_U8"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6044,11 +6706,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::LdU64",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LD_U64"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::LD_U64"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6058,11 +6720,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::LdU128",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LD_U128"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::LD_U128"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6071,11 +6733,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::CastU8"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::CAST_U8"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::CAST_U8"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6084,11 +6746,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::CastU64"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::CAST_U64"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::CAST_U64"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6097,11 +6759,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::CastU128"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::CAST_U128"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::CAST_U128"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6111,11 +6773,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::LdConst",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LD_CONST"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::LD_CONST"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6124,11 +6786,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::LdTrue"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LD_TRUE"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::LD_TRUE"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6137,11 +6799,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::LdFalse"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LD_FALSE"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::LD_FALSE"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6151,11 +6813,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::CopyLoc",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::COPY_LOC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::COPY_LOC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6165,11 +6827,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MoveLoc",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MOVE_LOC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MOVE_LOC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6179,11 +6841,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::StLoc",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::ST_LOC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::ST_LOC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6193,11 +6855,9 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::Call",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::CALL"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::CALL" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6207,11 +6867,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::CallGeneric",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::CALL_GENERIC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::CALL_GENERIC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6221,11 +6881,9 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::Pack",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::PACK"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::PACK" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6235,11 +6893,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::PackGeneric",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::PACK_GENERIC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::PACK_GENERIC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6249,11 +6907,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::Unpack",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::UNPACK"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::UNPACK"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6263,11 +6921,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::UnpackGeneric",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::UNPACK_GENERIC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::UNPACK_GENERIC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6276,11 +6934,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::ReadRef"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::READ_REF"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::READ_REF"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6289,11 +6947,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::WriteRef"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::WRITE_REF"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::WRITE_REF"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6302,11 +6960,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::FreezeRef"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::FREEZE_REF"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::FREEZE_REF"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6316,11 +6974,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MutBorrowLoc",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MUT_BORROW_LOC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MUT_BORROW_LOC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6330,11 +6988,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::ImmBorrowLoc",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::IMM_BORROW_LOC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::IMM_BORROW_LOC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6344,11 +7002,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MutBorrowField",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MUT_BORROW_FIELD"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MUT_BORROW_FIELD"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6358,11 +7016,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MutBorrowFieldGeneric",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MUT_BORROW_FIELD_GENERIC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MUT_BORROW_FIELD_GENERIC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6372,11 +7030,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::ImmBorrowField",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::IMM_BORROW_FIELD"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::IMM_BORROW_FIELD"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6386,61 +7044,51 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::ImmBorrowFieldGeneric",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::IMM_BORROW_FIELD_GENERIC"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::IMM_BORROW_FIELD_GENERIC"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Add" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::ADD"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::ADD" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Sub" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::SUB"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::SUB" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Mul" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MUL"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::MUL" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Mod" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MOD"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::MOD" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Div" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::DIV"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::DIV" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6449,11 +7097,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::BitOr"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::BIT_OR"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::BIT_OR"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6462,131 +7110,107 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::BitAnd"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::BIT_AND"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::BIT_AND"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Xor" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::XOR"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::XOR" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Shl" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::SHL"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::SHL" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Shr" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::SHR"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::SHR" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Or" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::OR"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::OR" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::And" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::AND"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::AND" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Not" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::NOT"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::NOT" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Eq" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::EQ"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::EQ" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Neq" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::NEQ"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::NEQ" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Lt" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LT"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::LT" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Gt" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::GT"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::GT" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Le" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LE"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::LE" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Ge" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::GE"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::GE" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6595,21 +7219,19 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::Abort"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::ABORT"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::ABORT"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "move_binary_format::file_format::Bytecode::Nop" |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::NOP"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "move_binary_format::file_format_common::Opcodes::NOP" [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6618,11 +7240,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::VecPack"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::VEC_PACK"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::VEC_PACK"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6632,11 +7254,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::VecLen",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::VEC_LEN"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::VEC_LEN"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6646,11 +7268,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::VecImmBorrow",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::VEC_IMM_BORROW"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::VEC_IMM_BORROW"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6660,11 +7282,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::VecMutBorrow",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::VEC_MUT_BORROW"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::VEC_MUT_BORROW"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6674,11 +7296,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::VecPushBack",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::VEC_PUSH_BACK"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::VEC_PUSH_BACK"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6688,11 +7310,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::VecPopBack",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::VEC_POP_BACK"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::VEC_POP_BACK"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6701,11 +7323,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::VecUnpack"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::VEC_UNPACK"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::VEC_UNPACK"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6715,11 +7337,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::VecSwap",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::VEC_SWAP"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::VEC_SWAP"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6729,11 +7351,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::LdU16",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LD_U16"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::LD_U16"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6743,11 +7365,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::LdU32",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LD_U32"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::LD_U32"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6757,11 +7379,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::LdU256",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::LD_U256"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::LD_U256"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6770,11 +7392,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::CastU16"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::CAST_U16"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::CAST_U16"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6783,11 +7405,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::CastU32"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::CAST_U32"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::CAST_U32"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6796,11 +7418,11 @@ Module file_format_common.
                         γ,
                         "move_binary_format::file_format::Bytecode::CastU256"
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::CAST_U256"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::CAST_U256"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6810,11 +7432,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::ExistsDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::EXISTS_DEPRECATED"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::EXISTS_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6824,11 +7446,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::ExistsGenericDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::EXISTS_GENERIC_DEPRECATED"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::EXISTS_GENERIC_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6838,11 +7460,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MoveFromDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MOVE_FROM_DEPRECATED"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MOVE_FROM_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6852,11 +7474,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MoveFromGenericDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MOVE_FROM_GENERIC_DEPRECATED"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MOVE_FROM_GENERIC_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6866,11 +7488,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MoveToDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MOVE_TO_DEPRECATED"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MOVE_TO_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6880,11 +7502,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MoveToGenericDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MOVE_TO_GENERIC_DEPRECATED"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MOVE_TO_GENERIC_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6894,11 +7516,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MutBorrowGlobalDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MUT_BORROW_GLOBAL_DEPRECATED"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MUT_BORROW_GLOBAL_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6908,11 +7530,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::MutBorrowGlobalGenericDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::MUT_BORROW_GLOBAL_GENERIC_DEPRECATED"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::MUT_BORROW_GLOBAL_GENERIC_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6922,11 +7544,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::ImmBorrowGlobalDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::IMM_BORROW_GLOBAL_DEPRECATED"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::IMM_BORROW_GLOBAL_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -6936,11 +7558,11 @@ Module file_format_common.
                         "move_binary_format::file_format::Bytecode::ImmBorrowGlobalGenericDeprecated",
                         0
                       |) in
-                    Value.StructTuple
-                      "move_binary_format::file_format_common::Opcodes::IMM_BORROW_GLOBAL_GENERIC_DEPRECATED"
-                      []
-                      []
-                      []))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "move_binary_format::file_format_common::Opcodes::IMM_BORROW_GLOBAL_GENERIC_DEPRECATED"
+                        [])
+                      (Ty.path "move_binary_format::file_format_common::Opcodes")))
               ]
             |) in
           M.alloc (| Ty.path "u8", M.cast (Ty.path "u8") (M.read (| opcode |)) |)

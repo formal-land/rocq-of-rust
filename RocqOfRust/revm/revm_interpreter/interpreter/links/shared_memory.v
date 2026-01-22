@@ -27,7 +27,7 @@ Module SharedMemory.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory";
     φ x :=
-      Value.StructRecord "revm_interpreter::interpreter::shared_memory::SharedMemory" [] [] [
+      Value.StructRecord "revm_interpreter::interpreter::shared_memory::SharedMemory" [
         ("buffer", φ x.(buffer));
         ("checkpoints", φ x.(checkpoints));
         ("last_checkpoint", φ x.(last_checkpoint));
@@ -47,7 +47,7 @@ Module SharedMemory.
       (last_checkpoint' : Value.t) {H_last_checkpoint : OfValueWith.C (usize) last_checkpoint'}
       (memory_limit' : Value.t) {H_memory_limit : OfValueWith.C (option u64) memory_limit'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter::shared_memory::SharedMemory" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter::shared_memory::SharedMemory" [
       ("buffer", buffer');
       ("checkpoints", checkpoints');
       ("last_checkpoint", last_checkpoint');
@@ -69,7 +69,7 @@ Module SharedMemory.
       (last_checkpoint' : Value.t) {H_last_checkpoint : OfValueWith.C (usize) last_checkpoint'}
       (memory_limit' : Value.t) {H_memory_limit : OfValueWith.C (option u64) memory_limit'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::interpreter::shared_memory::SharedMemory" [] [] [
+    OfValue.C (Value.StructRecord "revm_interpreter::interpreter::shared_memory::SharedMemory" [
       ("buffer", buffer');
       ("checkpoints", checkpoints');
       ("last_checkpoint", last_checkpoint');

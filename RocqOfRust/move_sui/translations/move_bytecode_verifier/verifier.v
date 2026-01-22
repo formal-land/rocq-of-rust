@@ -27,31 +27,38 @@ Module verifier.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "move_vm_config::verifier::VerifierConfig",
-                    M.call_closure (|
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "move_vm_config::verifier::VerifierConfig",
-                      M.get_trait_method (|
-                        "core::default::Default",
+                      M.call_closure (|
                         Ty.path "move_vm_config::verifier::VerifierConfig",
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          Ty.path "move_vm_config::verifier::VerifierConfig",
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
                   |)
                 |)
-              |)
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "move_vm_config::verifier::VerifierConfig" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.path "move_binary_format::file_format::CompiledModule" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -153,25 +160,45 @@ Module verifier.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "move_binary_format::file_format::CompiledModule",
+                      "serialize",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::result::Result")
                     []
-                    [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                  M.get_associated_function (|
-                    Ty.path "move_binary_format::file_format::CompiledModule",
-                    "serialize",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                    |)
-                  ]
-                |)
+                    [ Ty.tuple []; Ty.path "anyhow::Error" ])
               ]
             |) in
           let~ now : Ty.path "std::time::Instant" :=
@@ -196,9 +223,21 @@ Module verifier.
                 [ impl_Meter__plus___Sized ]
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "move_vm_config::verifier::VerifierConfig" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ impl_Meter__plus___Sized ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -208,36 +247,73 @@ Module verifier.
                   Ty.tuple [],
                   M.get_function (| "std::io::stdio::_eprint", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "core::fmt::Arguments",
-                        "new_v1_formatted",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new_v1_formatted",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply
-                                (Ty.path "slice")
+                                (Ty.path "&")
                                 []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 5 ]
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ]),
                               [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 5 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              ])
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 5 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [
+                                            mk_str (| "--> " |);
+                                            mk_str (| ": verification time: " |);
+                                            mk_str (| "ms, result: " |);
+                                            mk_str (| ", size: " |);
+                                            mk_str (| "kb
+" |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              ]
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
@@ -246,458 +322,782 @@ Module verifier.
                                   (Ty.path "slice")
                                   []
                                   [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 5 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (| "--> " |);
-                                        mk_str (| ": verification time: " |);
-                                        mk_str (| "ms, result: " |);
-                                        mk_str (| ", size: " |);
-                                        mk_str (| "kb
-" |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 4 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ]
-                              ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                              ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 4 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                          |),
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 4 ]
+                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                        Value.Array
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.path "f64" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
-                                                    Ty.path "f64",
-                                                    M.call_closure (|
-                                                      Ty.path "f64",
-                                                      BinOp.Wrap.div,
-                                                      [
-                                                        M.cast
-                                                          (Ty.path "f64")
-                                                          (M.call_closure (|
-                                                            Ty.path "u128",
-                                                            M.get_associated_function (|
-                                                              Ty.path "core::time::Duration",
-                                                              "as_micros",
-                                                              [],
-                                                              []
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, name |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.path "f64" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.alloc (|
+                                                          Ty.path "f64",
+                                                          M.call_closure (|
+                                                            Ty.path "f64",
+                                                            BinOp.Wrap.div,
+                                                            [
+                                                              M.cast
+                                                                (Ty.path "f64")
+                                                                (M.call_closure (|
+                                                                  Ty.path "u128",
+                                                                  M.get_associated_function (|
+                                                                    Ty.path "core::time::Duration",
+                                                                    "as_micros",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.alloc (|
+                                                                          Ty.path
+                                                                            "core::time::Duration",
+                                                                          M.call_closure (|
+                                                                            Ty.path
+                                                                              "core::time::Duration",
+                                                                            M.get_associated_function (|
+                                                                              Ty.path
+                                                                                "std::time::Instant",
+                                                                              "elapsed",
+                                                                              [],
+                                                                              []
+                                                                            |),
+                                                                            [
+                                                                              M.value_with_ty
+                                                                                (M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  now
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "std::time::Instant"
+                                                                                  ])
+                                                                            ]
+                                                                          |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "core::time::Duration"
+                                                                        ])
+                                                                  ]
+                                                                |));
+                                                              M.read (| UnsupportedLiteral |)
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.path "alloc::string::String" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.alloc (|
+                                                          Ty.path "alloc::string::String",
+                                                          M.match_operator (|
+                                                            Ty.path "alloc::string::String",
+                                                            M.alloc (|
+                                                              Ty.tuple [],
+                                                              Value.Tuple []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.alloc (|
-                                                                  Ty.path "core::time::Duration",
-                                                                  M.call_closure (|
-                                                                    Ty.path "core::time::Duration",
-                                                                    M.get_associated_function (|
-                                                                      Ty.path "std::time::Instant",
-                                                                      "elapsed",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
+                                                              fun γ =>
+                                                                ltac:(M.monadic
+                                                                  (let γ :=
+                                                                    M.alloc (|
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.tuple [];
+                                                                              Ty.path
+                                                                                "move_binary_format::errors::VMError"
+                                                                            ]
+                                                                        ],
                                                                       M.borrow (|
                                                                         Pointer.Kind.Ref,
-                                                                        now
+                                                                        result
                                                                       |)
-                                                                    ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |));
-                                                        M.read (| UnsupportedLiteral |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.path "alloc::string::String" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
-                                                    Ty.path "alloc::string::String",
-                                                    M.match_operator (|
-                                                      Ty.path "alloc::string::String",
-                                                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                                      [
-                                                        fun γ =>
-                                                          ltac:(M.monadic
-                                                            (let γ :=
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "core::result::Result")
-                                                                      []
-                                                                      [
-                                                                        Ty.tuple [];
-                                                                        Ty.path
-                                                                          "move_binary_format::errors::VMError"
-                                                                      ]
-                                                                  ],
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  result
-                                                                |)
-                                                              |) in
-                                                            let γ := M.deref (| M.read (| γ |) |) in
-                                                            let γ1_0 :=
-                                                              M.SubPointer.get_struct_tuple_field (|
-                                                                γ,
-                                                                "core::result::Result::Err",
-                                                                0
-                                                              |) in
-                                                            let e :=
-                                                              M.alloc (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_binary_format::errors::VMError"
-                                                                  ],
-                                                                γ1_0
-                                                              |) in
-                                                            M.call_closure (|
-                                                              Ty.path "alloc::string::String",
-                                                              M.get_function (|
-                                                                "core::hint::must_use",
-                                                                [],
-                                                                [ Ty.path "alloc::string::String" ]
-                                                              |),
-                                                              [
-                                                                M.read (|
-                                                                  let~ res :
-                                                                      Ty.path
-                                                                        "alloc::string::String" :=
-                                                                    M.call_closure (|
-                                                                      Ty.path
-                                                                        "alloc::string::String",
-                                                                      M.get_function (|
-                                                                        "alloc::fmt::format",
-                                                                        [],
+                                                                    |) in
+                                                                  let γ :=
+                                                                    M.deref (| M.read (| γ |) |) in
+                                                                  let γ1_0 :=
+                                                                    M.SubPointer.get_struct_tuple_field (|
+                                                                      γ,
+                                                                      "core::result::Result::Err",
+                                                                      0
+                                                                    |) in
+                                                                  let e :=
+                                                                    M.alloc (|
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
                                                                         []
-                                                                      |),
-                                                                      [
-                                                                        M.call_closure (|
+                                                                        [
                                                                           Ty.path
-                                                                            "core::fmt::Arguments",
-                                                                          M.get_associated_function (|
-                                                                            Ty.path
-                                                                              "core::fmt::Arguments",
-                                                                            "new_v1",
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1;
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1
-                                                                            ],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.alloc (|
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "array")
+                                                                            "move_binary_format::errors::VMError"
+                                                                        ],
+                                                                      γ1_0
+                                                                    |) in
+                                                                  M.call_closure (|
+                                                                    Ty.path "alloc::string::String",
+                                                                    M.get_function (|
+                                                                      "core::hint::must_use",
+                                                                      [],
+                                                                      [
+                                                                        Ty.path
+                                                                          "alloc::string::String"
+                                                                      ]
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (|
+                                                                          let~ res :
+                                                                              Ty.path
+                                                                                "alloc::string::String" :=
+                                                                            M.call_closure (|
+                                                                              Ty.path
+                                                                                "alloc::string::String",
+                                                                              M.get_function (|
+                                                                                "alloc::fmt::format",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.call_closure (|
+                                                                                    Ty.path
+                                                                                      "core::fmt::Arguments",
+                                                                                    M.get_associated_function (|
+                                                                                      Ty.path
+                                                                                        "core::fmt::Arguments",
+                                                                                      "new_v1",
                                                                                       [
                                                                                         Value.Integer
                                                                                           IntegerKind.Usize
+                                                                                          1;
+                                                                                        Value.Integer
+                                                                                          IntegerKind.Usize
                                                                                           1
-                                                                                      ]
-                                                                                      [
-                                                                                        Ty.apply
+                                                                                      ],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.borrow (|
+                                                                                              Pointer.Kind.Ref,
+                                                                                              M.alloc (|
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "array")
+                                                                                                  [
+                                                                                                    Value.Integer
+                                                                                                      IntegerKind.Usize
+                                                                                                      1
+                                                                                                  ]
+                                                                                                  [
+                                                                                                    Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "&")
+                                                                                                      []
+                                                                                                      [
+                                                                                                        Ty.path
+                                                                                                          "str"
+                                                                                                      ]
+                                                                                                  ],
+                                                                                                Value.Array
+                                                                                                  [
+                                                                                                    mk_str (|
+                                                                                                      ""
+                                                                                                    |)
+                                                                                                  ]
+                                                                                              |)
+                                                                                            |)
+                                                                                          |)
+                                                                                        |))
+                                                                                        (Ty.apply
                                                                                           (Ty.path
                                                                                             "&")
                                                                                           []
                                                                                           [
-                                                                                            Ty.path
-                                                                                              "str"
-                                                                                          ]
-                                                                                      ],
-                                                                                    Value.Array
-                                                                                      [
-                                                                                        mk_str (|
-                                                                                          ""
-                                                                                        |)
-                                                                                      ]
-                                                                                  |)
-                                                                                |)
-                                                                              |)
-                                                                            |);
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.alloc (|
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "array")
-                                                                                      [
-                                                                                        Value.Integer
-                                                                                          IntegerKind.Usize
-                                                                                          1
-                                                                                      ]
-                                                                                      [
-                                                                                        Ty.path
-                                                                                          "core::fmt::rt::Argument"
-                                                                                      ],
-                                                                                    Value.Array
-                                                                                      [
-                                                                                        M.call_closure (|
-                                                                                          Ty.path
-                                                                                            "core::fmt::rt::Argument",
-                                                                                          M.get_associated_function (|
-                                                                                            Ty.path
-                                                                                              "core::fmt::rt::Argument",
-                                                                                            "new_debug",
-                                                                                            [],
-                                                                                            [
-                                                                                              Ty.path
-                                                                                                "move_core_types::vm_status::StatusCode"
-                                                                                            ]
-                                                                                          |),
-                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "array")
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.Usize
+                                                                                                  1
+                                                                                              ]
+                                                                                              [
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "str"
+                                                                                                  ]
+                                                                                              ]
+                                                                                          ]);
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
                                                                                             M.borrow (|
                                                                                               Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.alloc (|
+                                                                                              M.alloc (|
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "array")
+                                                                                                  [
+                                                                                                    Value.Integer
+                                                                                                      IntegerKind.Usize
+                                                                                                      1
+                                                                                                  ]
+                                                                                                  [
                                                                                                     Ty.path
-                                                                                                      "move_core_types::vm_status::StatusCode",
+                                                                                                      "core::fmt::rt::Argument"
+                                                                                                  ],
+                                                                                                Value.Array
+                                                                                                  [
                                                                                                     M.call_closure (|
                                                                                                       Ty.path
-                                                                                                        "move_core_types::vm_status::StatusCode",
+                                                                                                        "core::fmt::rt::Argument",
                                                                                                       M.get_associated_function (|
                                                                                                         Ty.path
-                                                                                                          "move_binary_format::errors::VMError",
-                                                                                                        "major_status",
+                                                                                                          "core::fmt::rt::Argument",
+                                                                                                        "new_debug",
                                                                                                         [],
-                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.path
+                                                                                                            "move_core_types::vm_status::StatusCode"
+                                                                                                        ]
                                                                                                       |),
                                                                                                       [
-                                                                                                        M.borrow (|
-                                                                                                          Pointer.Kind.Ref,
-                                                                                                          M.deref (|
-                                                                                                            M.read (|
-                                                                                                              e
+                                                                                                        M.value_with_ty
+                                                                                                          (M.borrow (|
+                                                                                                            Pointer.Kind.Ref,
+                                                                                                            M.deref (|
+                                                                                                              M.borrow (|
+                                                                                                                Pointer.Kind.Ref,
+                                                                                                                M.alloc (|
+                                                                                                                  Ty.path
+                                                                                                                    "move_core_types::vm_status::StatusCode",
+                                                                                                                  M.call_closure (|
+                                                                                                                    Ty.path
+                                                                                                                      "move_core_types::vm_status::StatusCode",
+                                                                                                                    M.get_associated_function (|
+                                                                                                                      Ty.path
+                                                                                                                        "move_binary_format::errors::VMError",
+                                                                                                                      "major_status",
+                                                                                                                      [],
+                                                                                                                      []
+                                                                                                                    |),
+                                                                                                                    [
+                                                                                                                      M.value_with_ty
+                                                                                                                        (M.borrow (|
+                                                                                                                          Pointer.Kind.Ref,
+                                                                                                                          M.deref (|
+                                                                                                                            M.read (|
+                                                                                                                              e
+                                                                                                                            |)
+                                                                                                                          |)
+                                                                                                                        |))
+                                                                                                                        (Ty.apply
+                                                                                                                          (Ty.path
+                                                                                                                            "&")
+                                                                                                                          []
+                                                                                                                          [
+                                                                                                                            Ty.path
+                                                                                                                              "move_binary_format::errors::VMError"
+                                                                                                                          ])
+                                                                                                                    ]
+                                                                                                                  |)
+                                                                                                                |)
+                                                                                                              |)
                                                                                                             |)
-                                                                                                          |)
-                                                                                                        |)
+                                                                                                          |))
+                                                                                                          (Ty.apply
+                                                                                                            (Ty.path
+                                                                                                              "&")
+                                                                                                            []
+                                                                                                            [
+                                                                                                              Ty.path
+                                                                                                                "move_core_types::vm_status::StatusCode"
+                                                                                                            ])
                                                                                                       ]
                                                                                                     |)
-                                                                                                  |)
-                                                                                                |)
+                                                                                                  ]
                                                                                               |)
                                                                                             |)
-                                                                                          ]
-                                                                                        |)
-                                                                                      ]
-                                                                                  |)
-                                                                                |)
-                                                                              |)
-                                                                            |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |) in
-                                                                  res
-                                                                |)
-                                                              ]
-                                                            |)));
-                                                        fun γ =>
-                                                          ltac:(M.monadic
-                                                            (M.call_closure (|
-                                                              Ty.path "alloc::string::String",
-                                                              M.get_trait_method (|
-                                                                "alloc::string::ToString",
-                                                                Ty.path "str",
-                                                                [],
-                                                                [],
-                                                                "to_string",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| mk_str (| "Ok" |) |)
-                                                                |)
-                                                              ]
-                                                            |)))
-                                                      ]
+                                                                                          |)
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "array")
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.Usize
+                                                                                                  1
+                                                                                              ]
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "core::fmt::rt::Argument"
+                                                                                              ]
+                                                                                          ])
+                                                                                    ]
+                                                                                  |))
+                                                                                  (Ty.path
+                                                                                    "core::fmt::Arguments")
+                                                                              ]
+                                                                            |) in
+                                                                          res
+                                                                        |))
+                                                                        (Ty.path
+                                                                          "alloc::string::String")
+                                                                    ]
+                                                                  |)));
+                                                              fun γ =>
+                                                                ltac:(M.monadic
+                                                                  (M.call_closure (|
+                                                                    Ty.path "alloc::string::String",
+                                                                    M.get_trait_method (|
+                                                                      "alloc::string::ToString",
+                                                                      Ty.path "str",
+                                                                      [],
+                                                                      [],
+                                                                      "to_string",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            mk_str (| "Ok" |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [ Ty.path "str" ])
+                                                                    ]
+                                                                  |)))
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |)
                                                     |)
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.path "usize" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
-                                                    Ty.path "usize",
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.div,
-                                                      [
-                                                        M.call_closure (|
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "alloc::string::String" ])
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.path "usize" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.alloc (|
                                                           Ty.path "usize",
-                                                          M.get_associated_function (|
-                                                            Ty.apply
-                                                              (Ty.path "alloc::vec::Vec")
-                                                              []
-                                                              [
-                                                                Ty.path "u8";
-                                                                Ty.path "alloc::alloc::Global"
-                                                              ],
-                                                            "len",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [ M.borrow (| Pointer.Kind.Ref, bytes |) ]
-                                                        |);
-                                                        Value.Integer IntegerKind.Usize 1000
-                                                      ]
+                                                          M.call_closure (|
+                                                            Ty.path "usize",
+                                                            BinOp.Wrap.div,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "usize",
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "alloc::vec::Vec")
+                                                                    []
+                                                                    [
+                                                                      Ty.path "u8";
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ],
+                                                                  "len",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      bytes
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloc::vec::Vec")
+                                                                          []
+                                                                          [
+                                                                            Ty.path "u8";
+                                                                            Ty.path
+                                                                              "alloc::alloc::Global"
+                                                                          ]
+                                                                      ])
+                                                                ]
+                                                              |);
+                                                              Value.Integer IntegerKind.Usize 1000
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |)
                                                     |)
-                                                  |)
-                                                |)
-                                              |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                              ]
                                             |)
                                           ]
-                                        |)
-                                      ]
+                                      |)
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
+                              ]
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 4 ]
+                                      [ Ty.path "core::fmt::rt::Placeholder" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Placeholder" ]
+                                  ]),
                               [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 4 ]
-                                  [ Ty.path "core::fmt::rt::Placeholder" ]
-                              ])
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 4 ]
+                                          [ Ty.path "core::fmt::rt::Placeholder" ],
+                                        Value.Array
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Placeholder",
+                                                "new",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.Usize 0)
+                                                  (Ty.path "usize");
+                                                M.value_with_ty
+                                                  (Value.UnicodeChar 32)
+                                                  (Ty.path "char");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Alignment::Unknown"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Alignment"))
+                                                  (Ty.path "core::fmt::rt::Alignment");
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.U32 0)
+                                                  (Ty.path "u32");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Implied"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Implied"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count")
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Placeholder",
+                                                "new",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.Usize 1)
+                                                  (Ty.path "usize");
+                                                M.value_with_ty
+                                                  (Value.UnicodeChar 32)
+                                                  (Ty.path "char");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Alignment::Unknown"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Alignment"))
+                                                  (Ty.path "core::fmt::rt::Alignment");
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.U32 0)
+                                                  (Ty.path "u32");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Is"
+                                                      [ Value.Integer IntegerKind.Usize 3 ])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Implied"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count")
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Placeholder",
+                                                "new",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.Usize 2)
+                                                  (Ty.path "usize");
+                                                M.value_with_ty
+                                                  (Value.UnicodeChar 32)
+                                                  (Ty.path "char");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Alignment::Unknown"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Alignment"))
+                                                  (Ty.path "core::fmt::rt::Alignment");
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.U32 0)
+                                                  (Ty.path "u32");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Implied"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Implied"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count")
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Placeholder",
+                                                "new",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.Usize 3)
+                                                  (Ty.path "usize");
+                                                M.value_with_ty
+                                                  (Value.UnicodeChar 32)
+                                                  (Ty.path "char");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Alignment::Unknown"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Alignment"))
+                                                  (Ty.path "core::fmt::rt::Alignment");
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.U32 0)
+                                                  (Ty.path "u32");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Implied"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Implied"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count")
+                                              ]
+                                            |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              ]
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
@@ -706,155 +1106,22 @@ Module verifier.
                                   (Ty.path "slice")
                                   []
                                   [ Ty.path "core::fmt::rt::Placeholder" ]
-                              ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 4 ]
-                                      [ Ty.path "core::fmt::rt::Placeholder" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Placeholder",
-                                            "new",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            Value.Integer IntegerKind.Usize 0;
-                                            Value.UnicodeChar 32;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Alignment::Unknown"
-                                              []
-                                              []
-                                              [];
-                                            Value.Integer IntegerKind.U32 0;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Implied"
-                                              []
-                                              []
-                                              [];
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Implied"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Placeholder",
-                                            "new",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            Value.Integer IntegerKind.Usize 1;
-                                            Value.UnicodeChar 32;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Alignment::Unknown"
-                                              []
-                                              []
-                                              [];
-                                            Value.Integer IntegerKind.U32 0;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Is"
-                                              []
-                                              []
-                                              [ Value.Integer IntegerKind.Usize 3 ];
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Implied"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Placeholder",
-                                            "new",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            Value.Integer IntegerKind.Usize 2;
-                                            Value.UnicodeChar 32;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Alignment::Unknown"
-                                              []
-                                              []
-                                              [];
-                                            Value.Integer IntegerKind.U32 0;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Implied"
-                                              []
-                                              []
-                                              [];
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Implied"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Placeholder",
-                                            "new",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            Value.Integer IntegerKind.Usize 3;
-                                            Value.UnicodeChar 32;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Alignment::Unknown"
-                                              []
-                                              []
-                                              [];
-                                            Value.Integer IntegerKind.U32 0;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Implied"
-                                              []
-                                              []
-                                              [];
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Implied"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.path "core::fmt::rt::UnsafeArg",
-                          M.get_associated_function (|
-                            Ty.path "core::fmt::rt::UnsafeArg",
-                            "new",
-                            [],
-                            []
-                          |),
-                          []
-                        |)
-                      ]
-                    |)
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "core::fmt::rt::UnsafeArg",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::rt::UnsafeArg",
+                                "new",
+                                [],
+                                []
+                              |),
+                              []
+                            |))
+                            (Ty.path "core::fmt::rt::UnsafeArg")
+                        ]
+                      |))
+                      (Ty.path "core::fmt::Arguments")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -889,7 +1156,19 @@ Module verifier.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, bytes |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, bytes |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                          ])
+                                    ]
                                   |);
                                   M.read (|
                                     get_constant (|
@@ -908,116 +1187,163 @@ Module verifier.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 3;
+                                  Value.Integer IntegerKind.Usize 2
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 3 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array
+                                            [
+                                              mk_str (| "test module exceeds size limit " |);
+                                              mk_str (| " (given size " |);
+                                              mk_str (| ")" |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 3 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (| "test module exceeds size limit " |);
-                                          mk_str (| " (given size " |);
-                                          mk_str (| ")" |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "usize" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          get_constant (|
+                                                            "move_bytecode_verifier::verifier::verify_module_with_config_for_test::MAX_MODULE_SIZE",
+                                                            Ty.path "usize"
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                                ]
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "usize" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.path "usize",
+                                                            M.call_closure (|
+                                                              Ty.path "usize",
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::vec::Vec")
+                                                                  []
+                                                                  [
+                                                                    Ty.path "u8";
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ],
+                                                                "len",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    bytes
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "alloc::vec::Vec")
+                                                                        []
+                                                                        [
+                                                                          Ty.path "u8";
+                                                                          Ty.path
+                                                                            "alloc::alloc::Global"
+                                                                        ]
+                                                                    ])
+                                                              ]
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    get_constant (|
-                                                      "move_bytecode_verifier::verifier::verify_module_with_config_for_test::MAX_MODULE_SIZE",
-                                                      Ty.path "usize"
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.path "usize",
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path "alloc::vec::Vec")
-                                                            []
-                                                            [
-                                                              Ty.path "u8";
-                                                              Ty.path "alloc::alloc::Global"
-                                                            ],
-                                                          "len",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.borrow (| Pointer.Kind.Ref, bytes |) ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)
                     |)));
@@ -1144,85 +1470,123 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                            "map_err",
-                            [],
-                            [
-                              Ty.path "move_binary_format::errors::VMError";
-                              Ty.function
-                                [ Ty.path "move_binary_format::errors::PartialVMError" ]
-                                (Ty.path "move_binary_format::errors::VMError")
-                            ]
-                          |),
-                          [
-                            M.call_closure (|
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_associated_function (|
                               Ty.apply
                                 (Ty.path "core::result::Result")
                                 []
                                 [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
                                 ],
-                              M.get_associated_function (|
-                                Ty.path "move_binary_format::check_bounds::BoundsChecker",
-                                "verify_module",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-                            |);
-                            M.closure
-                              (fun γ =>
-                                ltac:(M.monadic
-                                  match γ with
-                                  | [ α0 ] =>
+                              "map_err",
+                              [],
+                              [
+                                Ty.path "move_binary_format::errors::VMError";
+                                Ty.function
+                                  [ Ty.path "move_binary_format::errors::PartialVMError" ]
+                                  (Ty.path "move_binary_format::errors::VMError")
+                              ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.tuple [];
+                                      Ty.path "move_binary_format::errors::PartialVMError"
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.path "move_binary_format::check_bounds::BoundsChecker",
+                                    "verify_module",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| module |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "move_binary_format::file_format::CompiledModule"
+                                        ])
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.tuple [];
+                                    Ty.path "move_binary_format::errors::PartialVMError"
+                                  ]);
+                              M.value_with_ty
+                                (M.closure
+                                  (fun γ =>
                                     ltac:(M.monadic
-                                      (M.match_operator (|
-                                        Ty.path "move_binary_format::errors::VMError",
-                                        M.alloc (|
-                                          Ty.path "move_binary_format::errors::PartialVMError",
-                                          α0
-                                        |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let e :=
-                                                M.copy (|
-                                                  Ty.path
-                                                    "move_binary_format::errors::PartialVMError",
-                                                  γ
-                                                |) in
-                                              M.call_closure (|
-                                                Ty.path "move_binary_format::errors::VMError",
-                                                M.get_associated_function (|
-                                                  Ty.path
-                                                    "move_binary_format::errors::PartialVMError",
-                                                  "finish",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.read (| e |);
-                                                  Value.StructTuple
-                                                    "move_binary_format::errors::Location::Undefined"
-                                                    []
-                                                    []
-                                                    []
-                                                ]
-                                              |)))
-                                        ]
-                                      |)))
-                                  | _ => M.impossible "wrong number of arguments"
-                                  end))
-                          ]
-                        |)
+                                      match γ with
+                                      | [ α0 ] =>
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.path "move_binary_format::errors::VMError",
+                                            M.alloc (|
+                                              Ty.path "move_binary_format::errors::PartialVMError",
+                                              α0
+                                            |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let e :=
+                                                    M.copy (|
+                                                      Ty.path
+                                                        "move_binary_format::errors::PartialVMError",
+                                                      γ
+                                                    |) in
+                                                  M.call_closure (|
+                                                    Ty.path "move_binary_format::errors::VMError",
+                                                    M.get_associated_function (|
+                                                      Ty.path
+                                                        "move_binary_format::errors::PartialVMError",
+                                                      "finish",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| e |))
+                                                        (Ty.path
+                                                          "move_binary_format::errors::PartialVMError");
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "move_binary_format::errors::Location::Undefined"
+                                                            [])
+                                                          (Ty.path
+                                                            "move_binary_format::errors::Location"))
+                                                        (Ty.path
+                                                          "move_binary_format::errors::Location")
+                                                    ]
+                                                  |)))
+                                            ]
+                                          |)))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)))
+                                (Ty.function
+                                  [ Ty.path "move_binary_format::errors::PartialVMError" ]
+                                  (Ty.path "move_binary_format::errors::VMError"))
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -1274,7 +1638,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1335,22 +1709,37 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_associated_function (|
+                              Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
+                              "verify_module",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_vm_config::verifier::VerifierConfig" ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_associated_function (|
-                            Ty.path "move_bytecode_verifier::limits::LimitsVerifier",
-                            "verify_module",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -1402,7 +1791,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1463,19 +1862,32 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_associated_function (|
+                              Ty.path
+                                "move_bytecode_verifier::check_duplication::DuplicationChecker",
+                              "verify_module",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_associated_function (|
-                            Ty.path "move_bytecode_verifier::check_duplication::DuplicationChecker",
-                            "verify_module",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -1527,7 +1939,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1588,19 +2010,31 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_associated_function (|
+                              Ty.path "move_bytecode_verifier::signature::SignatureChecker",
+                              "verify_module",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_associated_function (|
-                            Ty.path "move_bytecode_verifier::signature::SignatureChecker",
-                            "verify_module",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -1652,7 +2086,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1713,20 +2157,32 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_associated_function (|
+                              Ty.path
+                                "move_bytecode_verifier::instruction_consistency::InstructionConsistency",
+                              "verify_module",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_associated_function (|
-                            Ty.path
-                              "move_bytecode_verifier::instruction_consistency::InstructionConsistency",
-                            "verify_module",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -1778,7 +2234,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1839,18 +2305,30 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_function (|
+                              "move_bytecode_verifier::constants::verify_module",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_function (|
-                            "move_bytecode_verifier::constants::verify_module",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -1902,7 +2380,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1963,18 +2451,30 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_function (|
+                              "move_bytecode_verifier::friends::verify_module",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_function (|
-                            "move_bytecode_verifier::friends::verify_module",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -2026,7 +2526,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2087,18 +2597,30 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_function (|
+                              "move_bytecode_verifier::ability_field_requirements::verify_module",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_function (|
-                            "move_bytecode_verifier::ability_field_requirements::verify_module",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -2150,7 +2672,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2211,20 +2743,32 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_associated_function (|
+                              Ty.path
+                                "move_bytecode_verifier::struct_defs::RecursiveStructDefChecker",
+                              "verify_module",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_associated_function (|
-                            Ty.path
-                              "move_bytecode_verifier::struct_defs::RecursiveStructDefChecker",
-                            "verify_module",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -2276,7 +2820,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2337,20 +2891,32 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_associated_function (|
+                              Ty.path
+                                "move_bytecode_verifier::instantiation_loops::InstantiationLoopChecker",
+                              "verify_module",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_associated_function (|
-                            Ty.path
-                              "move_bytecode_verifier::instantiation_loops::InstantiationLoopChecker",
-                            "verify_module",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -2402,7 +2968,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2463,23 +3039,44 @@ Module verifier.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
+                            M.get_associated_function (|
+                              Ty.path
+                                "move_bytecode_verifier::code_unit_verifier::CodeUnitVerifier",
+                              "verify_module",
+                              [],
+                              [ impl_Meter__plus___Sized ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_vm_config::verifier::VerifierConfig" ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| meter |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ impl_Meter__plus___Sized ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ],
-                          M.get_associated_function (|
-                            Ty.path "move_bytecode_verifier::code_unit_verifier::CodeUnitVerifier",
-                            "verify_module",
-                            [],
-                            [ impl_Meter__plus___Sized ]
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::VMError" ])
                       ]
                     |)
                   |),
@@ -2531,7 +3128,17 @@ Module verifier.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::VMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2564,9 +3171,78 @@ Module verifier.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-                    M.call_closure (|
-                      Ty.function
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.function
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_binary_format::file_format::CompiledModule" ];
+                            Ty.path "bool";
+                            Ty.path "move_binary_format::file_format::SignatureIndex";
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "move_binary_format::file_format::SignatureIndex" ]
+                          ]
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]),
+                        M.pointer_coercion
+                          M.PointerCoercion.ReifyFnPointer
+                          (Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_binary_format::file_format::CompiledModule" ];
+                              Ty.path "bool";
+                              Ty.path "move_binary_format::file_format::SignatureIndex";
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "move_binary_format::file_format::SignatureIndex" ]
+                            ]
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
+                              ]))
+                          (Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_binary_format::file_format::CompiledModule" ];
+                              Ty.path "bool";
+                              Ty.path "move_binary_format::file_format::SignatureIndex";
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "move_binary_format::file_format::SignatureIndex" ]
+                            ]
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
+                              ])),
+                        [
+                          M.get_function (|
+                            "move_bytecode_verifier::script_signature::no_additional_script_signature_checks",
+                            [],
+                            []
+                          |)
+                        ]
+                      |))
+                      (Ty.function
                         [
                           Ty.apply
                             (Ty.path "&")
@@ -2582,51 +3258,7 @@ Module verifier.
                         (Ty.apply
                           (Ty.path "core::result::Result")
                           []
-                          [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]),
-                      M.pointer_coercion
-                        M.PointerCoercion.ReifyFnPointer
-                        (Ty.function
-                          [
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "move_binary_format::file_format::CompiledModule" ];
-                            Ty.path "bool";
-                            Ty.path "move_binary_format::file_format::SignatureIndex";
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [ Ty.path "move_binary_format::file_format::SignatureIndex" ]
-                          ]
-                          (Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]))
-                        (Ty.function
-                          [
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "move_binary_format::file_format::CompiledModule" ];
-                            Ty.path "bool";
-                            Ty.path "move_binary_format::file_format::SignatureIndex";
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [ Ty.path "move_binary_format::file_format::SignatureIndex" ]
-                          ]
-                          (Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])),
-                      [
-                        M.get_function (|
-                          "move_bytecode_verifier::script_signature::no_additional_script_signature_checks",
-                          [],
-                          []
-                        |)
-                      ]
-                    |)
+                          [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]))
                   ]
                 |)
               |)
@@ -2679,20 +3311,34 @@ Module verifier.
             [ Ty.path "move_bytecode_verifier_meter::dummy::DummyMeter" ]
           |),
           [
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-            M.borrow (|
-              Pointer.Kind.MutRef,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.alloc (|
-                    Ty.path "move_bytecode_verifier_meter::dummy::DummyMeter",
-                    Value.StructTuple "move_bytecode_verifier_meter::dummy::DummyMeter" [] [] []
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| config |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "move_vm_config::verifier::VerifierConfig" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.alloc (|
+                      Ty.path "move_bytecode_verifier_meter::dummy::DummyMeter",
+                      M.value_with_ty
+                        (Value.StructTuple "move_bytecode_verifier_meter::dummy::DummyMeter" [])
+                        (Ty.path "move_bytecode_verifier_meter::dummy::DummyMeter")
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.path "move_bytecode_verifier_meter::dummy::DummyMeter" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

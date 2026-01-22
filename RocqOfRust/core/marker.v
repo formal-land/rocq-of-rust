@@ -693,11 +693,15 @@ Module marker.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ],
               _other
             |) in
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "core::cmp::Ordering" ]
-            [ Value.StructTuple "core::cmp::Ordering::Equal" [] [] [] ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::option::Option::Some"
+              [
+                M.value_with_ty
+                  (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                  (Ty.path "core::cmp::Ordering")
+              ])
+            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -734,7 +738,9 @@ Module marker.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ],
               _other
             |) in
-          Value.StructTuple "core::cmp::Ordering::Equal" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::cmp::Ordering::Equal" [])
+            (Ty.path "core::cmp::Ordering")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -950,8 +956,12 @@ Module marker.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PhantomPinned" |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PhantomPinned" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -972,7 +982,11 @@ Module marker.
     (* Default *)
     Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [] => ltac:(M.monadic (Value.StructTuple "core::marker::PhantomPinned" [] [] []))
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.value_with_ty
+            (Value.StructTuple "core::marker::PhantomPinned" [])
+            (Ty.path "core::marker::PhantomPinned")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1115,7 +1129,9 @@ Module marker.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::marker::PhantomPinned" ],
               other
             |) in
-          Value.StructTuple "core::cmp::Ordering::Equal" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::cmp::Ordering::Equal" [])
+            (Ty.path "core::cmp::Ordering")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1146,11 +1162,15 @@ Module marker.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::marker::PhantomPinned" ],
               other
             |) in
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "core::cmp::Ordering" ]
-            [ Value.StructTuple "core::cmp::Ordering::Equal" [] [] [] ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::option::Option::Some"
+              [
+                M.value_with_ty
+                  (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                  (Ty.path "core::cmp::Ordering")
+              ])
+            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

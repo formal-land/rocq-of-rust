@@ -21,12 +21,16 @@ Module future.
       match ε, τ, α with
       | [], [ T ], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "core::future::pending::Pending"
-            []
-            [ T ]
-            [ ("_data", Value.StructTuple "core::marker::PhantomData" [] [ Ty.function [] T ] [])
-            ]))
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "core::future::pending::Pending"
+              [
+                ("_data",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.function [] T ]))
+              ])
+            (Ty.apply (Ty.path "core::future::pending::Pending") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -75,7 +79,10 @@ Module future.
               β1,
               [
                 fun γ =>
-                  ltac:(M.monadic (Value.StructTuple "core::task::poll::Poll::Pending" [] [ T ] []))
+                  ltac:(M.monadic
+                    (M.value_with_ty
+                      (Value.StructTuple "core::task::poll::Poll::Pending" [])
+                      (Ty.apply (Ty.path "core::task::poll::Poll") [] [ T ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -128,25 +135,31 @@ Module future.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.alloc (|
-                    Ty.path "core::fmt::builders::DebugStruct",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.alloc (|
                       Ty.path "core::fmt::builders::DebugStruct",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Formatter",
-                        "debug_struct",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Pending" |) |) |)
-                      ]
+                      M.call_closure (|
+                        Ty.path "core::fmt::builders::DebugStruct",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Formatter",
+                          "debug_struct",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Pending" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

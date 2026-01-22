@@ -54,22 +54,26 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_A_where_core_cmp_Partial
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialEq", A, [], [ A ], "eq", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "generics_phantom_type::PhantomTuple",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "generics_phantom_type::PhantomTuple",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "generics_phantom_type::PhantomTuple",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "generics_phantom_type::PhantomTuple",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ])
             ]
           |),
           ltac:(M.monadic
@@ -85,22 +89,32 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_A_where_core_cmp_Partial
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "generics_phantom_type::PhantomTuple",
-                    1
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "generics_phantom_type::PhantomTuple",
-                    1
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "generics_phantom_type::PhantomTuple",
+                      1
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ B ] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "generics_phantom_type::PhantomTuple",
+                      1
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ B ] ])
               ]
             |)))
         |)))
@@ -172,22 +186,26 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_A_where_core_cmp_Partial
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialEq", A, [], [ A ], "eq", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "generics_phantom_type::PhantomStruct",
-                  "first"
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| other |) |),
-                  "generics_phantom_type::PhantomStruct",
-                  "first"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "generics_phantom_type::PhantomStruct",
+                    "first"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| other |) |),
+                    "generics_phantom_type::PhantomStruct",
+                    "first"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ A ])
             ]
           |),
           ltac:(M.monadic
@@ -203,22 +221,32 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_A_where_core_cmp_Partial
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "generics_phantom_type::PhantomStruct",
-                    "phantom"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "generics_phantom_type::PhantomStruct",
-                    "phantom"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "generics_phantom_type::PhantomStruct",
+                      "phantom"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ B ] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "generics_phantom_type::PhantomStruct",
+                      "phantom"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ B ] ])
               ]
             |)))
         |)))
@@ -274,53 +302,75 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               (Ty.path "generics_phantom_type::PhantomTuple")
               []
               [ Ty.path "char"; Ty.path "f32" ] :=
-          Value.StructTuple
-            "generics_phantom_type::PhantomTuple"
-            []
-            [ Ty.path "char"; Ty.path "f32" ]
-            [
-              Value.UnicodeChar 81;
-              Value.StructTuple "core::marker::PhantomData" [] [ Ty.path "f32" ] []
-            ] in
+          M.value_with_ty
+            (Value.StructTuple
+              "generics_phantom_type::PhantomTuple"
+              [
+                Value.UnicodeChar 81;
+                M.value_with_ty
+                  (Value.StructTuple "core::marker::PhantomData" [])
+                  (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.path "f32" ])
+              ])
+            (Ty.apply
+              (Ty.path "generics_phantom_type::PhantomTuple")
+              []
+              [ Ty.path "char"; Ty.path "f32" ]) in
         let~ _tuple2 :
             Ty.apply
               (Ty.path "generics_phantom_type::PhantomTuple")
               []
               [ Ty.path "char"; Ty.path "f64" ] :=
-          Value.StructTuple
-            "generics_phantom_type::PhantomTuple"
-            []
-            [ Ty.path "char"; Ty.path "f64" ]
-            [
-              Value.UnicodeChar 81;
-              Value.StructTuple "core::marker::PhantomData" [] [ Ty.path "f64" ] []
-            ] in
+          M.value_with_ty
+            (Value.StructTuple
+              "generics_phantom_type::PhantomTuple"
+              [
+                Value.UnicodeChar 81;
+                M.value_with_ty
+                  (Value.StructTuple "core::marker::PhantomData" [])
+                  (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.path "f64" ])
+              ])
+            (Ty.apply
+              (Ty.path "generics_phantom_type::PhantomTuple")
+              []
+              [ Ty.path "char"; Ty.path "f64" ]) in
         let~ _struct1 :
             Ty.apply
               (Ty.path "generics_phantom_type::PhantomStruct")
               []
               [ Ty.path "char"; Ty.path "f32" ] :=
-          Value.mkStructRecord
-            "generics_phantom_type::PhantomStruct"
-            []
-            [ Ty.path "char"; Ty.path "f32" ]
-            [
-              ("first", Value.UnicodeChar 81);
-              ("phantom", Value.StructTuple "core::marker::PhantomData" [] [ Ty.path "f32" ] [])
-            ] in
+          M.value_with_ty
+            (Value.mkStructRecord
+              "generics_phantom_type::PhantomStruct"
+              [
+                ("first", Value.UnicodeChar 81);
+                ("phantom",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.path "f32" ]))
+              ])
+            (Ty.apply
+              (Ty.path "generics_phantom_type::PhantomStruct")
+              []
+              [ Ty.path "char"; Ty.path "f32" ]) in
         let~ _struct2 :
             Ty.apply
               (Ty.path "generics_phantom_type::PhantomStruct")
               []
               [ Ty.path "char"; Ty.path "f64" ] :=
-          Value.mkStructRecord
-            "generics_phantom_type::PhantomStruct"
-            []
-            [ Ty.path "char"; Ty.path "f64" ]
-            [
-              ("first", Value.UnicodeChar 81);
-              ("phantom", Value.StructTuple "core::marker::PhantomData" [] [ Ty.path "f64" ] [])
-            ] in
+          M.value_with_ty
+            (Value.mkStructRecord
+              "generics_phantom_type::PhantomStruct"
+              [
+                ("first", Value.UnicodeChar 81);
+                ("phantom",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.path "f64" ]))
+              ])
+            (Ty.apply
+              (Ty.path "generics_phantom_type::PhantomStruct")
+              []
+              [ Ty.path "char"; Ty.path "f64" ]) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"

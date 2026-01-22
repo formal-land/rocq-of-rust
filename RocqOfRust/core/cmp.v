@@ -18,8 +18,12 @@ Module cmp.
                 Ty.path "bool",
                 M.get_trait_method (| "core::cmp::PartialEq", Self, [], [ Rhs ], "eq", [], [] |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Rhs ])
                 ]
               |)
             ]
@@ -155,7 +159,11 @@ Module cmp.
                   [],
                   [ Ty.path "core::cmp::Ordering" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "i8" :=
               M.call_closure (|
@@ -165,7 +173,11 @@ Module cmp.
                   [],
                   [ Ty.path "core::cmp::Ordering" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -237,7 +249,11 @@ Module cmp.
                   [],
                   [ Ty.path "core::cmp::Ordering" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "i8" :=
               M.call_closure (|
@@ -247,7 +263,11 @@ Module cmp.
                   [],
                   [ Ty.path "core::cmp::Ordering" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ])
+                ]
               |) in
             M.alloc (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -263,14 +283,18 @@ Module cmp.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
                 ]
               |)
             |)
@@ -308,7 +332,11 @@ Module cmp.
                   [],
                   [ Ty.path "core::cmp::Ordering" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "i8" :=
               M.call_closure (|
@@ -318,7 +346,11 @@ Module cmp.
                   [],
                   [ Ty.path "core::cmp::Ordering" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "core::cmp::Ordering",
@@ -326,14 +358,18 @@ Module cmp.
                 Ty.path "core::cmp::Ordering",
                 M.get_trait_method (| "core::cmp::Ord", Ty.path "i8", [], [], "cmp", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
                 ]
               |)
             |)
@@ -369,28 +405,32 @@ Module cmp.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Less" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Less" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Equal" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Greater" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Greater" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Less" |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Less" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Equal" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Greater" |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Greater" |) |) |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -425,7 +465,11 @@ Module cmp.
                   [],
                   [ Ty.path "core::cmp::Ordering" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -441,11 +485,15 @@ Module cmp.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -672,15 +720,21 @@ Module cmp.
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Less" |) in
-                  Value.StructTuple "core::cmp::Ordering::Greater" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::cmp::Ordering::Greater" [])
+                    (Ty.path "core::cmp::Ordering")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Equal" |) in
-                  Value.StructTuple "core::cmp::Ordering::Equal" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                    (Ty.path "core::cmp::Ordering")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::cmp::Ordering::Greater" |) in
-                  Value.StructTuple "core::cmp::Ordering::Less" [] [] []))
+                  M.value_with_ty
+                    (Value.StructTuple "core::cmp::Ordering::Less" [])
+                    (Ty.path "core::cmp::Ordering")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -754,7 +808,10 @@ Module cmp.
                       [],
                       []
                     |),
-                    [ M.read (| f |); Value.Tuple [] ]
+                    [
+                      M.value_with_ty (M.read (| f |)) F;
+                      M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                    ]
                   |)));
               fun γ => ltac:(M.monadic (M.read (| self |)))
             ]
@@ -812,22 +869,26 @@ Module cmp.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -909,36 +970,42 @@ Module cmp.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Reverse" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::cmp::Reverse",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Reverse" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::cmp::Reverse",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -976,17 +1043,17 @@ Module cmp.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple
-            "core::cmp::Reverse"
-            []
-            [ T ]
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
-            ]))
+          (M.value_with_ty
+            (Value.StructTuple
+              "core::cmp::Reverse"
+              [
+                M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                  []
+                |)
+              ])
+            (Ty.apply (Ty.path "core::cmp::Reverse") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1019,20 +1086,24 @@ Module cmp.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::cmp::Reverse",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::cmp::Reverse",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ __H ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1075,27 +1146,31 @@ Module cmp.
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "partial_cmp", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::cmp::Reverse",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::cmp::Reverse",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1125,22 +1200,26 @@ Module cmp.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "lt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1170,22 +1249,26 @@ Module cmp.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "le", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1215,22 +1298,26 @@ Module cmp.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "gt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1260,22 +1347,26 @@ Module cmp.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "ge", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1325,27 +1416,31 @@ Module cmp.
             Ty.path "core::cmp::Ordering",
             M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::cmp::Reverse",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::cmp::Reverse",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1379,26 +1474,28 @@ Module cmp.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cmp::Reverse") [] [ T ] ],
               self
             |) in
-          Value.StructTuple
-            "core::cmp::Reverse"
-            []
-            [ T ]
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::cmp::Reverse",
-                      0
-                    |)
-                  |)
-                ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::cmp::Reverse"
+              [
+                M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::cmp::Reverse",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
+                  ]
+                |)
+              ])
+            (Ty.apply (Ty.path "core::cmp::Reverse") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1426,27 +1523,31 @@ Module cmp.
             Ty.tuple [],
             M.get_trait_method (| "core::clone::Clone", T, [], [], "clone_from", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::cmp::Reverse",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| source |) |),
-                      "core::cmp::Reverse",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::cmp::Reverse",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| source |) |),
+                        "core::cmp::Reverse",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1487,9 +1588,13 @@ Module cmp.
               ]
             |),
             [
-              M.read (| self |);
-              M.read (| other |);
-              M.get_trait_method (| "core::cmp::Ord", Self, [], [], "cmp", [], [] |)
+              M.value_with_ty (M.read (| self |)) Self;
+              M.value_with_ty (M.read (| other |)) Self;
+              M.value_with_ty
+                (M.get_trait_method (| "core::cmp::Ord", Self, [], [], "cmp", [], [] |))
+                (Ty.function
+                  [ Ty.apply (Ty.path "&") [] [ Self ]; Ty.apply (Ty.path "&") [] [ Self ] ]
+                  (Ty.path "core::cmp::Ordering"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1515,9 +1620,13 @@ Module cmp.
               ]
             |),
             [
-              M.read (| self |);
-              M.read (| other |);
-              M.get_trait_method (| "core::cmp::Ord", Self, [], [], "cmp", [], [] |)
+              M.value_with_ty (M.read (| self |)) Self;
+              M.value_with_ty (M.read (| other |)) Self;
+              M.value_with_ty
+                (M.get_trait_method (| "core::cmp::Ord", Self, [], [], "cmp", [], [] |))
+                (Ty.function
+                  [ Ty.apply (Ty.path "&") [] [ Self ]; Ty.apply (Ty.path "&") [] [ Self ] ]
+                  (Ty.path "core::cmp::Ordering"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1559,8 +1668,12 @@ Module cmp.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, min |);
-                                    M.borrow (| Pointer.Kind.Ref, max |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, min |))
+                                      (Ty.apply (Ty.path "&") [] [ Self ]);
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, max |))
+                                      (Ty.apply (Ty.path "&") [] [ Self ])
                                   ]
                                 |)
                               ]
@@ -1571,7 +1684,11 @@ Module cmp.
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: min <= max" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: min <= max" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1601,8 +1718,12 @@ Module cmp.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, self |);
-                                M.borrow (| Pointer.Kind.Ref, min |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, self |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, min |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ])
                               ]
                             |)
                           |)) in
@@ -1632,8 +1753,12 @@ Module cmp.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, self |);
-                                        M.borrow (| Pointer.Kind.Ref, max |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, self |))
+                                          (Ty.apply (Ty.path "&") [] [ Self ]);
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, max |))
+                                          (Ty.apply (Ty.path "&") [] [ Self ])
                                       ]
                                     |)
                                   |)) in
@@ -1677,8 +1802,12 @@ Module cmp.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Rhs ])
                 ]
               |)
             |),
@@ -1720,8 +1849,12 @@ Module cmp.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Rhs ])
                 ]
               |)
             |),
@@ -1780,8 +1913,12 @@ Module cmp.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Rhs ])
                 ]
               |)
             |),
@@ -1823,8 +1960,12 @@ Module cmp.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Rhs ])
                 ]
               |)
             |),
@@ -1877,7 +2018,7 @@ Module cmp.
         M.call_closure (|
           T,
           M.get_trait_method (| "core::cmp::Ord", T, [], [], "min", [], [] |),
-          [ M.read (| v1 |); M.read (| v2 |) ]
+          [ M.value_with_ty (M.read (| v1 |)) T; M.value_with_ty (M.read (| v2 |)) T ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -1917,18 +2058,20 @@ Module cmp.
                 []
               |),
               [
-                M.read (| compare |);
-                Value.Tuple
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
-                    |)
-                  ]
+                M.value_with_ty (M.read (| compare |)) F;
+                M.value_with_ty
+                  (Value.Tuple
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
+                      |)
+                    ])
+                  (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ])
               ]
             |)
           |),
@@ -1992,72 +2135,44 @@ Module cmp.
             ]
           |),
           [
-            M.read (| v1 |);
-            M.read (| v2 |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0; α1 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "core::cmp::Ordering",
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let v1 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                              M.match_operator (|
-                                Ty.path "core::cmp::Ordering",
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let v2 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                      M.call_closure (|
-                                        Ty.path "core::cmp::Ordering",
-                                        M.get_trait_method (|
-                                          "core::cmp::Ord",
-                                          K,
-                                          [],
-                                          [],
-                                          "cmp",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              K,
-                                              M.call_closure (|
-                                                K,
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  F,
-                                                  [],
-                                                  [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| v1 |) |)
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
+            M.value_with_ty (M.read (| v1 |)) T;
+            M.value_with_ty (M.read (| v2 |)) T;
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0; α1 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "core::cmp::Ordering",
+                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let v1 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                M.match_operator (|
+                                  Ty.path "core::cmp::Ordering",
+                                  M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let v2 :=
+                                          M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                        M.call_closure (|
+                                          Ty.path "core::cmp::Ordering",
+                                          M.get_trait_method (|
+                                            "core::cmp::Ord",
+                                            K,
+                                            [],
+                                            [],
+                                            "cmp",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
                                                 Pointer.Kind.Ref,
                                                 M.alloc (|
                                                   K,
@@ -2074,28 +2189,78 @@ Module cmp.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (| Pointer.Kind.MutRef, f |);
-                                                      Value.Tuple
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| v2 |) |)
-                                                          |)
-                                                        ]
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                        (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                      M.value_with_ty
+                                                        (Value.Tuple
+                                                          [
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| v1 |) |)
+                                                            |)
+                                                          ])
+                                                        (Ty.tuple
+                                                          [ Ty.apply (Ty.path "&") [] [ T ] ])
                                                     ]
                                                   |)
                                                 |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ K ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      K,
+                                                      M.call_closure (|
+                                                        K,
+                                                        M.get_trait_method (|
+                                                          "core::ops::function::FnMut",
+                                                          F,
+                                                          [],
+                                                          [
+                                                            Ty.tuple
+                                                              [ Ty.apply (Ty.path "&") [] [ T ] ]
+                                                          ],
+                                                          "call_mut",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                            (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                          M.value_with_ty
+                                                            (Value.Tuple
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| v2 |) |)
+                                                                |)
+                                                              ])
+                                                            (Ty.tuple
+                                                              [ Ty.apply (Ty.path "&") [] [ T ] ])
+                                                        ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ K ])
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                (Ty.path "core::cmp::Ordering"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2120,7 +2285,7 @@ Module cmp.
         M.call_closure (|
           T,
           M.get_trait_method (| "core::cmp::Ord", T, [], [], "max", [], [] |),
-          [ M.read (| v1 |); M.read (| v2 |) ]
+          [ M.value_with_ty (M.read (| v1 |)) T; M.value_with_ty (M.read (| v2 |)) T ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -2160,18 +2325,20 @@ Module cmp.
                 []
               |),
               [
-                M.read (| compare |);
-                Value.Tuple
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
-                    |)
-                  ]
+                M.value_with_ty (M.read (| compare |)) F;
+                M.value_with_ty
+                  (Value.Tuple
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
+                      |);
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
+                      |)
+                    ])
+                  (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ])
               ]
             |)
           |),
@@ -2235,72 +2402,44 @@ Module cmp.
             ]
           |),
           [
-            M.read (| v1 |);
-            M.read (| v2 |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0; α1 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "core::cmp::Ordering",
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let v1 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                              M.match_operator (|
-                                Ty.path "core::cmp::Ordering",
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let v2 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                      M.call_closure (|
-                                        Ty.path "core::cmp::Ordering",
-                                        M.get_trait_method (|
-                                          "core::cmp::Ord",
-                                          K,
-                                          [],
-                                          [],
-                                          "cmp",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              K,
-                                              M.call_closure (|
-                                                K,
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  F,
-                                                  [],
-                                                  [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| v1 |) |)
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
+            M.value_with_ty (M.read (| v1 |)) T;
+            M.value_with_ty (M.read (| v2 |)) T;
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0; α1 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "core::cmp::Ordering",
+                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let v1 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                M.match_operator (|
+                                  Ty.path "core::cmp::Ordering",
+                                  M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let v2 :=
+                                          M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                        M.call_closure (|
+                                          Ty.path "core::cmp::Ordering",
+                                          M.get_trait_method (|
+                                            "core::cmp::Ord",
+                                            K,
+                                            [],
+                                            [],
+                                            "cmp",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
                                                 Pointer.Kind.Ref,
                                                 M.alloc (|
                                                   K,
@@ -2317,28 +2456,78 @@ Module cmp.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (| Pointer.Kind.MutRef, f |);
-                                                      Value.Tuple
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| v2 |) |)
-                                                          |)
-                                                        ]
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                        (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                      M.value_with_ty
+                                                        (Value.Tuple
+                                                          [
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| v1 |) |)
+                                                            |)
+                                                          ])
+                                                        (Ty.tuple
+                                                          [ Ty.apply (Ty.path "&") [] [ T ] ])
                                                     ]
                                                   |)
                                                 |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ K ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      K,
+                                                      M.call_closure (|
+                                                        K,
+                                                        M.get_trait_method (|
+                                                          "core::ops::function::FnMut",
+                                                          F,
+                                                          [],
+                                                          [
+                                                            Ty.tuple
+                                                              [ Ty.apply (Ty.path "&") [] [ T ] ]
+                                                          ],
+                                                          "call_mut",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                            (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                          M.value_with_ty
+                                                            (Value.Tuple
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| v2 |) |)
+                                                                |)
+                                                              ])
+                                                            (Ty.tuple
+                                                              [ Ty.apply (Ty.path "&") [] [ T ] ])
+                                                        ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ K ])
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                (Ty.path "core::cmp::Ordering"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2384,7 +2573,14 @@ Module cmp.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, v1 |); M.borrow (| Pointer.Kind.Ref, v2 |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, v1 |))
+                            (Ty.apply (Ty.path "&") [] [ T ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, v2 |))
+                            (Ty.apply (Ty.path "&") [] [ T ])
+                        ]
                       |)
                     |)) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -2433,36 +2629,46 @@ Module cmp.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.path "core::cmp::Ordering",
-                            M.get_trait_method (|
-                              "core::ops::function::FnOnce",
-                              F,
-                              [],
-                              [
-                                Ty.tuple
-                                  [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ]
-                                  ]
-                              ],
-                              "call_once",
-                              [],
-                              []
-                            |),
-                            [
-                              M.read (| compare |);
-                              Value.Tuple
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "core::cmp::Ordering",
+                              M.get_trait_method (|
+                                "core::ops::function::FnOnce",
+                                F,
+                                [],
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
-                                  |)
-                                ]
-                            ]
-                          |)
+                                  Ty.tuple
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply (Ty.path "&") [] [ T ]
+                                    ]
+                                ],
+                                "call_once",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty (M.read (| compare |)) F;
+                                M.value_with_ty
+                                  (Value.Tuple
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, v1 |) |)
+                                      |);
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, v2 |) |)
+                                      |)
+                                    ])
+                                  (Ty.tuple
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply (Ty.path "&") [] [ T ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::cmp::Ordering")
                         ]
                       |)
                     |)) in
@@ -2507,72 +2713,44 @@ Module cmp.
             ]
           |),
           [
-            M.read (| v1 |);
-            M.read (| v2 |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0; α1 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "core::cmp::Ordering",
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let v1 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                              M.match_operator (|
-                                Ty.path "core::cmp::Ordering",
-                                M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let v2 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                      M.call_closure (|
-                                        Ty.path "core::cmp::Ordering",
-                                        M.get_trait_method (|
-                                          "core::cmp::Ord",
-                                          K,
-                                          [],
-                                          [],
-                                          "cmp",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              K,
-                                              M.call_closure (|
-                                                K,
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  F,
-                                                  [],
-                                                  [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| v1 |) |)
-                                                      |)
-                                                    ]
-                                                ]
-                                              |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
+            M.value_with_ty (M.read (| v1 |)) T;
+            M.value_with_ty (M.read (| v2 |)) T;
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0; α1 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "core::cmp::Ordering",
+                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let v1 := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                M.match_operator (|
+                                  Ty.path "core::cmp::Ordering",
+                                  M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let v2 :=
+                                          M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                        M.call_closure (|
+                                          Ty.path "core::cmp::Ordering",
+                                          M.get_trait_method (|
+                                            "core::cmp::Ord",
+                                            K,
+                                            [],
+                                            [],
+                                            "cmp",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
                                                 Pointer.Kind.Ref,
                                                 M.alloc (|
                                                   K,
@@ -2589,28 +2767,78 @@ Module cmp.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (| Pointer.Kind.MutRef, f |);
-                                                      Value.Tuple
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| v2 |) |)
-                                                          |)
-                                                        ]
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                        (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                      M.value_with_ty
+                                                        (Value.Tuple
+                                                          [
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| v1 |) |)
+                                                            |)
+                                                          ])
+                                                        (Ty.tuple
+                                                          [ Ty.apply (Ty.path "&") [] [ T ] ])
                                                     ]
                                                   |)
                                                 |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ K ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      K,
+                                                      M.call_closure (|
+                                                        K,
+                                                        M.get_trait_method (|
+                                                          "core::ops::function::FnMut",
+                                                          F,
+                                                          [],
+                                                          [
+                                                            Ty.tuple
+                                                              [ Ty.apply (Ty.path "&") [] [ T ] ]
+                                                          ],
+                                                          "call_mut",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                            (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                          M.value_with_ty
+                                                            (Value.Tuple
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| v2 |) |)
+                                                                |)
+                                                              ])
+                                                            (Ty.tuple
+                                                              [ Ty.apply (Ty.path "&") [] [ T ] ])
+                                                        ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ K ])
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                (Ty.path "core::cmp::Ordering"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3728,11 +3956,18 @@ Module cmp.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Equal" [] [] [] ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3761,20 +3996,32 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_trait_method (| "core::cmp::Ord", Ty.path "bool", [], [], "cmp", [], [] |),
-                  [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_trait_method (|
+                      "core::cmp::Ord",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "cmp",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3837,44 +4084,66 @@ Module cmp.
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Greater" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Greater" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool true |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Less" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Less" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool true |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Equal" [] [] [] ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4018,44 +4287,66 @@ Module cmp.
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Greater" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Greater" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool true |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Less" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Less" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool true |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Equal" [] [] [] ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4199,44 +4490,66 @@ Module cmp.
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Greater" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Greater" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool true |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Less" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Less" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool true |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Equal" [] [] [] ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4380,44 +4693,66 @@ Module cmp.
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool false |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Greater" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Greater" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool true |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Less" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Less" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_0 |), Value.Bool true |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Equal" [] [] [] ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4525,7 +4860,9 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.tuple [] ], self |) in
             let _other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.tuple [] ], _other |) in
-            Value.StructTuple "core::cmp::Ordering::Equal" [] [] []))
+            M.value_with_ty
+              (Value.StructTuple "core::cmp::Ordering::Equal" [])
+              (Ty.path "core::cmp::Ordering")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4582,7 +4919,9 @@ Module cmp.
                         M.read (| γ |),
                         Value.Integer IntegerKind.I8 (-1)
                       |) in
-                    Value.StructTuple "core::cmp::Ordering::Less" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::cmp::Ordering::Less" [])
+                      (Ty.path "core::cmp::Ordering")));
                 fun γ =>
                   ltac:(M.monadic
                     (let _ :=
@@ -4590,7 +4929,9 @@ Module cmp.
                         M.read (| γ |),
                         Value.Integer IntegerKind.I8 0
                       |) in
-                    Value.StructTuple "core::cmp::Ordering::Equal" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                      (Ty.path "core::cmp::Ordering")));
                 fun γ =>
                   ltac:(M.monadic
                     (let _ :=
@@ -4598,7 +4939,9 @@ Module cmp.
                         M.read (| γ |),
                         Value.Integer IntegerKind.I8 1
                       |) in
-                    Value.StructTuple "core::cmp::Ordering::Greater" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::cmp::Ordering::Greater" [])
+                      (Ty.path "core::cmp::Ordering")));
                 fun γ =>
                   ltac:(M.monadic
                     (M.never_to_any (|
@@ -4693,7 +5036,11 @@ Module cmp.
                           M.call_closure (|
                             Ty.path "never",
                             M.get_function (| "core::panicking::panic", [], [] |),
-                            [ mk_str (| "assertion failed: min <= max" |) ]
+                            [
+                              M.value_with_ty
+                                (mk_str (| "assertion failed: min <= max" |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                            ]
                           |)
                         |)));
                     fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -4705,20 +5052,25 @@ Module cmp.
                   Ty.path "bool",
                   M.get_trait_method (| "core::cmp::Ord", Ty.path "bool", [], [], "min", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "bool",
-                      M.get_trait_method (|
-                        "core::cmp::Ord",
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "bool",
-                        [],
-                        [],
-                        "max",
-                        [],
-                        []
-                      |),
-                      [ M.read (| self |); M.read (| min |) ]
-                    |);
-                    M.read (| max |)
+                        M.get_trait_method (|
+                          "core::cmp::Ord",
+                          Ty.path "bool",
+                          [],
+                          [],
+                          "max",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (M.read (| self |)) (Ty.path "bool");
+                          M.value_with_ty (M.read (| min |)) (Ty.path "bool")
+                        ]
+                      |))
+                      (Ty.path "bool");
+                    M.value_with_ty (M.read (| max |)) (Ty.path "bool")
                   ]
                 |)
               |)
@@ -4755,24 +5107,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (|
-                    "core::intrinsics::three_way_compare",
-                    [],
-                    [ Ty.path "char" ]
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "char" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "char");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "char")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4882,8 +5238,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "char" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "char");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "char")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4912,24 +5268,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (|
-                    "core::intrinsics::three_way_compare",
-                    [],
-                    [ Ty.path "usize" ]
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "usize" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5039,8 +5399,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "usize" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5069,20 +5429,24 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "u8" ] |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "u8" ]
+                    |),
+                    [
+                      M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u8");
+                      M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5192,8 +5556,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "u8" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "u8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5222,20 +5586,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "u16" ] |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "u16" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "u16");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5345,8 +5717,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "u16" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "u16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5375,20 +5747,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "u32" ] |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "u32" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "u32");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5498,8 +5878,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "u32" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "u32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5528,20 +5908,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "u64" ] |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "u64" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "u64");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5651,8 +6039,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "u64" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "u64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5681,24 +6069,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (|
-                    "core::intrinsics::three_way_compare",
-                    [],
-                    [ Ty.path "u128" ]
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "u128" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "u128");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5808,8 +6200,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "u128" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u128");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5838,24 +6230,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "isize" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (|
-                    "core::intrinsics::three_way_compare",
-                    [],
-                    [ Ty.path "isize" ]
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "isize" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "isize");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5965,8 +6361,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "isize" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "isize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5995,20 +6391,24 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "i8" ] |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "i8" ]
+                    |),
+                    [
+                      M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i8");
+                      M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6118,8 +6518,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "i8" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "i8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6148,20 +6548,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "i16" ] |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "i16" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "i16");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6271,8 +6679,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "i16" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "i16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6301,20 +6709,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "i32" ] |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "i32" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "i32");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6424,8 +6840,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "i32" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "i32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6454,20 +6870,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "i64" ] |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "i64" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "i64");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6577,8 +7001,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "i64" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "i64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6607,24 +7031,28 @@ Module cmp.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i128" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_function (|
-                    "core::intrinsics::three_way_compare",
-                    [],
-                    [ Ty.path "i128" ]
-                  |),
-                  [
-                    M.read (| M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_function (|
+                      "core::intrinsics::three_way_compare",
+                      [],
+                      [ Ty.path "i128" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.path "i128");
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6734,8 +7162,8 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_function (| "core::intrinsics::three_way_compare", [], [ Ty.path "i128" ] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| other |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i128");
+                M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "i128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6888,14 +7316,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", A, [], [ B ], "eq", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6919,14 +7351,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", A, [], [ B ], "ne", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6969,14 +7405,18 @@ Module cmp.
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "partial_cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7000,14 +7440,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "lt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7031,14 +7475,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "le", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7062,14 +7510,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "gt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7093,14 +7545,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "ge", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7144,14 +7600,18 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_trait_method (| "core::cmp::Ord", A, [], [], "cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7207,14 +7667,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", A, [], [ B ], "eq", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7244,14 +7708,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", A, [], [ B ], "ne", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7300,14 +7768,18 @@ Module cmp.
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "partial_cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7337,14 +7809,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "lt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7374,14 +7850,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "le", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7411,14 +7891,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "gt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7448,14 +7932,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialOrd", A, [], [ B ], "ge", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7505,14 +7993,18 @@ Module cmp.
               Ty.path "core::cmp::Ordering",
               M.get_trait_method (| "core::cmp::Ord", A, [], [], "cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7565,14 +8057,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", A, [], [ B ], "eq", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7599,14 +8095,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", A, [], [ B ], "ne", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7647,14 +8147,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", A, [], [ B ], "eq", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7681,14 +8185,18 @@ Module cmp.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", A, [], [ B ], "ne", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ A ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| other |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

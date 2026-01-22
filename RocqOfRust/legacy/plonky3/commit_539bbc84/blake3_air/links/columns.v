@@ -55,7 +55,7 @@ Module QuarterRound.
   := {
     Φ := Ty.apply (Ty.path "p3_blake3_air::columns::QuarterRound") [] [ Φ T; Φ U ];
     φ x :=
-      Value.StructRecord "p3_blake3_air::columns::QuarterRound" [] [] [
+      Value.StructRecord "p3_blake3_air::columns::QuarterRound" [
         ("a", φ x.(a));
         ("b", φ x.(b));
         ("c", φ x.(c));
@@ -108,7 +108,7 @@ Module QuarterRound.
       b_output' = φ b_output ->
       c_output' = φ c_output ->
       d_output' = φ d_output ->
-    Value.StructRecord "p3_blake3_air::columns::QuarterRound" [] [] [
+    Value.StructRecord "p3_blake3_air::columns::QuarterRound" [
       ("a", a');
       ("b", b');
       ("c", c');
@@ -162,7 +162,7 @@ Module QuarterRound.
       c_output' = φ c_output ->
       d_output' = φ d_output ->
     OfValue.t (
-      Value.StructRecord "p3_blake3_air::columns::QuarterRound" [] [] [
+      Value.StructRecord "p3_blake3_air::columns::QuarterRound" [
         ("a", a');
         ("b", b');
         ("c", c');
@@ -206,7 +206,7 @@ Module Blake3State.
   Global Instance IsLink (T : Set) `{Link T} : Link (t T) := {
     Φ := Ty.apply (Ty.path "p3_blake3_air::columns::Blake3State") [] [ Φ T ];
     φ x :=
-      Value.StructRecord "p3_blake3_air::columns::Blake3State" [] [] [
+      Value.StructRecord "p3_blake3_air::columns::Blake3State" [
         ("row0", φ x.(row0));
         ("row1", φ x.(row1));
         ("row2", φ x.(row2));
@@ -226,7 +226,7 @@ Module Blake3State.
     row1' = φ row1 ->
     row2' = φ row2 ->
     row3' = φ row3 ->
-    Value.StructRecord "p3_blake3_air::columns::Blake3State" [] [] [
+    Value.StructRecord "p3_blake3_air::columns::Blake3State" [
       ("row0", row0');
       ("row1", row1');
       ("row2", row2');
@@ -245,7 +245,7 @@ Module Blake3State.
     row2' = φ row2 ->
     row3' = φ row3 ->
     OfValue.t (
-      Value.StructRecord "p3_blake3_air::columns::Blake3State" [] [] [
+      Value.StructRecord "p3_blake3_air::columns::Blake3State" [
         ("row0", row0');
         ("row1", row1');
         ("row2", row2');
@@ -279,7 +279,7 @@ Module FullRound.
   Global Instance IsLink (T : Set) `{Link T} : Link (t T) := {
     Φ := Ty.apply (Ty.path "p3_blake3_air::columns::FullRound") [] [ Φ T ];
     φ x :=
-      Value.StructRecord "p3_blake3_air::columns::FullRound" [] [] [
+      Value.StructRecord "p3_blake3_air::columns::FullRound" [
         ("state_prime", φ x.(state_prime T));
         ("state_middle", φ x.(state_middle T));
         ("state_middle_prime", φ x.(state_middle_prime T));
@@ -302,7 +302,7 @@ Module FullRound.
     state_middle' = φ state_middle ->
     state_middle_prime' = φ state_middle_prime ->
     state_output' = φ state_output ->
-    Value.StructRecord "p3_blake3_air::columns::FullRound" [] [] [
+    Value.StructRecord "p3_blake3_air::columns::FullRound" [
       ("state_prime", state_prime');
       ("state_middle", state_middle');
       ("state_middle_prime", state_middle_prime');
@@ -320,7 +320,7 @@ Module FullRound.
     state_middle_prime' = φ state_middle_prime ->
     state_output' = φ state_output ->
     OfValue.t (
-      Value.StructRecord "p3_blake3_air::columns::FullRound" [] [] [
+      Value.StructRecord "p3_blake3_air::columns::FullRound" [
         ("state_prime", state_prime');
         ("state_middle", state_middle');
         ("state_middle_prime", state_middle_prime');

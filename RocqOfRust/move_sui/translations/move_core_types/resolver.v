@@ -36,28 +36,43 @@ Module resolver.
               Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::language_storage::ModuleId" ],
               module_id
             |) in
-          Value.StructTuple
-            "core::result::Result::Ok"
-            []
-            [
-              Ty.path "move_core_types::language_storage::ModuleId";
-              Ty.associated_in_trait "move_core_types::resolver::LinkageResolver" [] [] Self "Error"
-            ]
-            [
-              M.call_closure (|
-                Ty.path "move_core_types::language_storage::ModuleId",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "core::result::Result::Ok"
+              [
+                M.call_closure (|
                   Ty.path "move_core_types::language_storage::ModuleId",
-                  [],
-                  [],
-                  "clone",
-                  [],
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "move_core_types::language_storage::ModuleId",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "move_core_types::language_storage::ModuleId" ])
+                  ]
+                |)
+              ])
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.path "move_core_types::language_storage::ModuleId";
+                Ty.associated_in_trait
+                  "move_core_types::resolver::LinkageResolver"
                   []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |) ]
-              |)
-            ]))
+                  []
+                  Self
+                  "Error"
+              ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -83,28 +98,43 @@ Module resolver.
               Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::identifier::IdentStr" ],
               _struct
             |) in
-          Value.StructTuple
-            "core::result::Result::Ok"
-            []
-            [
-              Ty.path "move_core_types::language_storage::ModuleId";
-              Ty.associated_in_trait "move_core_types::resolver::LinkageResolver" [] [] Self "Error"
-            ]
-            [
-              M.call_closure (|
-                Ty.path "move_core_types::language_storage::ModuleId",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "core::result::Result::Ok"
+              [
+                M.call_closure (|
                   Ty.path "move_core_types::language_storage::ModuleId",
-                  [],
-                  [],
-                  "clone",
-                  [],
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "move_core_types::language_storage::ModuleId",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "move_core_types::language_storage::ModuleId" ])
+                  ]
+                |)
+              ])
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [
+                Ty.path "move_core_types::language_storage::ModuleId";
+                Ty.associated_in_trait
+                  "move_core_types::resolver::LinkageResolver"
                   []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |) ]
-              |)
-            ]))
+                  []
+                  Self
+                  "Error"
+              ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -202,12 +232,24 @@ Module resolver.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| tag |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::account_address::AccountAddress" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| tag |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::language_storage::StructTag" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -277,11 +319,18 @@ Module resolver.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::language_storage::ModuleId" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -358,28 +407,47 @@ Module resolver.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply
-                        (Ty.path "alloc::sync::Arc")
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref",
+                        [],
                         []
-                        [ T; Ty.path "alloc::alloc::Global" ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ]
+                            ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::language_storage::ModuleId" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -430,10 +498,12 @@ Module resolver.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -474,11 +544,18 @@ Module resolver.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::language_storage::ModuleId" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -533,12 +610,21 @@ Module resolver.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| struct_ |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module_id |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::language_storage::ModuleId" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| struct_ |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::identifier::IdentStr" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

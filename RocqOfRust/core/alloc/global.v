@@ -26,7 +26,11 @@ Module alloc.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, layout |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, layout |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] :=
                 M.call_closure (|
@@ -41,8 +45,10 @@ Module alloc.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| layout |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Self ]);
+                    M.value_with_ty (M.read (| layout |)) (Ty.path "core::alloc::layout::Layout")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -68,7 +74,11 @@ Module alloc.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| ptr |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| ptr |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                    ]
                                   |)
                                 ]
                               |)
@@ -83,7 +93,12 @@ Module alloc.
                                 [],
                                 [ Ty.path "u8" ]
                               |),
-                              [ M.read (| ptr |); Value.Integer IntegerKind.U8 0; M.read (| size |)
+                              [
+                                M.value_with_ty
+                                  (M.read (| ptr |))
+                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                                M.value_with_ty (M.read (| size |)) (Ty.path "usize")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -117,17 +132,23 @@ Module alloc.
                     []
                   |),
                   [
-                    M.read (| new_size |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.path "core::alloc::layout::Layout",
-                        "align",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, layout |) ]
-                    |)
+                    M.value_with_ty (M.read (| new_size |)) (Ty.path "usize");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.path "core::alloc::layout::Layout",
+                          "align",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, layout |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ])
+                        ]
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               let~ new_ptr : Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] :=
@@ -143,8 +164,12 @@ Module alloc.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| new_layout |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Self ]);
+                    M.value_with_ty
+                      (M.read (| new_layout |))
+                      (Ty.path "core::alloc::layout::Layout")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -170,7 +195,11 @@ Module alloc.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| new_ptr |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| new_ptr |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                    ]
                                   |)
                                 ]
                               |)
@@ -186,32 +215,47 @@ Module alloc.
                                 [ Ty.path "u8" ]
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.MutToConstPointer
-                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                  [ M.read (| ptr |) ]
-                                |);
-                                M.read (| new_ptr |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_function (| "core::cmp::min", [], [ Ty.path "usize" ] |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.path "core::alloc::layout::Layout",
-                                        "size",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, layout |) ]
-                                    |);
-                                    M.read (| new_size |)
-                                  ]
-                                |)
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                                    [ M.read (| ptr |) ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.read (| new_ptr |))
+                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_function (| "core::cmp::min", [], [ Ty.path "usize" ] |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.path "core::alloc::layout::Layout",
+                                            "size",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, layout |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::alloc::layout::Layout" ])
+                                          ]
+                                        |))
+                                        (Ty.path "usize");
+                                      M.value_with_ty (M.read (| new_size |)) (Ty.path "usize")
+                                    ]
+                                  |))
+                                  (Ty.path "usize")
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -227,9 +271,15 @@ Module alloc.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.read (| ptr |);
-                                M.read (| layout |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ]);
+                                M.value_with_ty
+                                  (M.read (| ptr |))
+                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.read (| layout |))
+                                  (Ty.path "core::alloc::layout::Layout")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)

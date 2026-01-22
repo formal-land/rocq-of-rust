@@ -42,37 +42,45 @@ Module buf.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IntoIter" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ T ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "bytes::buf::iter::IntoIter",
-                                "inner"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IntoIter" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "bytes::buf::iter::IntoIter",
+                                  "inner"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -102,11 +110,9 @@ Module buf.
         | [], [], [ inner ] =>
           ltac:(M.monadic
             (let inner := M.alloc (| T, inner |) in
-            Value.mkStructRecord
-              "bytes::buf::iter::IntoIter"
-              []
-              [ T ]
-              [ ("inner", M.read (| inner |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord "bytes::buf::iter::IntoIter" [ ("inner", M.read (| inner |)) ])
+              (Ty.apply (Ty.path "bytes::buf::iter::IntoIter") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -287,14 +293,16 @@ Module buf.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "bytes::buf::iter::IntoIter",
-                                              "inner"
-                                            |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "bytes::buf::iter::IntoIter",
+                                                "inner"
+                                              |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ T ])
                                         ]
                                       |)
                                     ]
@@ -305,11 +313,9 @@ Module buf.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::option::Option::None"
-                                    []
-                                    [ Ty.path "u8" ]
-                                    []
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::option::Option::None" [])
+                                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ])
                                 |)
                               |)
                             |)));
@@ -335,14 +341,16 @@ Module buf.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "bytes::buf::iter::IntoIter",
-                                  "inner"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "bytes::buf::iter::IntoIter",
+                                    "inner"
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ T ])
                             ]
                           |)
                         |),
@@ -362,24 +370,24 @@ Module buf.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "bytes::buf::iter::IntoIter",
-                            "inner"
-                          |)
-                        |);
-                        Value.Integer IntegerKind.Usize 1
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "bytes::buf::iter::IntoIter",
+                              "inner"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&mut") [] [ T ]);
+                        M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                       ]
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "u8" ]
-                      [ M.read (| b |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::Some" [ M.read (| b |) ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ])
                   |)
                 |)))
             |)))
@@ -419,14 +427,16 @@ Module buf.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::buf::iter::IntoIter",
-                        "inner"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "bytes::buf::iter::IntoIter",
+                          "inner"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |) in
               M.alloc (|
@@ -438,11 +448,9 @@ Module buf.
                 Value.Tuple
                   [
                     M.read (| rem |);
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "usize" ]
-                      [ M.read (| rem |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::Some" [ M.read (| rem |) ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                   ]
               |)
             |)))

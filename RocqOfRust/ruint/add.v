@@ -49,8 +49,18 @@ Module add.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, self |);
-                            M.borrow (| Pointer.Kind.Ref, other |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, self |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, other |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                           ]
                         |)
                       |)) in
@@ -63,7 +73,14 @@ Module add.
                       [],
                       []
                     |),
-                    [ M.read (| other |); M.read (| self |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -75,7 +92,14 @@ Module add.
                       [],
                       []
                     |),
-                    [ M.read (| self |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                    ]
                   |)))
             ]
           |)))
@@ -123,7 +147,14 @@ Module add.
                   [],
                   []
                 |),
-                [ M.read (| self |); M.read (| rhs |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| self |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                  M.value_with_ty
+                    (M.read (| rhs |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                ]
               |)
             |),
             [
@@ -134,18 +165,20 @@ Module add.
                   let value :=
                     M.copy (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], γ0_0 |) in
                   let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    [ M.read (| value |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| value |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -191,7 +224,11 @@ Module add.
                   [],
                   []
                 |),
-                [ M.read (| self |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| self |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                ]
               |)
             |),
             [
@@ -202,18 +239,20 @@ Module add.
                   let value :=
                     M.copy (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], γ0_0 |) in
                   let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    [ M.read (| value |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| value |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -260,7 +299,14 @@ Module add.
                   [],
                   []
                 |),
-                [ M.read (| self |); M.read (| rhs |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| self |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                  M.value_with_ty
+                    (M.read (| rhs |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                ]
               |)
             |),
             [
@@ -271,18 +317,20 @@ Module add.
                   let value :=
                     M.copy (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], γ0_0 |) in
                   let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    [ M.read (| value |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| value |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -418,27 +466,31 @@ Module add.
                                               []
                                             |),
                                             [
-                                              M.read (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    self,
-                                                    "ruint::Uint",
-                                                    "limbs"
-                                                  |),
-                                                  M.read (| i |)
-                                                |)
-                                              |);
-                                              M.read (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    rhs,
-                                                    "ruint::Uint",
-                                                    "limbs"
-                                                  |),
-                                                  M.read (| i |)
-                                                |)
-                                              |);
-                                              M.read (| carry |)
+                                              M.value_with_ty
+                                                (M.read (|
+                                                  M.SubPointer.get_array_field (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      self,
+                                                      "ruint::Uint",
+                                                      "limbs"
+                                                    |),
+                                                    M.read (| i |)
+                                                  |)
+                                                |))
+                                                (Ty.path "u64");
+                                              M.value_with_ty
+                                                (M.read (|
+                                                  M.SubPointer.get_array_field (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      rhs,
+                                                      "ruint::Uint",
+                                                      "limbs"
+                                                    |),
+                                                    M.read (| i |)
+                                                  |)
+                                                |))
+                                                (Ty.path "u64");
+                                              M.value_with_ty (M.read (| carry |)) (Ty.path "bool")
                                             ]
                                           |)
                                         |),
@@ -594,14 +646,18 @@ Module add.
               []
             |),
             [
-              M.read (|
-                get_associated_constant (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "ZERO",
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                |)
-              |);
-              M.read (| self |)
+              M.value_with_ty
+                (M.read (|
+                  get_associated_constant (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "ZERO",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                  |)
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -737,27 +793,31 @@ Module add.
                                               []
                                             |),
                                             [
-                                              M.read (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    self,
-                                                    "ruint::Uint",
-                                                    "limbs"
-                                                  |),
-                                                  M.read (| i |)
-                                                |)
-                                              |);
-                                              M.read (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    rhs,
-                                                    "ruint::Uint",
-                                                    "limbs"
-                                                  |),
-                                                  M.read (| i |)
-                                                |)
-                                              |);
-                                              M.read (| borrow |)
+                                              M.value_with_ty
+                                                (M.read (|
+                                                  M.SubPointer.get_array_field (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      self,
+                                                      "ruint::Uint",
+                                                      "limbs"
+                                                    |),
+                                                    M.read (| i |)
+                                                  |)
+                                                |))
+                                                (Ty.path "u64");
+                                              M.value_with_ty
+                                                (M.read (|
+                                                  M.SubPointer.get_array_field (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      rhs,
+                                                      "ruint::Uint",
+                                                      "limbs"
+                                                    |),
+                                                    M.read (| i |)
+                                                  |)
+                                                |))
+                                                (Ty.path "u64");
+                                              M.value_with_ty (M.read (| borrow |)) (Ty.path "bool")
                                             ]
                                           |)
                                         |),
@@ -920,7 +980,14 @@ Module add.
                   [],
                   []
                 |),
-                [ M.read (| self |); M.read (| rhs |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| self |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                  M.value_with_ty
+                    (M.read (| rhs |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                ]
               |)
             |),
             [
@@ -984,7 +1051,14 @@ Module add.
                   [],
                   []
                 |),
-                [ M.read (| self |); M.read (| rhs |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| self |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                  M.value_with_ty
+                    (M.read (| rhs |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                ]
               |)
             |),
             [
@@ -1045,7 +1119,14 @@ Module add.
                     [],
                     []
                   |),
-                  [ M.read (| self |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| self |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
                 |)
               |),
               0
@@ -1088,7 +1169,11 @@ Module add.
                     [],
                     []
                   |),
-                  [ M.read (| self |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| self |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
                 |)
               |),
               0
@@ -1132,7 +1217,14 @@ Module add.
                     [],
                     []
                   |),
-                  [ M.read (| self |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| self |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
                 |)
               |),
               0
@@ -1180,7 +1272,11 @@ Module add.
               [],
               []
             |),
-            [ M.read (| self |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1235,7 +1331,11 @@ Module add.
               [],
               []
             |),
-            [ M.read (| M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.read (| M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1297,20 +1397,29 @@ Module add.
               ]
             |),
             [
-              M.read (| iter |);
-              M.read (|
-                get_associated_constant (|
+              M.value_with_ty (M.read (| iter |)) I;
+              M.value_with_ty
+                (M.read (|
+                  get_associated_constant (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "ZERO",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                  |)
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.get_associated_function (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "ZERO",
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                |)
-              |);
-              M.get_associated_function (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                "wrapping_add",
-                [],
-                []
-              |)
+                  "wrapping_add",
+                  [],
+                  []
+                |))
+                (Ty.function
+                  [
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                  ]
+                  (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1369,32 +1478,43 @@ Module add.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::iter::adapters::copied::Copied") [] [ I ],
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
-                  I,
-                  [],
-                  [],
-                  "copied",
-                  [],
-                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                |),
-                [ M.read (| iter |) ]
-              |);
-              M.read (|
-                get_associated_constant (|
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::iter::adapters::copied::Copied") [] [ I ],
+                  M.get_trait_method (|
+                    "core::iter::traits::iterator::Iterator",
+                    I,
+                    [],
+                    [],
+                    "copied",
+                    [],
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                  |),
+                  [ M.value_with_ty (M.read (| iter |)) I ]
+                |))
+                (Ty.apply (Ty.path "core::iter::adapters::copied::Copied") [] [ I ]);
+              M.value_with_ty
+                (M.read (|
+                  get_associated_constant (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "ZERO",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                  |)
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.get_associated_function (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "ZERO",
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                |)
-              |);
-              M.get_associated_function (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                "wrapping_add",
-                [],
-                []
-              |)
+                  "wrapping_add",
+                  [],
+                  []
+                |))
+                (Ty.function
+                  [
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                  ]
+                  (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

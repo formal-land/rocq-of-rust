@@ -25,13 +25,15 @@ Module signature.
               []
             |),
             [
-              Value.Array
-                [
-                  Value.Integer IntegerKind.U64 13822214165235122497;
-                  Value.Integer IntegerKind.U64 13451932020343611451;
-                  Value.Integer IntegerKind.U64 18446744073709551614;
-                  Value.Integer IntegerKind.U64 18446744073709551615
-                ]
+              M.value_with_ty
+                (Value.Array
+                  [
+                    Value.Integer IntegerKind.U64 13822214165235122497;
+                    Value.Integer IntegerKind.U64 13451932020343611451;
+                    Value.Integer IntegerKind.U64 18446744073709551614;
+                    Value.Integer IntegerKind.U64 18446744073709551615
+                  ])
+                (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u64" ])
             ]
           |)
         |))).
@@ -139,121 +141,138 @@ Module signature.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Signature" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.path "alloy_primitives::signature::parity::Parity" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::signature::sig::Signature",
-                            "v"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Signature" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signature::parity::Parity" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloy_primitives::signature::sig::Signature",
+                              "v"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "r" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          []
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::signature::sig::Signature",
-                            "r"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "r" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloy_primitives::signature::sig::Signature",
+                              "r"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "s" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "ruint::Uint")
-                              [
-                                Value.Integer IntegerKind.Usize 256;
-                                Value.Integer IntegerKind.Usize 4
-                              ]
-                              []
-                          ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "ruint::Uint")
-                                  [
-                                    Value.Integer IntegerKind.Usize 256;
-                                    Value.Integer IntegerKind.Usize 4
-                                  ]
-                                  []
-                              ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloy_primitives::signature::sig::Signature",
-                                "s"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "s" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    []
+                                ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloy_primitives::signature::sig::Signature",
+                                  "s"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -296,20 +315,27 @@ Module signature.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::signature::sig::Signature",
-                            "v"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloy_primitives::signature::sig::Signature",
+                              "v"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signature::parity::Parity" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -328,20 +354,33 @@ Module signature.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::signature::sig::Signature",
-                            "r"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloy_primitives::signature::sig::Signature",
+                              "r"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -361,20 +400,33 @@ Module signature.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::signature::sig::Signature",
-                            "s"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloy_primitives::signature::sig::Signature",
+                              "s"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -435,22 +487,32 @@ Module signature.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloy_primitives::signature::sig::Signature",
-                        "v"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "alloy_primitives::signature::sig::Signature",
-                        "v"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloy_primitives::signature::sig::Signature",
+                          "v"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signature::parity::Parity" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "alloy_primitives::signature::sig::Signature",
+                          "v"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signature::parity::Parity" ])
                   ]
                 |),
                 ltac:(M.monadic
@@ -474,22 +536,48 @@ Module signature.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::signature::sig::Signature",
-                          "r"
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| other |) |),
-                          "alloy_primitives::signature::sig::Signature",
-                          "r"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::signature::sig::Signature",
+                            "r"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| other |) |),
+                            "alloy_primitives::signature::sig::Signature",
+                            "r"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ])
                     ]
                   |)))
               |),
@@ -514,22 +602,44 @@ Module signature.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloy_primitives::signature::sig::Signature",
-                        "s"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "alloy_primitives::signature::sig::Signature",
-                        "s"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloy_primitives::signature::sig::Signature",
+                          "s"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "alloy_primitives::signature::sig::Signature",
+                          "s"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ])
                   ]
                 |)))
             |)))
@@ -650,10 +760,15 @@ Module signature.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| bytes |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| bytes |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                         ]
                                       |);
                                       Value.Integer IntegerKind.Usize 65
@@ -665,20 +780,24 @@ Module signature.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.path "alloy_primitives::signature::sig::Signature";
-                                      Ty.path "alloy_primitives::signature::error::SignatureError"
-                                    ]
-                                    [
-                                      Value.StructTuple
-                                        "alloy_primitives::signature::error::SignatureError::FromBytes"
-                                        []
-                                        []
-                                        [ mk_str (| "expected exactly 65 bytes" |) ]
-                                    ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "alloy_primitives::signature::error::SignatureError::FromBytes"
+                                            [ mk_str (| "expected exactly 65 bytes" |) ])
+                                          (Ty.path
+                                            "alloy_primitives::signature::error::SignatureError")
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "alloy_primitives::signature::sig::Signature";
+                                        Ty.path "alloy_primitives::signature::error::SignatureError"
+                                      ])
                                 |)
                               |)
                             |)));
@@ -711,55 +830,75 @@ Module signature.
                         ]
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  M.get_trait_method (|
-                                    "core::ops::index::Index",
-                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeTo")
-                                        []
-                                        [ Ty.path "usize" ]
-                                    ],
-                                    "index",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| bytes |) |)
-                                    |);
-                                    Value.mkStructRecord
-                                      "core::ops::range::RangeTo"
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
                                       []
-                                      [ Ty.path "usize" ]
-                                      [ ("end_", Value.Integer IntegerKind.Usize 64) ]
-                                  ]
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                    M.get_trait_method (|
+                                      "core::ops::index::Index",
+                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::ops::range::RangeTo")
+                                          []
+                                          [ Ty.path "usize" ]
+                                      ],
+                                      "index",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| bytes |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.mkStructRecord
+                                            "core::ops::range::RangeTo"
+                                            [ ("end_", Value.Integer IntegerKind.Usize 64) ])
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::ops::range::RangeTo")
+                                          []
+                                          [ Ty.path "usize" ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
-                          |)
-                        |);
-                        M.cast
-                          (Ty.path "u64")
-                          (M.read (|
-                            M.SubPointer.get_array_field (|
-                              M.deref (| M.read (| bytes |) |),
-                              Value.Integer IntegerKind.Usize 64
-                            |)
                           |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                        M.value_with_ty
+                          (M.cast
+                            (Ty.path "u64")
+                            (M.read (|
+                              M.SubPointer.get_array_field (|
+                                M.deref (| M.read (| bytes |) |),
+                                Value.Integer IntegerKind.Usize 64
+                              |)
+                            |)))
+                          (Ty.path "u64")
                       ]
                     |)
                   |)
@@ -874,8 +1013,30 @@ Module signature.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                                    Ty.path "const_hex::error::FromHexError"
+                                  ],
+                                M.get_function (|
+                                  "const_hex::decode",
+                                  [],
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| s |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                ]
+                              |))
+                              (Ty.apply
                                 (Ty.path "core::result::Result")
                                 []
                                 [
@@ -884,14 +1045,7 @@ Module signature.
                                     []
                                     [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
                                   Ty.path "const_hex::error::FromHexError"
-                                ],
-                              M.get_function (|
-                                "const_hex::decode",
-                                [],
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              |),
-                              [ M.read (| s |) ]
-                            |)
+                                ])
                           ]
                         |)
                       |),
@@ -950,7 +1104,17 @@ Module signature.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| residual |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| residual |))
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path "const_hex::error::FromHexError"
+                                          ])
+                                    ]
                                   |)
                                 |)
                               |)
@@ -1005,33 +1169,52 @@ Module signature.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              M.get_trait_method (|
-                                "core::ops::index::Index",
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "alloc::vec::Vec")
+                                  (Ty.path "&")
                                   []
-                                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                                [],
-                                [ Ty.path "core::ops::range::RangeFull" ],
-                                "index",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.Ref, bytes |);
-                                Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                              ]
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::index::Index",
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                                  [],
+                                  [ Ty.path "core::ops::range::RangeFull" ],
+                                  "index",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, bytes |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.value_with_ty
+                                      (Value.StructTuple "core::ops::range::RangeFull" [])
+                                      (Ty.path "core::ops::range::RangeFull"))
+                                    (Ty.path "core::ops::range::RangeFull")
+                                ]
+                              |)
                             |)
-                          |)
-                        |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                       ]
                     |)
                   |)
@@ -1076,7 +1259,14 @@ Module signature.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "alloy_primitives::signature::sig::Signature" ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -1114,7 +1304,14 @@ Module signature.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, value |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, value |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "alloy_primitives::signature::sig::Signature" ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -1158,45 +1355,57 @@ Module signature.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 65 ]
-                          [ Ty.path "u8" ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 65 ]
-                          [ Ty.path "u8" ],
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 65 ]
+                            [ Ty.path "u8" ]
+                        ])
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 65 ]
                             [ Ty.path "u8" ],
-                          M.get_associated_function (|
-                            Ty.path "alloy_primitives::signature::sig::Signature",
-                            "as_bytes",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 65 ]
+                              [ Ty.path "u8" ],
+                            M.get_associated_function (|
+                              Ty.path "alloy_primitives::signature::sig::Signature",
+                              "as_bytes",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::signature::sig::Signature" ])
+                            ]
+                          |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1239,45 +1448,57 @@ Module signature.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 65 ]
-                          [ Ty.path "u8" ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 65 ]
-                          [ Ty.path "u8" ],
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 65 ]
+                            [ Ty.path "u8" ]
+                        ])
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 65 ]
                             [ Ty.path "u8" ],
-                          M.get_associated_function (|
-                            Ty.path "alloy_primitives::signature::sig::Signature",
-                            "as_bytes",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, value |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 65 ]
+                              [ Ty.path "u8" ],
+                            M.get_associated_function (|
+                              Ty.path "alloy_primitives::signature::sig::Signature",
+                              "as_bytes",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, value |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::signature::sig::Signature" ])
+                            ]
+                          |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1324,76 +1545,104 @@ Module signature.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "alloy_primitives::signature::sig::Signature";
+                        Ty.path "alloy_primitives::signature::error::SignatureError"
+                      ],
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::signature::sig::Signature",
+                      "from_scalars_and_parity",
+                      [],
+                      [ Ty.path "bool"; Ty.path "core::convert::Infallible" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "alloy_primitives::signature::sig::test_signature::RES",
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                    [ Ty.path "u8" ]
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ])
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          []);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "alloy_primitives::signature::sig::test_signature::RES'1",
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                    [ Ty.path "u8" ]
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ])
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          []);
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool")
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::result::Result")
                     []
                     [
                       Ty.path "alloy_primitives::signature::sig::Signature";
                       Ty.path "alloy_primitives::signature::error::SignatureError"
-                    ],
-                  M.get_associated_function (|
-                    Ty.path "alloy_primitives::signature::sig::Signature",
-                    "from_scalars_and_parity",
-                    [],
-                    [ Ty.path "bool"; Ty.path "core::convert::Infallible" ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        [],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                          [ Value.Integer IntegerKind.Usize 32 ]
-                          [],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (|
-                          get_constant (|
-                            "alloy_primitives::signature::sig::test_signature::RES",
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 32 ]
-                              [ Ty.path "u8" ]
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        [],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                          [ Value.Integer IntegerKind.Usize 32 ]
-                          [],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (|
-                          get_constant (|
-                            "alloy_primitives::signature::sig::test_signature::RES'1",
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 32 ]
-                              [ Ty.path "u8" ]
-                          |)
-                        |)
-                      ]
-                    |);
-                    Value.Bool false
-                  ]
-                |)
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1430,11 +1679,11 @@ Module signature.
                 s
               |) in
             let v := M.alloc (| Ty.path "alloy_primitives::signature::parity::Parity", v |) in
-            Value.mkStructRecord
-              "alloy_primitives::signature::sig::Signature"
-              []
-              []
-              [ ("r", M.read (| r |)); ("s", M.read (| s |)); ("v", M.read (| v |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloy_primitives::signature::sig::Signature"
+                [ ("r", M.read (| r |)); ("s", M.read (| s |)); ("v", M.read (| v |)) ])
+              (Ty.path "alloy_primitives::signature::sig::Signature")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1495,89 +1744,133 @@ Module signature.
                 [ T; E ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
                       (Ty.path "ruint::Uint")
                       [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
                       [],
-                    "from_be_slice",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_trait_method (|
-                            "core::convert::AsRef",
-                            Ty.apply
-                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                              [ Value.Integer IntegerKind.Usize 32 ]
-                              [],
-                            [],
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            "as_ref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, r |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.call_closure (|
-                  Ty.apply
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [],
+                      "from_be_slice",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_trait_method (|
+                                "core::convert::AsRef",
+                                Ty.apply
+                                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                  [],
+                                [],
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                "as_ref",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, r |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        []
+                                    ])
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "ruint::Uint")
                     [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  M.get_associated_function (|
+                    []);
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
                       (Ty.path "ruint::Uint")
                       [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
                       [],
-                    "from_be_slice",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_trait_method (|
-                            "core::convert::AsRef",
-                            Ty.apply
-                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                              [ Value.Integer IntegerKind.Usize 32 ]
-                              [],
-                            [],
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            "as_ref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, s |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| parity |)
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [],
+                      "from_be_slice",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_trait_method (|
+                                "core::convert::AsRef",
+                                Ty.apply
+                                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                  [],
+                                [],
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                "as_ref",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, s |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        []
+                                    ])
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    []);
+                M.value_with_ty (M.read (| parity |)) T
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1625,7 +1918,14 @@ Module signature.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signature::sig::Signature" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply
@@ -1671,17 +1971,143 @@ Module signature.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, s |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "ruint::Uint")
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, s |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            [],
+                                          M.get_trait_method (|
+                                            "core::ops::bit::Shr",
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [],
+                                            [],
+                                            [ Ty.path "i32" ],
+                                            "shr",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (|
+                                                get_constant (|
+                                                  "alloy_primitives::signature::sig::SECP256K1N_ORDER",
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                []);
+                                            M.value_with_ty
+                                              (Value.Integer IntegerKind.I32 1)
+                                              (Ty.path "i32")
+                                          ]
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      ])
+                                ]
+                              |)
+                            |)) in
+                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            [
+                              M.value_with_ty
+                                (Value.mkStructRecord
+                                  "alloy_primitives::signature::sig::Signature"
+                                  [
+                                    ("v",
+                                      M.call_closure (|
+                                        Ty.path "alloy_primitives::signature::parity::Parity",
+                                        M.get_associated_function (|
+                                          Ty.path "alloy_primitives::signature::parity::Parity",
+                                          "inverted",
+                                          [],
+                                          []
+                                        |),
                                         [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloy_primitives::signature::sig::Signature",
+                                                "v"
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "alloy_primitives::signature::parity::Parity"
+                                              ])
                                         ]
-                                        [],
+                                      |));
+                                    ("r",
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloy_primitives::signature::sig::Signature",
+                                          "r"
+                                        |)
+                                      |));
+                                    ("s",
                                       M.call_closure (|
                                         Ty.apply
                                           (Ty.path "ruint::Uint")
@@ -1691,7 +2117,7 @@ Module signature.
                                           ]
                                           [],
                                         M.get_trait_method (|
-                                          "core::ops::bit::Shr",
+                                          "core::ops::arith::Sub",
                                           Ty.apply
                                             (Ty.path "ruint::Uint")
                                             [
@@ -1700,128 +2126,66 @@ Module signature.
                                             ]
                                             [],
                                           [],
-                                          [ Ty.path "i32" ],
-                                          "shr",
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ],
+                                          "sub",
                                           [],
                                           []
                                         |),
                                         [
-                                          M.read (|
-                                            get_constant (|
-                                              "alloy_primitives::signature::sig::SECP256K1N_ORDER",
-                                              Ty.apply
-                                                (Ty.path "ruint::Uint")
-                                                [
-                                                  Value.Integer IntegerKind.Usize 256;
-                                                  Value.Integer IntegerKind.Usize 4
-                                                ]
-                                                []
-                                            |)
-                                          |);
-                                          Value.Integer IntegerKind.I32 1
+                                          M.value_with_ty
+                                            (M.read (|
+                                              get_constant (|
+                                                "alloy_primitives::signature::sig::SECP256K1N_ORDER",
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  []
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []);
+                                          M.value_with_ty
+                                            (M.read (| s |))
+                                            (Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [])
                                         ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)) in
-                        let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                        Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [ Ty.path "alloy_primitives::signature::sig::Signature" ]
-                          [
-                            Value.mkStructRecord
-                              "alloy_primitives::signature::sig::Signature"
-                              []
-                              []
-                              [
-                                ("v",
-                                  M.call_closure (|
-                                    Ty.path "alloy_primitives::signature::parity::Parity",
-                                    M.get_associated_function (|
-                                      Ty.path "alloy_primitives::signature::parity::Parity",
-                                      "inverted",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloy_primitives::signature::sig::Signature",
-                                          "v"
-                                        |)
-                                      |)
-                                    ]
-                                  |));
-                                ("r",
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloy_primitives::signature::sig::Signature",
-                                      "r"
-                                    |)
-                                  |));
-                                ("s",
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      [],
-                                    M.get_trait_method (|
-                                      "core::ops::arith::Sub",
-                                      Ty.apply
-                                        (Ty.path "ruint::Uint")
-                                        [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
-                                        ]
-                                        [],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          []
-                                      ],
-                                      "sub",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (|
-                                        get_constant (|
-                                          "alloy_primitives::signature::sig::SECP256K1N_ORDER",
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            []
-                                        |)
-                                      |);
-                                      M.read (| s |)
-                                    ]
-                                  |))
-                              ]
-                          ]));
+                                      |))
+                                  ])
+                                (Ty.path "alloy_primitives::signature::sig::Signature")
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "alloy_primitives::signature::sig::Signature" ])));
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::option::Option::None"
-                          []
-                          [ Ty.path "alloy_primitives::signature::sig::Signature" ]
-                          []))
+                        (M.value_with_ty
+                          (Value.StructTuple "core::option::Option::None" [])
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "alloy_primitives::signature::sig::Signature" ])))
                   ]
                 |)
               |)
@@ -1875,44 +2239,62 @@ Module signature.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              M.get_trait_method (|
-                                "core::ops::index::Index",
-                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ops::range::RangeTo")
-                                    []
-                                    [ Ty.path "usize" ]
-                                ],
-                                "index",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |);
-                                Value.mkStructRecord
-                                  "core::ops::range::RangeTo"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
                                   []
-                                  [ Ty.path "usize" ]
-                                  [ ("end_", Value.Integer IntegerKind.Usize 32) ]
-                              ]
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::index::Index",
+                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::RangeTo")
+                                      []
+                                      [ Ty.path "usize" ]
+                                  ],
+                                  "index",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| bytes |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                  M.value_with_ty
+                                    (M.value_with_ty
+                                      (Value.mkStructRecord
+                                        "core::ops::range::RangeTo"
+                                        [ ("end_", Value.Integer IntegerKind.Usize 32) ])
+                                      (Ty.apply
+                                        (Ty.path "core::ops::range::RangeTo")
+                                        []
+                                        [ Ty.path "usize" ]))
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::RangeTo")
+                                      []
+                                      [ Ty.path "usize" ])
+                                ]
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               let~ s :
@@ -1935,47 +2317,65 @@ Module signature.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              M.get_trait_method (|
-                                "core::ops::index::Index",
-                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ops::range::Range")
-                                    []
-                                    [ Ty.path "usize" ]
-                                ],
-                                "index",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |);
-                                Value.mkStructRecord
-                                  "core::ops::range::Range"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
                                   []
-                                  [ Ty.path "usize" ]
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::index::Index",
+                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                  [],
                                   [
-                                    ("start", Value.Integer IntegerKind.Usize 32);
-                                    ("end_", Value.Integer IntegerKind.Usize 64)
-                                  ]
-                              ]
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ]
+                                  ],
+                                  "index",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| bytes |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                  M.value_with_ty
+                                    (M.value_with_ty
+                                      (Value.mkStructRecord
+                                        "core::ops::range::Range"
+                                        [
+                                          ("start", Value.Integer IntegerKind.Usize 32);
+                                          ("end_", Value.Integer IntegerKind.Usize 64)
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]))
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ])
+                                ]
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               M.alloc (|
@@ -2000,7 +2400,21 @@ Module signature.
                     [],
                     [ T; E ]
                   |),
-                  [ M.read (| r |); M.read (| s |); M.read (| parity |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| r |))
+                      (Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []);
+                    M.value_with_ty
+                      (M.read (| s |))
+                      (Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []);
+                    M.value_with_ty (M.read (| parity |)) T
+                  ]
                 |)
               |)
             |)))
@@ -2051,137 +2465,22 @@ Module signature.
                   Ty.path "alloy_primitives::signature::error::SignatureError"
                 ]) (|
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [
-                    Ty.path "alloy_primitives::signature::sig::Signature";
-                    Ty.path "alloy_primitives::signature::error::SignatureError"
-                  ]
-                  [
-                    Value.mkStructRecord
-                      "alloy_primitives::signature::sig::Signature"
-                      []
-                      []
-                      [
-                        ("v",
-                          M.match_operator (|
-                            Ty.path "alloy_primitives::signature::parity::Parity",
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "core::ops::control_flow::ControlFlow")
-                                []
-                                [
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.value_with_ty
+                        (Value.mkStructRecord
+                          "alloy_primitives::signature::sig::Signature"
+                          [
+                            ("v",
+                              M.match_operator (|
+                                Ty.path "alloy_primitives::signature::parity::Parity",
+                                M.alloc (|
                                   Ty.apply
-                                    (Ty.path "core::result::Result")
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
                                     []
                                     [
-                                      Ty.path "core::convert::Infallible";
-                                      Ty.path "alloy_primitives::signature::error::SignatureError"
-                                    ];
-                                  Ty.path "alloy_primitives::signature::parity::Parity"
-                                ],
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::ops::control_flow::ControlFlow")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [
-                                        Ty.path "core::convert::Infallible";
-                                        Ty.path "alloy_primitives::signature::error::SignatureError"
-                                      ];
-                                    Ty.path "alloy_primitives::signature::parity::Parity"
-                                  ],
-                                M.get_trait_method (|
-                                  "core::ops::try_trait::Try",
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [
-                                      Ty.path "alloy_primitives::signature::parity::Parity";
-                                      Ty.path "alloy_primitives::signature::error::SignatureError"
-                                    ],
-                                  [],
-                                  [],
-                                  "branch",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [
-                                        Ty.path "alloy_primitives::signature::parity::Parity";
-                                        Ty.path "alloy_primitives::signature::error::SignatureError"
-                                      ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [ Ty.path "alloy_primitives::signature::parity::Parity"; E
-                                        ],
-                                      "map_err",
-                                      [],
-                                      [
-                                        Ty.path
-                                          "alloy_primitives::signature::error::SignatureError";
-                                        Ty.function
-                                          [ E ]
-                                          (Ty.path
-                                            "alloy_primitives::signature::error::SignatureError")
-                                      ]
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [ Ty.path "alloy_primitives::signature::parity::Parity"; E
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::convert::TryInto",
-                                          T,
-                                          [],
-                                          [ Ty.path "alloy_primitives::signature::parity::Parity" ],
-                                          "try_into",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| parity |) ]
-                                      |);
-                                      M.get_trait_method (|
-                                        "core::convert::Into",
-                                        E,
-                                        [],
-                                        [
-                                          Ty.path
-                                            "alloy_primitives::signature::error::SignatureError"
-                                        ],
-                                        "into",
-                                        [],
-                                        []
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let γ0_0 :=
-                                    M.SubPointer.get_struct_tuple_field (|
-                                      γ,
-                                      "core::ops::control_flow::ControlFlow::Break",
-                                      0
-                                    |) in
-                                  let residual :=
-                                    M.copy (|
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
@@ -2189,72 +2488,238 @@ Module signature.
                                           Ty.path "core::convert::Infallible";
                                           Ty.path
                                             "alloy_primitives::signature::error::SignatureError"
+                                        ];
+                                      Ty.path "alloy_primitives::signature::parity::Parity"
+                                    ],
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path
+                                              "alloy_primitives::signature::error::SignatureError"
+                                          ];
+                                        Ty.path "alloy_primitives::signature::parity::Parity"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::Try",
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "alloy_primitives::signature::parity::Parity";
+                                          Ty.path
+                                            "alloy_primitives::signature::error::SignatureError"
                                         ],
-                                      γ0_0
-                                    |) in
-                                  M.never_to_any (|
-                                    M.read (|
-                                      M.return_ (|
-                                        M.call_closure (|
+                                      [],
+                                      [],
+                                      "branch",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply
                                             (Ty.path "core::result::Result")
                                             []
                                             [
-                                              Ty.path "alloy_primitives::signature::sig::Signature";
+                                              Ty.path "alloy_primitives::signature::parity::Parity";
                                               Ty.path
                                                 "alloy_primitives::signature::error::SignatureError"
                                             ],
-                                          M.get_trait_method (|
-                                            "core::ops::try_trait::FromResidual",
+                                          M.get_associated_function (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path
-                                                  "alloy_primitives::signature::sig::Signature";
-                                                Ty.path
-                                                  "alloy_primitives::signature::error::SignatureError"
+                                                  "alloy_primitives::signature::parity::Parity";
+                                                E
                                               ],
+                                            "map_err",
                                             [],
                                             [
+                                              Ty.path
+                                                "alloy_primitives::signature::error::SignatureError";
+                                              Ty.function
+                                                [ E ]
+                                                (Ty.path
+                                                  "alloy_primitives::signature::error::SignatureError")
+                                            ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "alloy_primitives::signature::parity::Parity";
+                                                    E
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::convert::TryInto",
+                                                  T,
+                                                  [],
+                                                  [
+                                                    Ty.path
+                                                      "alloy_primitives::signature::parity::Parity"
+                                                  ],
+                                                  "try_into",
+                                                  [],
+                                                  []
+                                                |),
+                                                [ M.value_with_ty (M.read (| parity |)) T ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "alloy_primitives::signature::parity::Parity";
+                                                  E
+                                                ]);
+                                            M.value_with_ty
+                                              (M.get_trait_method (|
+                                                "core::convert::Into",
+                                                E,
+                                                [],
+                                                [
+                                                  Ty.path
+                                                    "alloy_primitives::signature::error::SignatureError"
+                                                ],
+                                                "into",
+                                                [],
+                                                []
+                                              |))
+                                              (Ty.function
+                                                [ E ]
+                                                (Ty.path
+                                                  "alloy_primitives::signature::error::SignatureError"))
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "alloy_primitives::signature::parity::Parity";
+                                            Ty.path
+                                              "alloy_primitives::signature::error::SignatureError"
+                                          ])
+                                    ]
+                                  |)
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Break",
+                                          0
+                                        |) in
+                                      let residual :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "core::convert::Infallible";
+                                              Ty.path
+                                                "alloy_primitives::signature::error::SignatureError"
+                                            ],
+                                          γ0_0
+                                        |) in
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.return_ (|
+                                            M.call_closure (|
                                               Ty.apply
                                                 (Ty.path "core::result::Result")
                                                 []
                                                 [
-                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path
+                                                    "alloy_primitives::signature::sig::Signature";
                                                   Ty.path
                                                     "alloy_primitives::signature::error::SignatureError"
-                                                ]
-                                            ],
-                                            "from_residual",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| residual |) ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::FromResidual",
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "alloy_primitives::signature::sig::Signature";
+                                                    Ty.path
+                                                      "alloy_primitives::signature::error::SignatureError"
+                                                  ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path
+                                                        "alloy_primitives::signature::error::SignatureError"
+                                                    ]
+                                                ],
+                                                "from_residual",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path
+                                                        "alloy_primitives::signature::error::SignatureError"
+                                                    ])
+                                              ]
+                                            |)
+                                          |)
                                         |)
-                                      |)
-                                    |)
-                                  |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let γ0_0 :=
-                                    M.SubPointer.get_struct_tuple_field (|
-                                      γ,
-                                      "core::ops::control_flow::ControlFlow::Continue",
-                                      0
-                                    |) in
-                                  let val :=
-                                    M.copy (|
-                                      Ty.path "alloy_primitives::signature::parity::Parity",
-                                      γ0_0
-                                    |) in
-                                  M.read (| val |)))
-                            ]
-                          |));
-                        ("r", M.read (| r |));
-                        ("s", M.read (| s |))
-                      ]
-                  ]))
+                                      |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Continue",
+                                          0
+                                        |) in
+                                      let val :=
+                                        M.copy (|
+                                          Ty.path "alloy_primitives::signature::parity::Parity",
+                                          γ0_0
+                                        |) in
+                                      M.read (| val |)))
+                                ]
+                              |));
+                            ("r", M.read (| r |));
+                            ("s", M.read (| s |))
+                          ])
+                        (Ty.path "alloy_primitives::signature::sig::Signature")
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "alloy_primitives::signature::sig::Signature";
+                      Ty.path "alloy_primitives::signature::error::SignatureError"
+                    ])))
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2285,26 +2750,32 @@ Module signature.
                 [ Ty.path "alloy_primitives::signature::parity::Parity" ]
               |),
               [
-                M.read (| self |);
-                M.call_closure (|
-                  Ty.path "alloy_primitives::signature::parity::Parity",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.path "alloy_primitives::signature::sig::Signature");
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "alloy_primitives::signature::parity::Parity",
-                    "with_chain_id",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "alloy_primitives::signature::sig::Signature",
-                        "v"
-                      |)
-                    |);
-                    M.read (| chain_id |)
-                  ]
-                |)
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::signature::parity::Parity",
+                      "with_chain_id",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "alloy_primitives::signature::sig::Signature",
+                            "v"
+                          |)
+                        |))
+                        (Ty.path "alloy_primitives::signature::parity::Parity");
+                      M.value_with_ty (M.read (| chain_id |)) (Ty.path "u64")
+                    ]
+                  |))
+                  (Ty.path "alloy_primitives::signature::parity::Parity")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2335,25 +2806,31 @@ Module signature.
                 [ Ty.path "alloy_primitives::signature::parity::Parity" ]
               |),
               [
-                M.read (| self |);
-                M.call_closure (|
-                  Ty.path "alloy_primitives::signature::parity::Parity",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.path "alloy_primitives::signature::sig::Signature");
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "alloy_primitives::signature::parity::Parity",
-                    "to_parity_bool",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "alloy_primitives::signature::sig::Signature",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |)
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::signature::parity::Parity",
+                      "to_parity_bool",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "alloy_primitives::signature::sig::Signature",
+                            "v"
+                          |)
+                        |))
+                        (Ty.path "alloy_primitives::signature::parity::Parity")
+                    ]
+                  |))
+                  (Ty.path "alloy_primitives::signature::parity::Parity")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2471,14 +2948,19 @@ Module signature.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloy_primitives::signature::sig::Signature",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloy_primitives::signature::sig::Signature",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "alloy_primitives::signature::parity::Parity" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2512,22 +2994,34 @@ Module signature.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "alloy_primitives::signature::parity::Parity",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "alloy_primitives::signature::parity::Parity",
-                      M.get_associated_function (|
-                        Ty.path "alloy_primitives::signature::sig::Signature",
-                        "v",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "alloy_primitives::signature::parity::Parity",
+                        M.get_associated_function (|
+                          Ty.path "alloy_primitives::signature::sig::Signature",
+                          "v",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "alloy_primitives::signature::sig::Signature" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "alloy_primitives::signature::parity::Parity" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2576,100 +3070,145 @@ Module signature.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_trait_method (|
-                            "core::ops::index::IndexMut",
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 65 ]
-                              [ Ty.path "u8" ],
-                            [],
-                            [ Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]
-                            ],
-                            "index_mut",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, sig |);
-                            Value.mkStructRecord
-                              "core::ops::range::RangeTo"
+                              (Ty.path "&mut")
                               []
-                              [ Ty.path "usize" ]
-                              [ ("end_", Value.Integer IntegerKind.Usize 32) ]
-                          ]
-                        |)
-                      |)
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 32 ]
-                              [ Ty.path "u8" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_trait_method (|
+                              "core::ops::index::IndexMut",
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 65 ]
+                                [ Ty.path "u8" ],
+                              [],
+                              [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 32 ]
-                                  [ Ty.path "u8" ],
-                                M.call_closure (|
+                                  (Ty.path "core::ops::range::RangeTo")
+                                  []
+                                  [ Ty.path "usize" ]
+                              ],
+                              "index_mut",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, sig |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 65 ]
+                                      [ Ty.path "u8" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::ops::range::RangeTo"
+                                    [ ("end_", Value.Integer IntegerKind.Usize 32) ])
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::RangeTo")
+                                    []
+                                    [ Ty.path "usize" ]))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::RangeTo")
+                                  []
+                                  [ Ty.path "usize" ])
+                            ]
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 32 ]
                                     [ Ty.path "u8" ],
-                                  M.get_associated_function (|
+                                  M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      [],
-                                    "to_be_bytes",
-                                    [ Value.Integer IntegerKind.Usize 32 ],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "alloy_primitives::signature::sig::Signature",
-                                        "r"
-                                      |)
-                                    |)
-                                  ]
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [],
+                                      "to_be_bytes",
+                                      [ Value.Integer IntegerKind.Usize 32 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloy_primitives::signature::sig::Signature",
+                                            "r"
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]
-                    |)
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -2682,102 +3221,144 @@ Module signature.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_trait_method (|
-                            "core::ops::index::IndexMut",
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 65 ]
-                              [ Ty.path "u8" ],
-                            [],
-                            [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ],
-                            "index_mut",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, sig |);
-                            Value.mkStructRecord
-                              "core::ops::range::Range"
+                              (Ty.path "&mut")
                               []
-                              [ Ty.path "usize" ]
-                              [
-                                ("start", Value.Integer IntegerKind.Usize 32);
-                                ("end_", Value.Integer IntegerKind.Usize 64)
-                              ]
-                          ]
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_trait_method (|
+                              "core::ops::index::IndexMut",
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 65 ]
+                                [ Ty.path "u8" ],
+                              [],
+                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
+                              ],
+                              "index_mut",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, sig |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 65 ]
+                                      [ Ty.path "u8" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::ops::range::Range"
+                                    [
+                                      ("start", Value.Integer IntegerKind.Usize 32);
+                                      ("end_", Value.Integer IntegerKind.Usize 64)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
                           (Ty.path "&")
                           []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 32 ]
-                              [ Ty.path "u8" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 32 ]
-                                  [ Ty.path "u8" ],
-                                M.call_closure (|
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 32 ]
                                     [ Ty.path "u8" ],
-                                  M.get_associated_function (|
+                                  M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      [],
-                                    "to_be_bytes",
-                                    [ Value.Integer IntegerKind.Usize 32 ],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "alloy_primitives::signature::sig::Signature",
-                                        "s"
-                                      |)
-                                    |)
-                                  ]
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [],
+                                      "to_be_bytes",
+                                      [ Value.Integer IntegerKind.Usize 32 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloy_primitives::signature::sig::Signature",
+                                            "s"
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]
-                    |)
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -2792,44 +3373,58 @@ Module signature.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.path "alloy_primitives::signature::parity::Parity",
-                          "y_parity_byte_non_eip155",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::signature::sig::Signature",
-                              "v"
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "u8",
-                        M.get_associated_function (|
-                          Ty.path "alloy_primitives::signature::parity::Parity",
-                          "y_parity_byte",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::signature::sig::Signature",
-                              "v"
-                            |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                          M.get_associated_function (|
+                            Ty.path "alloy_primitives::signature::parity::Parity",
+                            "y_parity_byte_non_eip155",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloy_primitives::signature::sig::Signature",
+                                  "v"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::signature::parity::Parity" ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "u8",
+                          M.get_associated_function (|
+                            Ty.path "alloy_primitives::signature::parity::Parity",
+                            "y_parity_byte",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloy_primitives::signature::sig::Signature",
+                                  "v"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::signature::parity::Parity" ])
+                          ]
+                        |))
+                        (Ty.path "u8")
                     ]
                   |)
                 |) in
@@ -2855,42 +3450,42 @@ Module signature.
             (let self :=
               M.alloc (| Ty.path "alloy_primitives::signature::sig::Signature", self |) in
             let parity := M.alloc (| T, parity |) in
-            Value.mkStructRecord
-              "alloy_primitives::signature::sig::Signature"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.path "alloy_primitives::signature::parity::Parity",
-                    M.get_trait_method (|
-                      "core::convert::Into",
-                      T,
-                      [],
-                      [ Ty.path "alloy_primitives::signature::parity::Parity" ],
-                      "into",
-                      [],
-                      []
-                    |),
-                    [ M.read (| parity |) ]
-                  |));
-                ("r",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      self,
-                      "alloy_primitives::signature::sig::Signature",
-                      "r"
-                    |)
-                  |));
-                ("s",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      self,
-                      "alloy_primitives::signature::sig::Signature",
-                      "s"
-                    |)
-                  |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloy_primitives::signature::sig::Signature"
+                [
+                  ("v",
+                    M.call_closure (|
+                      Ty.path "alloy_primitives::signature::parity::Parity",
+                      M.get_trait_method (|
+                        "core::convert::Into",
+                        T,
+                        [],
+                        [ Ty.path "alloy_primitives::signature::parity::Parity" ],
+                        "into",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| parity |)) T ]
+                    |));
+                  ("r",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "alloy_primitives::signature::sig::Signature",
+                        "r"
+                      |)
+                    |));
+                  ("s",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "alloy_primitives::signature::sig::Signature",
+                        "s"
+                      |)
+                    |))
+                ])
+              (Ty.path "alloy_primitives::signature::sig::Signature")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       

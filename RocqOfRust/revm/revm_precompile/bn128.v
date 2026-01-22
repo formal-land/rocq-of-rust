@@ -10,7 +10,7 @@ Module bn128.
           M.call_closure (|
             Ty.path "alloy_primitives::bits::address::Address",
             M.get_function (| "revm_precompile::u64_to_address", [], [] |),
-            [ Value.Integer IntegerKind.U64 6 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.U64 6) (Ty.path "u64") ]
           |)
         |))).
     
@@ -37,190 +37,222 @@ Module bn128.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "revm_precompile::PrecompileWithAddress",
-          Value.StructTuple
-            "revm_precompile::PrecompileWithAddress"
-            []
-            []
-            [
-              M.read (|
-                get_constant (|
-                  "revm_precompile::bn128::add::ADDRESS",
-                  Ty.path "alloy_primitives::bits::address::Address"
-                |)
-              |);
-              M.call_closure (|
-                Ty.function
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_precompile::PrecompileWithAddress"
+              [
+                M.read (|
+                  get_constant (|
+                    "revm_precompile::bn128::add::ADDRESS",
+                    Ty.path "alloy_primitives::bits::address::Address"
+                  |)
+                |);
+                M.call_closure (|
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.path "u64"
+                    ]
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_precompile::interface::PrecompileOutput";
+                        Ty.path "revm_precompile::interface::PrecompileErrors"
+                      ]),
+                  M.pointer_coercion
+                    (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ]))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ])),
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                    Ty.path "u64"
-                  ]
-                  (Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
-                    ]),
-                M.pointer_coercion
-                  (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ]))
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ])),
-                [
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ],
-                              M.alloc (|
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let input :=
-                                      M.copy (|
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ],
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let input :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
-                                          (Ty.path "&")
+                                          (Ty.path "core::result::Result")
                                           []
-                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
+                                          [
+                                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                                          ],
+                                        M.alloc (| Ty.path "u64", α1 |),
                                         [
-                                          Ty.path "revm_precompile::interface::PrecompileOutput";
-                                          Ty.path "revm_precompile::interface::PrecompileErrors"
-                                        ],
-                                      M.alloc (| Ty.path "u64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let gas_limit := M.copy (| Ty.path "u64", γ |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let gas_limit := M.copy (| Ty.path "u64", γ |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileOutput";
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileErrors"
+                                                  ],
+                                                M.get_function (|
+                                                  "revm_precompile::bn128::run_add",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileOutput";
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileErrors"
-                                                ],
-                                              M.get_function (|
-                                                "revm_precompile::bn128::run_add",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.call_closure (|
                                                           Ty.apply
-                                                            (Ty.path "slice")
+                                                            (Ty.path "&")
                                                             []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::deref::Deref",
-                                                        Ty.path "bytes::bytes::Bytes",
-                                                        [],
-                                                        [],
-                                                        "deref",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
+                                                            [
                                                               Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::deref::Deref",
+                                                            Ty.path "bytes::bytes::Bytes",
+                                                            [],
+                                                            [],
+                                                            "deref",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "bytes::bytes::Bytes"
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "core::ops::deref::Deref",
+                                                                      Ty.path
+                                                                        "alloy_primitives::bytes_::Bytes",
+                                                                      [],
+                                                                      [],
+                                                                      "deref",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| input |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "alloy_primitives::bytes_::Bytes"
+                                                                          ])
+                                                                    ]
+                                                                  |)
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "&")
                                                                 []
-                                                                [ Ty.path "bytes::bytes::Bytes" ],
-                                                              M.get_trait_method (|
-                                                                "core::ops::deref::Deref",
-                                                                Ty.path
-                                                                  "alloy_primitives::bytes_::Bytes",
-                                                                [],
-                                                                [],
-                                                                "deref",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| input |) |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)
+                                                                [ Ty.path "bytes::bytes::Bytes" ])
+                                                          ]
                                                         |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_precompile::bn128::add::ISTANBUL_ADD_GAS_COST",
-                                                    Ty.path "u64"
-                                                  |)
-                                                |);
-                                                M.read (| gas_limit |)
-                                              ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |)
-            ]
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      get_constant (|
+                                                        "revm_precompile::bn128::add::ISTANBUL_ADD_GAS_COST",
+                                                        Ty.path "u64"
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (| gas_limit |))
+                                                    (Ty.path "u64")
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  ]
+                |)
+              ])
+            (Ty.path "revm_precompile::PrecompileWithAddress")
         |))).
     
     Global Instance Instance_IsConstant_value_ISTANBUL :
@@ -246,190 +278,222 @@ Module bn128.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "revm_precompile::PrecompileWithAddress",
-          Value.StructTuple
-            "revm_precompile::PrecompileWithAddress"
-            []
-            []
-            [
-              M.read (|
-                get_constant (|
-                  "revm_precompile::bn128::add::ADDRESS",
-                  Ty.path "alloy_primitives::bits::address::Address"
-                |)
-              |);
-              M.call_closure (|
-                Ty.function
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_precompile::PrecompileWithAddress"
+              [
+                M.read (|
+                  get_constant (|
+                    "revm_precompile::bn128::add::ADDRESS",
+                    Ty.path "alloy_primitives::bits::address::Address"
+                  |)
+                |);
+                M.call_closure (|
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.path "u64"
+                    ]
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_precompile::interface::PrecompileOutput";
+                        Ty.path "revm_precompile::interface::PrecompileErrors"
+                      ]),
+                  M.pointer_coercion
+                    (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ]))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ])),
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                    Ty.path "u64"
-                  ]
-                  (Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
-                    ]),
-                M.pointer_coercion
-                  (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ]))
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ])),
-                [
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ],
-                              M.alloc (|
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let input :=
-                                      M.copy (|
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ],
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let input :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
-                                          (Ty.path "&")
+                                          (Ty.path "core::result::Result")
                                           []
-                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
+                                          [
+                                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                                          ],
+                                        M.alloc (| Ty.path "u64", α1 |),
                                         [
-                                          Ty.path "revm_precompile::interface::PrecompileOutput";
-                                          Ty.path "revm_precompile::interface::PrecompileErrors"
-                                        ],
-                                      M.alloc (| Ty.path "u64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let gas_limit := M.copy (| Ty.path "u64", γ |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let gas_limit := M.copy (| Ty.path "u64", γ |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileOutput";
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileErrors"
+                                                  ],
+                                                M.get_function (|
+                                                  "revm_precompile::bn128::run_add",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileOutput";
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileErrors"
-                                                ],
-                                              M.get_function (|
-                                                "revm_precompile::bn128::run_add",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.call_closure (|
                                                           Ty.apply
-                                                            (Ty.path "slice")
+                                                            (Ty.path "&")
                                                             []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::deref::Deref",
-                                                        Ty.path "bytes::bytes::Bytes",
-                                                        [],
-                                                        [],
-                                                        "deref",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
+                                                            [
                                                               Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::deref::Deref",
+                                                            Ty.path "bytes::bytes::Bytes",
+                                                            [],
+                                                            [],
+                                                            "deref",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "bytes::bytes::Bytes"
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "core::ops::deref::Deref",
+                                                                      Ty.path
+                                                                        "alloy_primitives::bytes_::Bytes",
+                                                                      [],
+                                                                      [],
+                                                                      "deref",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| input |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "alloy_primitives::bytes_::Bytes"
+                                                                          ])
+                                                                    ]
+                                                                  |)
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "&")
                                                                 []
-                                                                [ Ty.path "bytes::bytes::Bytes" ],
-                                                              M.get_trait_method (|
-                                                                "core::ops::deref::Deref",
-                                                                Ty.path
-                                                                  "alloy_primitives::bytes_::Bytes",
-                                                                [],
-                                                                [],
-                                                                "deref",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| input |) |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)
+                                                                [ Ty.path "bytes::bytes::Bytes" ])
+                                                          ]
                                                         |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_precompile::bn128::add::BYZANTIUM_ADD_GAS_COST",
-                                                    Ty.path "u64"
-                                                  |)
-                                                |);
-                                                M.read (| gas_limit |)
-                                              ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |)
-            ]
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      get_constant (|
+                                                        "revm_precompile::bn128::add::BYZANTIUM_ADD_GAS_COST",
+                                                        Ty.path "u64"
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (| gas_limit |))
+                                                    (Ty.path "u64")
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  ]
+                |)
+              ])
+            (Ty.path "revm_precompile::PrecompileWithAddress")
         |))).
     
     Global Instance Instance_IsConstant_value_BYZANTIUM :
@@ -446,7 +510,7 @@ Module bn128.
           M.call_closure (|
             Ty.path "alloy_primitives::bits::address::Address",
             M.get_function (| "revm_precompile::u64_to_address", [], [] |),
-            [ Value.Integer IntegerKind.U64 7 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.U64 7) (Ty.path "u64") ]
           |)
         |))).
     
@@ -473,190 +537,222 @@ Module bn128.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "revm_precompile::PrecompileWithAddress",
-          Value.StructTuple
-            "revm_precompile::PrecompileWithAddress"
-            []
-            []
-            [
-              M.read (|
-                get_constant (|
-                  "revm_precompile::bn128::mul::ADDRESS",
-                  Ty.path "alloy_primitives::bits::address::Address"
-                |)
-              |);
-              M.call_closure (|
-                Ty.function
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_precompile::PrecompileWithAddress"
+              [
+                M.read (|
+                  get_constant (|
+                    "revm_precompile::bn128::mul::ADDRESS",
+                    Ty.path "alloy_primitives::bits::address::Address"
+                  |)
+                |);
+                M.call_closure (|
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.path "u64"
+                    ]
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_precompile::interface::PrecompileOutput";
+                        Ty.path "revm_precompile::interface::PrecompileErrors"
+                      ]),
+                  M.pointer_coercion
+                    (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ]))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ])),
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                    Ty.path "u64"
-                  ]
-                  (Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
-                    ]),
-                M.pointer_coercion
-                  (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ]))
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ])),
-                [
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ],
-                              M.alloc (|
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let input :=
-                                      M.copy (|
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ],
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let input :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
-                                          (Ty.path "&")
+                                          (Ty.path "core::result::Result")
                                           []
-                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
+                                          [
+                                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                                          ],
+                                        M.alloc (| Ty.path "u64", α1 |),
                                         [
-                                          Ty.path "revm_precompile::interface::PrecompileOutput";
-                                          Ty.path "revm_precompile::interface::PrecompileErrors"
-                                        ],
-                                      M.alloc (| Ty.path "u64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let gas_limit := M.copy (| Ty.path "u64", γ |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let gas_limit := M.copy (| Ty.path "u64", γ |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileOutput";
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileErrors"
+                                                  ],
+                                                M.get_function (|
+                                                  "revm_precompile::bn128::run_mul",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileOutput";
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileErrors"
-                                                ],
-                                              M.get_function (|
-                                                "revm_precompile::bn128::run_mul",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.call_closure (|
                                                           Ty.apply
-                                                            (Ty.path "slice")
+                                                            (Ty.path "&")
                                                             []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::deref::Deref",
-                                                        Ty.path "bytes::bytes::Bytes",
-                                                        [],
-                                                        [],
-                                                        "deref",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
+                                                            [
                                                               Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::deref::Deref",
+                                                            Ty.path "bytes::bytes::Bytes",
+                                                            [],
+                                                            [],
+                                                            "deref",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "bytes::bytes::Bytes"
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "core::ops::deref::Deref",
+                                                                      Ty.path
+                                                                        "alloy_primitives::bytes_::Bytes",
+                                                                      [],
+                                                                      [],
+                                                                      "deref",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| input |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "alloy_primitives::bytes_::Bytes"
+                                                                          ])
+                                                                    ]
+                                                                  |)
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "&")
                                                                 []
-                                                                [ Ty.path "bytes::bytes::Bytes" ],
-                                                              M.get_trait_method (|
-                                                                "core::ops::deref::Deref",
-                                                                Ty.path
-                                                                  "alloy_primitives::bytes_::Bytes",
-                                                                [],
-                                                                [],
-                                                                "deref",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| input |) |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)
+                                                                [ Ty.path "bytes::bytes::Bytes" ])
+                                                          ]
                                                         |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_precompile::bn128::mul::ISTANBUL_MUL_GAS_COST",
-                                                    Ty.path "u64"
-                                                  |)
-                                                |);
-                                                M.read (| gas_limit |)
-                                              ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |)
-            ]
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      get_constant (|
+                                                        "revm_precompile::bn128::mul::ISTANBUL_MUL_GAS_COST",
+                                                        Ty.path "u64"
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (| gas_limit |))
+                                                    (Ty.path "u64")
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  ]
+                |)
+              ])
+            (Ty.path "revm_precompile::PrecompileWithAddress")
         |))).
     
     Global Instance Instance_IsConstant_value_ISTANBUL :
@@ -682,190 +778,222 @@ Module bn128.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "revm_precompile::PrecompileWithAddress",
-          Value.StructTuple
-            "revm_precompile::PrecompileWithAddress"
-            []
-            []
-            [
-              M.read (|
-                get_constant (|
-                  "revm_precompile::bn128::mul::ADDRESS",
-                  Ty.path "alloy_primitives::bits::address::Address"
-                |)
-              |);
-              M.call_closure (|
-                Ty.function
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_precompile::PrecompileWithAddress"
+              [
+                M.read (|
+                  get_constant (|
+                    "revm_precompile::bn128::mul::ADDRESS",
+                    Ty.path "alloy_primitives::bits::address::Address"
+                  |)
+                |);
+                M.call_closure (|
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.path "u64"
+                    ]
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_precompile::interface::PrecompileOutput";
+                        Ty.path "revm_precompile::interface::PrecompileErrors"
+                      ]),
+                  M.pointer_coercion
+                    (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ]))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ])),
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                    Ty.path "u64"
-                  ]
-                  (Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
-                    ]),
-                M.pointer_coercion
-                  (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ]))
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ])),
-                [
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ],
-                              M.alloc (|
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let input :=
-                                      M.copy (|
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ],
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let input :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
-                                          (Ty.path "&")
+                                          (Ty.path "core::result::Result")
                                           []
-                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
+                                          [
+                                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                                          ],
+                                        M.alloc (| Ty.path "u64", α1 |),
                                         [
-                                          Ty.path "revm_precompile::interface::PrecompileOutput";
-                                          Ty.path "revm_precompile::interface::PrecompileErrors"
-                                        ],
-                                      M.alloc (| Ty.path "u64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let gas_limit := M.copy (| Ty.path "u64", γ |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let gas_limit := M.copy (| Ty.path "u64", γ |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileOutput";
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileErrors"
+                                                  ],
+                                                M.get_function (|
+                                                  "revm_precompile::bn128::run_mul",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileOutput";
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileErrors"
-                                                ],
-                                              M.get_function (|
-                                                "revm_precompile::bn128::run_mul",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.call_closure (|
                                                           Ty.apply
-                                                            (Ty.path "slice")
+                                                            (Ty.path "&")
                                                             []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::deref::Deref",
-                                                        Ty.path "bytes::bytes::Bytes",
-                                                        [],
-                                                        [],
-                                                        "deref",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
+                                                            [
                                                               Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::deref::Deref",
+                                                            Ty.path "bytes::bytes::Bytes",
+                                                            [],
+                                                            [],
+                                                            "deref",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "bytes::bytes::Bytes"
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "core::ops::deref::Deref",
+                                                                      Ty.path
+                                                                        "alloy_primitives::bytes_::Bytes",
+                                                                      [],
+                                                                      [],
+                                                                      "deref",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| input |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "alloy_primitives::bytes_::Bytes"
+                                                                          ])
+                                                                    ]
+                                                                  |)
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "&")
                                                                 []
-                                                                [ Ty.path "bytes::bytes::Bytes" ],
-                                                              M.get_trait_method (|
-                                                                "core::ops::deref::Deref",
-                                                                Ty.path
-                                                                  "alloy_primitives::bytes_::Bytes",
-                                                                [],
-                                                                [],
-                                                                "deref",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| input |) |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)
+                                                                [ Ty.path "bytes::bytes::Bytes" ])
+                                                          ]
                                                         |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_precompile::bn128::mul::BYZANTIUM_MUL_GAS_COST",
-                                                    Ty.path "u64"
-                                                  |)
-                                                |);
-                                                M.read (| gas_limit |)
-                                              ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |)
-            ]
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      get_constant (|
+                                                        "revm_precompile::bn128::mul::BYZANTIUM_MUL_GAS_COST",
+                                                        Ty.path "u64"
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (| gas_limit |))
+                                                    (Ty.path "u64")
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  ]
+                |)
+              ])
+            (Ty.path "revm_precompile::PrecompileWithAddress")
         |))).
     
     Global Instance Instance_IsConstant_value_BYZANTIUM :
@@ -882,7 +1010,7 @@ Module bn128.
           M.call_closure (|
             Ty.path "alloy_primitives::bits::address::Address",
             M.get_function (| "revm_precompile::u64_to_address", [], [] |),
-            [ Value.Integer IntegerKind.U64 8 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.U64 8) (Ty.path "u64") ]
           |)
         |))).
     
@@ -917,196 +1045,230 @@ Module bn128.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "revm_precompile::PrecompileWithAddress",
-          Value.StructTuple
-            "revm_precompile::PrecompileWithAddress"
-            []
-            []
-            [
-              M.read (|
-                get_constant (|
-                  "revm_precompile::bn128::pair::ADDRESS",
-                  Ty.path "alloy_primitives::bits::address::Address"
-                |)
-              |);
-              M.call_closure (|
-                Ty.function
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_precompile::PrecompileWithAddress"
+              [
+                M.read (|
+                  get_constant (|
+                    "revm_precompile::bn128::pair::ADDRESS",
+                    Ty.path "alloy_primitives::bits::address::Address"
+                  |)
+                |);
+                M.call_closure (|
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.path "u64"
+                    ]
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_precompile::interface::PrecompileOutput";
+                        Ty.path "revm_precompile::interface::PrecompileErrors"
+                      ]),
+                  M.pointer_coercion
+                    (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ]))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ])),
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                    Ty.path "u64"
-                  ]
-                  (Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
-                    ]),
-                M.pointer_coercion
-                  (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ]))
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ])),
-                [
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ],
-                              M.alloc (|
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let input :=
-                                      M.copy (|
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ],
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let input :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
-                                          (Ty.path "&")
+                                          (Ty.path "core::result::Result")
                                           []
-                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
+                                          [
+                                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                                          ],
+                                        M.alloc (| Ty.path "u64", α1 |),
                                         [
-                                          Ty.path "revm_precompile::interface::PrecompileOutput";
-                                          Ty.path "revm_precompile::interface::PrecompileErrors"
-                                        ],
-                                      M.alloc (| Ty.path "u64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let gas_limit := M.copy (| Ty.path "u64", γ |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let gas_limit := M.copy (| Ty.path "u64", γ |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileOutput";
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileErrors"
+                                                  ],
+                                                M.get_function (|
+                                                  "revm_precompile::bn128::run_pair",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileOutput";
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileErrors"
-                                                ],
-                                              M.get_function (|
-                                                "revm_precompile::bn128::run_pair",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.call_closure (|
                                                           Ty.apply
-                                                            (Ty.path "slice")
+                                                            (Ty.path "&")
                                                             []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::deref::Deref",
-                                                        Ty.path "bytes::bytes::Bytes",
-                                                        [],
-                                                        [],
-                                                        "deref",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
+                                                            [
                                                               Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::deref::Deref",
+                                                            Ty.path "bytes::bytes::Bytes",
+                                                            [],
+                                                            [],
+                                                            "deref",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "bytes::bytes::Bytes"
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "core::ops::deref::Deref",
+                                                                      Ty.path
+                                                                        "alloy_primitives::bytes_::Bytes",
+                                                                      [],
+                                                                      [],
+                                                                      "deref",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| input |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "alloy_primitives::bytes_::Bytes"
+                                                                          ])
+                                                                    ]
+                                                                  |)
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "&")
                                                                 []
-                                                                [ Ty.path "bytes::bytes::Bytes" ],
-                                                              M.get_trait_method (|
-                                                                "core::ops::deref::Deref",
-                                                                Ty.path
-                                                                  "alloy_primitives::bytes_::Bytes",
-                                                                [],
-                                                                [],
-                                                                "deref",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| input |) |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)
+                                                                [ Ty.path "bytes::bytes::Bytes" ])
+                                                          ]
                                                         |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_precompile::bn128::pair::ISTANBUL_PAIR_PER_POINT",
-                                                    Ty.path "u64"
-                                                  |)
-                                                |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_precompile::bn128::pair::ISTANBUL_PAIR_BASE",
-                                                    Ty.path "u64"
-                                                  |)
-                                                |);
-                                                M.read (| gas_limit |)
-                                              ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |)
-            ]
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      get_constant (|
+                                                        "revm_precompile::bn128::pair::ISTANBUL_PAIR_PER_POINT",
+                                                        Ty.path "u64"
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      get_constant (|
+                                                        "revm_precompile::bn128::pair::ISTANBUL_PAIR_BASE",
+                                                        Ty.path "u64"
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (| gas_limit |))
+                                                    (Ty.path "u64")
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  ]
+                |)
+              ])
+            (Ty.path "revm_precompile::PrecompileWithAddress")
         |))).
     
     Global Instance Instance_IsConstant_value_ISTANBUL :
@@ -1144,196 +1306,230 @@ Module bn128.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "revm_precompile::PrecompileWithAddress",
-          Value.StructTuple
-            "revm_precompile::PrecompileWithAddress"
-            []
-            []
-            [
-              M.read (|
-                get_constant (|
-                  "revm_precompile::bn128::pair::ADDRESS",
-                  Ty.path "alloy_primitives::bits::address::Address"
-                |)
-              |);
-              M.call_closure (|
-                Ty.function
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_precompile::PrecompileWithAddress"
+              [
+                M.read (|
+                  get_constant (|
+                    "revm_precompile::bn128::pair::ADDRESS",
+                    Ty.path "alloy_primitives::bits::address::Address"
+                  |)
+                |);
+                M.call_closure (|
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.path "u64"
+                    ]
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_precompile::interface::PrecompileOutput";
+                        Ty.path "revm_precompile::interface::PrecompileErrors"
+                      ]),
+                  M.pointer_coercion
+                    (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ]))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileErrors"
+                        ])),
                   [
-                    Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                    Ty.path "u64"
-                  ]
-                  (Ty.apply
-                    (Ty.path "core::result::Result")
-                    []
-                    [
-                      Ty.path "revm_precompile::interface::PrecompileOutput";
-                      Ty.path "revm_precompile::interface::PrecompileErrors"
-                    ]),
-                M.pointer_coercion
-                  (M.PointerCoercion.ClosureFnPointer M.PointerCoercion.Safety.Safe)
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ]))
-                  (Ty.function
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                      Ty.path "u64"
-                    ]
-                    (Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [
-                        Ty.path "revm_precompile::interface::PrecompileOutput";
-                        Ty.path "revm_precompile::interface::PrecompileErrors"
-                      ])),
-                [
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ],
-                              M.alloc (|
+                    M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let input :=
-                                      M.copy (|
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ],
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let input :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
-                                          (Ty.path "&")
+                                          (Ty.path "core::result::Result")
                                           []
-                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
+                                          [
+                                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                                          ],
+                                        M.alloc (| Ty.path "u64", α1 |),
                                         [
-                                          Ty.path "revm_precompile::interface::PrecompileOutput";
-                                          Ty.path "revm_precompile::interface::PrecompileErrors"
-                                        ],
-                                      M.alloc (| Ty.path "u64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let gas_limit := M.copy (| Ty.path "u64", γ |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let gas_limit := M.copy (| Ty.path "u64", γ |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileOutput";
+                                                    Ty.path
+                                                      "revm_precompile::interface::PrecompileErrors"
+                                                  ],
+                                                M.get_function (|
+                                                  "revm_precompile::bn128::run_pair",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileOutput";
-                                                  Ty.path
-                                                    "revm_precompile::interface::PrecompileErrors"
-                                                ],
-                                              M.get_function (|
-                                                "revm_precompile::bn128::run_pair",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.call_closure (|
                                                           Ty.apply
-                                                            (Ty.path "slice")
+                                                            (Ty.path "&")
                                                             []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::deref::Deref",
-                                                        Ty.path "bytes::bytes::Bytes",
-                                                        [],
-                                                        [],
-                                                        "deref",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
+                                                            [
                                                               Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::deref::Deref",
+                                                            Ty.path "bytes::bytes::Bytes",
+                                                            [],
+                                                            [],
+                                                            "deref",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "bytes::bytes::Bytes"
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "core::ops::deref::Deref",
+                                                                      Ty.path
+                                                                        "alloy_primitives::bytes_::Bytes",
+                                                                      [],
+                                                                      [],
+                                                                      "deref",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| input |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "alloy_primitives::bytes_::Bytes"
+                                                                          ])
+                                                                    ]
+                                                                  |)
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "&")
                                                                 []
-                                                                [ Ty.path "bytes::bytes::Bytes" ],
-                                                              M.get_trait_method (|
-                                                                "core::ops::deref::Deref",
-                                                                Ty.path
-                                                                  "alloy_primitives::bytes_::Bytes",
-                                                                [],
-                                                                [],
-                                                                "deref",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| input |) |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)
+                                                                [ Ty.path "bytes::bytes::Bytes" ])
+                                                          ]
                                                         |)
-                                                      ]
-                                                    |)
-                                                  |)
-                                                |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_precompile::bn128::pair::BYZANTIUM_PAIR_PER_POINT",
-                                                    Ty.path "u64"
-                                                  |)
-                                                |);
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_precompile::bn128::pair::BYZANTIUM_PAIR_BASE",
-                                                    Ty.path "u64"
-                                                  |)
-                                                |);
-                                                M.read (| gas_limit |)
-                                              ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |)
-            ]
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      get_constant (|
+                                                        "revm_precompile::bn128::pair::BYZANTIUM_PAIR_PER_POINT",
+                                                        Ty.path "u64"
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      get_constant (|
+                                                        "revm_precompile::bn128::pair::BYZANTIUM_PAIR_BASE",
+                                                        Ty.path "u64"
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (| gas_limit |))
+                                                    (Ty.path "u64")
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end))
+                  ]
+                |)
+              ])
+            (Ty.path "revm_precompile::PrecompileWithAddress")
         |))).
     
     Global Instance Instance_IsConstant_value_BYZANTIUM :
@@ -1424,70 +1620,101 @@ Module bn128.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [ Ty.path "substrate_bn::Fq"; Ty.path "substrate_bn::FieldError" ],
-              M.get_associated_function (| Ty.path "substrate_bn::Fq", "from_slice", [], [] |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.path "substrate_bn::Fq"; Ty.path "substrate_bn::FieldError" ],
+                M.get_associated_function (| Ty.path "substrate_bn::Fq", "from_slice", [], [] |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
                       M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_trait_method (|
-                            "core::ops::index::Index",
-                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                            [],
-                            [ Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]
-                            ],
-                            "index",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |);
-                            Value.mkStructRecord
-                              "core::ops::range::RangeTo"
-                              []
-                              [ Ty.path "usize" ]
-                              [ ("end_", Value.Integer IntegerKind.Usize 32) ]
-                          ]
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_trait_method (|
+                                "core::ops::index::Index",
+                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::RangeTo")
+                                    []
+                                    [ Ty.path "usize" ]
+                                ],
+                                "index",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| input |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "core::ops::range::RangeTo"
+                                      [ ("end_", Value.Integer IntegerKind.Usize 32) ])
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::RangeTo")
+                                      []
+                                      [ Ty.path "usize" ]))
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::RangeTo")
+                                    []
+                                    [ Ty.path "usize" ])
+                              ]
+                            |)
+                          |)
                         |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "revm_precompile::interface::PrecompileError",
-                        M.alloc (| Ty.path "substrate_bn::FieldError", α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (Value.StructTuple
-                                "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
-                                []
-                                []
-                                []))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                ]
+              |))
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.path "substrate_bn::Fq"; Ty.path "substrate_bn::FieldError" ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "revm_precompile::interface::PrecompileError",
+                          M.alloc (| Ty.path "substrate_bn::FieldError", α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.value_with_ty
+                                  (Value.StructTuple
+                                    "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
+                                    [])
+                                  (Ty.path "revm_precompile::interface::PrecompileError")))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.path "substrate_bn::FieldError" ]
+                (Ty.path "revm_precompile::interface::PrecompileError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1569,62 +1796,88 @@ Module bn128.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "substrate_bn::Fq";
+                                Ty.path "revm_precompile::interface::PrecompileError"
+                              ],
+                            M.get_function (| "revm_precompile::bn128::read_fq", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| input |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::ops::range::Range"
+                                                  [
+                                                    ("start", Value.Integer IntegerKind.Usize 0);
+                                                    ("end_", Value.Integer IntegerKind.Usize 32)
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::Range")
+                                                  []
+                                                  [ Ty.path "usize" ]))
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ])
+                                          ]
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
                             [
                               Ty.path "substrate_bn::Fq";
                               Ty.path "revm_precompile::interface::PrecompileError"
-                            ],
-                          M.get_function (| "revm_precompile::bn128::read_fq", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_trait_method (|
-                                        "core::ops::index::Index",
-                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                        [],
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ops::range::Range")
-                                            []
-                                            [ Ty.path "usize" ]
-                                        ],
-                                        "index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| input |) |)
-                                        |);
-                                        Value.mkStructRecord
-                                          "core::ops::range::Range"
-                                          []
-                                          [ Ty.path "usize" ]
-                                          [
-                                            ("start", Value.Integer IntegerKind.Usize 0);
-                                            ("end_", Value.Integer IntegerKind.Usize 32)
-                                          ]
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                            ])
                       ]
                     |)
                   |),
@@ -1682,7 +1935,17 @@ Module bn128.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "revm_precompile::interface::PrecompileError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1746,62 +2009,88 @@ Module bn128.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "substrate_bn::Fq";
+                                Ty.path "revm_precompile::interface::PrecompileError"
+                              ],
+                            M.get_function (| "revm_precompile::bn128::read_fq", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| input |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::ops::range::Range"
+                                                  [
+                                                    ("start", Value.Integer IntegerKind.Usize 32);
+                                                    ("end_", Value.Integer IntegerKind.Usize 64)
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::Range")
+                                                  []
+                                                  [ Ty.path "usize" ]))
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ])
+                                          ]
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
                             [
                               Ty.path "substrate_bn::Fq";
                               Ty.path "revm_precompile::interface::PrecompileError"
-                            ],
-                          M.get_function (| "revm_precompile::bn128::read_fq", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_trait_method (|
-                                        "core::ops::index::Index",
-                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                        [],
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ops::range::Range")
-                                            []
-                                            [ Ty.path "usize" ]
-                                        ],
-                                        "index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| input |) |)
-                                        |);
-                                        Value.mkStructRecord
-                                          "core::ops::range::Range"
-                                          []
-                                          [ Ty.path "usize" ]
-                                          [
-                                            ("start", Value.Integer IntegerKind.Usize 32);
-                                            ("end_", Value.Integer IntegerKind.Usize 64)
-                                          ]
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                            ])
                       ]
                     |)
                   |),
@@ -1859,7 +2148,17 @@ Module bn128.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "revm_precompile::interface::PrecompileError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1893,7 +2192,10 @@ Module bn128.
                       Ty.path "revm_precompile::interface::PrecompileError"
                     ],
                   M.get_function (| "revm_precompile::bn128::new_g1_point", [], [] |),
-                  [ M.read (| px |); M.read (| py |) ]
+                  [
+                    M.value_with_ty (M.read (| px |)) (Ty.path "substrate_bn::Fq");
+                    M.value_with_ty (M.read (| py |)) (Ty.path "substrate_bn::Fq")
+                  ]
                 |)
               |)
             |)))
@@ -1949,23 +2251,27 @@ Module bn128.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, px |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "substrate_bn::Fq",
-                                M.call_closure (|
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, px |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Fq" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.path "substrate_bn::Fq",
-                                  M.get_associated_function (|
+                                  M.call_closure (|
                                     Ty.path "substrate_bn::Fq",
-                                    "zero",
-                                    [],
+                                    M.get_associated_function (|
+                                      Ty.path "substrate_bn::Fq",
+                                      "zero",
+                                      [],
+                                      []
+                                    |),
                                     []
-                                  |),
-                                  []
+                                  |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Fq" ])
                           ]
                         |),
                         ltac:(M.monadic
@@ -1981,50 +2287,57 @@ Module bn128.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, py |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.path "substrate_bn::Fq",
-                                  M.call_closure (|
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, py |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Fq" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
                                     Ty.path "substrate_bn::Fq",
-                                    M.get_associated_function (|
+                                    M.call_closure (|
                                       Ty.path "substrate_bn::Fq",
-                                      "zero",
-                                      [],
+                                      M.get_associated_function (|
+                                        Ty.path "substrate_bn::Fq",
+                                        "zero",
+                                        [],
+                                        []
+                                      |),
                                       []
-                                    |),
-                                    []
+                                    |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Fq" ])
                             ]
                           |)))
                       |)
                     |)) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [
-                    Ty.path "substrate_bn::G1";
-                    Ty.path "revm_precompile::interface::PrecompileError"
-                  ]
-                  [
-                    M.call_closure (|
-                      Ty.path "substrate_bn::G1",
-                      M.get_trait_method (|
-                        "substrate_bn::Group",
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
                         Ty.path "substrate_bn::G1",
-                        [],
-                        [],
-                        "zero",
-                        [],
+                        M.get_trait_method (|
+                          "substrate_bn::Group",
+                          Ty.path "substrate_bn::G1",
+                          [],
+                          [],
+                          "zero",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |)
-                  ]));
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "substrate_bn::G1";
+                      Ty.path "revm_precompile::interface::PrecompileError"
+                    ])));
             fun γ =>
               ltac:(M.monadic
                 (M.call_closure (|
@@ -2050,28 +2363,13 @@ Module bn128.
                     ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.path "substrate_bn::G1"; Ty.path "substrate_bn::groups::Error" ],
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply
                           (Ty.path "core::result::Result")
                           []
-                          [ Ty.path "substrate_bn::AffineG1"; Ty.path "substrate_bn::groups::Error"
-                          ],
-                        "map",
-                        [],
-                        [
-                          Ty.path "substrate_bn::G1";
-                          Ty.function
-                            [ Ty.path "substrate_bn::AffineG1" ]
-                            (Ty.path "substrate_bn::G1")
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
+                          [ Ty.path "substrate_bn::G1"; Ty.path "substrate_bn::groups::Error" ],
+                        M.get_associated_function (|
                           Ty.apply
                             (Ty.path "core::result::Result")
                             []
@@ -2079,46 +2377,87 @@ Module bn128.
                               Ty.path "substrate_bn::AffineG1";
                               Ty.path "substrate_bn::groups::Error"
                             ],
-                          M.get_associated_function (|
-                            Ty.path "substrate_bn::AffineG1",
-                            "new",
-                            [],
-                            []
-                          |),
-                          [ M.read (| px |); M.read (| py |) ]
-                        |);
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "substrate_bn::AffineG1",
+                          "map",
                           [],
-                          [ Ty.path "substrate_bn::G1" ],
-                          "into",
-                          [],
-                          []
-                        |)
-                      ]
-                    |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.path "revm_precompile::interface::PrecompileError",
-                                M.alloc (| Ty.path "substrate_bn::groups::Error", α0 |),
+                          [
+                            Ty.path "substrate_bn::G1";
+                            Ty.function
+                              [ Ty.path "substrate_bn::AffineG1" ]
+                              (Ty.path "substrate_bn::G1")
+                          ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
-                                        []
-                                        []
-                                        []))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                  Ty.path "substrate_bn::AffineG1";
+                                  Ty.path "substrate_bn::groups::Error"
+                                ],
+                              M.get_associated_function (|
+                                Ty.path "substrate_bn::AffineG1",
+                                "new",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty (M.read (| px |)) (Ty.path "substrate_bn::Fq");
+                                M.value_with_ty (M.read (| py |)) (Ty.path "substrate_bn::Fq")
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "substrate_bn::AffineG1";
+                                Ty.path "substrate_bn::groups::Error"
+                              ]);
+                          M.value_with_ty
+                            (M.get_trait_method (|
+                              "core::convert::Into",
+                              Ty.path "substrate_bn::AffineG1",
+                              [],
+                              [ Ty.path "substrate_bn::G1" ],
+                              "into",
+                              [],
+                              []
+                            |))
+                            (Ty.function
+                              [ Ty.path "substrate_bn::AffineG1" ]
+                              (Ty.path "substrate_bn::G1"))
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "substrate_bn::G1"; Ty.path "substrate_bn::groups::Error" ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.path "revm_precompile::interface::PrecompileError",
+                                  M.alloc (| Ty.path "substrate_bn::groups::Error", α0 |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (M.value_with_ty
+                                          (Value.StructTuple
+                                            "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
+                                            [])
+                                          (Ty.path "revm_precompile::interface::PrecompileError")))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [ Ty.path "substrate_bn::groups::Error" ]
+                        (Ty.path "revm_precompile::interface::PrecompileError"))
                   ]
                 |)))
           ]
@@ -2192,34 +2531,39 @@ Module bn128.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ]
-                                [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::OutOfGas"
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "revm_precompile::interface::PrecompileErrors",
+                                      M.get_trait_method (|
+                                        "core::convert::Into",
+                                        Ty.path "revm_precompile::interface::PrecompileError",
+                                        [],
+                                        [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
+                                        "into",
+                                        [],
                                         []
-                                        []
-                                        []
-                                    ]
-                                  |)
-                                ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_precompile::interface::PrecompileError::OutOfGas"
+                                              [])
+                                            (Ty.path "revm_precompile::interface::PrecompileError"))
+                                          (Ty.path "revm_precompile::interface::PrecompileError")
+                                      ]
+                                    |)
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ])
                             |)
                           |)
                         |)));
@@ -2251,7 +2595,11 @@ Module bn128.
                     [ Value.Integer IntegerKind.Usize 128 ],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
                 |) in
               let~ p1 : Ty.path "substrate_bn::G1" :=
                 M.match_operator (|
@@ -2300,50 +2648,104 @@ Module bn128.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "substrate_bn::G1";
+                                Ty.path "revm_precompile::interface::PrecompileError"
+                              ],
+                            M.get_function (| "revm_precompile::bn128::read_point", [], [] |),
                             [
-                              Ty.path "substrate_bn::G1";
-                              Ty.path "revm_precompile::interface::PrecompileError"
-                            ],
-                          M.get_function (| "revm_precompile::bn128::read_point", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
                                   M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_trait_method (|
-                                        "core::ops::index::Index",
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 128 ]
-                                          [ Ty.path "u8" ],
-                                        [],
-                                        [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
                                           Ty.apply
-                                            (Ty.path "core::ops::range::RangeTo")
+                                            (Ty.path "&")
                                             []
-                                            [ Ty.path "usize" ]
-                                        ],
-                                        "index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 128 ]
+                                              [ Ty.path "u8" ],
+                                            [],
+                                            [
                                               Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 128 ]
+                                                          [ Ty.path "u8" ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "core::ops::deref::Deref",
+                                                      Ty.apply
+                                                        (Ty.path "alloc::borrow::Cow")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 128 ]
+                                                            [ Ty.path "u8" ]
+                                                        ],
+                                                      [],
+                                                      [],
+                                                      "deref",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.Ref, input |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::borrow::Cow")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "array")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      128
+                                                                  ]
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ])
+                                                    ]
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "&")
                                                 []
                                                 [
@@ -2351,41 +2753,39 @@ Module bn128.
                                                     (Ty.path "array")
                                                     [ Value.Integer IntegerKind.Usize 128 ]
                                                     [ Ty.path "u8" ]
-                                                ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply
-                                                  (Ty.path "alloc::borrow::Cow")
+                                                ]);
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::ops::range::RangeTo"
+                                                  [ ("end_", Value.Integer IntegerKind.Usize 64) ])
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::RangeTo")
                                                   []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 128 ]
-                                                      [ Ty.path "u8" ]
-                                                  ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
+                                                  [ Ty.path "usize" ]))
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
                                                 []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, input |) ]
-                                            |)
-                                          |)
-                                        |);
-                                        Value.mkStructRecord
-                                          "core::ops::range::RangeTo"
-                                          []
-                                          [ Ty.path "usize" ]
-                                          [ ("end_", Value.Integer IntegerKind.Usize 64) ]
-                                      ]
+                                                [ Ty.path "usize" ])
+                                          ]
+                                        |)
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "substrate_bn::G1";
+                              Ty.path "revm_precompile::interface::PrecompileError"
+                            ])
                       ]
                     |)
                   |),
@@ -2443,7 +2843,17 @@ Module bn128.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "revm_precompile::interface::PrecompileError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2507,50 +2917,104 @@ Module bn128.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "substrate_bn::G1";
+                                Ty.path "revm_precompile::interface::PrecompileError"
+                              ],
+                            M.get_function (| "revm_precompile::bn128::read_point", [], [] |),
                             [
-                              Ty.path "substrate_bn::G1";
-                              Ty.path "revm_precompile::interface::PrecompileError"
-                            ],
-                          M.get_function (| "revm_precompile::bn128::read_point", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
                                   M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_trait_method (|
-                                        "core::ops::index::Index",
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 128 ]
-                                          [ Ty.path "u8" ],
-                                        [],
-                                        [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
                                           Ty.apply
-                                            (Ty.path "core::ops::range::RangeFrom")
+                                            (Ty.path "&")
                                             []
-                                            [ Ty.path "usize" ]
-                                        ],
-                                        "index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 128 ]
+                                              [ Ty.path "u8" ],
+                                            [],
+                                            [
                                               Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 128 ]
+                                                          [ Ty.path "u8" ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "core::ops::deref::Deref",
+                                                      Ty.apply
+                                                        (Ty.path "alloc::borrow::Cow")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 128 ]
+                                                            [ Ty.path "u8" ]
+                                                        ],
+                                                      [],
+                                                      [],
+                                                      "deref",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.Ref, input |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::borrow::Cow")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "array")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      128
+                                                                  ]
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ])
+                                                    ]
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "&")
                                                 []
                                                 [
@@ -2558,41 +3022,39 @@ Module bn128.
                                                     (Ty.path "array")
                                                     [ Value.Integer IntegerKind.Usize 128 ]
                                                     [ Ty.path "u8" ]
-                                                ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply
-                                                  (Ty.path "alloc::borrow::Cow")
+                                                ]);
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::ops::range::RangeFrom"
+                                                  [ ("start", Value.Integer IntegerKind.Usize 64) ])
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::RangeFrom")
                                                   []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 128 ]
-                                                      [ Ty.path "u8" ]
-                                                  ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
+                                                  [ Ty.path "usize" ]))
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
                                                 []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, input |) ]
-                                            |)
-                                          |)
-                                        |);
-                                        Value.mkStructRecord
-                                          "core::ops::range::RangeFrom"
-                                          []
-                                          [ Ty.path "usize" ]
-                                          [ ("start", Value.Integer IntegerKind.Usize 64) ]
-                                      ]
+                                                [ Ty.path "usize" ])
+                                          ]
+                                        |)
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "substrate_bn::G1";
+                              Ty.path "revm_precompile::interface::PrecompileError"
+                            ])
                       ]
                     |)
                   |),
@@ -2650,7 +3112,17 @@ Module bn128.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "revm_precompile::interface::PrecompileError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2701,19 +3173,26 @@ Module bn128.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.path "substrate_bn::G1",
-                                  M.get_trait_method (|
-                                    "core::ops::arith::Add",
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.path "substrate_bn::G1",
-                                    [],
-                                    [ Ty.path "substrate_bn::G1" ],
-                                    "add",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| p1 |); M.read (| p2 |) ]
-                                |)
+                                    M.get_trait_method (|
+                                      "core::ops::arith::Add",
+                                      Ty.path "substrate_bn::G1",
+                                      [],
+                                      [ Ty.path "substrate_bn::G1" ],
+                                      "add",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| p1 |))
+                                        (Ty.path "substrate_bn::G1");
+                                      M.value_with_ty (M.read (| p2 |)) (Ty.path "substrate_bn::G1")
+                                    ]
+                                  |))
+                                  (Ty.path "substrate_bn::G1")
                               ]
                             |)
                           |) in
@@ -2738,77 +3217,118 @@ Module bn128.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ],
-                                  M.get_associated_function (|
-                                    Ty.path "substrate_bn::Fq",
-                                    "to_big_endian",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "substrate_bn::Fq",
-                                        M.call_closure (|
-                                          Ty.path "substrate_bn::Fq",
-                                          M.get_associated_function (|
-                                            Ty.path "substrate_bn::AffineG1",
-                                            "x",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, sum |) ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ],
+                                    M.get_associated_function (|
+                                      Ty.path "substrate_bn::Fq",
+                                      "to_big_endian",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.path "substrate_bn::Fq",
                                             M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                              M.get_trait_method (|
-                                                "core::ops::index::IndexMut",
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 64 ]
-                                                  [ Ty.path "u8" ],
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::ops::range::RangeTo")
-                                                    []
-                                                    [ Ty.path "usize" ]
-                                                ],
-                                                "index_mut",
+                                              Ty.path "substrate_bn::Fq",
+                                              M.get_associated_function (|
+                                                Ty.path "substrate_bn::AffineG1",
+                                                "x",
                                                 [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (| Pointer.Kind.MutRef, output |);
-                                                Value.mkStructRecord
-                                                  "core::ops::range::RangeTo"
-                                                  []
-                                                  [ Ty.path "usize" ]
-                                                  [ ("end_", Value.Integer IntegerKind.Usize 32) ]
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, sum |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "substrate_bn::AffineG1" ])
                                               ]
                                             |)
                                           |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Fq" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::index::IndexMut",
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 64 ]
+                                                      [ Ty.path "u8" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::ops::range::RangeTo")
+                                                        []
+                                                        [ Ty.path "usize" ]
+                                                    ],
+                                                    "index_mut",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.MutRef, output |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 64 ]
+                                                            [ Ty.path "u8" ]
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.value_with_ty
+                                                        (Value.mkStructRecord
+                                                          "core::ops::range::RangeTo"
+                                                          [
+                                                            ("end_",
+                                                              Value.Integer IntegerKind.Usize 32)
+                                                          ])
+                                                        (Ty.apply
+                                                          (Ty.path "core::ops::range::RangeTo")
+                                                          []
+                                                          [ Ty.path "usize" ]))
+                                                      (Ty.apply
+                                                        (Ty.path "core::ops::range::RangeTo")
+                                                        []
+                                                        [ Ty.path "usize" ])
+                                                  ]
+                                                |)
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ])
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -2824,77 +3344,118 @@ Module bn128.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ],
-                                  M.get_associated_function (|
-                                    Ty.path "substrate_bn::Fq",
-                                    "to_big_endian",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "substrate_bn::Fq",
-                                        M.call_closure (|
-                                          Ty.path "substrate_bn::Fq",
-                                          M.get_associated_function (|
-                                            Ty.path "substrate_bn::AffineG1",
-                                            "y",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, sum |) ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ],
+                                    M.get_associated_function (|
+                                      Ty.path "substrate_bn::Fq",
+                                      "to_big_endian",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.path "substrate_bn::Fq",
                                             M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                              M.get_trait_method (|
-                                                "core::ops::index::IndexMut",
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 64 ]
-                                                  [ Ty.path "u8" ],
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::ops::range::RangeFrom")
-                                                    []
-                                                    [ Ty.path "usize" ]
-                                                ],
-                                                "index_mut",
+                                              Ty.path "substrate_bn::Fq",
+                                              M.get_associated_function (|
+                                                Ty.path "substrate_bn::AffineG1",
+                                                "y",
                                                 [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (| Pointer.Kind.MutRef, output |);
-                                                Value.mkStructRecord
-                                                  "core::ops::range::RangeFrom"
-                                                  []
-                                                  [ Ty.path "usize" ]
-                                                  [ ("start", Value.Integer IntegerKind.Usize 32) ]
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, sum |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "substrate_bn::AffineG1" ])
                                               ]
                                             |)
                                           |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Fq" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::index::IndexMut",
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 64 ]
+                                                      [ Ty.path "u8" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::ops::range::RangeFrom")
+                                                        []
+                                                        [ Ty.path "usize" ]
+                                                    ],
+                                                    "index_mut",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.MutRef, output |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 64 ]
+                                                            [ Ty.path "u8" ]
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.value_with_ty
+                                                        (Value.mkStructRecord
+                                                          "core::ops::range::RangeFrom"
+                                                          [
+                                                            ("start",
+                                                              Value.Integer IntegerKind.Usize 32)
+                                                          ])
+                                                        (Ty.apply
+                                                          (Ty.path "core::ops::range::RangeFrom")
+                                                          []
+                                                          [ Ty.path "usize" ]))
+                                                      (Ty.apply
+                                                        (Ty.path "core::ops::range::RangeFrom")
+                                                        []
+                                                        [ Ty.path "usize" ])
+                                                  ]
+                                                |)
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ])
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2910,43 +3471,55 @@ Module bn128.
                     Ty.path "revm_precompile::interface::PrecompileOutput";
                     Ty.path "revm_precompile::interface::PrecompileErrors"
                   ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [
-                    Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
-                  ]
-                  [
-                    M.call_closure (|
-                      Ty.path "revm_precompile::interface::PrecompileOutput",
-                      M.get_associated_function (|
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
                         Ty.path "revm_precompile::interface::PrecompileOutput",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (| gas_cost |);
-                        M.call_closure (|
-                          Ty.path "alloy_primitives::bytes_::Bytes",
-                          M.get_trait_method (|
-                            "core::convert::Into",
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 64 ]
-                              [ Ty.path "u8" ],
-                            [],
-                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                            "into",
-                            [],
-                            []
-                          |),
-                          [ M.read (| output |) ]
-                        |)
-                      ]
-                    |)
-                  ]
+                        M.get_associated_function (|
+                          Ty.path "revm_precompile::interface::PrecompileOutput",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (M.read (| gas_cost |)) (Ty.path "u64");
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "alloy_primitives::bytes_::Bytes",
+                              M.get_trait_method (|
+                                "core::convert::Into",
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 64 ]
+                                  [ Ty.path "u8" ],
+                                [],
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                "into",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| output |))
+                                  (Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 64 ]
+                                    [ Ty.path "u8" ])
+                              ]
+                            |))
+                            (Ty.path "alloy_primitives::bytes_::Bytes")
+                        ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "revm_precompile::interface::PrecompileOutput";
+                      Ty.path "revm_precompile::interface::PrecompileErrors"
+                    ])
               |)
             |)))
         |)))
@@ -3021,34 +3594,39 @@ Module bn128.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ]
-                                [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::OutOfGas"
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "revm_precompile::interface::PrecompileErrors",
+                                      M.get_trait_method (|
+                                        "core::convert::Into",
+                                        Ty.path "revm_precompile::interface::PrecompileError",
+                                        [],
+                                        [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
+                                        "into",
+                                        [],
                                         []
-                                        []
-                                        []
-                                    ]
-                                  |)
-                                ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_precompile::interface::PrecompileError::OutOfGas"
+                                              [])
+                                            (Ty.path "revm_precompile::interface::PrecompileError"))
+                                          (Ty.path "revm_precompile::interface::PrecompileError")
+                                      ]
+                                    |)
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ])
                             |)
                           |)
                         |)));
@@ -3080,7 +3658,11 @@ Module bn128.
                     [ Value.Integer IntegerKind.Usize 96 ],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
                 |) in
               let~ p : Ty.path "substrate_bn::G1" :=
                 M.match_operator (|
@@ -3129,50 +3711,104 @@ Module bn128.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "substrate_bn::G1";
+                                Ty.path "revm_precompile::interface::PrecompileError"
+                              ],
+                            M.get_function (| "revm_precompile::bn128::read_point", [], [] |),
                             [
-                              Ty.path "substrate_bn::G1";
-                              Ty.path "revm_precompile::interface::PrecompileError"
-                            ],
-                          M.get_function (| "revm_precompile::bn128::read_point", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
                                   M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_trait_method (|
-                                        "core::ops::index::Index",
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 96 ]
-                                          [ Ty.path "u8" ],
-                                        [],
-                                        [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
                                           Ty.apply
-                                            (Ty.path "core::ops::range::RangeTo")
+                                            (Ty.path "&")
                                             []
-                                            [ Ty.path "usize" ]
-                                        ],
-                                        "index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 96 ]
+                                              [ Ty.path "u8" ],
+                                            [],
+                                            [
                                               Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 96 ]
+                                                          [ Ty.path "u8" ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "core::ops::deref::Deref",
+                                                      Ty.apply
+                                                        (Ty.path "alloc::borrow::Cow")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 96 ]
+                                                            [ Ty.path "u8" ]
+                                                        ],
+                                                      [],
+                                                      [],
+                                                      "deref",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.Ref, input |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::borrow::Cow")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "array")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      96
+                                                                  ]
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ])
+                                                    ]
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "&")
                                                 []
                                                 [
@@ -3180,41 +3816,39 @@ Module bn128.
                                                     (Ty.path "array")
                                                     [ Value.Integer IntegerKind.Usize 96 ]
                                                     [ Ty.path "u8" ]
-                                                ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply
-                                                  (Ty.path "alloc::borrow::Cow")
+                                                ]);
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::ops::range::RangeTo"
+                                                  [ ("end_", Value.Integer IntegerKind.Usize 64) ])
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::RangeTo")
                                                   []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 96 ]
-                                                      [ Ty.path "u8" ]
-                                                  ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
+                                                  [ Ty.path "usize" ]))
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
                                                 []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.Ref, input |) ]
-                                            |)
-                                          |)
-                                        |);
-                                        Value.mkStructRecord
-                                          "core::ops::range::RangeTo"
-                                          []
-                                          [ Ty.path "usize" ]
-                                          [ ("end_", Value.Integer IntegerKind.Usize 64) ]
-                                      ]
+                                                [ Ty.path "usize" ])
+                                          ]
+                                        |)
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "substrate_bn::G1";
+                              Ty.path "revm_precompile::interface::PrecompileError"
+                            ])
                       ]
                     |)
                   |),
@@ -3272,7 +3906,17 @@ Module bn128.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "revm_precompile::interface::PrecompileError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -3302,52 +3946,102 @@ Module bn128.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [ Ty.path "substrate_bn::Fr"; Ty.path "substrate_bn::FieldError" ],
-                      M.get_associated_function (|
-                        Ty.path "substrate_bn::Fr",
-                        "from_slice",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "substrate_bn::Fr"; Ty.path "substrate_bn::FieldError" ],
+                        M.get_associated_function (|
+                          Ty.path "substrate_bn::Fr",
+                          "from_slice",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
                               M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  M.get_trait_method (|
-                                    "core::ops::index::Index",
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 96 ]
-                                      [ Ty.path "u8" ],
-                                    [],
-                                    [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
                                       Ty.apply
-                                        (Ty.path "core::ops::range::Range")
+                                        (Ty.path "&")
                                         []
-                                        [ Ty.path "usize" ]
-                                    ],
-                                    "index",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 96 ]
+                                          [ Ty.path "u8" ],
+                                        [],
+                                        [
                                           Ty.apply
+                                            (Ty.path "core::ops::range::Range")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 96 ]
+                                                      [ Ty.path "u8" ]
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::ops::deref::Deref",
+                                                  Ty.apply
+                                                    (Ty.path "alloc::borrow::Cow")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 96 ]
+                                                        [ Ty.path "u8" ]
+                                                    ],
+                                                  [],
+                                                  [],
+                                                  "deref",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.Ref, input |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloc::borrow::Cow")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 96 ]
+                                                              [ Ty.path "u8" ]
+                                                          ]
+                                                      ])
+                                                ]
+                                              |)
+                                            |)
+                                          |))
+                                          (Ty.apply
                                             (Ty.path "&")
                                             []
                                             [
@@ -3355,44 +4049,39 @@ Module bn128.
                                                 (Ty.path "array")
                                                 [ Value.Integer IntegerKind.Usize 96 ]
                                                 [ Ty.path "u8" ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::deref::Deref",
-                                            Ty.apply
-                                              (Ty.path "alloc::borrow::Cow")
-                                              []
+                                            ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::Range"
                                               [
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 96 ]
-                                                  [ Ty.path "u8" ]
-                                              ],
-                                            [],
-                                            [],
-                                            "deref",
-                                            [],
+                                                ("start", Value.Integer IntegerKind.Usize 64);
+                                                ("end_", Value.Integer IntegerKind.Usize 96)
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::Range")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::Range")
                                             []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, input |) ]
-                                        |)
-                                      |)
-                                    |);
-                                    Value.mkStructRecord
-                                      "core::ops::range::Range"
-                                      []
-                                      [ Ty.path "usize" ]
-                                      [
-                                        ("start", Value.Integer IntegerKind.Usize 64);
-                                        ("end_", Value.Integer IntegerKind.Usize 96)
+                                            [ Ty.path "usize" ])
                                       ]
-                                  ]
+                                    |)
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "substrate_bn::Fr"; Ty.path "substrate_bn::FieldError" ])
                   ]
                 |) in
               let~ output :
@@ -3429,19 +4118,24 @@ Module bn128.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.path "substrate_bn::G1",
-                                  M.get_trait_method (|
-                                    "core::ops::arith::Mul",
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.path "substrate_bn::G1",
-                                    [],
-                                    [ Ty.path "substrate_bn::Fr" ],
-                                    "mul",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| p |); M.read (| fr |) ]
-                                |)
+                                    M.get_trait_method (|
+                                      "core::ops::arith::Mul",
+                                      Ty.path "substrate_bn::G1",
+                                      [],
+                                      [ Ty.path "substrate_bn::Fr" ],
+                                      "mul",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty (M.read (| p |)) (Ty.path "substrate_bn::G1");
+                                      M.value_with_ty (M.read (| fr |)) (Ty.path "substrate_bn::Fr")
+                                    ]
+                                  |))
+                                  (Ty.path "substrate_bn::G1")
                               ]
                             |)
                           |) in
@@ -3466,77 +4160,118 @@ Module bn128.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ],
-                                  M.get_associated_function (|
-                                    Ty.path "substrate_bn::Fq",
-                                    "to_big_endian",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "substrate_bn::Fq",
-                                        M.call_closure (|
-                                          Ty.path "substrate_bn::Fq",
-                                          M.get_associated_function (|
-                                            Ty.path "substrate_bn::AffineG1",
-                                            "x",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, mul |) ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ],
+                                    M.get_associated_function (|
+                                      Ty.path "substrate_bn::Fq",
+                                      "to_big_endian",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.path "substrate_bn::Fq",
                                             M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                              M.get_trait_method (|
-                                                "core::ops::index::IndexMut",
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 64 ]
-                                                  [ Ty.path "u8" ],
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::ops::range::RangeTo")
-                                                    []
-                                                    [ Ty.path "usize" ]
-                                                ],
-                                                "index_mut",
+                                              Ty.path "substrate_bn::Fq",
+                                              M.get_associated_function (|
+                                                Ty.path "substrate_bn::AffineG1",
+                                                "x",
                                                 [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (| Pointer.Kind.MutRef, output |);
-                                                Value.mkStructRecord
-                                                  "core::ops::range::RangeTo"
-                                                  []
-                                                  [ Ty.path "usize" ]
-                                                  [ ("end_", Value.Integer IntegerKind.Usize 32) ]
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, mul |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "substrate_bn::AffineG1" ])
                                               ]
                                             |)
                                           |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Fq" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::index::IndexMut",
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 64 ]
+                                                      [ Ty.path "u8" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::ops::range::RangeTo")
+                                                        []
+                                                        [ Ty.path "usize" ]
+                                                    ],
+                                                    "index_mut",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.MutRef, output |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 64 ]
+                                                            [ Ty.path "u8" ]
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.value_with_ty
+                                                        (Value.mkStructRecord
+                                                          "core::ops::range::RangeTo"
+                                                          [
+                                                            ("end_",
+                                                              Value.Integer IntegerKind.Usize 32)
+                                                          ])
+                                                        (Ty.apply
+                                                          (Ty.path "core::ops::range::RangeTo")
+                                                          []
+                                                          [ Ty.path "usize" ]))
+                                                      (Ty.apply
+                                                        (Ty.path "core::ops::range::RangeTo")
+                                                        []
+                                                        [ Ty.path "usize" ])
+                                                  ]
+                                                |)
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ])
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -3552,77 +4287,118 @@ Module bn128.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ],
-                                  M.get_associated_function (|
-                                    Ty.path "substrate_bn::Fq",
-                                    "to_big_endian",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "substrate_bn::Fq",
-                                        M.call_closure (|
-                                          Ty.path "substrate_bn::Fq",
-                                          M.get_associated_function (|
-                                            Ty.path "substrate_bn::AffineG1",
-                                            "y",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, mul |) ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ],
+                                    M.get_associated_function (|
+                                      Ty.path "substrate_bn::Fq",
+                                      "to_big_endian",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.path "substrate_bn::Fq",
                                             M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                              M.get_trait_method (|
-                                                "core::ops::index::IndexMut",
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 64 ]
-                                                  [ Ty.path "u8" ],
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::ops::range::RangeFrom")
-                                                    []
-                                                    [ Ty.path "usize" ]
-                                                ],
-                                                "index_mut",
+                                              Ty.path "substrate_bn::Fq",
+                                              M.get_associated_function (|
+                                                Ty.path "substrate_bn::AffineG1",
+                                                "y",
                                                 [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (| Pointer.Kind.MutRef, output |);
-                                                Value.mkStructRecord
-                                                  "core::ops::range::RangeFrom"
-                                                  []
-                                                  [ Ty.path "usize" ]
-                                                  [ ("start", Value.Integer IntegerKind.Usize 32) ]
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, mul |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "substrate_bn::AffineG1" ])
                                               ]
                                             |)
                                           |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Fq" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::index::IndexMut",
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 64 ]
+                                                      [ Ty.path "u8" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::ops::range::RangeFrom")
+                                                        []
+                                                        [ Ty.path "usize" ]
+                                                    ],
+                                                    "index_mut",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.MutRef, output |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 64 ]
+                                                            [ Ty.path "u8" ]
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.value_with_ty
+                                                        (Value.mkStructRecord
+                                                          "core::ops::range::RangeFrom"
+                                                          [
+                                                            ("start",
+                                                              Value.Integer IntegerKind.Usize 32)
+                                                          ])
+                                                        (Ty.apply
+                                                          (Ty.path "core::ops::range::RangeFrom")
+                                                          []
+                                                          [ Ty.path "usize" ]))
+                                                      (Ty.apply
+                                                        (Ty.path "core::ops::range::RangeFrom")
+                                                        []
+                                                        [ Ty.path "usize" ])
+                                                  ]
+                                                |)
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "substrate_bn::FieldError" ])
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3638,43 +4414,55 @@ Module bn128.
                     Ty.path "revm_precompile::interface::PrecompileOutput";
                     Ty.path "revm_precompile::interface::PrecompileErrors"
                   ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [
-                    Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
-                  ]
-                  [
-                    M.call_closure (|
-                      Ty.path "revm_precompile::interface::PrecompileOutput",
-                      M.get_associated_function (|
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
                         Ty.path "revm_precompile::interface::PrecompileOutput",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (| gas_cost |);
-                        M.call_closure (|
-                          Ty.path "alloy_primitives::bytes_::Bytes",
-                          M.get_trait_method (|
-                            "core::convert::Into",
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 64 ]
-                              [ Ty.path "u8" ],
-                            [],
-                            [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                            "into",
-                            [],
-                            []
-                          |),
-                          [ M.read (| output |) ]
-                        |)
-                      ]
-                    |)
-                  ]
+                        M.get_associated_function (|
+                          Ty.path "revm_precompile::interface::PrecompileOutput",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (M.read (| gas_cost |)) (Ty.path "u64");
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "alloy_primitives::bytes_::Bytes",
+                              M.get_trait_method (|
+                                "core::convert::Into",
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 64 ]
+                                  [ Ty.path "u8" ],
+                                [],
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                "into",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| output |))
+                                  (Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 64 ]
+                                    [ Ty.path "u8" ])
+                              ]
+                            |))
+                            (Ty.path "alloy_primitives::bytes_::Bytes")
+                        ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "revm_precompile::interface::PrecompileOutput";
+                      Ty.path "revm_precompile::interface::PrecompileErrors"
+                    ])
               |)
             |)))
         |)))
@@ -3796,7 +4584,16 @@ Module bn128.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |)
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| input |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                 ]
                               |);
                               M.read (|
@@ -3834,34 +4631,39 @@ Module bn128.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ]
-                                [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::OutOfGas"
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "revm_precompile::interface::PrecompileErrors",
+                                      M.get_trait_method (|
+                                        "core::convert::Into",
+                                        Ty.path "revm_precompile::interface::PrecompileError",
+                                        [],
+                                        [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
+                                        "into",
+                                        [],
                                         []
-                                        []
-                                        []
-                                    ]
-                                  |)
-                                ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_precompile::interface::PrecompileError::OutOfGas"
+                                              [])
+                                            (Ty.path "revm_precompile::interface::PrecompileError"))
+                                          (Ty.path "revm_precompile::interface::PrecompileError")
+                                      ]
+                                    |)
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ])
                             |)
                           |)
                         |)));
@@ -3896,10 +4698,15 @@ Module bn128.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| input |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| input |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                         ]
                                       |);
                                       M.read (|
@@ -3918,34 +4725,39 @@ Module bn128.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ]
-                                [
-                                  M.call_closure (|
-                                    Ty.path "revm_precompile::interface::PrecompileErrors",
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "revm_precompile::interface::PrecompileError",
-                                      [],
-                                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      Value.StructTuple
-                                        "revm_precompile::interface::PrecompileError::Bn128PairLength"
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "revm_precompile::interface::PrecompileErrors",
+                                      M.get_trait_method (|
+                                        "core::convert::Into",
+                                        Ty.path "revm_precompile::interface::PrecompileError",
+                                        [],
+                                        [ Ty.path "revm_precompile::interface::PrecompileErrors" ],
+                                        "into",
+                                        [],
                                         []
-                                        []
-                                        []
-                                    ]
-                                  |)
-                                ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_precompile::interface::PrecompileError::Bn128PairLength"
+                                              [])
+                                            (Ty.path "revm_precompile::interface::PrecompileError"))
+                                          (Ty.path "revm_precompile::interface::PrecompileError")
+                                      ]
+                                    |)
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ])
                             |)
                           |)
                         |)));
@@ -3971,7 +4783,16 @@ Module bn128.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |)
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| input |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                 ]
                               |)
                             |)) in
@@ -3994,10 +4815,15 @@ Module bn128.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| input |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| input |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                   ]
                                 |);
                                 M.read (|
@@ -4039,7 +4865,7 @@ Module bn128.
                                 [],
                                 []
                               |),
-                              [ M.read (| elements |) ]
+                              [ M.value_with_ty (M.read (| elements |)) (Ty.path "usize") ]
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.read (|
@@ -4071,14 +4897,22 @@ Module bn128.
                                           []
                                         |),
                                         [
-                                          Value.mkStructRecord
-                                            "core::ops::range::Range"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [
-                                              ("start", Value.Integer IntegerKind.Usize 0);
-                                              ("end_", M.read (| elements |))
-                                            ]
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.mkStructRecord
+                                                "core::ops::range::Range"
+                                                [
+                                                  ("start", Value.Integer IntegerKind.Usize 0);
+                                                  ("end_", M.read (| elements |))
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ]))
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::Range")
+                                              []
+                                              [ Ty.path "usize" ])
                                         ]
                                       |)
                                     |),
@@ -4121,15 +4955,26 @@ Module bn128.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                iter
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  iter
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::ops::range::Range")
+                                                                  []
+                                                                  [ Ty.path "usize" ]
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -4303,9 +5148,18 @@ Module bn128.
                                                                                                               []
                                                                                                             |),
                                                                                                             [
-                                                                                                              mk_str (|
-                                                                                                                "assertion failed: n < PAIR_ELEMENT_LEN / 32"
-                                                                                                              |)
+                                                                                                              M.value_with_ty
+                                                                                                                (mk_str (|
+                                                                                                                  "assertion failed: n < PAIR_ELEMENT_LEN / 32"
+                                                                                                                |))
+                                                                                                                (Ty.apply
+                                                                                                                  (Ty.path
+                                                                                                                    "&")
+                                                                                                                  []
+                                                                                                                  [
+                                                                                                                    Ty.path
+                                                                                                                      "str"
+                                                                                                                  ])
                                                                                                             ]
                                                                                                           |)
                                                                                                         |)));
@@ -4422,41 +5276,69 @@ Module bn128.
                                                                                         ]
                                                                                       |),
                                                                                       [
-                                                                                        M.borrow (|
-                                                                                          Pointer.Kind.Ref,
-                                                                                          M.deref (|
-                                                                                            M.read (|
-                                                                                              input
-                                                                                            |)
-                                                                                          |)
-                                                                                        |);
-                                                                                        Value.mkStructRecord
-                                                                                          "core::ops::range::Range"
-                                                                                          []
-                                                                                          [
-                                                                                            Ty.path
-                                                                                              "usize"
-                                                                                          ]
-                                                                                          [
-                                                                                            ("start",
+                                                                                        M.value_with_ty
+                                                                                          (M.borrow (|
+                                                                                            Pointer.Kind.Ref,
+                                                                                            M.deref (|
                                                                                               M.read (|
-                                                                                                start
-                                                                                              |));
-                                                                                            ("end_",
-                                                                                              M.call_closure (|
-                                                                                                Ty.path
-                                                                                                  "usize",
-                                                                                                BinOp.Wrap.add,
+                                                                                                input
+                                                                                              |)
+                                                                                            |)
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "slice")
+                                                                                                []
                                                                                                 [
+                                                                                                  Ty.path
+                                                                                                    "u8"
+                                                                                                ]
+                                                                                            ]);
+                                                                                        M.value_with_ty
+                                                                                          (M.value_with_ty
+                                                                                            (Value.mkStructRecord
+                                                                                              "core::ops::range::Range"
+                                                                                              [
+                                                                                                ("start",
                                                                                                   M.read (|
                                                                                                     start
-                                                                                                  |);
-                                                                                                  Value.Integer
-                                                                                                    IntegerKind.Usize
-                                                                                                    32
-                                                                                                ]
-                                                                                              |))
-                                                                                          ]
+                                                                                                  |));
+                                                                                                ("end_",
+                                                                                                  M.call_closure (|
+                                                                                                    Ty.path
+                                                                                                      "usize",
+                                                                                                    BinOp.Wrap.add,
+                                                                                                    [
+                                                                                                      M.read (|
+                                                                                                        start
+                                                                                                      |);
+                                                                                                      Value.Integer
+                                                                                                        IntegerKind.Usize
+                                                                                                        32
+                                                                                                    ]
+                                                                                                  |))
+                                                                                              ])
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::ops::range::Range")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "usize"
+                                                                                              ]))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "core::ops::range::Range")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "usize"
+                                                                                            ])
                                                                                       ]
                                                                                     |) in
                                                                                   M.alloc (|
@@ -4507,8 +5389,52 @@ Module bn128.
                                                                                         ]
                                                                                       |),
                                                                                       [
-                                                                                        M.call_closure (|
-                                                                                          Ty.apply
+                                                                                        M.value_with_ty
+                                                                                          (M.call_closure (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::result::Result")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "substrate_bn::Fq";
+                                                                                                Ty.path
+                                                                                                  "substrate_bn::FieldError"
+                                                                                              ],
+                                                                                            M.get_associated_function (|
+                                                                                              Ty.path
+                                                                                                "substrate_bn::Fq",
+                                                                                              "from_slice",
+                                                                                              [],
+                                                                                              []
+                                                                                            |),
+                                                                                            [
+                                                                                              M.value_with_ty
+                                                                                                (M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  M.deref (|
+                                                                                                    M.read (|
+                                                                                                      slice
+                                                                                                    |)
+                                                                                                  |)
+                                                                                                |))
+                                                                                                (Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "slice")
+                                                                                                      []
+                                                                                                      [
+                                                                                                        Ty.path
+                                                                                                          "u8"
+                                                                                                      ]
+                                                                                                  ])
+                                                                                            ]
+                                                                                          |))
+                                                                                          (Ty.apply
                                                                                             (Ty.path
                                                                                               "core::result::Result")
                                                                                             []
@@ -4517,57 +5443,50 @@ Module bn128.
                                                                                                 "substrate_bn::Fq";
                                                                                               Ty.path
                                                                                                 "substrate_bn::FieldError"
-                                                                                            ],
-                                                                                          M.get_associated_function (|
-                                                                                            Ty.path
-                                                                                              "substrate_bn::Fq",
-                                                                                            "from_slice",
-                                                                                            [],
-                                                                                            []
-                                                                                          |),
-                                                                                          [
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.read (|
-                                                                                                  slice
-                                                                                                |)
-                                                                                              |)
-                                                                                            |)
-                                                                                          ]
-                                                                                        |);
-                                                                                        M.closure
-                                                                                          (fun γ =>
-                                                                                            ltac:(M.monadic
-                                                                                              match
-                                                                                                γ
-                                                                                              with
-                                                                                              | [ α0
-                                                                                                  ] =>
-                                                                                                ltac:(M.monadic
-                                                                                                  (M.match_operator (|
-                                                                                                    Ty.path
-                                                                                                      "revm_precompile::interface::PrecompileError",
-                                                                                                    M.alloc (|
-                                                                                                      Ty.path
-                                                                                                        "substrate_bn::FieldError",
+                                                                                            ]);
+                                                                                        M.value_with_ty
+                                                                                          (M.closure
+                                                                                            (fun
+                                                                                                γ =>
+                                                                                              ltac:(M.monadic
+                                                                                                match
+                                                                                                  γ
+                                                                                                with
+                                                                                                | [
                                                                                                       α0
-                                                                                                    |),
-                                                                                                    [
-                                                                                                      fun
-                                                                                                          γ =>
-                                                                                                        ltac:(M.monadic
-                                                                                                          (Value.StructTuple
-                                                                                                            "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
-                                                                                                            []
-                                                                                                            []
-                                                                                                            []))
-                                                                                                    ]
-                                                                                                  |)))
-                                                                                              | _ =>
-                                                                                                M.impossible
-                                                                                                  "wrong number of arguments"
-                                                                                              end))
+                                                                                                    ] =>
+                                                                                                  ltac:(M.monadic
+                                                                                                    (M.match_operator (|
+                                                                                                      Ty.path
+                                                                                                        "revm_precompile::interface::PrecompileError",
+                                                                                                      M.alloc (|
+                                                                                                        Ty.path
+                                                                                                          "substrate_bn::FieldError",
+                                                                                                        α0
+                                                                                                      |),
+                                                                                                      [
+                                                                                                        fun
+                                                                                                            γ =>
+                                                                                                          ltac:(M.monadic
+                                                                                                            (M.value_with_ty
+                                                                                                              (Value.StructTuple
+                                                                                                                "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
+                                                                                                                [])
+                                                                                                              (Ty.path
+                                                                                                                "revm_precompile::interface::PrecompileError")))
+                                                                                                      ]
+                                                                                                    |)))
+                                                                                                | _ =>
+                                                                                                  M.impossible
+                                                                                                    "wrong number of arguments"
+                                                                                                end)))
+                                                                                          (Ty.function
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "substrate_bn::FieldError"
+                                                                                            ]
+                                                                                            (Ty.path
+                                                                                              "revm_precompile::interface::PrecompileError"))
                                                                                       ]
                                                                                     |)
                                                                                   |)
@@ -4636,8 +5555,79 @@ Module bn128.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "substrate_bn::Fq";
+                                                                              Ty.path
+                                                                                "revm_precompile::interface::PrecompileError"
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::function::Fn",
+                                                                            Ty.function
+                                                                              [ Ty.path "usize" ]
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "substrate_bn::Fq";
+                                                                                  Ty.path
+                                                                                    "revm_precompile::interface::PrecompileError"
+                                                                                ]),
+                                                                            [],
+                                                                            [
+                                                                              Ty.tuple
+                                                                                [ Ty.path "usize" ]
+                                                                            ],
+                                                                            "call",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                read_fq_at
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.function
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "usize"
+                                                                                    ]
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::result::Result")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "substrate_bn::Fq";
+                                                                                        Ty.path
+                                                                                          "revm_precompile::interface::PrecompileError"
+                                                                                      ])
+                                                                                ]);
+                                                                            M.value_with_ty
+                                                                              (Value.Tuple
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    0
+                                                                                ])
+                                                                              (Ty.tuple
+                                                                                [ Ty.path "usize" ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
                                                                           (Ty.path
                                                                             "core::result::Result")
                                                                           []
@@ -4646,43 +5636,7 @@ Module bn128.
                                                                               "substrate_bn::Fq";
                                                                             Ty.path
                                                                               "revm_precompile::interface::PrecompileError"
-                                                                          ],
-                                                                        M.get_trait_method (|
-                                                                          "core::ops::function::Fn",
-                                                                          Ty.function
-                                                                            [ Ty.path "usize" ]
-                                                                            (Ty.apply
-                                                                              (Ty.path
-                                                                                "core::result::Result")
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "substrate_bn::Fq";
-                                                                                Ty.path
-                                                                                  "revm_precompile::interface::PrecompileError"
-                                                                              ]),
-                                                                          [],
-                                                                          [
-                                                                            Ty.tuple
-                                                                              [ Ty.path "usize" ]
-                                                                          ],
-                                                                          "call",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            read_fq_at
-                                                                          |);
-                                                                          Value.Tuple
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                0
-                                                                            ]
-                                                                        ]
-                                                                      |)
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |),
@@ -4753,9 +5707,20 @@ Module bn128.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.read (|
-                                                                                  residual
-                                                                                |)
+                                                                                M.value_with_ty
+                                                                                  (M.read (|
+                                                                                    residual
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::convert::Infallible";
+                                                                                      Ty.path
+                                                                                        "revm_precompile::interface::PrecompileError"
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           |)
@@ -4836,8 +5801,79 @@ Module bn128.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "substrate_bn::Fq";
+                                                                              Ty.path
+                                                                                "revm_precompile::interface::PrecompileError"
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::function::Fn",
+                                                                            Ty.function
+                                                                              [ Ty.path "usize" ]
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "substrate_bn::Fq";
+                                                                                  Ty.path
+                                                                                    "revm_precompile::interface::PrecompileError"
+                                                                                ]),
+                                                                            [],
+                                                                            [
+                                                                              Ty.tuple
+                                                                                [ Ty.path "usize" ]
+                                                                            ],
+                                                                            "call",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                read_fq_at
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.function
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "usize"
+                                                                                    ]
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::result::Result")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "substrate_bn::Fq";
+                                                                                        Ty.path
+                                                                                          "revm_precompile::interface::PrecompileError"
+                                                                                      ])
+                                                                                ]);
+                                                                            M.value_with_ty
+                                                                              (Value.Tuple
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    1
+                                                                                ])
+                                                                              (Ty.tuple
+                                                                                [ Ty.path "usize" ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
                                                                           (Ty.path
                                                                             "core::result::Result")
                                                                           []
@@ -4846,43 +5882,7 @@ Module bn128.
                                                                               "substrate_bn::Fq";
                                                                             Ty.path
                                                                               "revm_precompile::interface::PrecompileError"
-                                                                          ],
-                                                                        M.get_trait_method (|
-                                                                          "core::ops::function::Fn",
-                                                                          Ty.function
-                                                                            [ Ty.path "usize" ]
-                                                                            (Ty.apply
-                                                                              (Ty.path
-                                                                                "core::result::Result")
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "substrate_bn::Fq";
-                                                                                Ty.path
-                                                                                  "revm_precompile::interface::PrecompileError"
-                                                                              ]),
-                                                                          [],
-                                                                          [
-                                                                            Ty.tuple
-                                                                              [ Ty.path "usize" ]
-                                                                          ],
-                                                                          "call",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            read_fq_at
-                                                                          |);
-                                                                          Value.Tuple
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1
-                                                                            ]
-                                                                        ]
-                                                                      |)
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |),
@@ -4953,9 +5953,20 @@ Module bn128.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.read (|
-                                                                                  residual
-                                                                                |)
+                                                                                M.value_with_ty
+                                                                                  (M.read (|
+                                                                                    residual
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::convert::Infallible";
+                                                                                      Ty.path
+                                                                                        "revm_precompile::interface::PrecompileError"
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           |)
@@ -5036,8 +6047,79 @@ Module bn128.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "substrate_bn::Fq";
+                                                                              Ty.path
+                                                                                "revm_precompile::interface::PrecompileError"
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::function::Fn",
+                                                                            Ty.function
+                                                                              [ Ty.path "usize" ]
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "substrate_bn::Fq";
+                                                                                  Ty.path
+                                                                                    "revm_precompile::interface::PrecompileError"
+                                                                                ]),
+                                                                            [],
+                                                                            [
+                                                                              Ty.tuple
+                                                                                [ Ty.path "usize" ]
+                                                                            ],
+                                                                            "call",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                read_fq_at
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.function
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "usize"
+                                                                                    ]
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::result::Result")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "substrate_bn::Fq";
+                                                                                        Ty.path
+                                                                                          "revm_precompile::interface::PrecompileError"
+                                                                                      ])
+                                                                                ]);
+                                                                            M.value_with_ty
+                                                                              (Value.Tuple
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    2
+                                                                                ])
+                                                                              (Ty.tuple
+                                                                                [ Ty.path "usize" ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
                                                                           (Ty.path
                                                                             "core::result::Result")
                                                                           []
@@ -5046,43 +6128,7 @@ Module bn128.
                                                                               "substrate_bn::Fq";
                                                                             Ty.path
                                                                               "revm_precompile::interface::PrecompileError"
-                                                                          ],
-                                                                        M.get_trait_method (|
-                                                                          "core::ops::function::Fn",
-                                                                          Ty.function
-                                                                            [ Ty.path "usize" ]
-                                                                            (Ty.apply
-                                                                              (Ty.path
-                                                                                "core::result::Result")
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "substrate_bn::Fq";
-                                                                                Ty.path
-                                                                                  "revm_precompile::interface::PrecompileError"
-                                                                              ]),
-                                                                          [],
-                                                                          [
-                                                                            Ty.tuple
-                                                                              [ Ty.path "usize" ]
-                                                                          ],
-                                                                          "call",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            read_fq_at
-                                                                          |);
-                                                                          Value.Tuple
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                2
-                                                                            ]
-                                                                        ]
-                                                                      |)
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |),
@@ -5153,9 +6199,20 @@ Module bn128.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.read (|
-                                                                                  residual
-                                                                                |)
+                                                                                M.value_with_ty
+                                                                                  (M.read (|
+                                                                                    residual
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::convert::Infallible";
+                                                                                      Ty.path
+                                                                                        "revm_precompile::interface::PrecompileError"
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           |)
@@ -5236,8 +6293,79 @@ Module bn128.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "substrate_bn::Fq";
+                                                                              Ty.path
+                                                                                "revm_precompile::interface::PrecompileError"
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::function::Fn",
+                                                                            Ty.function
+                                                                              [ Ty.path "usize" ]
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "substrate_bn::Fq";
+                                                                                  Ty.path
+                                                                                    "revm_precompile::interface::PrecompileError"
+                                                                                ]),
+                                                                            [],
+                                                                            [
+                                                                              Ty.tuple
+                                                                                [ Ty.path "usize" ]
+                                                                            ],
+                                                                            "call",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                read_fq_at
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.function
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "usize"
+                                                                                    ]
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::result::Result")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "substrate_bn::Fq";
+                                                                                        Ty.path
+                                                                                          "revm_precompile::interface::PrecompileError"
+                                                                                      ])
+                                                                                ]);
+                                                                            M.value_with_ty
+                                                                              (Value.Tuple
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    3
+                                                                                ])
+                                                                              (Ty.tuple
+                                                                                [ Ty.path "usize" ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
                                                                           (Ty.path
                                                                             "core::result::Result")
                                                                           []
@@ -5246,43 +6374,7 @@ Module bn128.
                                                                               "substrate_bn::Fq";
                                                                             Ty.path
                                                                               "revm_precompile::interface::PrecompileError"
-                                                                          ],
-                                                                        M.get_trait_method (|
-                                                                          "core::ops::function::Fn",
-                                                                          Ty.function
-                                                                            [ Ty.path "usize" ]
-                                                                            (Ty.apply
-                                                                              (Ty.path
-                                                                                "core::result::Result")
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "substrate_bn::Fq";
-                                                                                Ty.path
-                                                                                  "revm_precompile::interface::PrecompileError"
-                                                                              ]),
-                                                                          [],
-                                                                          [
-                                                                            Ty.tuple
-                                                                              [ Ty.path "usize" ]
-                                                                          ],
-                                                                          "call",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            read_fq_at
-                                                                          |);
-                                                                          Value.Tuple
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                3
-                                                                            ]
-                                                                        ]
-                                                                      |)
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |),
@@ -5353,9 +6445,20 @@ Module bn128.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.read (|
-                                                                                  residual
-                                                                                |)
+                                                                                M.value_with_ty
+                                                                                  (M.read (|
+                                                                                    residual
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::convert::Infallible";
+                                                                                      Ty.path
+                                                                                        "revm_precompile::interface::PrecompileError"
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           |)
@@ -5436,8 +6539,79 @@ Module bn128.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "substrate_bn::Fq";
+                                                                              Ty.path
+                                                                                "revm_precompile::interface::PrecompileError"
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::function::Fn",
+                                                                            Ty.function
+                                                                              [ Ty.path "usize" ]
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "substrate_bn::Fq";
+                                                                                  Ty.path
+                                                                                    "revm_precompile::interface::PrecompileError"
+                                                                                ]),
+                                                                            [],
+                                                                            [
+                                                                              Ty.tuple
+                                                                                [ Ty.path "usize" ]
+                                                                            ],
+                                                                            "call",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                read_fq_at
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.function
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "usize"
+                                                                                    ]
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::result::Result")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "substrate_bn::Fq";
+                                                                                        Ty.path
+                                                                                          "revm_precompile::interface::PrecompileError"
+                                                                                      ])
+                                                                                ]);
+                                                                            M.value_with_ty
+                                                                              (Value.Tuple
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    4
+                                                                                ])
+                                                                              (Ty.tuple
+                                                                                [ Ty.path "usize" ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
                                                                           (Ty.path
                                                                             "core::result::Result")
                                                                           []
@@ -5446,43 +6620,7 @@ Module bn128.
                                                                               "substrate_bn::Fq";
                                                                             Ty.path
                                                                               "revm_precompile::interface::PrecompileError"
-                                                                          ],
-                                                                        M.get_trait_method (|
-                                                                          "core::ops::function::Fn",
-                                                                          Ty.function
-                                                                            [ Ty.path "usize" ]
-                                                                            (Ty.apply
-                                                                              (Ty.path
-                                                                                "core::result::Result")
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "substrate_bn::Fq";
-                                                                                Ty.path
-                                                                                  "revm_precompile::interface::PrecompileError"
-                                                                              ]),
-                                                                          [],
-                                                                          [
-                                                                            Ty.tuple
-                                                                              [ Ty.path "usize" ]
-                                                                          ],
-                                                                          "call",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            read_fq_at
-                                                                          |);
-                                                                          Value.Tuple
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                4
-                                                                            ]
-                                                                        ]
-                                                                      |)
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |),
@@ -5553,9 +6691,20 @@ Module bn128.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.read (|
-                                                                                  residual
-                                                                                |)
+                                                                                M.value_with_ty
+                                                                                  (M.read (|
+                                                                                    residual
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::convert::Infallible";
+                                                                                      Ty.path
+                                                                                        "revm_precompile::interface::PrecompileError"
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           |)
@@ -5636,8 +6785,79 @@ Module bn128.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "substrate_bn::Fq";
+                                                                              Ty.path
+                                                                                "revm_precompile::interface::PrecompileError"
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::function::Fn",
+                                                                            Ty.function
+                                                                              [ Ty.path "usize" ]
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "substrate_bn::Fq";
+                                                                                  Ty.path
+                                                                                    "revm_precompile::interface::PrecompileError"
+                                                                                ]),
+                                                                            [],
+                                                                            [
+                                                                              Ty.tuple
+                                                                                [ Ty.path "usize" ]
+                                                                            ],
+                                                                            "call",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                read_fq_at
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.function
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "usize"
+                                                                                    ]
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::result::Result")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "substrate_bn::Fq";
+                                                                                        Ty.path
+                                                                                          "revm_precompile::interface::PrecompileError"
+                                                                                      ])
+                                                                                ]);
+                                                                            M.value_with_ty
+                                                                              (Value.Tuple
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    5
+                                                                                ])
+                                                                              (Ty.tuple
+                                                                                [ Ty.path "usize" ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
                                                                           (Ty.path
                                                                             "core::result::Result")
                                                                           []
@@ -5646,43 +6866,7 @@ Module bn128.
                                                                               "substrate_bn::Fq";
                                                                             Ty.path
                                                                               "revm_precompile::interface::PrecompileError"
-                                                                          ],
-                                                                        M.get_trait_method (|
-                                                                          "core::ops::function::Fn",
-                                                                          Ty.function
-                                                                            [ Ty.path "usize" ]
-                                                                            (Ty.apply
-                                                                              (Ty.path
-                                                                                "core::result::Result")
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "substrate_bn::Fq";
-                                                                                Ty.path
-                                                                                  "revm_precompile::interface::PrecompileError"
-                                                                              ]),
-                                                                          [],
-                                                                          [
-                                                                            Ty.tuple
-                                                                              [ Ty.path "usize" ]
-                                                                          ],
-                                                                          "call",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            read_fq_at
-                                                                          |);
-                                                                          Value.Tuple
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                5
-                                                                            ]
-                                                                        ]
-                                                                      |)
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |),
@@ -5753,9 +6937,20 @@ Module bn128.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.read (|
-                                                                                  residual
-                                                                                |)
+                                                                                M.value_with_ty
+                                                                                  (M.read (|
+                                                                                    residual
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::convert::Infallible";
+                                                                                      Ty.path
+                                                                                        "revm_precompile::interface::PrecompileError"
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           |)
@@ -5836,8 +7031,35 @@ Module bn128.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "substrate_bn::G1";
+                                                                              Ty.path
+                                                                                "revm_precompile::interface::PrecompileError"
+                                                                            ],
+                                                                          M.get_function (|
+                                                                            "revm_precompile::bn128::new_g1_point",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.read (| ax |))
+                                                                              (Ty.path
+                                                                                "substrate_bn::Fq");
+                                                                            M.value_with_ty
+                                                                              (M.read (| ay |))
+                                                                              (Ty.path
+                                                                                "substrate_bn::Fq")
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
                                                                           (Ty.path
                                                                             "core::result::Result")
                                                                           []
@@ -5846,17 +7068,7 @@ Module bn128.
                                                                               "substrate_bn::G1";
                                                                             Ty.path
                                                                               "revm_precompile::interface::PrecompileError"
-                                                                          ],
-                                                                        M.get_function (|
-                                                                          "revm_precompile::bn128::new_g1_point",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.read (| ax |);
-                                                                          M.read (| ay |)
-                                                                        ]
-                                                                      |)
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |),
@@ -5927,9 +7139,20 @@ Module bn128.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.read (|
-                                                                                  residual
-                                                                                |)
+                                                                                M.value_with_ty
+                                                                                  (M.read (|
+                                                                                    residual
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::convert::Infallible";
+                                                                                      Ty.path
+                                                                                        "revm_precompile::interface::PrecompileError"
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           |)
@@ -5965,8 +7188,13 @@ Module bn128.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.read (| bax |);
-                                                                      M.read (| bay |)
+                                                                      M.value_with_ty
+                                                                        (M.read (| bax |))
+                                                                        (Ty.path
+                                                                          "substrate_bn::Fq");
+                                                                      M.value_with_ty
+                                                                        (M.read (| bay |))
+                                                                        (Ty.path "substrate_bn::Fq")
                                                                     ]
                                                                   |) in
                                                                 let~ bb :
@@ -5980,8 +7208,13 @@ Module bn128.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.read (| bbx |);
-                                                                      M.read (| bby |)
+                                                                      M.value_with_ty
+                                                                        (M.read (| bbx |))
+                                                                        (Ty.path
+                                                                          "substrate_bn::Fq");
+                                                                      M.value_with_ty
+                                                                        (M.read (| bby |))
+                                                                        (Ty.path "substrate_bn::Fq")
                                                                     ]
                                                                   |) in
                                                                 M.alloc (|
@@ -6010,10 +7243,19 @@ Module bn128.
                                                                                       []
                                                                                     |),
                                                                                     [
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        ba
-                                                                                      |)
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          ba
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "substrate_bn::Fq2"
+                                                                                          ])
                                                                                     ]
                                                                                   |),
                                                                                   ltac:(M.monadic
@@ -6028,10 +7270,19 @@ Module bn128.
                                                                                         []
                                                                                       |),
                                                                                       [
-                                                                                        M.borrow (|
-                                                                                          Pointer.Kind.Ref,
-                                                                                          bb
-                                                                                        |)
+                                                                                        M.value_with_ty
+                                                                                          (M.borrow (|
+                                                                                            Pointer.Kind.Ref,
+                                                                                            bb
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "substrate_bn::Fq2"
+                                                                                            ])
                                                                                       ]
                                                                                     |)))
                                                                                 |)
@@ -6075,29 +7326,11 @@ Module bn128.
                                                                               []
                                                                             |),
                                                                             [
-                                                                              M.match_operator (|
-                                                                                Ty.path
-                                                                                  "substrate_bn::AffineG2",
-                                                                                M.alloc (|
-                                                                                  Ty.apply
-                                                                                    (Ty.path
-                                                                                      "core::ops::control_flow::ControlFlow")
-                                                                                    []
-                                                                                    [
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "core::result::Result")
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.path
-                                                                                            "core::convert::Infallible";
-                                                                                          Ty.path
-                                                                                            "revm_precompile::interface::PrecompileError"
-                                                                                        ];
-                                                                                      Ty.path
-                                                                                        "substrate_bn::AffineG2"
-                                                                                    ],
-                                                                                  M.call_closure (|
+                                                                              M.value_with_ty
+                                                                                (M.match_operator (|
+                                                                                  Ty.path
+                                                                                    "substrate_bn::AffineG2",
+                                                                                  M.alloc (|
                                                                                     Ty.apply
                                                                                       (Ty.path
                                                                                         "core::ops::control_flow::ControlFlow")
@@ -6116,26 +7349,27 @@ Module bn128.
                                                                                         Ty.path
                                                                                           "substrate_bn::AffineG2"
                                                                                       ],
-                                                                                    M.get_trait_method (|
-                                                                                      "core::ops::try_trait::Try",
+                                                                                    M.call_closure (|
                                                                                       Ty.apply
                                                                                         (Ty.path
-                                                                                          "core::result::Result")
+                                                                                          "core::ops::control_flow::ControlFlow")
                                                                                         []
                                                                                         [
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "core::result::Result")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "core::convert::Infallible";
+                                                                                              Ty.path
+                                                                                                "revm_precompile::interface::PrecompileError"
+                                                                                            ];
                                                                                           Ty.path
-                                                                                            "substrate_bn::AffineG2";
-                                                                                          Ty.path
-                                                                                            "revm_precompile::interface::PrecompileError"
+                                                                                            "substrate_bn::AffineG2"
                                                                                         ],
-                                                                                      [],
-                                                                                      [],
-                                                                                      "branch",
-                                                                                      [],
-                                                                                      []
-                                                                                    |),
-                                                                                    [
-                                                                                      M.call_closure (|
+                                                                                      M.get_trait_method (|
+                                                                                        "core::ops::try_trait::Try",
                                                                                         Ty.apply
                                                                                           (Ty.path
                                                                                             "core::result::Result")
@@ -6146,33 +7380,15 @@ Module bn128.
                                                                                             Ty.path
                                                                                               "revm_precompile::interface::PrecompileError"
                                                                                           ],
-                                                                                        M.get_associated_function (|
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "core::result::Result")
-                                                                                            []
-                                                                                            [
-                                                                                              Ty.path
-                                                                                                "substrate_bn::AffineG2";
-                                                                                              Ty.path
-                                                                                                "substrate_bn::groups::Error"
-                                                                                            ],
-                                                                                          "map_err",
-                                                                                          [],
-                                                                                          [
-                                                                                            Ty.path
-                                                                                              "revm_precompile::interface::PrecompileError";
-                                                                                            Ty.function
-                                                                                              [
-                                                                                                Ty.path
-                                                                                                  "substrate_bn::groups::Error"
-                                                                                              ]
-                                                                                              (Ty.path
-                                                                                                "revm_precompile::interface::PrecompileError")
-                                                                                          ]
-                                                                                        |),
-                                                                                        [
-                                                                                          M.call_closure (|
+                                                                                        [],
+                                                                                        [],
+                                                                                        "branch",
+                                                                                        [],
+                                                                                        []
+                                                                                      |),
+                                                                                      [
+                                                                                        M.value_with_ty
+                                                                                          (M.call_closure (|
                                                                                             Ty.apply
                                                                                               (Ty.path
                                                                                                 "core::result::Result")
@@ -6181,103 +7397,164 @@ Module bn128.
                                                                                                 Ty.path
                                                                                                   "substrate_bn::AffineG2";
                                                                                                 Ty.path
-                                                                                                  "substrate_bn::groups::Error"
+                                                                                                  "revm_precompile::interface::PrecompileError"
                                                                                               ],
                                                                                             M.get_associated_function (|
-                                                                                              Ty.path
-                                                                                                "substrate_bn::AffineG2",
-                                                                                              "new",
-                                                                                              [],
-                                                                                              []
-                                                                                            |),
-                                                                                            [
-                                                                                              M.read (|
-                                                                                                ba
-                                                                                              |);
-                                                                                              M.read (|
-                                                                                                bb
-                                                                                              |)
-                                                                                            ]
-                                                                                          |);
-                                                                                          M.closure
-                                                                                            (fun
-                                                                                                γ =>
-                                                                                              ltac:(M.monadic
-                                                                                                match
-                                                                                                  γ
-                                                                                                with
-                                                                                                | [
-                                                                                                      α0
-                                                                                                    ] =>
-                                                                                                  ltac:(M.monadic
-                                                                                                    (M.match_operator (|
-                                                                                                      Ty.path
-                                                                                                        "revm_precompile::interface::PrecompileError",
-                                                                                                      M.alloc (|
-                                                                                                        Ty.path
-                                                                                                          "substrate_bn::groups::Error",
-                                                                                                        α0
-                                                                                                      |),
-                                                                                                      [
-                                                                                                        fun
-                                                                                                            γ =>
-                                                                                                          ltac:(M.monadic
-                                                                                                            (Value.StructTuple
-                                                                                                              "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
-                                                                                                              []
-                                                                                                              []
-                                                                                                              []))
-                                                                                                      ]
-                                                                                                    |)))
-                                                                                                | _ =>
-                                                                                                  M.impossible
-                                                                                                    "wrong number of arguments"
-                                                                                                end))
-                                                                                        ]
-                                                                                      |)
-                                                                                    ]
-                                                                                  |)
-                                                                                |),
-                                                                                [
-                                                                                  fun γ =>
-                                                                                    ltac:(M.monadic
-                                                                                      (let γ0_0 :=
-                                                                                        M.SubPointer.get_struct_tuple_field (|
-                                                                                          γ,
-                                                                                          "core::ops::control_flow::ControlFlow::Break",
-                                                                                          0
-                                                                                        |) in
-                                                                                      let
-                                                                                            residual :=
-                                                                                        M.copy (|
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "core::result::Result")
-                                                                                            []
-                                                                                            [
-                                                                                              Ty.path
-                                                                                                "core::convert::Infallible";
-                                                                                              Ty.path
-                                                                                                "revm_precompile::interface::PrecompileError"
-                                                                                            ],
-                                                                                          γ0_0
-                                                                                        |) in
-                                                                                      M.never_to_any (|
-                                                                                        M.read (|
-                                                                                          M.return_ (|
-                                                                                            M.call_closure (|
                                                                                               Ty.apply
                                                                                                 (Ty.path
                                                                                                   "core::result::Result")
                                                                                                 []
                                                                                                 [
                                                                                                   Ty.path
-                                                                                                    "revm_precompile::interface::PrecompileOutput";
+                                                                                                    "substrate_bn::AffineG2";
                                                                                                   Ty.path
-                                                                                                    "revm_precompile::interface::PrecompileErrors"
+                                                                                                    "substrate_bn::groups::Error"
                                                                                                 ],
-                                                                                              M.get_trait_method (|
-                                                                                                "core::ops::try_trait::FromResidual",
+                                                                                              "map_err",
+                                                                                              [],
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "revm_precompile::interface::PrecompileError";
+                                                                                                Ty.function
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "substrate_bn::groups::Error"
+                                                                                                  ]
+                                                                                                  (Ty.path
+                                                                                                    "revm_precompile::interface::PrecompileError")
+                                                                                              ]
+                                                                                            |),
+                                                                                            [
+                                                                                              M.value_with_ty
+                                                                                                (M.call_closure (|
+                                                                                                  Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "core::result::Result")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.path
+                                                                                                        "substrate_bn::AffineG2";
+                                                                                                      Ty.path
+                                                                                                        "substrate_bn::groups::Error"
+                                                                                                    ],
+                                                                                                  M.get_associated_function (|
+                                                                                                    Ty.path
+                                                                                                      "substrate_bn::AffineG2",
+                                                                                                    "new",
+                                                                                                    [],
+                                                                                                    []
+                                                                                                  |),
+                                                                                                  [
+                                                                                                    M.value_with_ty
+                                                                                                      (M.read (|
+                                                                                                        ba
+                                                                                                      |))
+                                                                                                      (Ty.path
+                                                                                                        "substrate_bn::Fq2");
+                                                                                                    M.value_with_ty
+                                                                                                      (M.read (|
+                                                                                                        bb
+                                                                                                      |))
+                                                                                                      (Ty.path
+                                                                                                        "substrate_bn::Fq2")
+                                                                                                  ]
+                                                                                                |))
+                                                                                                (Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "core::result::Result")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "substrate_bn::AffineG2";
+                                                                                                    Ty.path
+                                                                                                      "substrate_bn::groups::Error"
+                                                                                                  ]);
+                                                                                              M.value_with_ty
+                                                                                                (M.closure
+                                                                                                  (fun
+                                                                                                      γ =>
+                                                                                                    ltac:(M.monadic
+                                                                                                      match
+                                                                                                        γ
+                                                                                                      with
+                                                                                                      | [
+                                                                                                            α0
+                                                                                                          ] =>
+                                                                                                        ltac:(M.monadic
+                                                                                                          (M.match_operator (|
+                                                                                                            Ty.path
+                                                                                                              "revm_precompile::interface::PrecompileError",
+                                                                                                            M.alloc (|
+                                                                                                              Ty.path
+                                                                                                                "substrate_bn::groups::Error",
+                                                                                                              α0
+                                                                                                            |),
+                                                                                                            [
+                                                                                                              fun
+                                                                                                                  γ =>
+                                                                                                                ltac:(M.monadic
+                                                                                                                  (M.value_with_ty
+                                                                                                                    (Value.StructTuple
+                                                                                                                      "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
+                                                                                                                      [])
+                                                                                                                    (Ty.path
+                                                                                                                      "revm_precompile::interface::PrecompileError")))
+                                                                                                            ]
+                                                                                                          |)))
+                                                                                                      | _ =>
+                                                                                                        M.impossible
+                                                                                                          "wrong number of arguments"
+                                                                                                      end)))
+                                                                                                (Ty.function
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "substrate_bn::groups::Error"
+                                                                                                  ]
+                                                                                                  (Ty.path
+                                                                                                    "revm_precompile::interface::PrecompileError"))
+                                                                                            ]
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "core::result::Result")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "substrate_bn::AffineG2";
+                                                                                              Ty.path
+                                                                                                "revm_precompile::interface::PrecompileError"
+                                                                                            ])
+                                                                                      ]
+                                                                                    |)
+                                                                                  |),
+                                                                                  [
+                                                                                    fun γ =>
+                                                                                      ltac:(M.monadic
+                                                                                        (let γ0_0 :=
+                                                                                          M.SubPointer.get_struct_tuple_field (|
+                                                                                            γ,
+                                                                                            "core::ops::control_flow::ControlFlow::Break",
+                                                                                            0
+                                                                                          |) in
+                                                                                        let
+                                                                                              residual :=
+                                                                                          M.copy (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::result::Result")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "core::convert::Infallible";
+                                                                                                Ty.path
+                                                                                                  "revm_precompile::interface::PrecompileError"
+                                                                                              ],
+                                                                                            γ0_0
+                                                                                          |) in
+                                                                                        M.never_to_any (|
+                                                                                          M.read (|
+                                                                                            M.return_ (|
+                                                                                              M.call_closure (|
                                                                                                 Ty.apply
                                                                                                   (Ty.path
                                                                                                     "core::result::Result")
@@ -6288,51 +7565,76 @@ Module bn128.
                                                                                                     Ty.path
                                                                                                       "revm_precompile::interface::PrecompileErrors"
                                                                                                   ],
-                                                                                                [],
-                                                                                                [
+                                                                                                M.get_trait_method (|
+                                                                                                  "core::ops::try_trait::FromResidual",
                                                                                                   Ty.apply
                                                                                                     (Ty.path
                                                                                                       "core::result::Result")
                                                                                                     []
                                                                                                     [
                                                                                                       Ty.path
-                                                                                                        "core::convert::Infallible";
+                                                                                                        "revm_precompile::interface::PrecompileOutput";
                                                                                                       Ty.path
-                                                                                                        "revm_precompile::interface::PrecompileError"
-                                                                                                    ]
-                                                                                                ],
-                                                                                                "from_residual",
-                                                                                                [],
-                                                                                                []
-                                                                                              |),
-                                                                                              [
-                                                                                                M.read (|
-                                                                                                  residual
-                                                                                                |)
-                                                                                              ]
+                                                                                                        "revm_precompile::interface::PrecompileErrors"
+                                                                                                    ],
+                                                                                                  [],
+                                                                                                  [
+                                                                                                    Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "core::result::Result")
+                                                                                                      []
+                                                                                                      [
+                                                                                                        Ty.path
+                                                                                                          "core::convert::Infallible";
+                                                                                                        Ty.path
+                                                                                                          "revm_precompile::interface::PrecompileError"
+                                                                                                      ]
+                                                                                                  ],
+                                                                                                  "from_residual",
+                                                                                                  [],
+                                                                                                  []
+                                                                                                |),
+                                                                                                [
+                                                                                                  M.value_with_ty
+                                                                                                    (M.read (|
+                                                                                                      residual
+                                                                                                    |))
+                                                                                                    (Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "core::result::Result")
+                                                                                                      []
+                                                                                                      [
+                                                                                                        Ty.path
+                                                                                                          "core::convert::Infallible";
+                                                                                                        Ty.path
+                                                                                                          "revm_precompile::interface::PrecompileError"
+                                                                                                      ])
+                                                                                                ]
+                                                                                              |)
                                                                                             |)
                                                                                           |)
-                                                                                        |)
-                                                                                      |)));
-                                                                                  fun γ =>
-                                                                                    ltac:(M.monadic
-                                                                                      (let γ0_0 :=
-                                                                                        M.SubPointer.get_struct_tuple_field (|
-                                                                                          γ,
-                                                                                          "core::ops::control_flow::ControlFlow::Continue",
-                                                                                          0
-                                                                                        |) in
-                                                                                      let val :=
-                                                                                        M.copy (|
-                                                                                          Ty.path
-                                                                                            "substrate_bn::AffineG2",
-                                                                                          γ0_0
-                                                                                        |) in
-                                                                                      M.read (|
-                                                                                        val
-                                                                                      |)))
-                                                                                ]
-                                                                              |)
+                                                                                        |)));
+                                                                                    fun γ =>
+                                                                                      ltac:(M.monadic
+                                                                                        (let γ0_0 :=
+                                                                                          M.SubPointer.get_struct_tuple_field (|
+                                                                                            γ,
+                                                                                            "core::ops::control_flow::ControlFlow::Continue",
+                                                                                            0
+                                                                                          |) in
+                                                                                        let val :=
+                                                                                          M.copy (|
+                                                                                            Ty.path
+                                                                                              "substrate_bn::AffineG2",
+                                                                                            γ0_0
+                                                                                          |) in
+                                                                                        M.read (|
+                                                                                          val
+                                                                                        |)))
+                                                                                  ]
+                                                                                |))
+                                                                                (Ty.path
+                                                                                  "substrate_bn::AffineG2")
                                                                             ]
                                                                           |)))
                                                                     ]
@@ -6360,13 +7662,42 @@ Module bn128.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    points
-                                                                  |);
-                                                                  Value.Tuple
-                                                                    [ M.read (| a |); M.read (| b |)
-                                                                    ]
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      points
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloc::vec::Vec")
+                                                                          []
+                                                                          [
+                                                                            Ty.tuple
+                                                                              [
+                                                                                Ty.path
+                                                                                  "substrate_bn::G1";
+                                                                                Ty.path
+                                                                                  "substrate_bn::G2"
+                                                                              ];
+                                                                            Ty.path
+                                                                              "alloc::alloc::Global"
+                                                                          ]
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (Value.Tuple
+                                                                      [
+                                                                        M.read (| a |);
+                                                                        M.read (| b |)
+                                                                      ])
+                                                                    (Ty.tuple
+                                                                      [
+                                                                        Ty.path "substrate_bn::G1";
+                                                                        Ty.path "substrate_bn::G2"
+                                                                      ])
                                                                 ]
                                                               |) in
                                                             M.alloc (|
@@ -6388,53 +7719,84 @@ Module bn128.
                               Ty.path "substrate_bn::Gt",
                               M.get_function (| "substrate_bn::pairing_batch", [], [] |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [
+                                                Ty.tuple
+                                                  [
+                                                    Ty.path "substrate_bn::G1";
+                                                    Ty.path "substrate_bn::G2"
+                                                  ]
+                                              ]
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::deref::Deref",
                                           Ty.apply
-                                            (Ty.path "slice")
+                                            (Ty.path "alloc::vec::Vec")
                                             []
                                             [
                                               Ty.tuple
                                                 [
                                                   Ty.path "substrate_bn::G1";
                                                   Ty.path "substrate_bn::G2"
-                                                ]
-                                            ]
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply
-                                          (Ty.path "alloc::vec::Vec")
+                                                ];
+                                              Ty.path "alloc::alloc::Global"
+                                            ],
+                                          [],
+                                          [],
+                                          "deref",
+                                          [],
                                           []
-                                          [
-                                            Ty.tuple
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, points |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
                                               [
-                                                Ty.path "substrate_bn::G1";
-                                                Ty.path "substrate_bn::G2"
-                                              ];
-                                            Ty.path "alloc::alloc::Global"
-                                          ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.borrow (| Pointer.Kind.Ref, points |) |)
-                                        |)
-                                      ]
+                                                Ty.apply
+                                                  (Ty.path "alloc::vec::Vec")
+                                                  []
+                                                  [
+                                                    Ty.tuple
+                                                      [
+                                                        Ty.path "substrate_bn::G1";
+                                                        Ty.path "substrate_bn::G2"
+                                                      ];
+                                                    Ty.path "alloc::alloc::Global"
+                                                  ]
+                                              ])
+                                        ]
+                                      |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [
+                                          Ty.tuple
+                                            [ Ty.path "substrate_bn::G1"; Ty.path "substrate_bn::G2"
+                                            ]
+                                        ]
+                                    ])
                               ]
                             |) in
                           M.alloc (|
@@ -6451,23 +7813,27 @@ Module bn128.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, mul |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.path "substrate_bn::Gt",
-                                    M.call_closure (|
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, mul |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Gt" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
                                       Ty.path "substrate_bn::Gt",
-                                      M.get_associated_function (|
+                                      M.call_closure (|
                                         Ty.path "substrate_bn::Gt",
-                                        "one",
-                                        [],
+                                        M.get_associated_function (|
+                                          Ty.path "substrate_bn::Gt",
+                                          "one",
+                                          [],
+                                          []
+                                        |),
                                         []
-                                      |),
-                                      []
+                                      |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "substrate_bn::Gt" ])
                               ]
                             |)
                           |)
@@ -6482,36 +7848,41 @@ Module bn128.
                     Ty.path "revm_precompile::interface::PrecompileOutput";
                     Ty.path "revm_precompile::interface::PrecompileErrors"
                   ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [
-                    Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
-                  ]
-                  [
-                    M.call_closure (|
-                      Ty.path "revm_precompile::interface::PrecompileOutput",
-                      M.get_associated_function (|
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
                         Ty.path "revm_precompile::interface::PrecompileOutput",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (| gas_used |);
-                        M.call_closure (|
-                          Ty.path "alloy_primitives::bytes_::Bytes",
-                          M.get_function (|
-                            "revm_precompile::utilities::bool_to_bytes32",
-                            [],
-                            []
-                          |),
-                          [ M.read (| success |) ]
-                        |)
-                      ]
-                    |)
-                  ]
+                        M.get_associated_function (|
+                          Ty.path "revm_precompile::interface::PrecompileOutput",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (M.read (| gas_used |)) (Ty.path "u64");
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "alloy_primitives::bytes_::Bytes",
+                              M.get_function (|
+                                "revm_precompile::utilities::bool_to_bytes32",
+                                [],
+                                []
+                              |),
+                              [ M.value_with_ty (M.read (| success |)) (Ty.path "bool") ]
+                            |))
+                            (Ty.path "alloy_primitives::bytes_::Bytes")
+                        ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "revm_precompile::interface::PrecompileOutput";
+                      Ty.path "revm_precompile::interface::PrecompileErrors"
+                    ])
               |)
             |)))
         |)))

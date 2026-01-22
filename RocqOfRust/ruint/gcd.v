@@ -26,7 +26,14 @@ Module gcd.
           M.call_closure (|
             Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
             M.get_function (| "ruint::algorithms::gcd::gcd", [ BITS; LIMBS ], [] |),
-            [ M.read (| self |); M.read (| other |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| other |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -69,31 +76,47 @@ Module gcd.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                        "checked_div",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| other |))
+                          (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                              "gcd",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                              M.value_with_ty
+                                (M.read (| other |))
+                                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                      ]
+                    |))
+                    (Ty.apply
                       (Ty.path "core::option::Option")
                       []
-                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                      "checked_div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| other |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                          "gcd",
-                          [],
-                          []
-                        |),
-                        [ M.read (| self |); M.read (| other |) ]
-                      |)
-                    ]
-                  |)
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                 ]
               |) in
             M.alloc (|
@@ -112,7 +135,14 @@ Module gcd.
                   [],
                   []
                 |),
-                [ M.read (| self |); M.read (| other |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| self |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                  M.value_with_ty
+                    (M.read (| other |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                ]
               |)
             |)
           |)))
@@ -151,7 +181,14 @@ Module gcd.
                 Ty.path "bool"
               ],
             M.get_function (| "ruint::algorithms::gcd::gcd_extended", [ BITS; LIMBS ], [] |),
-            [ M.read (| self |); M.read (| other |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.read (| other |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.

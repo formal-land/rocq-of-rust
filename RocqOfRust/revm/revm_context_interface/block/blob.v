@@ -97,60 +97,75 @@ Module block.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BlobExcessGasAndPrice" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "excess_blob_gas" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::block::blob::BlobExcessGasAndPrice",
-                            "excess_blob_gas"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "BlobExcessGasAndPrice" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "excess_blob_gas" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_context_interface::block::blob::BlobExcessGasAndPrice",
+                              "excess_blob_gas"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "blob_gasprice" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "revm_context_interface::block::blob::BlobExcessGasAndPrice",
-                                "blob_gasprice"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "blob_gasprice" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_context_interface::block::blob::BlobExcessGasAndPrice",
+                                  "blob_gasprice"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -338,20 +353,24 @@ Module block.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::block::blob::BlobExcessGasAndPrice",
-                            "excess_blob_gas"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_context_interface::block::blob::BlobExcessGasAndPrice",
+                              "excess_blob_gas"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -368,20 +387,24 @@ Module block.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::block::blob::BlobExcessGasAndPrice",
-                            "blob_gasprice"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_context_interface::block::blob::BlobExcessGasAndPrice",
+                              "blob_gasprice"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -425,18 +448,18 @@ Module block.
                     [],
                     []
                   |),
-                  [ M.read (| excess_blob_gas |) ]
+                  [ M.value_with_ty (M.read (| excess_blob_gas |)) (Ty.path "u64") ]
                 |) in
               M.alloc (|
                 Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice",
-                Value.mkStructRecord
-                  "revm_context_interface::block::blob::BlobExcessGasAndPrice"
-                  []
-                  []
-                  [
-                    ("excess_blob_gas", M.read (| excess_blob_gas |));
-                    ("blob_gasprice", M.read (| blob_gasprice |))
-                  ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "revm_context_interface::block::blob::BlobExcessGasAndPrice"
+                    [
+                      ("excess_blob_gas", M.read (| excess_blob_gas |));
+                      ("blob_gasprice", M.read (| blob_gasprice |))
+                    ])
+                  (Ty.path "revm_context_interface::block::blob::BlobExcessGasAndPrice")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -462,17 +485,21 @@ Module block.
             Ty.path "u64",
             M.get_associated_function (| Ty.path "u64", "saturating_sub", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                BinOp.Wrap.add,
-                [ M.read (| parent_excess_blob_gas |); M.read (| parent_blob_gas_used |) ]
-              |);
-              M.read (|
-                get_constant (|
-                  "revm_specification::eip4844::TARGET_BLOB_GAS_PER_BLOCK",
-                  Ty.path "u64"
-                |)
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  BinOp.Wrap.add,
+                  [ M.read (| parent_excess_blob_gas |); M.read (| parent_blob_gas_used |) ]
+                |))
+                (Ty.path "u64");
+              M.value_with_ty
+                (M.read (|
+                  get_constant (|
+                    "revm_specification::eip4844::TARGET_BLOB_GAS_PER_BLOCK",
+                    Ty.path "u64"
+                  |)
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -503,16 +530,20 @@ Module block.
             Ty.path "u128",
             M.get_function (| "revm_context_interface::block::blob::fake_exponential", [], [] |),
             [
-              M.read (|
-                get_constant (| "revm_specification::eip4844::MIN_BLOB_GASPRICE", Ty.path "u64" |)
-              |);
-              M.read (| excess_blob_gas |);
-              M.read (|
-                get_constant (|
-                  "revm_specification::eip4844::BLOB_GASPRICE_UPDATE_FRACTION",
-                  Ty.path "u64"
-                |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  get_constant (| "revm_specification::eip4844::MIN_BLOB_GASPRICE", Ty.path "u64" |)
+                |))
+                (Ty.path "u64");
+              M.value_with_ty (M.read (| excess_blob_gas |)) (Ty.path "u64");
+              M.value_with_ty
+                (M.read (|
+                  get_constant (|
+                    "revm_specification::eip4844::BLOB_GASPRICE_UPDATE_FRACTION",
+                    Ty.path "u64"
+                  |)
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -602,7 +633,9 @@ Module block.
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Ne" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Ne" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -613,64 +646,97 @@ Module block.
                                         [ Ty.path "u64"; Ty.path "u64" ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::Some"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::Arguments",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::Arguments",
-                                                "new_const",
-                                                [ Value.Integer IntegerKind.Usize 1 ],
-                                                []
-                                              |),
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "core::option::Option::Some"
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "array")
-                                                          [ Value.Integer IntegerKind.Usize 1 ]
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "str" ]
-                                                          ],
-                                                        Value.Array
-                                                          [ mk_str (| "attempt to divide by zero" |)
-                                                          ]
-                                                      |)
-                                                    |)
-                                                  |)
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::Arguments",
+                                                    "new_const",
+                                                    [ Value.Integer IntegerKind.Usize 1 ],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.alloc (|
+                                                              Ty.apply
+                                                                (Ty.path "array")
+                                                                [ Value.Integer IntegerKind.Usize 1
+                                                                ]
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [ Ty.path "str" ]
+                                                                ],
+                                                              Value.Array
+                                                                [
+                                                                  mk_str (|
+                                                                    "attempt to divide by zero"
+                                                                  |)
+                                                                ]
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [ Ty.path "str" ]
+                                                            ]
+                                                        ])
+                                                  ]
                                                 |)
-                                              ]
-                                            |)
-                                          ]
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)

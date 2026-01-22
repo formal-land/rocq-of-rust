@@ -87,26 +87,39 @@ Module processor.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.tuple [ Ty.path "u64"; Ty.path "u8" ];
+                                  Ty.path "pinocchio_token_interface::error::TokenError"
+                                ],
+                              M.get_function (|
+                                "pinocchio_token_program::processor::unpack_amount_and_decimals",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| instruction_data |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.tuple [ Ty.path "u64"; Ty.path "u8" ];
                                 Ty.path "pinocchio_token_interface::error::TokenError"
-                              ],
-                            M.get_function (|
-                              "pinocchio_token_program::processor::unpack_amount_and_decimals",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| instruction_data |) |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -162,7 +175,17 @@ Module processor.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "pinocchio_token_interface::error::TokenError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -198,13 +221,25 @@ Module processor.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |);
-                          M.read (| amount |);
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ Ty.path "u8" ]
-                            [ M.read (| decimals |) ]
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.path "pinocchio::account_info::AccountInfo" ]
+                              ]);
+                          M.value_with_ty (M.read (| amount |)) (Ty.path "u64");
+                          M.value_with_ty
+                            (M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [ M.read (| decimals |) ])
+                              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ]))
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ])
                         ]
                       |)))
                 ]

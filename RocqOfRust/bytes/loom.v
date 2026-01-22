@@ -46,25 +46,38 @@ Module loom.
                   []
                 |),
                 [
-                  M.read (| f |);
-                  Value.Tuple
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ],
-                              "get_mut",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                  M.value_with_ty (M.read (| f |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ],
+                                "get_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ])
+                              ]
+                            |)
                           |)
                         |)
-                      |)
-                    ]
+                      ])
+                    (Ty.tuple
+                      [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"

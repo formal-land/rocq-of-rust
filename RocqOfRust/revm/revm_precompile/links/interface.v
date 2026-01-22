@@ -26,31 +26,31 @@ Module PrecompileError.
     φ x :=
       match x with
       | OutOfGas =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::OutOfGas" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::OutOfGas" []
       | Blake2WrongLength =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongLength" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongLength" []
       | Blake2WrongFinalIndicatorFlag =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag" []
       | ModexpExpOverflow =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpExpOverflow" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpExpOverflow" []
       | ModexpBaseOverflow =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpBaseOverflow" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpBaseOverflow" []
       | ModexpModOverflow =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpModOverflow" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpModOverflow" []
       | Bn128FieldPointNotAMember =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember" []
       | Bn128AffineGFailedToCreate =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate" []
       | Bn128PairLength =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128PairLength" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128PairLength" []
       | BlobInvalidInputLength =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" []
       | BlobMismatchedVersion =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" []
       | BlobVerifyKzgProofFailed =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" [] [] []
+          Value.StructTuple "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" []
       | Other message =>
-          Value.StructTuple "revm_precompile::interface::PrecompileError::Other" [] [] [φ message]
+          Value.StructTuple "revm_precompile::interface::PrecompileError::Other" [φ message]
       end
   }.
 
@@ -61,168 +61,168 @@ Module PrecompileError.
   }.
 
   Instance IsOfValueWith_OutOfGas :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::OutOfGas" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::OutOfGas" []) :=
   {
     value := OutOfGas;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_OutOfGas :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::OutOfGas" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::OutOfGas" []) :=
   {
     value := OutOfGas;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Blake2WrongLength :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongLength" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongLength" []) :=
   {
     value := Blake2WrongLength;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Blake2WrongLength :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongLength" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongLength" []) :=
   {
     value := Blake2WrongLength;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Blake2WrongFinalIndicatorFlag :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag" []) :=
   {
     value := Blake2WrongFinalIndicatorFlag;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Blake2WrongFinalIndicatorFlag :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag" []) :=
   {
     value := Blake2WrongFinalIndicatorFlag;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ModexpExpOverflow :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpExpOverflow" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpExpOverflow" []) :=
   {
     value := ModexpExpOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ModexpExpOverflow :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpExpOverflow" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpExpOverflow" []) :=
   {
     value := ModexpExpOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ModexpBaseOverflow :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpBaseOverflow" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpBaseOverflow" []) :=
   {
     value := ModexpBaseOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ModexpBaseOverflow :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpBaseOverflow" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpBaseOverflow" []) :=
   {
     value := ModexpBaseOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ModexpModOverflow :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpModOverflow" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpModOverflow" []) :=
   {
     value := ModexpModOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ModexpModOverflow :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpModOverflow" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpModOverflow" []) :=
   {
     value := ModexpModOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Bn128FieldPointNotAMember :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember" []) :=
   {
     value := Bn128FieldPointNotAMember;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Bn128FieldPointNotAMember :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember" []) :=
   {
     value := Bn128FieldPointNotAMember;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Bn128AffineGFailedToCreate :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate" []) :=
   {
     value := Bn128AffineGFailedToCreate;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Bn128AffineGFailedToCreate :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate" []) :=
   {
     value := Bn128AffineGFailedToCreate;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Bn128PairLength :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128PairLength" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128PairLength" []) :=
   {
     value := Bn128PairLength;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Bn128PairLength :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128PairLength" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128PairLength" []) :=
   {
     value := Bn128PairLength;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_BlobInvalidInputLength :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" []) :=
   {
     value := BlobInvalidInputLength;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_BlobInvalidInputLength :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" []) :=
   {
     value := BlobInvalidInputLength;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_BlobMismatchedVersion :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" []) :=
   {
     value := BlobMismatchedVersion;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_BlobMismatchedVersion :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" []) :=
   {
     value := BlobMismatchedVersion;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_BlobVerifyKzgProofFailed :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" []) :=
   {
     value := BlobVerifyKzgProofFailed;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_BlobVerifyKzgProofFailed :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" []) :=
   {
     value := BlobVerifyKzgProofFailed;
     eq := eq_refl;
@@ -231,7 +231,7 @@ Module PrecompileError.
   Instance IsOfValueWith_Other
       (message' : Value.t) {H_message : OfValueWith.C (alloc.links.string.String.t) message'}
       :
-    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Other" [] [] [message']) :=
+    OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Other" [message']) :=
   {
     value := Other
       H_message.(OfValueWith.value)
@@ -242,7 +242,7 @@ Module PrecompileError.
   Instance IsOfValue_Other
       (message' : Value.t) {H_message : OfValueWith.C (alloc.links.string.String.t) message'}
       :
-    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Other" [] [] [message']) :=
+    OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Other" [message']) :=
   {
     value := Other
       H_message.(OfValueWith.value)

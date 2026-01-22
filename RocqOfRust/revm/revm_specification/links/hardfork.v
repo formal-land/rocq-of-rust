@@ -34,47 +34,47 @@ Module SpecId.
     φ x :=
       match x with
       | FRONTIER =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" []
       | FRONTIER_THAWING =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" []
       | HOMESTEAD =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" []
       | DAO_FORK =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" []
       | TANGERINE =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" []
       | SPURIOUS_DRAGON =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" []
       | BYZANTIUM =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" []
       | CONSTANTINOPLE =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" []
       | PETERSBURG =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" []
       | ISTANBUL =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" []
       | MUIR_GLACIER =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" []
       | BERLIN =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" []
       | LONDON =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" []
       | ARROW_GLACIER =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" []
       | GRAY_GLACIER =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" []
       | MERGE =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" []
       | SHANGHAI =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" []
       | CANCUN =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" []
       | PRAGUE =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" []
       | OSAKA =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" []
       | LATEST =>
-          Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] []
+          Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" []
       end
   }.
 
@@ -85,294 +85,294 @@ Module SpecId.
   }.
 
   Instance IsOfValueWith_FRONTIER :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" []) :=
   {
     value := FRONTIER;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_FRONTIER :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" []) :=
   {
     value := FRONTIER;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_FRONTIER_THAWING :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" []) :=
   {
     value := FRONTIER_THAWING;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_FRONTIER_THAWING :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" []) :=
   {
     value := FRONTIER_THAWING;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_HOMESTEAD :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" []) :=
   {
     value := HOMESTEAD;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_HOMESTEAD :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" []) :=
   {
     value := HOMESTEAD;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_DAO_FORK :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" []) :=
   {
     value := DAO_FORK;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_DAO_FORK :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" []) :=
   {
     value := DAO_FORK;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_TANGERINE :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" []) :=
   {
     value := TANGERINE;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_TANGERINE :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" []) :=
   {
     value := TANGERINE;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_SPURIOUS_DRAGON :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" []) :=
   {
     value := SPURIOUS_DRAGON;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_SPURIOUS_DRAGON :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" []) :=
   {
     value := SPURIOUS_DRAGON;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_BYZANTIUM :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" []) :=
   {
     value := BYZANTIUM;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_BYZANTIUM :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" []) :=
   {
     value := BYZANTIUM;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CONSTANTINOPLE :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" []) :=
   {
     value := CONSTANTINOPLE;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CONSTANTINOPLE :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" []) :=
   {
     value := CONSTANTINOPLE;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_PETERSBURG :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" []) :=
   {
     value := PETERSBURG;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_PETERSBURG :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" []) :=
   {
     value := PETERSBURG;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ISTANBUL :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" []) :=
   {
     value := ISTANBUL;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ISTANBUL :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" []) :=
   {
     value := ISTANBUL;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_MUIR_GLACIER :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" []) :=
   {
     value := MUIR_GLACIER;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_MUIR_GLACIER :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" []) :=
   {
     value := MUIR_GLACIER;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_BERLIN :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" []) :=
   {
     value := BERLIN;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_BERLIN :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" []) :=
   {
     value := BERLIN;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_LONDON :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" []) :=
   {
     value := LONDON;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_LONDON :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" []) :=
   {
     value := LONDON;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ARROW_GLACIER :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" []) :=
   {
     value := ARROW_GLACIER;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ARROW_GLACIER :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" []) :=
   {
     value := ARROW_GLACIER;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_GRAY_GLACIER :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" []) :=
   {
     value := GRAY_GLACIER;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_GRAY_GLACIER :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" []) :=
   {
     value := GRAY_GLACIER;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_MERGE :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" []) :=
   {
     value := MERGE;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_MERGE :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" []) :=
   {
     value := MERGE;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_SHANGHAI :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" []) :=
   {
     value := SHANGHAI;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_SHANGHAI :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" []) :=
   {
     value := SHANGHAI;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CANCUN :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" []) :=
   {
     value := CANCUN;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CANCUN :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" []) :=
   {
     value := CANCUN;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_PRAGUE :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" []) :=
   {
     value := PRAGUE;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_PRAGUE :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" []) :=
   {
     value := PRAGUE;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_OSAKA :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" []) :=
   {
     value := OSAKA;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_OSAKA :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" []) :=
   {
     value := OSAKA;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_LATEST :
-    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" []) :=
   {
     value := LATEST;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_LATEST :
-    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" []) :=
   {
     value := LATEST;
     eq := eq_refl;

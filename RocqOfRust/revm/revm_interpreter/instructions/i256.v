@@ -93,40 +93,44 @@ Module instructions.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.match_operator (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                  self,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "revm_interpreter::instructions::i256::Sign::Minus"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Minus" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "revm_interpreter::instructions::i256::Sign::Zero"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Zero" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "revm_interpreter::instructions::i256::Sign::Plus"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Plus" |) |) |)))
-                  ]
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.match_operator (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    self,
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "revm_interpreter::instructions::i256::Sign::Minus"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Minus" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "revm_interpreter::instructions::i256::Sign::Zero"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Zero" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "revm_interpreter::instructions::i256::Sign::Plus"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Plus" |) |) |)))
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -180,7 +184,14 @@ Module instructions.
                     [],
                     [ Ty.path "revm_interpreter::instructions::i256::Sign" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "i8" :=
                 M.call_closure (|
@@ -190,7 +201,14 @@ Module instructions.
                     [],
                     [ Ty.path "revm_interpreter::instructions::i256::Sign" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -271,7 +289,14 @@ Module instructions.
                     [],
                     [ Ty.path "revm_interpreter::instructions::i256::Sign" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "i8" :=
                 M.call_closure (|
@@ -281,7 +306,14 @@ Module instructions.
                     [],
                     [ Ty.path "revm_interpreter::instructions::i256::Sign" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -297,14 +329,18 @@ Module instructions.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
                   ]
                 |)
               |)
@@ -348,7 +384,14 @@ Module instructions.
                     [],
                     [ Ty.path "revm_interpreter::instructions::i256::Sign" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "i8" :=
                 M.call_closure (|
@@ -358,7 +401,14 @@ Module instructions.
                     [],
                     [ Ty.path "revm_interpreter::instructions::i256::Sign" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "core::cmp::Ordering",
@@ -366,14 +416,18 @@ Module instructions.
                   Ty.path "core::cmp::Ordering",
                   M.get_trait_method (| "core::cmp::Ord", Ty.path "i8", [], [], "cmp", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
                   ]
                 |)
               |)
@@ -413,7 +467,14 @@ Module instructions.
                     [],
                     [ Ty.path "revm_interpreter::instructions::i256::Sign" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.tuple [],
@@ -429,11 +490,15 @@ Module instructions.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -472,13 +537,15 @@ Module instructions.
               []
             |),
             [
-              Value.Array
-                [
-                  Value.Integer IntegerKind.U64 18446744073709551615;
-                  Value.Integer IntegerKind.U64 18446744073709551615;
-                  Value.Integer IntegerKind.U64 18446744073709551615;
-                  Value.Integer IntegerKind.U64 9223372036854775807
-                ]
+              M.value_with_ty
+                (Value.Array
+                  [
+                    Value.Integer IntegerKind.U64 18446744073709551615;
+                    Value.Integer IntegerKind.U64 18446744073709551615;
+                    Value.Integer IntegerKind.U64 18446744073709551615;
+                    Value.Integer IntegerKind.U64 9223372036854775807
+                  ])
+                (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u64" ])
             ]
           |)
         |))).
@@ -512,13 +579,15 @@ Module instructions.
               []
             |),
             [
-              Value.Array
-                [
-                  Value.Integer IntegerKind.U64 0;
-                  Value.Integer IntegerKind.U64 0;
-                  Value.Integer IntegerKind.U64 0;
-                  Value.Integer IntegerKind.U64 9223372036854775808
-                ]
+              M.value_with_ty
+                (Value.Array
+                  [
+                    Value.Integer IntegerKind.U64 0;
+                    Value.Integer IntegerKind.U64 0;
+                    Value.Integer IntegerKind.U64 0;
+                    Value.Integer IntegerKind.U64 9223372036854775808
+                  ])
+                (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u64" ])
             ]
           |)
         |))).
@@ -593,32 +662,49 @@ Module instructions.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| val |) |) |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.sub,
-                              [
-                                M.read (|
-                                  get_associated_constant (|
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      [],
-                                    "BITS",
-                                    Ty.path "usize"
-                                  |)
-                                |);
-                                Value.Integer IntegerKind.Usize 1
-                              ]
-                            |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| val |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    []
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.sub,
+                                [
+                                  M.read (|
+                                    get_associated_constant (|
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [],
+                                      "BITS",
+                                      Ty.path "usize"
+                                    |)
+                                  |);
+                                  Value.Integer IntegerKind.Usize 1
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [])
+                    (Ty.path "revm_interpreter::instructions::i256::Sign")));
               fun γ =>
                 ltac:(M.monadic
                   (M.call_closure (|
@@ -629,28 +715,45 @@ Module instructions.
                       [ Ty.path "bool"; Ty.path "revm_interpreter::instructions::i256::Sign" ]
                     |),
                     [
-                      M.call_closure (|
-                        Ty.path "bool",
-                        UnOp.not,
-                        [
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "ruint::Uint")
-                                [
-                                  Value.Integer IntegerKind.Usize 256;
-                                  Value.Integer IntegerKind.Usize 4
-                                ]
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "bool",
+                          UnOp.not,
+                          [
+                            M.call_closure (|
+                              Ty.path "bool",
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [],
+                                "is_zero",
                                 [],
-                              "is_zero",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| val |) |) |) ]
-                          |)
-                        ]
-                      |)
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| val |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ])
+                              ]
+                            |)
+                          ]
+                        |))
+                        (Ty.path "bool")
                     ]
                   |)))
             ]
@@ -694,7 +797,19 @@ Module instructions.
               M.call_closure (|
                 Ty.path "revm_interpreter::instructions::i256::Sign",
                 M.get_function (| "revm_interpreter::instructions::i256::i256_sign", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| val |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| val |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.match_operator (|
@@ -719,18 +834,28 @@ Module instructions.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, sign |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.path "revm_interpreter::instructions::i256::Sign",
-                                    Value.StructTuple
-                                      "revm_interpreter::instructions::i256::Sign::Minus"
-                                      []
-                                      []
-                                      []
-                                  |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, sign |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_interpreter::instructions::i256::Sign" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.path "revm_interpreter::instructions::i256::Sign",
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "revm_interpreter::instructions::i256::Sign::Minus"
+                                          [])
+                                        (Ty.path "revm_interpreter::instructions::i256::Sign")
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
                               ]
                             |)
                           |)) in
@@ -744,7 +869,22 @@ Module instructions.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      []
+                                  ])
+                            ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                       |)));
@@ -810,7 +950,22 @@ Module instructions.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ])
+                      ]
                     |)
                   |),
                   Value.Integer IntegerKind.Usize 3
@@ -873,7 +1028,14 @@ Module instructions.
                     [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
                     [],
                   M.get_function (| "revm_interpreter::instructions::i256::two_compl", [], [] |),
-                  [ M.read (| M.deref (| M.read (| op |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| op |) |) |))
+                      (Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [])
+                  ]
                 |)
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -917,7 +1079,14 @@ Module instructions.
               [],
               []
             |),
-            [ M.read (| op |) ]
+            [
+              M.value_with_ty
+                (M.read (| op |))
+                (Ty.apply
+                  (Ty.path "ruint::Uint")
+                  [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                  [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -974,13 +1143,37 @@ Module instructions.
               M.call_closure (|
                 Ty.path "revm_interpreter::instructions::i256::Sign",
                 M.get_function (| "revm_interpreter::instructions::i256::i256_sign", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ])
+                ]
               |) in
             let~ second_sign : Ty.path "revm_interpreter::instructions::i256::Sign" :=
               M.call_closure (|
                 Ty.path "revm_interpreter::instructions::i256::Sign",
                 M.get_function (| "revm_interpreter::instructions::i256::i256_sign", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| second |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| second |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ])
+                ]
               |) in
             M.alloc (|
               Ty.path "core::cmp::Ordering",
@@ -1000,11 +1193,21 @@ Module instructions.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, first_sign |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.borrow (| Pointer.Kind.Ref, second_sign |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, first_sign |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "revm_interpreter::instructions::i256::Sign" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, second_sign |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
                     ]
                   |)
                 |),
@@ -1028,8 +1231,34 @@ Module instructions.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| second |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
+                              ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| second |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
+                              ])
                         ]
                       |)));
                   fun γ =>
@@ -1113,10 +1342,23 @@ Module instructions.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, second |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, second |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -1142,18 +1384,28 @@ Module instructions.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, second_sign |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "revm_interpreter::instructions::i256::Sign",
-                                        Value.StructTuple
-                                          "revm_interpreter::instructions::i256::Sign::Zero"
-                                          []
-                                          []
-                                          []
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, second_sign |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "revm_interpreter::instructions::i256::Sign",
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_interpreter::instructions::i256::Sign::Zero"
+                                              [])
+                                            (Ty.path "revm_interpreter::instructions::i256::Sign")
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
                                   ]
                                 |)
                               |)) in
@@ -1196,10 +1448,23 @@ Module instructions.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, first |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, first |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -1240,20 +1505,46 @@ Module instructions.
                                       []
                                     |),
                                     [
-                                      M.borrow (| Pointer.Kind.Ref, first |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        get_constant (|
-                                          "revm_interpreter::instructions::i256::MIN_NEGATIVE_VALUE",
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            []
-                                        |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, first |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          get_constant (|
+                                            "revm_interpreter::instructions::i256::MIN_NEGATIVE_VALUE",
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ])
                                     ]
                                   |),
                                   ltac:(M.monadic
@@ -1283,18 +1574,24 @@ Module instructions.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, second |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "ruint::Uint")
-                                              [
-                                                Value.Integer IntegerKind.Usize 256;
-                                                Value.Integer IntegerKind.Usize 4
-                                              ]
-                                              [],
-                                            M.call_closure (|
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, second |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                []
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
                                               Ty.apply
                                                 (Ty.path "ruint::Uint")
                                                 [
@@ -1302,7 +1599,7 @@ Module instructions.
                                                   Value.Integer IntegerKind.Usize 4
                                                 ]
                                                 [],
-                                              M.get_associated_function (|
+                                              M.call_closure (|
                                                 Ty.apply
                                                   (Ty.path "ruint::Uint")
                                                   [
@@ -1310,14 +1607,38 @@ Module instructions.
                                                     Value.Integer IntegerKind.Usize 4
                                                   ]
                                                   [],
-                                                "from",
-                                                [],
-                                                [ Ty.path "i32" ]
-                                              |),
-                                              [ Value.Integer IntegerKind.I32 1 ]
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    [],
+                                                  "from",
+                                                  [],
+                                                  [ Ty.path "i32" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.I32 1)
+                                                    (Ty.path "i32")
+                                                ]
+                                              |)
                                             |)
-                                          |)
-                                        |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                []
+                                            ])
                                       ]
                                     |)))
                                 |)
@@ -1341,18 +1662,26 @@ Module instructions.
                                     []
                                   |),
                                   [
-                                    M.read (|
-                                      get_constant (|
-                                        "revm_interpreter::instructions::i256::MIN_NEGATIVE_VALUE",
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          []
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.read (|
+                                        get_constant (|
+                                          "revm_interpreter::instructions::i256::MIN_NEGATIVE_VALUE",
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [])
                                   ]
                                 |)
                               |)
@@ -1388,7 +1717,20 @@ Module instructions.
                       [],
                       []
                     |),
-                    [ M.read (| first |); M.read (| second |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| first |))
+                        (Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []);
+                      M.value_with_ty
+                        (M.read (| second |))
+                        (Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          [])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.call_closure (|
@@ -1399,10 +1741,23 @@ Module instructions.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, d |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, d |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ])
                     ]
                   |) in
                 M.alloc (|
@@ -1437,18 +1792,31 @@ Module instructions.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, first_sign |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.path "revm_interpreter::instructions::i256::Sign",
-                                            Value.StructTuple
-                                              "revm_interpreter::instructions::i256::Sign::Minus"
-                                              []
-                                              []
-                                              []
-                                          |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, first_sign |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "revm_interpreter::instructions::i256::Sign"
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.path "revm_interpreter::instructions::i256::Sign",
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "revm_interpreter::instructions::i256::Sign::Minus"
+                                                  [])
+                                                (Ty.path
+                                                  "revm_interpreter::instructions::i256::Sign")
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "revm_interpreter::instructions::i256::Sign"
+                                            ])
                                       ]
                                     |),
                                     ltac:(M.monadic
@@ -1464,18 +1832,32 @@ Module instructions.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.Ref, second_sign |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "revm_interpreter::instructions::i256::Sign",
-                                              Value.StructTuple
-                                                "revm_interpreter::instructions::i256::Sign::Minus"
-                                                []
-                                                []
-                                                []
-                                            |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, second_sign |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "revm_interpreter::instructions::i256::Sign"
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.path
+                                                  "revm_interpreter::instructions::i256::Sign",
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "revm_interpreter::instructions::i256::Sign::Minus"
+                                                    [])
+                                                  (Ty.path
+                                                    "revm_interpreter::instructions::i256::Sign")
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "revm_interpreter::instructions::i256::Sign"
+                                              ])
                                         ]
                                       |)))
                                   |),
@@ -1493,18 +1875,32 @@ Module instructions.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.Ref, second_sign |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "revm_interpreter::instructions::i256::Sign",
-                                              Value.StructTuple
-                                                "revm_interpreter::instructions::i256::Sign::Minus"
-                                                []
-                                                []
-                                                []
-                                            |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, second_sign |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "revm_interpreter::instructions::i256::Sign"
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.path
+                                                  "revm_interpreter::instructions::i256::Sign",
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "revm_interpreter::instructions::i256::Sign::Minus"
+                                                    [])
+                                                  (Ty.path
+                                                    "revm_interpreter::instructions::i256::Sign")
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "revm_interpreter::instructions::i256::Sign"
+                                              ])
                                         ]
                                       |),
                                       ltac:(M.monadic
@@ -1521,19 +1917,36 @@ Module instructions.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.Ref, first_sign |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.path
-                                                  "revm_interpreter::instructions::i256::Sign",
-                                                Value.StructTuple
-                                                  "revm_interpreter::instructions::i256::Sign::Minus"
-                                                  []
-                                                  []
-                                                  []
-                                              |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, first_sign |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "revm_interpreter::instructions::i256::Sign"
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.path
+                                                    "revm_interpreter::instructions::i256::Sign",
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "revm_interpreter::instructions::i256::Sign::Minus"
+                                                      [])
+                                                    (Ty.path
+                                                      "revm_interpreter::instructions::i256::Sign")
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "revm_interpreter::instructions::i256::Sign"
+                                                ])
                                           ]
                                         |)))
                                     |)))
@@ -1554,7 +1967,17 @@ Module instructions.
                               [],
                               []
                             |),
-                            [ M.read (| d |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| d |))
+                                (Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [])
+                            ]
                           |)));
                       fun γ => ltac:(M.monadic (M.read (| d |)))
                     ]
@@ -1630,10 +2053,23 @@ Module instructions.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, first |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, first |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -1659,18 +2095,28 @@ Module instructions.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, first_sign |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "revm_interpreter::instructions::i256::Sign",
-                                        Value.StructTuple
-                                          "revm_interpreter::instructions::i256::Sign::Zero"
-                                          []
-                                          []
-                                          []
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, first_sign |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "revm_interpreter::instructions::i256::Sign",
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_interpreter::instructions::i256::Sign::Zero"
+                                              [])
+                                            (Ty.path "revm_interpreter::instructions::i256::Sign")
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
                                   ]
                                 |)
                               |)) in
@@ -1713,10 +2159,23 @@ Module instructions.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, second |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, second |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -1742,18 +2201,28 @@ Module instructions.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, second_sign |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "revm_interpreter::instructions::i256::Sign",
-                                        Value.StructTuple
-                                          "revm_interpreter::instructions::i256::Sign::Zero"
-                                          []
-                                          []
-                                          []
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, second_sign |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "revm_interpreter::instructions::i256::Sign",
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_interpreter::instructions::i256::Sign::Zero"
+                                              [])
+                                            (Ty.path "revm_interpreter::instructions::i256::Sign")
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
                                   ]
                                 |)
                               |)) in
@@ -1814,7 +2283,20 @@ Module instructions.
                       [],
                       []
                     |),
-                    [ M.read (| first |); M.read (| second |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| first |))
+                        (Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []);
+                      M.value_with_ty
+                        (M.read (| second |))
+                        (Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          [])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.call_closure (|
@@ -1825,10 +2307,23 @@ Module instructions.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, r |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, r |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ])
                     ]
                   |) in
                 M.alloc (|
@@ -1861,18 +2356,28 @@ Module instructions.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, first_sign |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "revm_interpreter::instructions::i256::Sign",
-                                        Value.StructTuple
-                                          "revm_interpreter::instructions::i256::Sign::Minus"
-                                          []
-                                          []
-                                          []
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, first_sign |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "revm_interpreter::instructions::i256::Sign",
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_interpreter::instructions::i256::Sign::Minus"
+                                              [])
+                                            (Ty.path "revm_interpreter::instructions::i256::Sign")
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_interpreter::instructions::i256::Sign" ])
                                   ]
                                 |)
                               |)) in
@@ -1891,7 +2396,17 @@ Module instructions.
                               [],
                               []
                             |),
-                            [ M.read (| r |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| r |))
+                                (Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [])
+                            ]
                           |)));
                       fun γ => ltac:(M.monadic (M.read (| r |)))
                     ]

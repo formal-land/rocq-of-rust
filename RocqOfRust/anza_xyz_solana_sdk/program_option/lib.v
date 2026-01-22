@@ -83,7 +83,14 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_T_solana_program_option_
                 [],
                 [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -93,7 +100,14 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_T_solana_program_option_
                 [],
                 [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+              ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -153,8 +167,12 @@ Module Impl_core_cmp_PartialEq_where_core_cmp_PartialEq_T_solana_program_option_
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                            M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
                           ]
                         |)));
                     fun γ => ltac:(M.monadic (Value.Bool true))
@@ -210,7 +228,14 @@ Module Impl_core_cmp_PartialOrd_where_core_cmp_PartialOrd_T_solana_program_optio
                 [],
                 [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -220,7 +245,14 @@ Module Impl_core_cmp_PartialOrd_where_core_cmp_PartialOrd_T_solana_program_optio
                 [],
                 [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+              ]
             |) in
           M.alloc (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -276,8 +308,12 @@ Module Impl_core_cmp_PartialOrd_where_core_cmp_PartialOrd_T_solana_program_optio
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ T ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ T ])
                       ]
                     |)));
                 fun γ =>
@@ -297,14 +333,18 @@ Module Impl_core_cmp_PartialOrd_where_core_cmp_PartialOrd_T_solana_program_optio
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
                       ]
                     |)))
               ]
@@ -399,7 +439,14 @@ Module Impl_core_cmp_Ord_where_core_cmp_Ord_T_for_solana_program_option_COption_
                 [],
                 [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -409,7 +456,14 @@ Module Impl_core_cmp_Ord_where_core_cmp_Ord_T_for_solana_program_option_COption_
                 [],
                 [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+              ]
             |) in
           M.alloc (|
             Ty.path "core::cmp::Ordering",
@@ -421,14 +475,18 @@ Module Impl_core_cmp_Ord_where_core_cmp_Ord_T_for_solana_program_option_COption_
                   Ty.path "core::cmp::Ordering",
                   M.get_trait_method (| "core::cmp::Ord", Ty.path "isize", [], [], "cmp", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
                   ]
                 |)
               |),
@@ -477,15 +535,25 @@ Module Impl_core_cmp_Ord_where_core_cmp_Ord_T_for_solana_program_option_COption_
                               Ty.path "core::cmp::Ordering",
                               M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| __self_0 |) |)
-                                |);
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| __self_0 |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ T ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| __arg1_0 |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ T ])
                               ]
                             |)));
                         fun γ =>
-                          ltac:(M.monadic (Value.StructTuple "core::cmp::Ordering::Equal" [] [] []))
+                          ltac:(M.monadic
+                            (M.value_with_ty
+                              (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                              (Ty.path "core::cmp::Ordering")))
                       ]
                     |)));
                 fun γ =>
@@ -547,8 +615,12 @@ Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_solana_program_option_COpt
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "None" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "None" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -573,21 +645,30 @@ Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_solana_program_option_COpt
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Some" |) |) |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                        |)
-                      ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Some" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                          |)
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                   ]
                 |)))
           ]
@@ -632,7 +713,14 @@ Module Impl_core_hash_Hash_where_core_hash_Hash_T_for_solana_program_option_COpt
                 [],
                 [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+              ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
@@ -647,11 +735,15 @@ Module Impl_core_hash_Hash_where_core_hash_Hash_T_for_solana_program_option_COpt
                 [ __H ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ __H ])
               ]
             |) in
           M.alloc (|
@@ -674,8 +766,12 @@ Module Impl_core_hash_Hash_where_core_hash_Hash_T_for_solana_program_option_COpt
                       Ty.tuple [],
                       M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ T ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ __H ])
                       ]
                     |)));
                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -778,7 +874,14 @@ Module Impl_solana_program_option_COption_T.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+              ]
             |)
           ]
         |)))
@@ -841,7 +944,14 @@ Module Impl_solana_program_option_COption_T.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, x |); M.borrow (| Pointer.Kind.Ref, y |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, x |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ U ] ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, y |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                  ]
                 |)));
             fun γ =>
               ltac:(M.monadic
@@ -896,19 +1006,23 @@ Module Impl_solana_program_option_COption_T.
                     0
                   |) in
                 let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ0_0 |) in
-                Value.StructTuple
-                  "solana_program_option::COption::Some"
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ T ] ]
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_option::COption::Some"
+                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ])
+                  (Ty.apply
+                    (Ty.path "solana_program_option::COption")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ T ] ])));
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple
-                  "solana_program_option::COption::None"
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ T ] ]
-                  []))
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::None" [])
+                  (Ty.apply
+                    (Ty.path "solana_program_option::COption")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ T ] ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -957,19 +1071,23 @@ Module Impl_solana_program_option_COption_T.
                     0
                   |) in
                 let x := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
-                Value.StructTuple
-                  "solana_program_option::COption::Some"
-                  []
-                  [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| x |) |) |) ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_option::COption::Some"
+                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| x |) |) |) ])
+                  (Ty.apply
+                    (Ty.path "solana_program_option::COption")
+                    []
+                    [ Ty.apply (Ty.path "&mut") [] [ T ] ])));
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple
-                  "solana_program_option::COption::None"
-                  []
-                  [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                  []))
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::None" [])
+                  (Ty.apply
+                    (Ty.path "solana_program_option::COption")
+                    []
+                    [ Ty.apply (Ty.path "&mut") [] [ T ] ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1018,7 +1136,11 @@ Module Impl_solana_program_option_COption_T.
                   M.call_closure (|
                     Ty.path "never",
                     M.get_function (| "solana_program_option::expect_failed", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
                   |)
                 |)))
           ]
@@ -1069,37 +1191,49 @@ Module Impl_solana_program_option_COption_T.
                     Ty.path "never",
                     M.get_function (| "core::panicking::panic_fmt", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (|
+                                            "called `COption::unwrap()` on a `COption::None` value"
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (|
-                                        "called `COption::unwrap()` on a `COption::None` value"
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)
                 |)))
@@ -1203,7 +1337,10 @@ Module Impl_solana_program_option_COption_T.
                     [],
                     []
                   |),
-                  [ M.read (| f |); Value.Tuple [] ]
+                  [
+                    M.value_with_ty (M.read (| f |)) F;
+                    M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                  ]
                 |)))
           ]
         |)))
@@ -1245,29 +1382,34 @@ Module Impl_solana_program_option_COption_T.
                     0
                   |) in
                 let x := M.copy (| T, γ0_0 |) in
-                Value.StructTuple
-                  "solana_program_option::COption::Some"
-                  []
-                  [ U ]
-                  [
-                    M.call_closure (|
-                      U,
-                      M.get_trait_method (|
-                        "core::ops::function::FnOnce",
-                        F,
-                        [],
-                        [ Ty.tuple [ T ] ],
-                        "call_once",
-                        [],
-                        []
-                      |),
-                      [ M.read (| f |); Value.Tuple [ M.read (| x |) ] ]
-                    |)
-                  ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_option::COption::Some"
+                    [
+                      M.call_closure (|
+                        U,
+                        M.get_trait_method (|
+                          "core::ops::function::FnOnce",
+                          F,
+                          [],
+                          [ Ty.tuple [ T ] ],
+                          "call_once",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (M.read (| f |)) F;
+                          M.value_with_ty (Value.Tuple [ M.read (| x |) ]) (Ty.tuple [ T ])
+                        ]
+                      |)
+                    ])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ U ])));
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple "solana_program_option::COption::None" [] [ U ] []))
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::None" [])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ U ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1320,7 +1462,10 @@ Module Impl_solana_program_option_COption_T.
                     [],
                     []
                   |),
-                  [ M.read (| f |); Value.Tuple [ M.read (| t |) ] ]
+                  [
+                    M.value_with_ty (M.read (| f |)) F;
+                    M.value_with_ty (Value.Tuple [ M.read (| t |) ]) (Ty.tuple [ T ])
+                  ]
                 |)));
             fun γ =>
               ltac:(M.monadic
@@ -1378,7 +1523,10 @@ Module Impl_solana_program_option_COption_T.
                     [],
                     []
                   |),
-                  [ M.read (| f |); Value.Tuple [ M.read (| t |) ] ]
+                  [
+                    M.value_with_ty (M.read (| f |)) F;
+                    M.value_with_ty (Value.Tuple [ M.read (| t |) ]) (Ty.tuple [ T ])
+                  ]
                 |)));
             fun γ =>
               ltac:(M.monadic
@@ -1394,7 +1542,10 @@ Module Impl_solana_program_option_COption_T.
                     [],
                     []
                   |),
-                  [ M.read (| default |); Value.Tuple [] ]
+                  [
+                    M.value_with_ty (M.read (| default |)) D;
+                    M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                  ]
                 |)))
           ]
         |)))
@@ -1436,11 +1587,15 @@ Module Impl_solana_program_option_COption_T.
                     0
                   |) in
                 let v := M.copy (| T, γ0_0 |) in
-                Value.StructTuple "core::result::Result::Ok" [] [ T; E ] [ M.read (| v |) ]));
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ M.read (| v |) ])
+                  (Ty.apply (Ty.path "core::result::Result") [] [ T; E ])));
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple "core::result::Result::Err" [] [ T; E ] [ M.read (| err |) ]))
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Err" [ M.read (| err |) ])
+                  (Ty.apply (Ty.path "core::result::Result") [] [ T; E ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1481,29 +1636,34 @@ Module Impl_solana_program_option_COption_T.
                     0
                   |) in
                 let v := M.copy (| T, γ0_0 |) in
-                Value.StructTuple "core::result::Result::Ok" [] [ T; E ] [ M.read (| v |) ]));
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ M.read (| v |) ])
+                  (Ty.apply (Ty.path "core::result::Result") [] [ T; E ])));
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [ T; E ]
-                  [
-                    M.call_closure (|
-                      E,
-                      M.get_trait_method (|
-                        "core::ops::function::FnOnce",
-                        F,
-                        [],
-                        [ Ty.tuple [] ],
-                        "call_once",
-                        [],
-                        []
-                      |),
-                      [ M.read (| err |); Value.Tuple [] ]
-                    |)
-                  ]))
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    [
+                      M.call_closure (|
+                        E,
+                        M.get_trait_method (|
+                          "core::ops::function::FnOnce",
+                          F,
+                          [],
+                          [ Ty.tuple [] ],
+                          "call_once",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (M.read (| err |)) F;
+                          M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                        ]
+                      |)
+                    ])
+                  (Ty.apply (Ty.path "core::result::Result") [] [ T; E ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1548,7 +1708,9 @@ Module Impl_solana_program_option_COption_T.
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple "solana_program_option::COption::None" [] [ U ] []))
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::None" [])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ U ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1600,12 +1762,17 @@ Module Impl_solana_program_option_COption_T.
                     [],
                     []
                   |),
-                  [ M.read (| f |); Value.Tuple [ M.read (| x |) ] ]
+                  [
+                    M.value_with_ty (M.read (| f |)) F;
+                    M.value_with_ty (Value.Tuple [ M.read (| x |) ]) (Ty.tuple [ T ])
+                  ]
                 |)));
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple "solana_program_option::COption::None" [] [ U ] []))
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::None" [])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ U ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1675,14 +1842,16 @@ Module Impl_solana_program_option_COption_T.
                                           []
                                         |),
                                         [
-                                          M.read (| predicate |);
-                                          Value.Tuple
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, x |) |)
-                                              |)
-                                            ]
+                                          M.value_with_ty (M.read (| predicate |)) P;
+                                          M.value_with_ty
+                                            (Value.Tuple
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, x |) |)
+                                                |)
+                                              ])
+                                            (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                                         ]
                                       |)
                                     |)) in
@@ -1694,11 +1863,14 @@ Module Impl_solana_program_option_COption_T.
                                 M.never_to_any (|
                                   M.read (|
                                     M.return_ (|
-                                      Value.StructTuple
-                                        "solana_program_option::COption::Some"
-                                        []
-                                        [ T ]
-                                        [ M.read (| x |) ]
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "solana_program_option::COption::Some"
+                                          [ M.read (| x |) ])
+                                        (Ty.apply
+                                          (Ty.path "solana_program_option::COption")
+                                          []
+                                          [ T ])
                                     |)
                                   |)
                                 |)));
@@ -1710,7 +1882,9 @@ Module Impl_solana_program_option_COption_T.
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "solana_program_option::COption") [] [ T ],
-                Value.StructTuple "solana_program_option::COption::None" [] [ T ] []
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::None" [])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])
               |)
             |)))
         |)))
@@ -1811,7 +1985,10 @@ Module Impl_solana_program_option_COption_T.
                     [],
                     []
                   |),
-                  [ M.read (| f |); Value.Tuple [] ]
+                  [
+                    M.value_with_ty (M.read (| f |)) F;
+                    M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                  ]
                 |)))
           ]
         |)))
@@ -1865,11 +2042,9 @@ Module Impl_solana_program_option_COption_T.
                   |) in
                 let a := M.copy (| T, γ1_0 |) in
                 let _ := M.is_struct_tuple (| γ0_1, "solana_program_option::COption::None" |) in
-                Value.StructTuple
-                  "solana_program_option::COption::Some"
-                  []
-                  [ T ]
-                  [ M.read (| a |) ]));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::Some" [ M.read (| a |) ])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])));
             fun γ =>
               ltac:(M.monadic
                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -1882,14 +2057,14 @@ Module Impl_solana_program_option_COption_T.
                     0
                   |) in
                 let b := M.copy (| T, γ1_0 |) in
-                Value.StructTuple
-                  "solana_program_option::COption::Some"
-                  []
-                  [ T ]
-                  [ M.read (| b |) ]));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::Some" [ M.read (| b |) ])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple "solana_program_option::COption::None" [] [ T ] []))
+                (M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::None" [])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1935,20 +2110,27 @@ Module Impl_solana_program_option_COption_T.
                     [ Ty.function [] T ]
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                T,
-                                M.alloc (| Ty.tuple [], α0 |),
-                                [ fun γ => ltac:(M.monadic (M.read (| v |))) ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  T,
+                                  M.alloc (| Ty.tuple [], α0 |),
+                                  [ fun γ => ltac:(M.monadic (M.read (| v |))) ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function [] T)
                   ]
                 |)
               |)
@@ -2011,25 +2193,28 @@ Module Impl_solana_program_option_COption_T.
                           M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
                         M.write (|
                           M.deref (| M.read (| self |) |),
-                          Value.StructTuple
-                            "solana_program_option::COption::Some"
-                            []
-                            [ T ]
-                            [
-                              M.call_closure (|
-                                T,
-                                M.get_trait_method (|
-                                  "core::ops::function::FnOnce",
-                                  F,
-                                  [],
-                                  [ Ty.tuple [] ],
-                                  "call_once",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| f |); Value.Tuple [] ]
-                              |)
-                            ]
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "solana_program_option::COption::Some"
+                              [
+                                M.call_closure (|
+                                  T,
+                                  M.get_trait_method (|
+                                    "core::ops::function::FnOnce",
+                                    F,
+                                    [],
+                                    [ Ty.tuple [] ],
+                                    "call_once",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty (M.read (| f |)) F;
+                                    M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                                  ]
+                                |)
+                              ])
+                            (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])
                         |)));
                     fun γ => ltac:(M.monadic (Value.Tuple []))
                   ]
@@ -2061,7 +2246,11 @@ Module Impl_solana_program_option_COption_T.
                               M.call_closure (|
                                 Ty.path "never",
                                 M.get_function (| "core::panicking::panic", [], [] |),
-                                [ mk_str (| "internal error: entered unreachable code" |) ]
+                                [
+                                  M.value_with_ty
+                                    (mk_str (| "internal error: entered unreachable code" |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                ]
                               |)
                             |)))
                       ]
@@ -2108,8 +2297,17 @@ Module Impl_solana_program_option_COption_T.
             [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-            Value.StructTuple "solana_program_option::COption::Some" [] [ T ] [ M.read (| value |) ]
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]);
+            M.value_with_ty
+              (M.value_with_ty
+                (Value.StructTuple "solana_program_option::COption::Some" [ M.read (| value |) ])
+                (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ]))
+              (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2221,62 +2419,88 @@ Module Impl_solana_program_option_COption_T.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "solana_program_option::COption")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ T ] ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "solana_program_option::COption") [] [ T ],
+                  "as_ref",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "solana_program_option::COption")
                 []
-                [ Ty.apply (Ty.path "&") [] [ T ] ],
-              M.get_associated_function (|
-                Ty.apply (Ty.path "solana_program_option::COption") [] [ T ],
-                "as_ref",
-                [],
-                []
-              |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ],
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let t := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
+                [ Ty.apply (Ty.path "&") [] [ T ] ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ],
+                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let t := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::deref::Deref"
+                                        []
+                                        []
+                                        T
+                                        "Target"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
+                                    T,
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    Ty.associated_in_trait
-                                      "core::ops::deref::Deref"
-                                      []
-                                      []
-                                      T
-                                      "Target"
-                                  ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::Deref",
-                                  T,
-                                  [],
-                                  [],
-                                  "deref",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |) ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| t |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ T ])
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.apply (Ty.path "&") [] [ T ] ]
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ]))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2336,62 +2560,88 @@ Module Impl_solana_program_option_COption_T.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "solana_program_option::COption")
+                  []
+                  [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                M.get_associated_function (|
+                  Ty.apply (Ty.path "solana_program_option::COption") [] [ T ],
+                  "as_mut",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "solana_program_option::COption")
                 []
-                [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-              M.get_associated_function (|
-                Ty.apply (Ty.path "solana_program_option::COption") [] [ T ],
-                "as_mut",
-                [],
-                []
-              |),
-              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ],
-                        M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let t := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
+                [ Ty.apply (Ty.path "&mut") [] [ T ] ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ],
+                          M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let t := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::ops::deref::Deref"
+                                        []
+                                        []
+                                        T
+                                        "Target"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::DerefMut",
+                                    T,
+                                    [],
+                                    [],
+                                    "deref_mut",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    Ty.associated_in_trait
-                                      "core::ops::deref::Deref"
-                                      []
-                                      []
-                                      T
-                                      "Target"
-                                  ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::DerefMut",
-                                  T,
-                                  [],
-                                  [],
-                                  "deref_mut",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| t |) |) |) ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| t |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ T ])
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.apply (Ty.path "&mut") [] [ T ] ]
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] T "Target" ]))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2438,26 +2688,33 @@ Module Impl_solana_program_option_COption_ref__T.
             [ T; Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] T ]
           |),
           [
-            M.read (| self |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        T,
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let γ := M.deref (| M.read (| γ |) |) in
-                              let t := M.copy (| T, γ |) in
-                              M.read (| t |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+            M.value_with_ty
+              (M.read (| self |))
+              (Ty.apply
+                (Ty.path "solana_program_option::COption")
+                []
+                [ Ty.apply (Ty.path "&") [] [ T ] ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          T,
+                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ := M.deref (| M.read (| γ |) |) in
+                                let t := M.copy (| T, γ |) in
+                                M.read (| t |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] T)
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2498,37 +2755,51 @@ Module Impl_solana_program_option_COption_ref__T.
             [ T; Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] T ]
           |),
           [
-            M.read (| self |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        T,
-                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let t := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                              M.call_closure (|
-                                T,
-                                M.get_trait_method (|
-                                  "core::clone::Clone",
+            M.value_with_ty
+              (M.read (| self |))
+              (Ty.apply
+                (Ty.path "solana_program_option::COption")
+                []
+                [ Ty.apply (Ty.path "&") [] [ T ] ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          T,
+                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let t := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                M.call_closure (|
                                   T,
-                                  [],
-                                  [],
-                                  "clone",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |) ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                  M.get_trait_method (|
+                                    "core::clone::Clone",
+                                    T,
+                                    [],
+                                    [],
+                                    "clone",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| t |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ T ])
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] T)
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2575,26 +2846,33 @@ Module Impl_solana_program_option_COption_ref_mut_T.
             [ T; Ty.function [ Ty.apply (Ty.path "&mut") [] [ T ] ] T ]
           |),
           [
-            M.read (| self |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        T,
-                        M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let γ := M.deref (| M.read (| γ |) |) in
-                              let t := M.copy (| T, γ |) in
-                              M.read (| t |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+            M.value_with_ty
+              (M.read (| self |))
+              (Ty.apply
+                (Ty.path "solana_program_option::COption")
+                []
+                [ Ty.apply (Ty.path "&mut") [] [ T ] ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          T,
+                          M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ := M.deref (| M.read (| γ |) |) in
+                                let t := M.copy (| T, γ |) in
+                                M.read (| t |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function [ Ty.apply (Ty.path "&mut") [] [ T ] ] T)
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2635,37 +2913,51 @@ Module Impl_solana_program_option_COption_ref_mut_T.
             [ T; Ty.function [ Ty.apply (Ty.path "&mut") [] [ T ] ] T ]
           |),
           [
-            M.read (| self |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        T,
-                        M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let t := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                              M.call_closure (|
-                                T,
-                                M.get_trait_method (|
-                                  "core::clone::Clone",
+            M.value_with_ty
+              (M.read (| self |))
+              (Ty.apply
+                (Ty.path "solana_program_option::COption")
+                []
+                [ Ty.apply (Ty.path "&mut") [] [ T ] ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          T,
+                          M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let t := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
+                                M.call_closure (|
                                   T,
-                                  [],
-                                  [],
-                                  "clone",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |) ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                  M.get_trait_method (|
+                                    "core::clone::Clone",
+                                    T,
+                                    [],
+                                    [],
+                                    "clone",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| t |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ T ])
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function [ Ty.apply (Ty.path "&mut") [] [ T ] ] T)
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2730,17 +3022,20 @@ Module Impl_solana_program_option_COption_core_result_Result_T_E.
                 let γ1_0 :=
                   M.SubPointer.get_struct_tuple_field (| γ0_0, "core::result::Result::Ok", 0 |) in
                 let x := M.copy (| T, γ1_0 |) in
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ]; E ]
-                  [
-                    Value.StructTuple
-                      "solana_program_option::COption::Some"
-                      []
-                      [ T ]
-                      [ M.read (| x |) ]
-                  ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "solana_program_option::COption::Some"
+                          [ M.read (| x |) ])
+                        (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ]; E ])));
             fun γ =>
               ltac:(M.monadic
                 (let γ0_0 :=
@@ -2752,19 +3047,27 @@ Module Impl_solana_program_option_COption_core_result_Result_T_E.
                 let γ1_0 :=
                   M.SubPointer.get_struct_tuple_field (| γ0_0, "core::result::Result::Err", 0 |) in
                 let e := M.copy (| E, γ1_0 |) in
-                Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ]; E ]
-                  [ M.read (| e |) ]));
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Err" [ M.read (| e |) ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ]; E ])));
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ]; E ]
-                  [ Value.StructTuple "solana_program_option::COption::None" [] [ T ] [] ]))
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple "solana_program_option::COption::None" [])
+                        (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ]; E ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2790,7 +3093,11 @@ Definition expect_failed (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
       M.call_closure (|
         Ty.path "never",
         M.get_function (| "solana_program_option::expect_failed.panic_cold_display", [], [] |),
-        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, msg |) |) |) ]
+        [
+          M.value_with_ty
+            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, msg |) |) |))
+            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+        ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
   end.
@@ -2838,22 +3145,28 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_solana_program_option_
                     0
                   |) in
                 let x := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
-                Value.StructTuple
-                  "solana_program_option::COption::Some"
-                  []
-                  [ T ]
-                  [
-                    M.call_closure (|
-                      T,
-                      M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |) ]
-                    |)
-                  ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_option::COption::Some"
+                    [
+                      M.call_closure (|
+                        T,
+                        M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ T ])
+                        ]
+                      |)
+                    ])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple "solana_program_option::COption::None" [] [ T ] []))
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::None" [])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2929,8 +3242,12 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_solana_program_option_
                   Ty.tuple [],
                   M.get_trait_method (| "core::clone::Clone", T, [], [], "clone_from", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| to |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| to |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ T ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)));
             fun γ =>
@@ -2965,8 +3282,18 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_solana_program_option_
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| to |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| to |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
                   ]
                 |)))
           ]
@@ -3000,7 +3327,10 @@ Module Impl_core_default_Default_for_solana_program_option_COption_T.
     let Self : Ty.t := Self T in
     match ε, τ, α with
     | [], [], [] =>
-      ltac:(M.monadic (Value.StructTuple "solana_program_option::COption::None" [] [ T ] []))
+      ltac:(M.monadic
+        (M.value_with_ty
+          (Value.StructTuple "solana_program_option::COption::None" [])
+          (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -3028,7 +3358,9 @@ Module Impl_core_convert_From_T_for_solana_program_option_COption_T.
     | [], [], [ val ] =>
       ltac:(M.monadic
         (let val := M.alloc (| T, val |) in
-        Value.StructTuple "solana_program_option::COption::Some" [] [ T ] [ M.read (| val |) ]))
+        M.value_with_ty
+          (Value.StructTuple "solana_program_option::COption::Some" [ M.read (| val |) ])
+          (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -3075,7 +3407,14 @@ Module Impl_core_convert_From_ref__solana_program_option_COption_T_for_solana_pr
             [],
             []
           |),
-          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| o |) |) |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| o |) |) |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -3124,7 +3463,14 @@ Module Impl_core_convert_From_ref_mut_solana_program_option_COption_T_for_solana
             [],
             []
           |),
-          [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| o |) |) |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| o |) |) |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -3187,12 +3533,21 @@ Module Impl_solana_program_option_COption_solana_program_option_COption_T.
             ]
           |),
           [
-            M.read (| self |);
-            M.get_function (|
-              "core::convert::identity",
-              [],
-              [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
-            |)
+            M.value_with_ty
+              (M.read (| self |))
+              (Ty.apply
+                (Ty.path "solana_program_option::COption")
+                []
+                [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]);
+            M.value_with_ty
+              (M.get_function (|
+                "core::convert::identity",
+                [],
+                [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
+              |))
+              (Ty.function
+                [ Ty.apply (Ty.path "solana_program_option::COption") [] [ T ] ]
+                (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ]))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3231,15 +3586,15 @@ Module Impl_core_convert_From_core_option_Option_T_for_solana_program_option_COp
                 (let γ0_0 :=
                   M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
                 let value := M.copy (| T, γ0_0 |) in
-                Value.StructTuple
-                  "solana_program_option::COption::Some"
-                  []
-                  [ T ]
-                  [ M.read (| value |) ]));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::Some" [ M.read (| value |) ])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])));
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                Value.StructTuple "solana_program_option::COption::None" [] [ T ] []))
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_option::COption::None" [])
+                  (Ty.apply (Ty.path "solana_program_option::COption") [] [ T ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3286,11 +3641,15 @@ Module Impl_core_convert_From_solana_program_option_COption_T_for_core_option_Op
                     0
                   |) in
                 let value := M.copy (| T, γ0_0 |) in
-                Value.StructTuple "core::option::Option::Some" [] [ T ] [ M.read (| value |) ]));
+                M.value_with_ty
+                  (Value.StructTuple "core::option::Option::Some" [ M.read (| value |) ])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ T ])));
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "solana_program_option::COption::None" |) in
-                Value.StructTuple "core::option::Option::None" [] [ T ] []))
+                M.value_with_ty
+                  (Value.StructTuple "core::option::Option::None" [])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ T ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

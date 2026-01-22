@@ -24,41 +24,43 @@ Module eip2.
             []
           |),
           [
-            Value.Array
-              [
-                Value.Integer IntegerKind.U8 127;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 93;
-                Value.Integer IntegerKind.U8 87;
-                Value.Integer IntegerKind.U8 110;
-                Value.Integer IntegerKind.U8 115;
-                Value.Integer IntegerKind.U8 87;
-                Value.Integer IntegerKind.U8 164;
-                Value.Integer IntegerKind.U8 80;
-                Value.Integer IntegerKind.U8 29;
-                Value.Integer IntegerKind.U8 223;
-                Value.Integer IntegerKind.U8 233;
-                Value.Integer IntegerKind.U8 47;
-                Value.Integer IntegerKind.U8 70;
-                Value.Integer IntegerKind.U8 104;
-                Value.Integer IntegerKind.U8 27;
-                Value.Integer IntegerKind.U8 32;
-                Value.Integer IntegerKind.U8 160
-              ]
+            M.value_with_ty
+              (Value.Array
+                [
+                  Value.Integer IntegerKind.U8 127;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 255;
+                  Value.Integer IntegerKind.U8 93;
+                  Value.Integer IntegerKind.U8 87;
+                  Value.Integer IntegerKind.U8 110;
+                  Value.Integer IntegerKind.U8 115;
+                  Value.Integer IntegerKind.U8 87;
+                  Value.Integer IntegerKind.U8 164;
+                  Value.Integer IntegerKind.U8 80;
+                  Value.Integer IntegerKind.U8 29;
+                  Value.Integer IntegerKind.U8 223;
+                  Value.Integer IntegerKind.U8 233;
+                  Value.Integer IntegerKind.U8 47;
+                  Value.Integer IntegerKind.U8 70;
+                  Value.Integer IntegerKind.U8 104;
+                  Value.Integer IntegerKind.U8 27;
+                  Value.Integer IntegerKind.U8 32;
+                  Value.Integer IntegerKind.U8 160
+                ])
+              (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ])
           ]
         |)
       |))).

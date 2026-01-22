@@ -21,7 +21,7 @@ Module Range.
     Φ :=
       Ty.apply (Ty.path "core::ops::range::Range") [] [ Φ Idx ];
     φ x :=
-      Value.StructRecord "core::ops::range::Range" [] [ Φ Idx ] [
+      Value.StructRecord "core::ops::range::Range" [
         ("end_", φ x.(end_));
         ("start", φ x.(start))
       ];
@@ -38,7 +38,7 @@ Module Range.
       (Idx : Set) `{Link Idx}
       (start' : Value.t) {H_start : OfValueWith.C (Idx) start'}
       (end_' : Value.t) {H_end_ : OfValueWith.C (Idx) end_'} :
-    OfValueWith.C (t Idx) (Value.StructRecord "core::ops::range::Range" [] [Φ Idx] [
+    OfValueWith.C (t Idx) (Value.StructRecord "core::ops::range::Range" [
       ("end_", end_');
       ("start", start')
     ]) :=
@@ -51,7 +51,7 @@ Module Range.
       (Idx' : Ty.t) {H_Idx : OfTy.C Idx'}
       (start' : Value.t) {H_start : OfValueWith.C H_Idx.(OfTy.A) start'}
       (end_' : Value.t) {H_end_ : OfValueWith.C H_Idx.(OfTy.A) end_'} :
-    OfValue.C (Value.StructRecord "core::ops::range::Range" [] [Idx'] [
+    OfValue.C (Value.StructRecord "core::ops::range::Range" [
       ("end_", end_');
       ("start", start')
     ]) :=
@@ -104,9 +104,9 @@ Module Bound.
     Φ := Ty.apply (Ty.path "core::ops::Range::Bound") [] [Φ T];
     φ x :=
       match x with
-      | Included x => Value.StructTuple "core::ops::Range::Bound::Included" [] [Φ T] [φ x]
-      | Excluded x => Value.StructTuple "core::ops::Range::Bound::Excluded" [] [Φ T] [φ x]
-      | Unbounded => Value.StructTuple "core::ops::Range::Bound::Unbounded" [] [Φ T] []
+      | Included x => Value.StructTuple "core::ops::Range::Bound::Included" [φ x]
+      | Excluded x => Value.StructTuple "core::ops::Range::Bound::Excluded" [φ x]
+      | Unbounded => Value.StructTuple "core::ops::Range::Bound::Unbounded" []
       end;
   }.
 End Bound.
@@ -194,7 +194,7 @@ Module RangeTo.
 
   Global Instance IsLink (Idx : Set) `{Link Idx} : Link (t Idx) := {
     Φ := Ty.apply (Ty.path "core::ops::range::RangeTo") [] [Φ Idx];
-    φ x := Value.StructRecord "core::ops::range::RangeTo" [] [Φ Idx] [("end_", φ x.(end_))];
+    φ x := Value.StructRecord "core::ops::range::RangeTo" [("end_", φ x.(end_))];
   }.
 
   Definition of_ty (Idx_ty : Ty.t) :
@@ -208,10 +208,19 @@ Module RangeTo.
   Defined.
   Smpl Add eapply of_ty : of_ty.
 
+  Instance IsOfValueWith
+      (Idx : Set) `{Link Idx}
+      (end_' : Value.t) {H_end_ : OfValueWith.C Idx end_'} :
+    OfValueWith.C (t Idx) (Value.StructRecord "core::ops::range::RangeTo" [("end_", end_')]) :=
+  {
+    OfValueWith.value := Build_t Idx H_end_.(OfValueWith.value);
+    OfValueWith.eq := ltac:(destruct H_end_; subst; reflexivity);
+  }.
+
   Lemma of_value_with {Idx : Set} `{Link Idx} Idx' (end_ : Idx) end_' :
     Idx' = Φ Idx ->
     end_' = φ end_ ->
-    Value.StructRecord "core::ops::range::RangeTo" [] [Idx'] [("end_", end_')] =
+    Value.StructRecord "core::ops::range::RangeTo" [("end_", end_')] =
     φ (Build_t Idx end_).
   Proof.
     now intros; subst.
@@ -222,7 +231,7 @@ Module RangeTo.
     forall
       (of_value_end : OfValue.t end_'),
     Idx' = Φ (OfValue.get_Set of_value_end) ->
-    OfValue.t (Value.StructRecord "core::ops::range::RangeTo" [] [Idx'] [("end_", end_')]).
+    OfValue.t (Value.StructRecord "core::ops::range::RangeTo" [("end_", end_')]).
   Proof.
     intros [Idx ? end_] **.
     eapply OfValue.Make with (A := t Idx) (value := Build_t Idx end_).

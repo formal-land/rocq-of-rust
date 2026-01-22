@@ -26,11 +26,11 @@ Module AssertKind.
     φ x :=
       match x with
       | Eq =>
-          Value.StructTuple "core::panicking::AssertKind::Eq" [] [] []
+          Value.StructTuple "core::panicking::AssertKind::Eq" []
       | Ne =>
-          Value.StructTuple "core::panicking::AssertKind::Ne" [] [] []
+          Value.StructTuple "core::panicking::AssertKind::Ne" []
       | Match =>
-          Value.StructTuple "core::panicking::AssertKind::Match" [] [] []
+          Value.StructTuple "core::panicking::AssertKind::Match" []
       end
   }.
 
@@ -41,42 +41,42 @@ Module AssertKind.
   }.
 
   Instance IsOfValueWith_Eq :
-    OfValueWith.C t (Value.StructTuple "core::panicking::AssertKind::Eq" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "core::panicking::AssertKind::Eq" []) :=
   {
     value := Eq;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Eq :
-    OfValue.C (Value.StructTuple "core::panicking::AssertKind::Eq" [] [] []) :=
+    OfValue.C (Value.StructTuple "core::panicking::AssertKind::Eq" []) :=
   {
     value := Eq;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Ne :
-    OfValueWith.C t (Value.StructTuple "core::panicking::AssertKind::Ne" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "core::panicking::AssertKind::Ne" []) :=
   {
     value := Ne;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Ne :
-    OfValue.C (Value.StructTuple "core::panicking::AssertKind::Ne" [] [] []) :=
+    OfValue.C (Value.StructTuple "core::panicking::AssertKind::Ne" []) :=
   {
     value := Ne;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Match :
-    OfValueWith.C t (Value.StructTuple "core::panicking::AssertKind::Match" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "core::panicking::AssertKind::Match" []) :=
   {
     value := Match;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Match :
-    OfValue.C (Value.StructTuple "core::panicking::AssertKind::Match" [] [] []) :=
+    OfValue.C (Value.StructTuple "core::panicking::AssertKind::Match" []) :=
   {
     value := Match;
     eq := eq_refl;

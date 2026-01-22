@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_contract_terminate_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "contract_terminate::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "contract_terminate::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "contract_terminate::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -142,7 +142,11 @@ Module Impl_contract_terminate_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -178,7 +182,11 @@ Module Impl_contract_terminate_JustTerminate.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -227,7 +235,10 @@ Module Impl_contract_terminate_JustTerminate.
   Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
     | [], [], [] =>
-      ltac:(M.monadic (Value.StructTuple "contract_terminate::JustTerminate" [] [] []))
+      ltac:(M.monadic
+        (M.value_with_ty
+          (Value.StructTuple "contract_terminate::JustTerminate" [])
+          (Ty.path "contract_terminate::JustTerminate")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -260,49 +271,69 @@ Module Impl_contract_terminate_JustTerminate.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "contract_terminate::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "contract_terminate::Env",
-                      M.get_associated_function (|
-                        Ty.path "contract_terminate::JustTerminate",
-                        "env",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
-                  |)
-                |);
-                M.call_closure (|
-                  Ty.path "contract_terminate::AccountId",
-                  M.get_associated_function (|
-                    Ty.path "contract_terminate::Env",
-                    "caller",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
+                      M.call_closure (|
                         Ty.path "contract_terminate::Env",
-                        M.call_closure (|
-                          Ty.path "contract_terminate::Env",
-                          M.get_associated_function (|
-                            Ty.path "contract_terminate::JustTerminate",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
+                        M.get_associated_function (|
+                          Ty.path "contract_terminate::JustTerminate",
+                          "env",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "contract_terminate::JustTerminate" ])
+                        ]
                       |)
                     |)
-                  ]
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "contract_terminate::Env" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "contract_terminate::AccountId",
+                    M.get_associated_function (|
+                      Ty.path "contract_terminate::Env",
+                      "caller",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.path "contract_terminate::Env",
+                            M.call_closure (|
+                              Ty.path "contract_terminate::Env",
+                              M.get_associated_function (|
+                                Ty.path "contract_terminate::JustTerminate",
+                                "env",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "contract_terminate::JustTerminate" ])
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "contract_terminate::Env" ])
+                    ]
+                  |))
+                  (Ty.path "contract_terminate::AccountId")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)

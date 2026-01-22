@@ -128,27 +128,36 @@ Module signature.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Eip155" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Eip155" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)));
                 fun γ =>
@@ -174,27 +183,36 @@ Module signature.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NonEip155" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NonEip155" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)));
                 fun γ =>
@@ -220,27 +238,36 @@ Module signature.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Parity" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Parity" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)))
               ]
@@ -280,7 +307,14 @@ Module signature.
                     [],
                     [ Ty.path "alloy_primitives::signature::parity::Parity" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signature::parity::Parity" ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -295,11 +329,15 @@ Module signature.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -331,8 +369,12 @@ Module signature.
                             [ __H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ __H ])
                           ]
                         |)));
                     fun γ =>
@@ -358,8 +400,12 @@ Module signature.
                             [ __H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ __H ])
                           ]
                         |)));
                     fun γ =>
@@ -385,8 +431,12 @@ Module signature.
                             [ __H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ __H ])
                           ]
                         |)))
                   ]
@@ -444,7 +494,14 @@ Module signature.
                     [],
                     [ Ty.path "alloy_primitives::signature::parity::Parity" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signature::parity::Parity" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -454,7 +511,14 @@ Module signature.
                     [],
                     [ Ty.path "alloy_primitives::signature::parity::Parity" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signature::parity::Parity" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -516,8 +580,18 @@ Module signature.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                               ]
                             |)));
                         fun γ =>
@@ -554,8 +628,18 @@ Module signature.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
                               ]
                             |)));
                         fun γ =>
@@ -592,8 +676,18 @@ Module signature.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
                               ]
                             |)));
                         fun γ =>
@@ -677,11 +771,11 @@ Module signature.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.StructTuple
-              "alloy_primitives::signature::parity::Parity::Parity"
-              []
-              []
-              [ Value.Bool false ]))
+            (M.value_with_ty
+              (Value.StructTuple
+                "alloy_primitives::signature::parity::Parity::Parity"
+                [ Value.Bool false ])
+              (Ty.path "alloy_primitives::signature::parity::Parity")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -741,35 +835,54 @@ Module signature.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_array_field (|
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "u64" ]
-                          ],
-                        M.get_associated_function (|
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_array_field (|
+                      M.deref (|
+                        M.call_closure (|
                           Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 64; Value.Integer IntegerKind.Usize 1
-                            ]
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.path "u64" ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 64;
+                                Value.Integer IntegerKind.Usize 1
+                              ]
+                              [],
+                            "as_limbs",
                             [],
-                          "as_limbs",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, value |) ]
-                      |)
-                    |),
-                    Value.Integer IntegerKind.Usize 0
-                  |)
-                |)
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, value |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 64;
+                                      Value.Integer IntegerKind.Usize 1
+                                    ]
+                                    []
+                                ])
+                          ]
+                        |)
+                      |),
+                      Value.Integer IntegerKind.Usize 0
+                    |)
+                  |))
+                  (Ty.path "u64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -811,31 +924,46 @@ Module signature.
                   [],
                 value
               |) in
-            Value.StructTuple
-              "alloy_primitives::signature::parity::Parity::Parity"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "bool",
-                  UnOp.not,
-                  [
-                    M.call_closure (|
-                      Ty.path "bool",
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ]
+            M.value_with_ty
+              (Value.StructTuple
+                "alloy_primitives::signature::parity::Parity::Parity"
+                [
+                  M.call_closure (|
+                    Ty.path "bool",
+                    UnOp.not,
+                    [
+                      M.call_closure (|
+                        Ty.path "bool",
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ]
+                            [],
+                          "is_zero",
                           [],
-                        "is_zero",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, value |) ]
-                    |)
-                  ]
-                |)
-              ]))
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, value |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 1;
+                                    Value.Integer IntegerKind.Usize 1
+                                  ]
+                                  []
+                              ])
+                        ]
+                      |)
+                    ]
+                  |)
+                ])
+              (Ty.path "alloy_primitives::signature::parity::Parity")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -867,11 +995,11 @@ Module signature.
         | [], [], [ value ] =>
           ltac:(M.monadic
             (let value := M.alloc (| Ty.path "bool", value |) in
-            Value.StructTuple
-              "alloy_primitives::signature::parity::Parity::Parity"
-              []
-              []
-              [ M.read (| value |) ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "alloy_primitives::signature::parity::Parity::Parity"
+                [ M.read (| value |) ])
+              (Ty.path "alloy_primitives::signature::parity::Parity")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -942,26 +1070,29 @@ Module signature.
                           match γ with
                           | [] =>
                             ltac:(M.monadic
-                              (Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [
-                                  Ty.path "alloy_primitives::signature::parity::Parity";
-                                  Ty.path "alloy_primitives::signature::error::SignatureError"
-                                ]
-                                [
-                                  Value.StructTuple
-                                    "alloy_primitives::signature::parity::Parity::Parity"
-                                    []
-                                    []
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ne,
-                                        [ M.read (| value |); Value.Integer IntegerKind.U64 0 ]
-                                      |)
-                                    ]
-                                ]))
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Ok"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "alloy_primitives::signature::parity::Parity::Parity"
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            BinOp.ne,
+                                            [ M.read (| value |); Value.Integer IntegerKind.U64 0 ]
+                                          |)
+                                        ])
+                                      (Ty.path "alloy_primitives::signature::parity::Parity")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "alloy_primitives::signature::parity::Parity";
+                                    Ty.path "alloy_primitives::signature::error::SignatureError"
+                                  ])))
                           | _ => M.impossible "wrong number of arguments"
                           end)
                     |)));
@@ -992,69 +1123,81 @@ Module signature.
                           match γ with
                           | [] =>
                             ltac:(M.monadic
-                              (Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [
-                                  Ty.path "alloy_primitives::signature::parity::Parity";
-                                  Ty.path "alloy_primitives::signature::error::SignatureError"
-                                ]
-                                [
-                                  Value.StructTuple
-                                    "alloy_primitives::signature::parity::Parity::NonEip155"
-                                    []
-                                    []
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ne,
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Ok"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "alloy_primitives::signature::parity::Parity::NonEip155"
                                         [
                                           M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.sub,
-                                            [ M.read (| value |); Value.Integer IntegerKind.U64 27 ]
-                                          |);
-                                          Value.Integer IntegerKind.U64 0
-                                        ]
-                                      |)
-                                    ]
-                                ]))
+                                            Ty.path "bool",
+                                            BinOp.ne,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.sub,
+                                                [
+                                                  M.read (| value |);
+                                                  Value.Integer IntegerKind.U64 27
+                                                ]
+                                              |);
+                                              Value.Integer IntegerKind.U64 0
+                                            ]
+                                          |)
+                                        ])
+                                      (Ty.path "alloy_primitives::signature::parity::Parity")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "alloy_primitives::signature::parity::Parity";
+                                    Ty.path "alloy_primitives::signature::error::SignatureError"
+                                  ])))
                           | _ => M.impossible "wrong number of arguments"
                           end)
                     |)));
                 fun γ =>
                   ltac:(M.monadic
                     (let value := M.copy (| Ty.path "u64", γ |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.path "alloy_primitives::signature::parity::Parity";
-                        Ty.path "alloy_primitives::signature::error::SignatureError"
-                      ]
-                      [
-                        Value.StructTuple
-                          "alloy_primitives::signature::parity::Parity::Eip155"
-                          []
-                          []
-                          [ M.read (| value |) ]
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Ok"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "alloy_primitives::signature::parity::Parity::Eip155"
+                              [ M.read (| value |) ])
+                            (Ty.path "alloy_primitives::signature::parity::Parity")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "alloy_primitives::signature::parity::Parity";
+                          Ty.path "alloy_primitives::signature::error::SignatureError"
+                        ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.path "alloy_primitives::signature::parity::Parity";
-                        Ty.path "alloy_primitives::signature::error::SignatureError"
-                      ]
-                      [
-                        Value.StructTuple
-                          "alloy_primitives::signature::error::SignatureError::InvalidParity"
-                          []
-                          []
-                          [ M.read (| value |) ]
-                      ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "alloy_primitives::signature::error::SignatureError::InvalidParity"
+                              [ M.read (| value |) ])
+                            (Ty.path "alloy_primitives::signature::error::SignatureError")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "alloy_primitives::signature::parity::Parity";
+                          Ty.path "alloy_primitives::signature::error::SignatureError"
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1167,22 +1310,24 @@ Module signature.
                         |) in
                       M.alloc (|
                         Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                        Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [ Ty.path "u64" ]
-                          [
-                            M.call_closure (|
-                              Ty.path "u64",
-                              BinOp.Wrap.div,
-                              [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
-                            |)
-                          ]
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            [
+                              M.call_closure (|
+                                Ty.path "u64",
+                                BinOp.Wrap.div,
+                                [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
+                              |)
+                            ])
+                          (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])
                       |)
                     |)));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple "core::option::Option::None" [] [ Ty.path "u64" ] []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1216,22 +1361,34 @@ Module signature.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                      M.get_associated_function (|
-                        Ty.path "alloy_primitives::signature::parity::Parity",
-                        "chain_id",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                        M.get_associated_function (|
+                          Ty.path "alloy_primitives::signature::parity::Parity",
+                          "chain_id",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "alloy_primitives::signature::parity::Parity" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1393,7 +1550,14 @@ Module signature.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "alloy_primitives::signature::parity::Parity" ])
+                ]
               |))))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -1464,28 +1628,30 @@ Module signature.
                           match γ with
                           | [ v ] =>
                             ltac:(M.monadic
-                              (Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [ Ty.path "u8" ]
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u8",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.cast
-                                        (Ty.path "u8")
-                                        (M.read (| M.deref (| M.read (| v |) |) |));
-                                      Value.Integer IntegerKind.U8 27
-                                    ]
-                                  |)
-                                ]))
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "core::option::Option::Some"
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u8",
+                                      BinOp.Wrap.add,
+                                      [
+                                        M.cast
+                                          (Ty.path "u8")
+                                          (M.read (| M.deref (| M.read (| v |) |) |));
+                                        Value.Integer IntegerKind.U8 27
+                                      ]
+                                    |)
+                                  ])
+                                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ])))
                           | _ => M.impossible "wrong number of arguments"
                           end)
                     |)));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple "core::option::Option::None" [] [ Ty.path "u8" ] []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1600,11 +1766,11 @@ Module signature.
                         0
                       |) in
                     let b := M.copy (| Ty.path "bool", γ0_0 |) in
-                    Value.StructTuple
-                      "alloy_primitives::signature::parity::Parity::Parity"
-                      []
-                      []
-                      [ M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| b |) ] |) ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "alloy_primitives::signature::parity::Parity::Parity"
+                        [ M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| b |) ] |) ])
+                      (Ty.path "alloy_primitives::signature::parity::Parity")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -1614,11 +1780,11 @@ Module signature.
                         0
                       |) in
                     let b := M.copy (| Ty.path "bool", γ0_0 |) in
-                    Value.StructTuple
-                      "alloy_primitives::signature::parity::Parity::NonEip155"
-                      []
-                      []
-                      [ M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| b |) ] |) ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "alloy_primitives::signature::parity::Parity::NonEip155"
+                        [ M.call_closure (| Ty.path "bool", UnOp.not, [ M.read (| b |) ] |) ])
+                      (Ty.path "alloy_primitives::signature::parity::Parity")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -1632,11 +1798,11 @@ Module signature.
                         M.read (| γ0_0 |),
                         Value.Integer IntegerKind.U64 0
                       |) in
-                    Value.StructTuple
-                      "alloy_primitives::signature::parity::Parity::Eip155"
-                      []
-                      []
-                      [ Value.Integer IntegerKind.U64 1 ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "alloy_primitives::signature::parity::Parity::Eip155"
+                        [ Value.Integer IntegerKind.U64 1 ])
+                      (Ty.path "alloy_primitives::signature::parity::Parity")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -1646,54 +1812,54 @@ Module signature.
                         0
                       |) in
                     let v := M.copy (| Ty.path "u64", γ0_0 |) in
-                    Value.StructTuple
-                      "alloy_primitives::signature::parity::Parity::Eip155"
-                      []
-                      []
-                      [
-                        M.match_operator (|
-                          Ty.path "u64",
-                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ :=
-                                  M.use
-                                    (M.alloc (|
-                                      Ty.path "bool",
-                                      M.call_closure (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "alloy_primitives::signature::parity::Parity::Eip155"
+                        [
+                          M.match_operator (|
+                            Ty.path "u64",
+                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ :=
+                                    M.use
+                                      (M.alloc (|
                                         Ty.path "bool",
-                                        BinOp.eq,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.rem,
-                                            [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
-                                          |);
-                                          Value.Integer IntegerKind.U64 0
-                                        ]
-                                      |)
-                                    |)) in
-                                let _ :=
-                                  is_constant_or_break_match (|
-                                    M.read (| γ |),
-                                    Value.Bool true
-                                  |) in
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
-                                |)));
-                            fun γ =>
-                              ltac:(M.monadic
-                                (M.call_closure (|
-                                  Ty.path "u64",
-                                  BinOp.Wrap.add,
-                                  [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
-                                |)))
-                          ]
-                        |)
-                      ]));
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.eq,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "u64",
+                                              BinOp.Wrap.rem,
+                                              [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
+                                            |);
+                                            Value.Integer IntegerKind.U64 0
+                                          ]
+                                        |)
+                                      |)) in
+                                  let _ :=
+                                    is_constant_or_break_match (|
+                                      M.read (| γ |),
+                                      Value.Bool true
+                                    |) in
+                                  M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
+                                  |)));
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.add,
+                                    [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
+                                  |)))
+                            ]
+                          |)
+                        ])
+                      (Ty.path "alloy_primitives::signature::parity::Parity")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -1703,17 +1869,17 @@ Module signature.
                         0
                       |) in
                     let v := M.copy (| Ty.path "u64", γ0_0 |) in
-                    Value.StructTuple
-                      "alloy_primitives::signature::parity::Parity::Eip155"
-                      []
-                      []
-                      [
-                        M.call_closure (|
-                          Ty.path "u64",
-                          BinOp.Wrap.bit_xor,
-                          [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
-                        |)
-                      ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "alloy_primitives::signature::parity::Parity::Eip155"
+                        [
+                          M.call_closure (|
+                            Ty.path "u64",
+                            BinOp.Wrap.bit_xor,
+                            [ M.read (| v |); Value.Integer IntegerKind.U64 1 ]
+                          |)
+                        ])
+                      (Ty.path "alloy_primitives::signature::parity::Parity")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1754,24 +1920,24 @@ Module signature.
                         0
                       |) in
                     let v := M.copy (| Ty.path "u64", γ0_0 |) in
-                    Value.StructTuple
-                      "alloy_primitives::signature::parity::Parity::NonEip155"
-                      []
-                      []
-                      [
-                        M.call_closure (|
-                          Ty.path "bool",
-                          BinOp.eq,
-                          [
-                            M.call_closure (|
-                              Ty.path "u64",
-                              BinOp.Wrap.rem,
-                              [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
-                            |);
-                            Value.Integer IntegerKind.U64 1
-                          ]
-                        |)
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "alloy_primitives::signature::parity::Parity::NonEip155"
+                        [
+                          M.call_closure (|
+                            Ty.path "bool",
+                            BinOp.eq,
+                            [
+                              M.call_closure (|
+                                Ty.path "u64",
+                                BinOp.Wrap.rem,
+                                [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
+                              |);
+                              Value.Integer IntegerKind.U64 1
+                            ]
+                          |)
+                        ])
+                      (Ty.path "alloy_primitives::signature::parity::Parity")));
                 fun γ =>
                   ltac:(M.monadic
                     (let this :=
@@ -1830,7 +1996,7 @@ Module signature.
                                 [],
                                 []
                               |),
-                              [ M.read (| v |) ]
+                              [ M.value_with_ty (M.read (| v |)) (Ty.path "u64") ]
                             |);
                             Value.Integer IntegerKind.U8 1
                           ]
@@ -1872,21 +2038,26 @@ Module signature.
                 |) in
               M.alloc (|
                 Ty.path "alloy_primitives::signature::parity::Parity",
-                Value.StructTuple
-                  "alloy_primitives::signature::parity::Parity::Eip155"
-                  []
-                  []
-                  [
-                    M.call_closure (|
-                      Ty.path "u64",
-                      M.get_function (|
-                        "alloy_primitives::signature::utils::to_eip155_v",
-                        [],
-                        []
-                      |),
-                      [ M.cast (Ty.path "u8") (M.read (| parity |)); M.read (| chain_id |) ]
-                    |)
-                  ]
+                M.value_with_ty
+                  (Value.StructTuple
+                    "alloy_primitives::signature::parity::Parity::Eip155"
+                    [
+                      M.call_closure (|
+                        Ty.path "u64",
+                        M.get_function (|
+                          "alloy_primitives::signature::utils::to_eip155_v",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.cast (Ty.path "u8") (M.read (| parity |)))
+                            (Ty.path "u8");
+                          M.value_with_ty (M.read (| chain_id |)) (Ty.path "u64")
+                        ]
+                      |)
+                    ])
+                  (Ty.path "alloy_primitives::signature::parity::Parity")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1908,22 +2079,29 @@ Module signature.
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.path "alloy_primitives::signature::parity::Parity", self |) in
-            Value.StructTuple
-              "alloy_primitives::signature::parity::Parity::Parity"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_associated_function (|
-                    Ty.path "alloy_primitives::signature::parity::Parity",
-                    "y_parity",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "alloy_primitives::signature::parity::Parity::Parity"
+                [
+                  M.call_closure (|
+                    Ty.path "bool",
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::signature::parity::Parity",
+                      "y_parity",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, self |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "alloy_primitives::signature::parity::Parity" ])
+                    ]
+                  |)
+                ])
+              (Ty.path "alloy_primitives::signature::parity::Parity")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       

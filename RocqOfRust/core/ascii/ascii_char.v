@@ -891,7 +891,11 @@ Module ascii.
                     [],
                     [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "u8" :=
                 M.call_closure (|
@@ -901,7 +905,11 @@ Module ascii.
                     [],
                     [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -951,7 +959,11 @@ Module ascii.
                     [],
                     [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "u8" :=
                 M.call_closure (|
@@ -961,7 +973,11 @@ Module ascii.
                     [],
                     [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "core::cmp::Ordering",
@@ -969,14 +985,18 @@ Module ascii.
                   Ty.path "core::cmp::Ordering",
                   M.get_trait_method (| "core::cmp::Ord", Ty.path "u8", [], [], "cmp", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                   ]
                 |)
               |)
@@ -1020,7 +1040,11 @@ Module ascii.
                     [],
                     [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "u8" :=
                 M.call_closure (|
@@ -1030,7 +1054,11 @@ Module ascii.
                     [],
                     [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -1046,14 +1074,18 @@ Module ascii.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                   ]
                 |)
               |)
@@ -1093,7 +1125,11 @@ Module ascii.
                     [],
                     [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ascii::ascii_char::AsciiChar" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.tuple [],
@@ -1109,11 +1145,15 @@ Module ascii.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -1168,29 +1208,33 @@ Module ascii.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                      [
-                        M.call_closure (|
-                          Ty.path "core::ascii::ascii_char::AsciiChar",
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.call_closure (|
                             Ty.path "core::ascii::ascii_char::AsciiChar",
-                            "from_u8_unchecked",
-                            [],
-                            []
-                          |),
-                          [ M.read (| b |) ]
-                        |)
-                      ]));
+                            M.get_associated_function (|
+                              Ty.path "core::ascii::ascii_char::AsciiChar",
+                              "from_u8_unchecked",
+                              [],
+                              []
+                            |),
+                            [ M.value_with_ty (M.read (| b |)) (Ty.path "u8") ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1218,7 +1262,7 @@ Module ascii.
                 [],
                 [ Ty.path "u8"; Ty.path "core::ascii::ascii_char::AsciiChar" ]
               |),
-              [ M.read (| b |) ]
+              [ M.value_with_ty (M.read (| b |)) (Ty.path "u8") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -1263,29 +1307,33 @@ Module ascii.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                      [
-                        M.call_closure (|
-                          Ty.path "core::ascii::ascii_char::AsciiChar",
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.call_closure (|
                             Ty.path "core::ascii::ascii_char::AsciiChar",
-                            "digit_unchecked",
-                            [],
-                            []
-                          |),
-                          [ M.read (| d |) ]
-                        |)
-                      ]));
+                            M.get_associated_function (|
+                              Ty.path "core::ascii::ascii_char::AsciiChar",
+                              "digit_unchecked",
+                              [],
+                              []
+                            |),
+                            [ M.value_with_ty (M.read (| d |)) (Ty.path "u8") ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1346,7 +1394,7 @@ Module ascii.
                                 [],
                                 []
                               |),
-                              [ M.read (| d |) ]
+                              [ M.value_with_ty (M.read (| d |)) (Ty.path "u8") ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -1357,7 +1405,10 @@ Module ascii.
                 M.call_closure (|
                   Ty.path "u8",
                   M.get_associated_function (| Ty.path "u8", "unchecked_add", [], [] |),
-                  [ M.read (| UnsupportedLiteral |); M.read (| d |) ]
+                  [
+                    M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "u8");
+                    M.value_with_ty (M.read (| d |)) (Ty.path "u8")
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "core::ascii::ascii_char::AsciiChar",
@@ -1369,7 +1420,7 @@ Module ascii.
                     [],
                     []
                   |),
-                  [ M.read (| byte |) ]
+                  [ M.value_with_ty (M.read (| byte |)) (Ty.path "u8") ]
                 |)
               |)
             |)))
@@ -1443,28 +1494,45 @@ Module ascii.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                              ],
+                            M.get_function (|
+                              "core::slice::raw::from_ref",
+                              [],
+                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                            |),
                             [
-                              Ty.apply
-                                (Ty.path "slice")
-                                []
-                                [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                            ],
-                          M.get_function (|
-                            "core::slice::raw::from_ref",
-                            [],
-                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                        ])
                   ]
                 |)
               |)
@@ -1713,24 +1781,38 @@ Module ascii.
                   Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                   M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "slice")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                              "as_str",
+                              [],
                               []
-                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                            "as_str",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -1770,22 +1852,33 @@ Module ascii.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                      M.get_associated_function (|
-                        Ty.path "core::ascii::ascii_char::AsciiChar",
-                        "as_str",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                        M.get_associated_function (|
+                          Ty.path "core::ascii::ascii_char::AsciiChar",
+                          "as_str",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1883,7 +1976,12 @@ Module ascii.
                               Ty.path "usize"
                             ],
                           M.get_associated_function (| Self, "backslash.fmt", [], [] |),
-                          [ Value.StructTuple "core::ascii::ascii_char::AsciiChar::Digit0" [] [] []
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::Digit0" [])
+                                (Ty.path "core::ascii::ascii_char::AsciiChar"))
+                              (Ty.path "core::ascii::ascii_char::AsciiChar")
                           ]
                         |)));
                     fun γ =>
@@ -1904,7 +2002,12 @@ Module ascii.
                               Ty.path "usize"
                             ],
                           M.get_associated_function (| Self, "backslash.fmt", [], [] |),
-                          [ Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallT" [] [] []
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallT" [])
+                                (Ty.path "core::ascii::ascii_char::AsciiChar"))
+                              (Ty.path "core::ascii::ascii_char::AsciiChar")
                           ]
                         |)));
                     fun γ =>
@@ -1925,7 +2028,12 @@ Module ascii.
                               Ty.path "usize"
                             ],
                           M.get_associated_function (| Self, "backslash.fmt", [], [] |),
-                          [ Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallR" [] [] []
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallR" [])
+                                (Ty.path "core::ascii::ascii_char::AsciiChar"))
+                              (Ty.path "core::ascii::ascii_char::AsciiChar")
                           ]
                         |)));
                     fun γ =>
@@ -1946,7 +2054,12 @@ Module ascii.
                               Ty.path "usize"
                             ],
                           M.get_associated_function (| Self, "backslash.fmt", [], [] |),
-                          [ Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallN" [] [] []
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallN" [])
+                                (Ty.path "core::ascii::ascii_char::AsciiChar"))
+                              (Ty.path "core::ascii::ascii_char::AsciiChar")
                           ]
                         |)));
                     fun γ =>
@@ -1968,11 +2081,13 @@ Module ascii.
                             ],
                           M.get_associated_function (| Self, "backslash.fmt", [], [] |),
                           [
-                            Value.StructTuple
-                              "core::ascii::ascii_char::AsciiChar::ReverseSolidus"
-                              []
-                              []
-                              []
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "core::ascii::ascii_char::AsciiChar::ReverseSolidus"
+                                  [])
+                                (Ty.path "core::ascii::ascii_char::AsciiChar"))
+                              (Ty.path "core::ascii::ascii_char::AsciiChar")
                           ]
                         |)));
                     fun γ =>
@@ -1994,11 +2109,13 @@ Module ascii.
                             ],
                           M.get_associated_function (| Self, "backslash.fmt", [], [] |),
                           [
-                            Value.StructTuple
-                              "core::ascii::ascii_char::AsciiChar::Apostrophe"
-                              []
-                              []
-                              []
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "core::ascii::ascii_char::AsciiChar::Apostrophe"
+                                  [])
+                                (Ty.path "core::ascii::ascii_char::AsciiChar"))
+                              (Ty.path "core::ascii::ascii_char::AsciiChar")
                           ]
                         |)));
                     fun γ =>
@@ -2015,22 +2132,28 @@ Module ascii.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.path "u8",
-                                    M.call_closure (|
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
                                       Ty.path "u8",
-                                      M.get_associated_function (|
-                                        Ty.path "core::ascii::ascii_char::AsciiChar",
-                                        "to_u8",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                                      M.call_closure (|
+                                        Ty.path "u8",
+                                        M.get_associated_function (|
+                                          Ty.path "core::ascii::ascii_char::AsciiChar",
+                                          "to_u8",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| M.deref (| M.read (| self |) |) |))
+                                            (Ty.path "core::ascii::ascii_char::AsciiChar")
+                                        ]
+                                      |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                               ]
                             |)
                           |) in
@@ -2045,7 +2168,11 @@ Module ascii.
                                 [],
                                 []
                               |),
-                              [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| M.deref (| M.read (| self |) |) |))
+                                  (Ty.path "core::ascii::ascii_char::AsciiChar")
+                              ]
                             |) in
                           let~ hi : Ty.path "core::ascii::ascii_char::AsciiChar" :=
                             M.read (|
@@ -2069,11 +2196,13 @@ Module ascii.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "u8",
-                                      BinOp.Wrap.shr,
-                                      [ M.read (| byte |); Value.Integer IntegerKind.I32 4 ]
-                                    |)
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "u8",
+                                        BinOp.Wrap.shr,
+                                        [ M.read (| byte |); Value.Integer IntegerKind.I32 4 ]
+                                      |))
+                                      (Ty.path "u8")
                                   ]
                                 |)
                               |)
@@ -2100,11 +2229,13 @@ Module ascii.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "u8",
-                                      BinOp.Wrap.bit_and,
-                                      [ M.read (| byte |); Value.Integer IntegerKind.U8 15 ]
-                                    |)
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "u8",
+                                        BinOp.Wrap.bit_and,
+                                        [ M.read (| byte |); Value.Integer IntegerKind.U8 15 ]
+                                      |))
+                                      (Ty.path "u8")
                                   ]
                                 |)
                               |)
@@ -2122,28 +2253,28 @@ Module ascii.
                               [
                                 Value.Array
                                   [
-                                    Value.StructTuple
-                                      "core::ascii::ascii_char::AsciiChar::Apostrophe"
-                                      []
-                                      []
-                                      [];
-                                    Value.StructTuple
-                                      "core::ascii::ascii_char::AsciiChar::ReverseSolidus"
-                                      []
-                                      []
-                                      [];
-                                    Value.StructTuple
-                                      "core::ascii::ascii_char::AsciiChar::SmallX"
-                                      []
-                                      []
-                                      [];
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::ascii::ascii_char::AsciiChar::Apostrophe"
+                                        [])
+                                      (Ty.path "core::ascii::ascii_char::AsciiChar");
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::ascii::ascii_char::AsciiChar::ReverseSolidus"
+                                        [])
+                                      (Ty.path "core::ascii::ascii_char::AsciiChar");
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::ascii::ascii_char::AsciiChar::SmallX"
+                                        [])
+                                      (Ty.path "core::ascii::ascii_char::AsciiChar");
                                     M.read (| hi |);
                                     M.read (| lo |);
-                                    Value.StructTuple
-                                      "core::ascii::ascii_char::AsciiChar::Apostrophe"
-                                      []
-                                      []
-                                      []
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::ascii::ascii_char::AsciiChar::Apostrophe"
+                                        [])
+                                      (Ty.path "core::ascii::ascii_char::AsciiChar")
                                   ];
                                 Value.Integer IntegerKind.Usize 6
                               ]
@@ -2155,32 +2286,26 @@ Module ascii.
                           [
                             Value.Array
                               [
-                                Value.StructTuple
-                                  "core::ascii::ascii_char::AsciiChar::Apostrophe"
-                                  []
-                                  []
-                                  [];
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::ascii::ascii_char::AsciiChar::Apostrophe"
+                                    [])
+                                  (Ty.path "core::ascii::ascii_char::AsciiChar");
                                 M.read (| M.deref (| M.read (| self |) |) |);
-                                Value.StructTuple
-                                  "core::ascii::ascii_char::AsciiChar::Apostrophe"
-                                  []
-                                  []
-                                  [];
-                                Value.StructTuple
-                                  "core::ascii::ascii_char::AsciiChar::Null"
-                                  []
-                                  []
-                                  [];
-                                Value.StructTuple
-                                  "core::ascii::ascii_char::AsciiChar::Null"
-                                  []
-                                  []
-                                  [];
-                                Value.StructTuple
-                                  "core::ascii::ascii_char::AsciiChar::Null"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::ascii::ascii_char::AsciiChar::Apostrophe"
+                                    [])
+                                  (Ty.path "core::ascii::ascii_char::AsciiChar");
+                                M.value_with_ty
+                                  (Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [])
+                                  (Ty.path "core::ascii::ascii_char::AsciiChar");
+                                M.value_with_ty
+                                  (Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [])
+                                  (Ty.path "core::ascii::ascii_char::AsciiChar");
+                                M.value_with_ty
+                                  (Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [])
+                                  (Ty.path "core::ascii::ascii_char::AsciiChar")
                               ];
                             Value.Integer IntegerKind.Usize 3
                           ]))
@@ -2213,67 +2338,99 @@ Module ascii.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "slice")
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                                  "as_str",
+                                  [],
                                   []
-                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                                "as_str",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
                                           Ty.apply
-                                            (Ty.path "slice")
+                                            (Ty.path "&")
                                             []
-                                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::ops::index::Index",
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 6 ]
-                                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                                        [],
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ops::range::RangeTo")
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                            ],
+                                          M.get_trait_method (|
+                                            "core::ops::index::Index",
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 6 ]
+                                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ],
+                                            "index",
+                                            [],
                                             []
-                                            [ Ty.path "usize" ]
-                                        ],
-                                        "index",
-                                        [],
-                                        []
-                                      |),
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, buf |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 6 ]
+                                                    [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::ops::range::RangeTo"
+                                                  [ ("end_", M.read (| len |)) ])
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::RangeTo")
+                                                  []
+                                                  [ Ty.path "usize" ]))
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::RangeTo")
+                                                []
+                                                [ Ty.path "usize" ])
+                                          ]
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, buf |);
-                                        Value.mkStructRecord
-                                          "core::ops::range::RangeTo"
+                                        Ty.apply
+                                          (Ty.path "slice")
                                           []
-                                          [ Ty.path "usize" ]
-                                          [ ("end_", M.read (| len |)) ]
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              ]
+                                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                      ])
+                                ]
+                              |)
                             |)
-                          |)
-                        |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)))
               ]

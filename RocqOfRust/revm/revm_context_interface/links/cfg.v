@@ -25,9 +25,9 @@ Module CreateScheme.
     φ x :=
       match x with
       | Create =>
-          Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []
+          Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" []
       | Create2 salt =>
-          Value.StructRecord "revm_context_interface::cfg::CreateScheme::Create2" [] [] [
+          Value.StructRecord "revm_context_interface::cfg::CreateScheme::Create2" [
             ("salt", φ salt)
           ]
       end
@@ -40,14 +40,14 @@ Module CreateScheme.
   }.
 
   Instance IsOfValueWith_Create :
-    OfValueWith.C t (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" []) :=
   {
     value := Create;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Create :
-    OfValue.C (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" []) :=
   {
     value := Create;
     eq := eq_refl;
@@ -56,7 +56,7 @@ Module CreateScheme.
   Instance IsOfValueWith_Create2
       (salt' : Value.t) {H_salt : OfValueWith.C (aliases.U256.t) salt'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_context_interface::cfg::CreateScheme::Create2" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_context_interface::cfg::CreateScheme::Create2" [
       ("salt", salt')
     ]) :=
   {
@@ -69,7 +69,7 @@ Module CreateScheme.
   Instance IsOfValue_Create2
       (salt' : Value.t) {H_salt : OfValueWith.C (aliases.U256.t) salt'}
       :
-    OfValue.C (Value.StructRecord "revm_context_interface::cfg::CreateScheme::Create2" [] [] [
+    OfValue.C (Value.StructRecord "revm_context_interface::cfg::CreateScheme::Create2" [
       ("salt", salt')
     ]) :=
   {

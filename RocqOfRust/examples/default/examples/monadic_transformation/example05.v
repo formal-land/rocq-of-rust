@@ -50,12 +50,14 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.read (|
         let~ foo : Ty.path "example05::Foo" :=
-          Value.StructTuple "example05::Foo" [] [] [ Value.Integer IntegerKind.U32 0 ] in
+          M.value_with_ty
+            (Value.StructTuple "example05::Foo" [ Value.Integer IntegerKind.U32 0 ])
+            (Ty.path "example05::Foo") in
         let~ _ : Ty.path "u32" :=
           M.call_closure (|
             Ty.path "u32",
             M.get_associated_function (| Ty.path "example05::Foo", "plus1", [], [] |),
-            [ M.read (| foo |) ]
+            [ M.value_with_ty (M.read (| foo |)) (Ty.path "example05::Foo") ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

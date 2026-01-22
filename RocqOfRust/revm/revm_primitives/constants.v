@@ -41,12 +41,14 @@ Module constants.
             []
           |),
           [
-            M.read (|
-              get_constant (|
-                "revm_primitives::constants::BLOCKHASH_STORAGE_ADDRESS::RES",
-                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 20 ] [ Ty.path "u8" ]
-              |)
-            |)
+            M.value_with_ty
+              (M.read (|
+                get_constant (|
+                  "revm_primitives::constants::BLOCKHASH_STORAGE_ADDRESS::RES",
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 20 ] [ Ty.path "u8" ]
+                |)
+              |))
+              (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 20 ] [ Ty.path "u8" ])
           ]
         |)
       |))).
@@ -71,29 +73,31 @@ Module constants.
             []
           |),
           [
-            Value.Array
-              [
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 3
-              ]
+            M.value_with_ty
+              (Value.Array
+                [
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 0;
+                  Value.Integer IntegerKind.U8 3
+                ])
+              (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 20 ] [ Ty.path "u8" ])
           ]
         |)
       |))).

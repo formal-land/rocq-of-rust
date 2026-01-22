@@ -186,27 +186,34 @@ Module str.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                  M.get_trait_method (|
+                                    "core::iter::traits::iterator::Iterator",
+                                    I,
+                                    [],
+                                    [],
+                                    "next",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| bytes |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ I ])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "core::option::Option")
                                   []
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                                M.get_trait_method (|
-                                  "core::iter::traits::iterator::Iterator",
-                                  I,
-                                  [],
-                                  [],
-                                  "next",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| bytes |) |)
-                                  |)
-                                ]
-                              |)
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
                             ]
                           |)
                         |),
@@ -252,7 +259,14 @@ Module str.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| residual |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| residual |))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ])
+                                      ]
                                     |)
                                   |)
                                 |)
@@ -294,11 +308,11 @@ Module str.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::Some"
-                                  []
-                                  [ Ty.path "u32" ]
-                                  [ M.cast (Ty.path "u32") (M.read (| x |)) ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    [ M.cast (Ty.path "u32") (M.read (| x |)) ])
+                                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ])
                               |)
                             |)
                           |)));
@@ -309,7 +323,10 @@ Module str.
                   M.call_closure (|
                     Ty.path "u32",
                     M.get_function (| "core::str::validations::utf8_first_byte", [], [] |),
-                    [ M.read (| x |); Value.Integer IntegerKind.U32 2 ]
+                    [
+                      M.value_with_ty (M.read (| x |)) (Ty.path "u8");
+                      M.value_with_ty (Value.Integer IntegerKind.U32 2) (Ty.path "u32")
+                    ]
                   |) in
                 let~ y : Ty.path "u8" :=
                   M.read (|
@@ -326,22 +343,34 @@ Module str.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                I,
+                                [],
+                                [],
+                                "next",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| bytes |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ I ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                            M.get_trait_method (|
-                              "core::iter::traits::iterator::Iterator",
-                              I,
-                              [],
-                              [],
-                              "next",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| bytes |) |) |) ]
-                          |)
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
                         ]
                       |)
                     |)
@@ -350,7 +379,10 @@ Module str.
                   M.call_closure (|
                     Ty.path "u32",
                     M.get_function (| "core::str::validations::utf8_acc_cont_byte", [], [] |),
-                    [ M.read (| init |); M.read (| y |) ]
+                    [
+                      M.value_with_ty (M.read (| init |)) (Ty.path "u32");
+                      M.value_with_ty (M.read (| y |)) (Ty.path "u8")
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -387,27 +419,34 @@ Module str.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                          M.get_trait_method (|
+                                            "core::iter::traits::iterator::Iterator",
+                                            I,
+                                            [],
+                                            [],
+                                            "next",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| bytes |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&mut") [] [ I ])
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                                        M.get_trait_method (|
-                                          "core::iter::traits::iterator::Iterator",
-                                          I,
-                                          [],
-                                          [],
-                                          "next",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| bytes |) |)
-                                          |)
-                                        ]
-                                      |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
                                 |)
@@ -421,22 +460,24 @@ Module str.
                                   []
                                 |),
                                 [
-                                  M.cast
-                                    (Ty.path "u32")
-                                    (M.call_closure (|
-                                      Ty.path "u8",
-                                      BinOp.Wrap.bit_and,
-                                      [
-                                        M.read (| y |);
-                                        M.read (|
-                                          get_constant (|
-                                            "core::str::validations::CONT_MASK",
-                                            Ty.path "u8"
+                                  M.value_with_ty
+                                    (M.cast
+                                      (Ty.path "u32")
+                                      (M.call_closure (|
+                                        Ty.path "u8",
+                                        BinOp.Wrap.bit_and,
+                                        [
+                                          M.read (| y |);
+                                          M.read (|
+                                            get_constant (|
+                                              "core::str::validations::CONT_MASK",
+                                              Ty.path "u8"
+                                            |)
                                           |)
-                                        |)
-                                      ]
-                                    |));
-                                  M.read (| z |)
+                                        ]
+                                      |)))
+                                    (Ty.path "u32");
+                                  M.value_with_ty (M.read (| z |)) (Ty.path "u8")
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
@@ -494,28 +535,36 @@ Module str.
                                                   []
                                                 |),
                                                 [
-                                                  M.call_closure (|
-                                                    Ty.apply
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::iter::traits::iterator::Iterator",
+                                                        I,
+                                                        [],
+                                                        [],
+                                                        "next",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (| M.read (| bytes |) |)
+                                                          |))
+                                                          (Ty.apply (Ty.path "&mut") [] [ I ])
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
                                                       (Ty.path "core::option::Option")
                                                       []
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::iter::traits::iterator::Iterator",
-                                                      I,
-                                                      [],
-                                                      [],
-                                                      "next",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| bytes |) |)
-                                                      |)
-                                                    ]
-                                                  |)
+                                                      ])
                                                 ]
                                               |)
                                             |)
@@ -549,7 +598,12 @@ Module str.
                                                     [],
                                                     []
                                                   |),
-                                                  [ M.read (| y_z |); M.read (| w |) ]
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| y_z |))
+                                                      (Ty.path "u32");
+                                                    M.value_with_ty (M.read (| w |)) (Ty.path "u8")
+                                                  ]
                                                 |)
                                               ]
                                             |)
@@ -566,11 +620,9 @@ Module str.
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "u32" ]
-                    [ M.read (| ch |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| ch |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ])
                 |)
               |)))
           |)))
@@ -668,27 +720,34 @@ Module str.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                  M.get_trait_method (|
+                                    "core::iter::traits::double_ended::DoubleEndedIterator",
+                                    I,
+                                    [],
+                                    [],
+                                    "next_back",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| bytes |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ I ])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "core::option::Option")
                                   []
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                                M.get_trait_method (|
-                                  "core::iter::traits::double_ended::DoubleEndedIterator",
-                                  I,
-                                  [],
-                                  [],
-                                  "next_back",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| bytes |) |)
-                                  |)
-                                ]
-                              |)
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
                             ]
                           |)
                         |),
@@ -734,7 +793,14 @@ Module str.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| residual |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| residual |))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ])
+                                      ]
                                     |)
                                   |)
                                 |)
@@ -771,11 +837,11 @@ Module str.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::Some"
-                                  []
-                                  [ Ty.path "u32" ]
-                                  [ M.cast (Ty.path "u32") (M.read (| next_byte |)) ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    [ M.cast (Ty.path "u32") (M.read (| next_byte |)) ])
+                                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ])
                               |)
                             |)
                           |)));
@@ -801,22 +867,34 @@ Module str.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                              M.get_trait_method (|
+                                "core::iter::traits::double_ended::DoubleEndedIterator",
+                                I,
+                                [],
+                                [],
+                                "next_back",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| bytes |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ I ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                            M.get_trait_method (|
-                              "core::iter::traits::double_ended::DoubleEndedIterator",
-                              I,
-                              [],
-                              [],
-                              "next_back",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| bytes |) |) |) ]
-                          |)
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
                         ]
                       |)
                     |)
@@ -827,7 +905,10 @@ Module str.
                     M.call_closure (|
                       Ty.path "u32",
                       M.get_function (| "core::str::validations::utf8_first_byte", [], [] |),
-                      [ M.read (| z |); Value.Integer IntegerKind.U32 2 ]
+                      [
+                        M.value_with_ty (M.read (| z |)) (Ty.path "u8");
+                        M.value_with_ty (Value.Integer IntegerKind.U32 2) (Ty.path "u32")
+                      ]
                     |)
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -848,7 +929,7 @@ Module str.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| z |) ]
+                                  [ M.value_with_ty (M.read (| z |)) (Ty.path "u8") ]
                                 |)
                               |)) in
                           let _ :=
@@ -869,27 +950,34 @@ Module str.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                          M.get_trait_method (|
+                                            "core::iter::traits::double_ended::DoubleEndedIterator",
+                                            I,
+                                            [],
+                                            [],
+                                            "next_back",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| bytes |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&mut") [] [ I ])
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                                        M.get_trait_method (|
-                                          "core::iter::traits::double_ended::DoubleEndedIterator",
-                                          I,
-                                          [],
-                                          [],
-                                          "next_back",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| bytes |) |)
-                                          |)
-                                        ]
-                                      |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
                                 |)
@@ -904,7 +992,12 @@ Module str.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| y |); Value.Integer IntegerKind.U32 3 ]
+                                  [
+                                    M.value_with_ty (M.read (| y |)) (Ty.path "u8");
+                                    M.value_with_ty
+                                      (Value.Integer IntegerKind.U32 3)
+                                      (Ty.path "u32")
+                                  ]
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
@@ -925,7 +1018,7 @@ Module str.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| y |) ]
+                                              [ M.value_with_ty (M.read (| y |)) (Ty.path "u8") ]
                                             |)
                                           |)) in
                                       let _ :=
@@ -949,28 +1042,36 @@ Module str.
                                                   []
                                                 |),
                                                 [
-                                                  M.call_closure (|
-                                                    Ty.apply
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::iter::traits::double_ended::DoubleEndedIterator",
+                                                        I,
+                                                        [],
+                                                        [],
+                                                        "next_back",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (| M.read (| bytes |) |)
+                                                          |))
+                                                          (Ty.apply (Ty.path "&mut") [] [ I ])
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
                                                       (Ty.path "core::option::Option")
                                                       []
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::iter::traits::double_ended::DoubleEndedIterator",
-                                                      I,
-                                                      [],
-                                                      [],
-                                                      "next_back",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| bytes |) |)
-                                                      |)
-                                                    ]
-                                                  |)
+                                                      ])
                                                 ]
                                               |)
                                             |)
@@ -985,7 +1086,12 @@ Module str.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| x |); Value.Integer IntegerKind.U32 4 ]
+                                              [
+                                                M.value_with_ty (M.read (| x |)) (Ty.path "u8");
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.U32 4)
+                                                  (Ty.path "u32")
+                                              ]
                                             |)
                                           |) in
                                         let~ _ : Ty.tuple [] :=
@@ -998,7 +1104,10 @@ Module str.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| ch |); M.read (| y |) ]
+                                              [
+                                                M.value_with_ty (M.read (| ch |)) (Ty.path "u32");
+                                                M.value_with_ty (M.read (| y |)) (Ty.path "u8")
+                                              ]
                                             |)
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1016,7 +1125,10 @@ Module str.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| ch |); M.read (| z |) ]
+                                  [
+                                    M.value_with_ty (M.read (| ch |)) (Ty.path "u32");
+                                    M.value_with_ty (M.read (| z |)) (Ty.path "u8")
+                                  ]
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1030,16 +1142,17 @@ Module str.
                     M.call_closure (|
                       Ty.path "u32",
                       M.get_function (| "core::str::validations::utf8_acc_cont_byte", [], [] |),
-                      [ M.read (| ch |); M.read (| w |) ]
+                      [
+                        M.value_with_ty (M.read (| ch |)) (Ty.path "u32");
+                        M.value_with_ty (M.read (| w |)) (Ty.path "u8")
+                      ]
                     |)
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "u32" ]
-                    [ M.read (| ch |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| ch |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ])
                 |)
               |)))
           |)))
@@ -1058,7 +1171,7 @@ Module str.
           M.call_closure (|
             Ty.path "usize",
             M.get_associated_function (| Ty.path "usize", "repeat_u8", [], [] |),
-            [ Value.Integer IntegerKind.U8 128 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.U8 128) (Ty.path "u8") ]
           |)
         |))).
     
@@ -1256,7 +1369,14 @@ Module str.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
                   |) in
                 let~ ascii_block_size : Ty.path "usize" :=
                   M.call_closure (|
@@ -1340,17 +1460,43 @@ Module str.
                       ]
                     |),
                     [
-                      Value.Tuple [ M.read (| v |) ];
-                      M.get_function (|
-                        "core::str::validations::run_utf8_validation.compiletime",
-                        [],
-                        []
-                      |);
-                      M.get_function (|
-                        "core::str::validations::run_utf8_validation.runtime",
-                        [],
-                        []
-                      |)
+                      M.value_with_ty
+                        (Value.Tuple [ M.read (| v |) ])
+                        (Ty.tuple
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.get_function (|
+                          "core::str::validations::run_utf8_validation.compiletime",
+                          [],
+                          []
+                        |))
+                        (Ty.function
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                          ]
+                          (Ty.path "usize"));
+                      M.value_with_ty
+                        (M.get_function (|
+                          "core::str::validations::run_utf8_validation.runtime",
+                          [],
+                          []
+                        |))
+                        (Ty.function
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                          ]
+                          (Ty.path "usize"))
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -1425,7 +1571,11 @@ Module str.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| first |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| first |))
+                                                        (Ty.path "u8")
+                                                    ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
                                                   M.match_operator (|
@@ -1519,36 +1669,45 @@ Module str.
                                                                                           M.never_to_any (|
                                                                                             M.read (|
                                                                                               M.return_ (|
-                                                                                                Value.StructTuple
-                                                                                                  "core::result::Result::Err"
-                                                                                                  []
-                                                                                                  [
-                                                                                                    Ty.tuple
-                                                                                                      [];
-                                                                                                    Ty.path
-                                                                                                      "core::str::error::Utf8Error"
-                                                                                                  ]
-                                                                                                  [
-                                                                                                    Value.mkStructRecord
-                                                                                                      "core::str::error::Utf8Error"
-                                                                                                      []
-                                                                                                      []
-                                                                                                      [
-                                                                                                        ("valid_up_to",
-                                                                                                          M.read (|
-                                                                                                            old_offset
-                                                                                                          |));
-                                                                                                        ("error_len",
-                                                                                                          Value.StructTuple
-                                                                                                            "core::option::Option::None"
-                                                                                                            []
-                                                                                                            [
-                                                                                                              Ty.path
-                                                                                                                "u8"
-                                                                                                            ]
-                                                                                                            [])
-                                                                                                      ]
-                                                                                                  ]
+                                                                                                M.value_with_ty
+                                                                                                  (Value.StructTuple
+                                                                                                    "core::result::Result::Err"
+                                                                                                    [
+                                                                                                      M.value_with_ty
+                                                                                                        (Value.mkStructRecord
+                                                                                                          "core::str::error::Utf8Error"
+                                                                                                          [
+                                                                                                            ("valid_up_to",
+                                                                                                              M.read (|
+                                                                                                                old_offset
+                                                                                                              |));
+                                                                                                            ("error_len",
+                                                                                                              M.value_with_ty
+                                                                                                                (Value.StructTuple
+                                                                                                                  "core::option::Option::None"
+                                                                                                                  [])
+                                                                                                                (Ty.apply
+                                                                                                                  (Ty.path
+                                                                                                                    "core::option::Option")
+                                                                                                                  []
+                                                                                                                  [
+                                                                                                                    Ty.path
+                                                                                                                      "u8"
+                                                                                                                  ]))
+                                                                                                          ])
+                                                                                                        (Ty.path
+                                                                                                          "core::str::error::Utf8Error")
+                                                                                                    ])
+                                                                                                  (Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "core::result::Result")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.tuple
+                                                                                                        [];
+                                                                                                      Ty.path
+                                                                                                        "core::str::error::Utf8Error"
+                                                                                                    ])
                                                                                               |)
                                                                                             |)
                                                                                           |)));
@@ -1579,36 +1738,48 @@ Module str.
                                                                   M.never_to_any (|
                                                                     M.read (|
                                                                       M.return_ (|
-                                                                        Value.StructTuple
-                                                                          "core::result::Result::Err"
-                                                                          []
-                                                                          [
-                                                                            Ty.tuple [];
-                                                                            Ty.path
-                                                                              "core::str::error::Utf8Error"
-                                                                          ]
-                                                                          [
-                                                                            Value.mkStructRecord
-                                                                              "core::str::error::Utf8Error"
-                                                                              []
-                                                                              []
-                                                                              [
-                                                                                ("valid_up_to",
-                                                                                  M.read (|
-                                                                                    old_offset
-                                                                                  |));
-                                                                                ("error_len",
-                                                                                  Value.StructTuple
-                                                                                    "core::option::Option::Some"
-                                                                                    []
-                                                                                    [ Ty.path "u8" ]
-                                                                                    [
-                                                                                      Value.Integer
-                                                                                        IntegerKind.U8
-                                                                                        1
-                                                                                    ])
-                                                                              ]
-                                                                          ]
+                                                                        M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "core::result::Result::Err"
+                                                                            [
+                                                                              M.value_with_ty
+                                                                                (Value.mkStructRecord
+                                                                                  "core::str::error::Utf8Error"
+                                                                                  [
+                                                                                    ("valid_up_to",
+                                                                                      M.read (|
+                                                                                        old_offset
+                                                                                      |));
+                                                                                    ("error_len",
+                                                                                      M.value_with_ty
+                                                                                        (Value.StructTuple
+                                                                                          "core::option::Option::Some"
+                                                                                          [
+                                                                                            Value.Integer
+                                                                                              IntegerKind.U8
+                                                                                              1
+                                                                                          ])
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "core::option::Option")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "u8"
+                                                                                          ]))
+                                                                                  ])
+                                                                                (Ty.path
+                                                                                  "core::str::error::Utf8Error")
+                                                                            ])
+                                                                          (Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.tuple [];
+                                                                              Ty.path
+                                                                                "core::str::error::Utf8Error"
+                                                                            ])
                                                                       |)
                                                                     |)
                                                                   |)));
@@ -1689,36 +1860,45 @@ Module str.
                                                                                   M.never_to_any (|
                                                                                     M.read (|
                                                                                       M.return_ (|
-                                                                                        Value.StructTuple
-                                                                                          "core::result::Result::Err"
-                                                                                          []
-                                                                                          [
-                                                                                            Ty.tuple
-                                                                                              [];
-                                                                                            Ty.path
-                                                                                              "core::str::error::Utf8Error"
-                                                                                          ]
-                                                                                          [
-                                                                                            Value.mkStructRecord
-                                                                                              "core::str::error::Utf8Error"
-                                                                                              []
-                                                                                              []
-                                                                                              [
-                                                                                                ("valid_up_to",
-                                                                                                  M.read (|
-                                                                                                    old_offset
-                                                                                                  |));
-                                                                                                ("error_len",
-                                                                                                  Value.StructTuple
-                                                                                                    "core::option::Option::None"
-                                                                                                    []
-                                                                                                    [
-                                                                                                      Ty.path
-                                                                                                        "u8"
-                                                                                                    ]
-                                                                                                    [])
-                                                                                              ]
-                                                                                          ]
+                                                                                        M.value_with_ty
+                                                                                          (Value.StructTuple
+                                                                                            "core::result::Result::Err"
+                                                                                            [
+                                                                                              M.value_with_ty
+                                                                                                (Value.mkStructRecord
+                                                                                                  "core::str::error::Utf8Error"
+                                                                                                  [
+                                                                                                    ("valid_up_to",
+                                                                                                      M.read (|
+                                                                                                        old_offset
+                                                                                                      |));
+                                                                                                    ("error_len",
+                                                                                                      M.value_with_ty
+                                                                                                        (Value.StructTuple
+                                                                                                          "core::option::Option::None"
+                                                                                                          [])
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "core::option::Option")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.path
+                                                                                                              "u8"
+                                                                                                          ]))
+                                                                                                  ])
+                                                                                                (Ty.path
+                                                                                                  "core::str::error::Utf8Error")
+                                                                                            ])
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "core::result::Result")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.tuple
+                                                                                                [];
+                                                                                              Ty.path
+                                                                                                "core::str::error::Utf8Error"
+                                                                                            ])
                                                                                       |)
                                                                                     |)
                                                                                   |)));
@@ -1826,39 +2006,48 @@ Module str.
                                                                       (M.never_to_any (|
                                                                         M.read (|
                                                                           M.return_ (|
-                                                                            Value.StructTuple
-                                                                              "core::result::Result::Err"
-                                                                              []
-                                                                              [
-                                                                                Ty.tuple [];
-                                                                                Ty.path
-                                                                                  "core::str::error::Utf8Error"
-                                                                              ]
-                                                                              [
-                                                                                Value.mkStructRecord
-                                                                                  "core::str::error::Utf8Error"
-                                                                                  []
-                                                                                  []
-                                                                                  [
-                                                                                    ("valid_up_to",
-                                                                                      M.read (|
-                                                                                        old_offset
-                                                                                      |));
-                                                                                    ("error_len",
-                                                                                      Value.StructTuple
-                                                                                        "core::option::Option::Some"
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.path
-                                                                                            "u8"
-                                                                                        ]
-                                                                                        [
-                                                                                          Value.Integer
-                                                                                            IntegerKind.U8
-                                                                                            1
-                                                                                        ])
-                                                                                  ]
-                                                                              ]
+                                                                            M.value_with_ty
+                                                                              (Value.StructTuple
+                                                                                "core::result::Result::Err"
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (Value.mkStructRecord
+                                                                                      "core::str::error::Utf8Error"
+                                                                                      [
+                                                                                        ("valid_up_to",
+                                                                                          M.read (|
+                                                                                            old_offset
+                                                                                          |));
+                                                                                        ("error_len",
+                                                                                          M.value_with_ty
+                                                                                            (Value.StructTuple
+                                                                                              "core::option::Option::Some"
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.U8
+                                                                                                  1
+                                                                                              ])
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::option::Option")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u8"
+                                                                                              ]))
+                                                                                      ])
+                                                                                    (Ty.path
+                                                                                      "core::str::error::Utf8Error")
+                                                                                ])
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.tuple [];
+                                                                                  Ty.path
+                                                                                    "core::str::error::Utf8Error"
+                                                                                ])
                                                                           |)
                                                                         |)
                                                                       |)))
@@ -1953,36 +2142,45 @@ Module str.
                                                                                               M.never_to_any (|
                                                                                                 M.read (|
                                                                                                   M.return_ (|
-                                                                                                    Value.StructTuple
-                                                                                                      "core::result::Result::Err"
-                                                                                                      []
-                                                                                                      [
-                                                                                                        Ty.tuple
-                                                                                                          [];
-                                                                                                        Ty.path
-                                                                                                          "core::str::error::Utf8Error"
-                                                                                                      ]
-                                                                                                      [
-                                                                                                        Value.mkStructRecord
-                                                                                                          "core::str::error::Utf8Error"
-                                                                                                          []
-                                                                                                          []
-                                                                                                          [
-                                                                                                            ("valid_up_to",
-                                                                                                              M.read (|
-                                                                                                                old_offset
-                                                                                                              |));
-                                                                                                            ("error_len",
-                                                                                                              Value.StructTuple
-                                                                                                                "core::option::Option::None"
-                                                                                                                []
-                                                                                                                [
-                                                                                                                  Ty.path
-                                                                                                                    "u8"
-                                                                                                                ]
-                                                                                                                [])
-                                                                                                          ]
-                                                                                                      ]
+                                                                                                    M.value_with_ty
+                                                                                                      (Value.StructTuple
+                                                                                                        "core::result::Result::Err"
+                                                                                                        [
+                                                                                                          M.value_with_ty
+                                                                                                            (Value.mkStructRecord
+                                                                                                              "core::str::error::Utf8Error"
+                                                                                                              [
+                                                                                                                ("valid_up_to",
+                                                                                                                  M.read (|
+                                                                                                                    old_offset
+                                                                                                                  |));
+                                                                                                                ("error_len",
+                                                                                                                  M.value_with_ty
+                                                                                                                    (Value.StructTuple
+                                                                                                                      "core::option::Option::None"
+                                                                                                                      [])
+                                                                                                                    (Ty.apply
+                                                                                                                      (Ty.path
+                                                                                                                        "core::option::Option")
+                                                                                                                      []
+                                                                                                                      [
+                                                                                                                        Ty.path
+                                                                                                                          "u8"
+                                                                                                                      ]))
+                                                                                                              ])
+                                                                                                            (Ty.path
+                                                                                                              "core::str::error::Utf8Error")
+                                                                                                        ])
+                                                                                                      (Ty.apply
+                                                                                                        (Ty.path
+                                                                                                          "core::result::Result")
+                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.tuple
+                                                                                                            [];
+                                                                                                          Ty.path
+                                                                                                            "core::str::error::Utf8Error"
+                                                                                                        ])
                                                                                                   |)
                                                                                                 |)
                                                                                               |)));
@@ -2017,39 +2215,48 @@ Module str.
                                                                       M.never_to_any (|
                                                                         M.read (|
                                                                           M.return_ (|
-                                                                            Value.StructTuple
-                                                                              "core::result::Result::Err"
-                                                                              []
-                                                                              [
-                                                                                Ty.tuple [];
-                                                                                Ty.path
-                                                                                  "core::str::error::Utf8Error"
-                                                                              ]
-                                                                              [
-                                                                                Value.mkStructRecord
-                                                                                  "core::str::error::Utf8Error"
-                                                                                  []
-                                                                                  []
-                                                                                  [
-                                                                                    ("valid_up_to",
-                                                                                      M.read (|
-                                                                                        old_offset
-                                                                                      |));
-                                                                                    ("error_len",
-                                                                                      Value.StructTuple
-                                                                                        "core::option::Option::Some"
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.path
-                                                                                            "u8"
-                                                                                        ]
-                                                                                        [
-                                                                                          Value.Integer
-                                                                                            IntegerKind.U8
-                                                                                            2
-                                                                                        ])
-                                                                                  ]
-                                                                              ]
+                                                                            M.value_with_ty
+                                                                              (Value.StructTuple
+                                                                                "core::result::Result::Err"
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (Value.mkStructRecord
+                                                                                      "core::str::error::Utf8Error"
+                                                                                      [
+                                                                                        ("valid_up_to",
+                                                                                          M.read (|
+                                                                                            old_offset
+                                                                                          |));
+                                                                                        ("error_len",
+                                                                                          M.value_with_ty
+                                                                                            (Value.StructTuple
+                                                                                              "core::option::Option::Some"
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.U8
+                                                                                                  2
+                                                                                              ])
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::option::Option")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u8"
+                                                                                              ]))
+                                                                                      ])
+                                                                                    (Ty.path
+                                                                                      "core::str::error::Utf8Error")
+                                                                                ])
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.tuple [];
+                                                                                  Ty.path
+                                                                                    "core::str::error::Utf8Error"
+                                                                                ])
                                                                           |)
                                                                         |)
                                                                       |)));
@@ -2133,36 +2340,45 @@ Module str.
                                                                                   M.never_to_any (|
                                                                                     M.read (|
                                                                                       M.return_ (|
-                                                                                        Value.StructTuple
-                                                                                          "core::result::Result::Err"
-                                                                                          []
-                                                                                          [
-                                                                                            Ty.tuple
-                                                                                              [];
-                                                                                            Ty.path
-                                                                                              "core::str::error::Utf8Error"
-                                                                                          ]
-                                                                                          [
-                                                                                            Value.mkStructRecord
-                                                                                              "core::str::error::Utf8Error"
-                                                                                              []
-                                                                                              []
-                                                                                              [
-                                                                                                ("valid_up_to",
-                                                                                                  M.read (|
-                                                                                                    old_offset
-                                                                                                  |));
-                                                                                                ("error_len",
-                                                                                                  Value.StructTuple
-                                                                                                    "core::option::Option::None"
-                                                                                                    []
-                                                                                                    [
-                                                                                                      Ty.path
-                                                                                                        "u8"
-                                                                                                    ]
-                                                                                                    [])
-                                                                                              ]
-                                                                                          ]
+                                                                                        M.value_with_ty
+                                                                                          (Value.StructTuple
+                                                                                            "core::result::Result::Err"
+                                                                                            [
+                                                                                              M.value_with_ty
+                                                                                                (Value.mkStructRecord
+                                                                                                  "core::str::error::Utf8Error"
+                                                                                                  [
+                                                                                                    ("valid_up_to",
+                                                                                                      M.read (|
+                                                                                                        old_offset
+                                                                                                      |));
+                                                                                                    ("error_len",
+                                                                                                      M.value_with_ty
+                                                                                                        (Value.StructTuple
+                                                                                                          "core::option::Option::None"
+                                                                                                          [])
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "core::option::Option")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.path
+                                                                                                              "u8"
+                                                                                                          ]))
+                                                                                                  ])
+                                                                                                (Ty.path
+                                                                                                  "core::str::error::Utf8Error")
+                                                                                            ])
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "core::result::Result")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.tuple
+                                                                                                [];
+                                                                                              Ty.path
+                                                                                                "core::str::error::Utf8Error"
+                                                                                            ])
                                                                                       |)
                                                                                     |)
                                                                                   |)));
@@ -2257,39 +2473,48 @@ Module str.
                                                                       (M.never_to_any (|
                                                                         M.read (|
                                                                           M.return_ (|
-                                                                            Value.StructTuple
-                                                                              "core::result::Result::Err"
-                                                                              []
-                                                                              [
-                                                                                Ty.tuple [];
-                                                                                Ty.path
-                                                                                  "core::str::error::Utf8Error"
-                                                                              ]
-                                                                              [
-                                                                                Value.mkStructRecord
-                                                                                  "core::str::error::Utf8Error"
-                                                                                  []
-                                                                                  []
-                                                                                  [
-                                                                                    ("valid_up_to",
-                                                                                      M.read (|
-                                                                                        old_offset
-                                                                                      |));
-                                                                                    ("error_len",
-                                                                                      Value.StructTuple
-                                                                                        "core::option::Option::Some"
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.path
-                                                                                            "u8"
-                                                                                        ]
-                                                                                        [
-                                                                                          Value.Integer
-                                                                                            IntegerKind.U8
-                                                                                            1
-                                                                                        ])
-                                                                                  ]
-                                                                              ]
+                                                                            M.value_with_ty
+                                                                              (Value.StructTuple
+                                                                                "core::result::Result::Err"
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (Value.mkStructRecord
+                                                                                      "core::str::error::Utf8Error"
+                                                                                      [
+                                                                                        ("valid_up_to",
+                                                                                          M.read (|
+                                                                                            old_offset
+                                                                                          |));
+                                                                                        ("error_len",
+                                                                                          M.value_with_ty
+                                                                                            (Value.StructTuple
+                                                                                              "core::option::Option::Some"
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.U8
+                                                                                                  1
+                                                                                              ])
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::option::Option")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u8"
+                                                                                              ]))
+                                                                                      ])
+                                                                                    (Ty.path
+                                                                                      "core::str::error::Utf8Error")
+                                                                                ])
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.tuple [];
+                                                                                  Ty.path
+                                                                                    "core::str::error::Utf8Error"
+                                                                                ])
                                                                           |)
                                                                         |)
                                                                       |)))
@@ -2383,36 +2608,45 @@ Module str.
                                                                                               M.never_to_any (|
                                                                                                 M.read (|
                                                                                                   M.return_ (|
-                                                                                                    Value.StructTuple
-                                                                                                      "core::result::Result::Err"
-                                                                                                      []
-                                                                                                      [
-                                                                                                        Ty.tuple
-                                                                                                          [];
-                                                                                                        Ty.path
-                                                                                                          "core::str::error::Utf8Error"
-                                                                                                      ]
-                                                                                                      [
-                                                                                                        Value.mkStructRecord
-                                                                                                          "core::str::error::Utf8Error"
-                                                                                                          []
-                                                                                                          []
-                                                                                                          [
-                                                                                                            ("valid_up_to",
-                                                                                                              M.read (|
-                                                                                                                old_offset
-                                                                                                              |));
-                                                                                                            ("error_len",
-                                                                                                              Value.StructTuple
-                                                                                                                "core::option::Option::None"
-                                                                                                                []
-                                                                                                                [
-                                                                                                                  Ty.path
-                                                                                                                    "u8"
-                                                                                                                ]
-                                                                                                                [])
-                                                                                                          ]
-                                                                                                      ]
+                                                                                                    M.value_with_ty
+                                                                                                      (Value.StructTuple
+                                                                                                        "core::result::Result::Err"
+                                                                                                        [
+                                                                                                          M.value_with_ty
+                                                                                                            (Value.mkStructRecord
+                                                                                                              "core::str::error::Utf8Error"
+                                                                                                              [
+                                                                                                                ("valid_up_to",
+                                                                                                                  M.read (|
+                                                                                                                    old_offset
+                                                                                                                  |));
+                                                                                                                ("error_len",
+                                                                                                                  M.value_with_ty
+                                                                                                                    (Value.StructTuple
+                                                                                                                      "core::option::Option::None"
+                                                                                                                      [])
+                                                                                                                    (Ty.apply
+                                                                                                                      (Ty.path
+                                                                                                                        "core::option::Option")
+                                                                                                                      []
+                                                                                                                      [
+                                                                                                                        Ty.path
+                                                                                                                          "u8"
+                                                                                                                      ]))
+                                                                                                              ])
+                                                                                                            (Ty.path
+                                                                                                              "core::str::error::Utf8Error")
+                                                                                                        ])
+                                                                                                      (Ty.apply
+                                                                                                        (Ty.path
+                                                                                                          "core::result::Result")
+                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.tuple
+                                                                                                            [];
+                                                                                                          Ty.path
+                                                                                                            "core::str::error::Utf8Error"
+                                                                                                        ])
                                                                                                   |)
                                                                                                 |)
                                                                                               |)));
@@ -2447,39 +2681,48 @@ Module str.
                                                                       M.never_to_any (|
                                                                         M.read (|
                                                                           M.return_ (|
-                                                                            Value.StructTuple
-                                                                              "core::result::Result::Err"
-                                                                              []
-                                                                              [
-                                                                                Ty.tuple [];
-                                                                                Ty.path
-                                                                                  "core::str::error::Utf8Error"
-                                                                              ]
-                                                                              [
-                                                                                Value.mkStructRecord
-                                                                                  "core::str::error::Utf8Error"
-                                                                                  []
-                                                                                  []
-                                                                                  [
-                                                                                    ("valid_up_to",
-                                                                                      M.read (|
-                                                                                        old_offset
-                                                                                      |));
-                                                                                    ("error_len",
-                                                                                      Value.StructTuple
-                                                                                        "core::option::Option::Some"
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.path
-                                                                                            "u8"
-                                                                                        ]
-                                                                                        [
-                                                                                          Value.Integer
-                                                                                            IntegerKind.U8
-                                                                                            2
-                                                                                        ])
-                                                                                  ]
-                                                                              ]
+                                                                            M.value_with_ty
+                                                                              (Value.StructTuple
+                                                                                "core::result::Result::Err"
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (Value.mkStructRecord
+                                                                                      "core::str::error::Utf8Error"
+                                                                                      [
+                                                                                        ("valid_up_to",
+                                                                                          M.read (|
+                                                                                            old_offset
+                                                                                          |));
+                                                                                        ("error_len",
+                                                                                          M.value_with_ty
+                                                                                            (Value.StructTuple
+                                                                                              "core::option::Option::Some"
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.U8
+                                                                                                  2
+                                                                                              ])
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::option::Option")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u8"
+                                                                                              ]))
+                                                                                      ])
+                                                                                    (Ty.path
+                                                                                      "core::str::error::Utf8Error")
+                                                                                ])
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.tuple [];
+                                                                                  Ty.path
+                                                                                    "core::str::error::Utf8Error"
+                                                                                ])
                                                                           |)
                                                                         |)
                                                                       |)));
@@ -2577,36 +2820,45 @@ Module str.
                                                                                               M.never_to_any (|
                                                                                                 M.read (|
                                                                                                   M.return_ (|
-                                                                                                    Value.StructTuple
-                                                                                                      "core::result::Result::Err"
-                                                                                                      []
-                                                                                                      [
-                                                                                                        Ty.tuple
-                                                                                                          [];
-                                                                                                        Ty.path
-                                                                                                          "core::str::error::Utf8Error"
-                                                                                                      ]
-                                                                                                      [
-                                                                                                        Value.mkStructRecord
-                                                                                                          "core::str::error::Utf8Error"
-                                                                                                          []
-                                                                                                          []
-                                                                                                          [
-                                                                                                            ("valid_up_to",
-                                                                                                              M.read (|
-                                                                                                                old_offset
-                                                                                                              |));
-                                                                                                            ("error_len",
-                                                                                                              Value.StructTuple
-                                                                                                                "core::option::Option::None"
-                                                                                                                []
-                                                                                                                [
-                                                                                                                  Ty.path
-                                                                                                                    "u8"
-                                                                                                                ]
-                                                                                                                [])
-                                                                                                          ]
-                                                                                                      ]
+                                                                                                    M.value_with_ty
+                                                                                                      (Value.StructTuple
+                                                                                                        "core::result::Result::Err"
+                                                                                                        [
+                                                                                                          M.value_with_ty
+                                                                                                            (Value.mkStructRecord
+                                                                                                              "core::str::error::Utf8Error"
+                                                                                                              [
+                                                                                                                ("valid_up_to",
+                                                                                                                  M.read (|
+                                                                                                                    old_offset
+                                                                                                                  |));
+                                                                                                                ("error_len",
+                                                                                                                  M.value_with_ty
+                                                                                                                    (Value.StructTuple
+                                                                                                                      "core::option::Option::None"
+                                                                                                                      [])
+                                                                                                                    (Ty.apply
+                                                                                                                      (Ty.path
+                                                                                                                        "core::option::Option")
+                                                                                                                      []
+                                                                                                                      [
+                                                                                                                        Ty.path
+                                                                                                                          "u8"
+                                                                                                                      ]))
+                                                                                                              ])
+                                                                                                            (Ty.path
+                                                                                                              "core::str::error::Utf8Error")
+                                                                                                        ])
+                                                                                                      (Ty.apply
+                                                                                                        (Ty.path
+                                                                                                          "core::result::Result")
+                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.tuple
+                                                                                                            [];
+                                                                                                          Ty.path
+                                                                                                            "core::str::error::Utf8Error"
+                                                                                                        ])
                                                                                                   |)
                                                                                                 |)
                                                                                               |)));
@@ -2641,39 +2893,48 @@ Module str.
                                                                       M.never_to_any (|
                                                                         M.read (|
                                                                           M.return_ (|
-                                                                            Value.StructTuple
-                                                                              "core::result::Result::Err"
-                                                                              []
-                                                                              [
-                                                                                Ty.tuple [];
-                                                                                Ty.path
-                                                                                  "core::str::error::Utf8Error"
-                                                                              ]
-                                                                              [
-                                                                                Value.mkStructRecord
-                                                                                  "core::str::error::Utf8Error"
-                                                                                  []
-                                                                                  []
-                                                                                  [
-                                                                                    ("valid_up_to",
-                                                                                      M.read (|
-                                                                                        old_offset
-                                                                                      |));
-                                                                                    ("error_len",
-                                                                                      Value.StructTuple
-                                                                                        "core::option::Option::Some"
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.path
-                                                                                            "u8"
-                                                                                        ]
-                                                                                        [
-                                                                                          Value.Integer
-                                                                                            IntegerKind.U8
-                                                                                            3
-                                                                                        ])
-                                                                                  ]
-                                                                              ]
+                                                                            M.value_with_ty
+                                                                              (Value.StructTuple
+                                                                                "core::result::Result::Err"
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (Value.mkStructRecord
+                                                                                      "core::str::error::Utf8Error"
+                                                                                      [
+                                                                                        ("valid_up_to",
+                                                                                          M.read (|
+                                                                                            old_offset
+                                                                                          |));
+                                                                                        ("error_len",
+                                                                                          M.value_with_ty
+                                                                                            (Value.StructTuple
+                                                                                              "core::option::Option::Some"
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.U8
+                                                                                                  3
+                                                                                              ])
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::option::Option")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u8"
+                                                                                              ]))
+                                                                                      ])
+                                                                                    (Ty.path
+                                                                                      "core::str::error::Utf8Error")
+                                                                                ])
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.tuple [];
+                                                                                  Ty.path
+                                                                                    "core::str::error::Utf8Error"
+                                                                                ])
                                                                           |)
                                                                         |)
                                                                       |)));
@@ -2689,34 +2950,44 @@ Module str.
                                                           (M.never_to_any (|
                                                             M.read (|
                                                               M.return_ (|
-                                                                Value.StructTuple
-                                                                  "core::result::Result::Err"
-                                                                  []
-                                                                  [
-                                                                    Ty.tuple [];
-                                                                    Ty.path
-                                                                      "core::str::error::Utf8Error"
-                                                                  ]
-                                                                  [
-                                                                    Value.mkStructRecord
-                                                                      "core::str::error::Utf8Error"
-                                                                      []
-                                                                      []
-                                                                      [
-                                                                        ("valid_up_to",
-                                                                          M.read (| old_offset |));
-                                                                        ("error_len",
-                                                                          Value.StructTuple
-                                                                            "core::option::Option::Some"
-                                                                            []
-                                                                            [ Ty.path "u8" ]
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.U8
-                                                                                1
-                                                                            ])
-                                                                      ]
-                                                                  ]
+                                                                M.value_with_ty
+                                                                  (Value.StructTuple
+                                                                    "core::result::Result::Err"
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (Value.mkStructRecord
+                                                                          "core::str::error::Utf8Error"
+                                                                          [
+                                                                            ("valid_up_to",
+                                                                              M.read (|
+                                                                                old_offset
+                                                                              |));
+                                                                            ("error_len",
+                                                                              M.value_with_ty
+                                                                                (Value.StructTuple
+                                                                                  "core::option::Option::Some"
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.U8
+                                                                                      1
+                                                                                  ])
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::option::Option")
+                                                                                  []
+                                                                                  [ Ty.path "u8" ]))
+                                                                          ])
+                                                                        (Ty.path
+                                                                          "core::str::error::Utf8Error")
+                                                                    ])
+                                                                  (Ty.apply
+                                                                    (Ty.path "core::result::Result")
+                                                                    []
+                                                                    [
+                                                                      Ty.tuple [];
+                                                                      Ty.path
+                                                                        "core::str::error::Utf8Error"
+                                                                    ])
                                                               |)
                                                             |)
                                                           |)))
@@ -2782,8 +3053,12 @@ Module str.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.read (| align |);
-                                                                            M.read (| index |)
+                                                                            M.value_with_ty
+                                                                              (M.read (| align |))
+                                                                              (Ty.path "usize");
+                                                                            M.value_with_ty
+                                                                              (M.read (| index |))
+                                                                              (Ty.path "usize")
                                                                           ]
                                                                         |);
                                                                         M.read (|
@@ -2827,10 +3102,20 @@ Module str.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (| M.read (| v |) |)
-                                                              |)
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| v |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [ Ty.path "u8" ]
+                                                                  ])
                                                             ]
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
@@ -2915,12 +3200,24 @@ Module str.
                                                                                         []
                                                                                       |),
                                                                                       [
-                                                                                        M.read (|
-                                                                                          ptr
-                                                                                        |);
-                                                                                        M.read (|
-                                                                                          index
-                                                                                        |)
+                                                                                        M.value_with_ty
+                                                                                          (M.read (|
+                                                                                            ptr
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "*const")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "u8"
+                                                                                            ]);
+                                                                                        M.value_with_ty
+                                                                                          (M.read (|
+                                                                                            index
+                                                                                          |))
+                                                                                          (Ty.path
+                                                                                            "usize")
                                                                                       ]
                                                                                     |)) in
                                                                                 let~ zu :
@@ -2934,13 +3231,16 @@ Module str.
                                                                                       []
                                                                                     |),
                                                                                     [
-                                                                                      M.read (|
-                                                                                        M.deref (|
-                                                                                          M.read (|
-                                                                                            block
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              block
+                                                                                            |)
                                                                                           |)
-                                                                                        |)
-                                                                                      |)
+                                                                                        |))
+                                                                                        (Ty.path
+                                                                                          "usize")
                                                                                     ]
                                                                                   |) in
                                                                                 let~ zv :
@@ -2954,18 +3254,10 @@ Module str.
                                                                                       []
                                                                                     |),
                                                                                     [
-                                                                                      M.read (|
-                                                                                        M.deref (|
-                                                                                          M.call_closure (|
-                                                                                            Ty.apply
-                                                                                              (Ty.path
-                                                                                                "*const")
-                                                                                              []
-                                                                                              [
-                                                                                                Ty.path
-                                                                                                  "usize"
-                                                                                              ],
-                                                                                            M.get_associated_function (|
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          M.deref (|
+                                                                                            M.call_closure (|
                                                                                               Ty.apply
                                                                                                 (Ty.path
                                                                                                   "*const")
@@ -2974,21 +3266,44 @@ Module str.
                                                                                                   Ty.path
                                                                                                     "usize"
                                                                                                 ],
-                                                                                              "add",
-                                                                                              [],
-                                                                                              []
-                                                                                            |),
-                                                                                            [
-                                                                                              M.read (|
-                                                                                                block
-                                                                                              |);
-                                                                                              Value.Integer
-                                                                                                IntegerKind.Usize
-                                                                                                1
-                                                                                            ]
+                                                                                              M.get_associated_function (|
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "*const")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "usize"
+                                                                                                  ],
+                                                                                                "add",
+                                                                                                [],
+                                                                                                []
+                                                                                              |),
+                                                                                              [
+                                                                                                M.value_with_ty
+                                                                                                  (M.read (|
+                                                                                                    block
+                                                                                                  |))
+                                                                                                  (Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "*const")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.path
+                                                                                                        "usize"
+                                                                                                    ]);
+                                                                                                M.value_with_ty
+                                                                                                  (Value.Integer
+                                                                                                    IntegerKind.Usize
+                                                                                                    1)
+                                                                                                  (Ty.path
+                                                                                                    "usize")
+                                                                                              ]
+                                                                                            |)
                                                                                           |)
-                                                                                        |)
-                                                                                      |)
+                                                                                        |))
+                                                                                        (Ty.path
+                                                                                          "usize")
                                                                                     ]
                                                                                   |) in
                                                                                 M.alloc (|
@@ -3223,11 +3538,12 @@ Module str.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "core::str::error::Utf8Error" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "core::str::error::Utf8Error" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::str::error::Utf8Error" ])
                 |)
               |)))
           |)))

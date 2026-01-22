@@ -14,11 +14,11 @@ Module iter.
         | [], [ T ], [ elt ] =>
           ltac:(M.monadic
             (let elt := M.alloc (| T, elt |) in
-            Value.mkStructRecord
-              "core::iter::sources::repeat::Repeat"
-              []
-              [ T ]
-              [ ("element", M.read (| elt |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::iter::sources::repeat::Repeat"
+                [ ("element", M.read (| elt |)) ])
+              (Ty.apply (Ty.path "core::iter::sources::repeat::Repeat") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -53,32 +53,34 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::repeat::Repeat") [] [ A ] ],
                   self
                 |) in
-              Value.mkStructRecord
-                "core::iter::sources::repeat::Repeat"
-                []
-                [ A ]
-                [
-                  ("element",
-                    M.call_closure (|
-                      A,
-                      M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::iter::sources::repeat::Repeat"
+                  [
+                    ("element",
+                      M.call_closure (|
+                        A,
+                        M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::iter::sources::repeat::Repeat",
-                                "element"
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::sources::repeat::Repeat",
+                                    "element"
+                                  |)
+                                |)
                               |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |))
-                ]))
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ A ])
+                        ]
+                      |))
+                  ])
+                (Ty.apply (Ty.path "core::iter::sources::repeat::Repeat") [] [ A ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -124,37 +126,45 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Repeat" |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "element" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ A ] ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ A ],
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::iter::sources::repeat::Repeat",
-                                  "element"
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Repeat" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "element" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ A ] ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ A ],
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::sources::repeat::Repeat",
+                                    "element"
+                                  |)
                                 |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |)
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -195,26 +205,28 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::repeat::Repeat") [] [ A ] ],
                   self
                 |) in
-              Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ A ]
-                [
-                  M.call_closure (|
-                    A,
-                    M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::sources::repeat::Repeat",
-                          "element"
-                        |)
-                      |)
-                    ]
-                  |)
-                ]))
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::option::Option::Some"
+                  [
+                    M.call_closure (|
+                      A,
+                      M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::iter::sources::repeat::Repeat",
+                              "element"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ A ])
+                      ]
+                    |)
+                  ])
+                (Ty.apply (Ty.path "core::option::Option") [] [ A ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -241,7 +253,9 @@ Module iter.
                   M.read (|
                     get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |)
                   |);
-                  Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                 ]))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -284,14 +298,15 @@ Module iter.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.tuple [];
-                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                        ]
-                        [ Value.Tuple [] ]))
+                      (M.value_with_ty
+                        (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ])))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -323,34 +338,36 @@ Module iter.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ A ]
-                        [
-                          M.call_closure (|
-                            A,
-                            M.get_trait_method (|
-                              "core::clone::Clone",
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.call_closure (|
                               A,
-                              [],
-                              [],
-                              "clone",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::iter::sources::repeat::Repeat",
-                                  "element"
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]))
+                              M.get_trait_method (|
+                                "core::clone::Clone",
+                                A,
+                                [],
+                                [],
+                                "clone",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::iter::sources::repeat::Repeat",
+                                      "element"
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ A ])
+                              ]
+                            |)
+                          ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ A ])))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -449,26 +466,28 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::repeat::Repeat") [] [ A ] ],
                   self
                 |) in
-              Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ A ]
-                [
-                  M.call_closure (|
-                    A,
-                    M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::sources::repeat::Repeat",
-                          "element"
-                        |)
-                      |)
-                    ]
-                  |)
-                ]))
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::option::Option::Some"
+                  [
+                    M.call_closure (|
+                      A,
+                      M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::iter::sources::repeat::Repeat",
+                              "element"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ A ])
+                      ]
+                    |)
+                  ])
+                (Ty.apply (Ty.path "core::option::Option") [] [ A ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -510,14 +529,15 @@ Module iter.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.tuple [];
-                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                        ]
-                        [ Value.Tuple [] ]))
+                      (M.value_with_ty
+                        (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ])))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -549,34 +569,36 @@ Module iter.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ A ]
-                        [
-                          M.call_closure (|
-                            A,
-                            M.get_trait_method (|
-                              "core::clone::Clone",
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.call_closure (|
                               A,
-                              [],
-                              [],
-                              "clone",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::iter::sources::repeat::Repeat",
-                                  "element"
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]))
+                              M.get_trait_method (|
+                                "core::clone::Clone",
+                                A,
+                                [],
+                                [],
+                                "clone",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::iter::sources::repeat::Repeat",
+                                      "element"
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ A ])
+                              ]
+                            |)
+                          ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ A ])))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"

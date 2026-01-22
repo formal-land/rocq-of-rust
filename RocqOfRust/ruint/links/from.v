@@ -33,11 +33,11 @@ Module ToUintError.
     φ x :=
       match x with
       | ValueTooLarge size value =>
-          Value.StructTuple "ruint::from::ToUintError::ValueTooLarge" [] [ Φ usize; Φ T ] [ φ size; φ value ]
+          Value.StructTuple "ruint::from::ToUintError::ValueTooLarge" [ φ size; φ value ]
       | ValueNegative size value =>
-          Value.StructTuple "ruint::from::ToUintError::ValueNegative" [] [ Φ usize; Φ T ] [ φ size; φ value ]
+          Value.StructTuple "ruint::from::ToUintError::ValueNegative" [ φ size; φ value ]
       | NotANumber size =>
-          Value.StructTuple "ruint::from::ToUintError::NotANumber" [] [ Φ usize ] [ φ size ]
+          Value.StructTuple "ruint::from::ToUintError::NotANumber" [ φ size ]
       end
   }.
 
@@ -111,7 +111,7 @@ Module UintTryFrom_T_for_Uint_where_TryFrom.
     eexists.
     { constructor.
       eapply IsTraitMethod.Defined.
-      { apply from.Impl_ruint_from_UintTryFrom_where_core_convert_TryFrom_ruint_Uint_BITS_LIMBS_T_T_for_ruint_Uint_BITS_LIMBS.Implements. }
+      { with_strategy transparent [Φ] apply from.Impl_ruint_from_UintTryFrom_where_core_convert_TryFrom_ruint_Uint_BITS_LIMBS_T_T_for_ruint_Uint_BITS_LIMBS.Implements. }
       { reflexivity. }
     }
     { apply run_uint_try_from. }
@@ -138,7 +138,7 @@ Module TryFrom_u64_for_Uint.
       (Φ (Error BITS LIMBS)).
   Proof.
     eexists; split.
-    { apply from.Impl_core_convert_TryFrom_u64_for_ruint_Uint_BITS_LIMBS.Implements. }
+    { with_strategy transparent [Φ] apply from.Impl_core_convert_TryFrom_u64_for_ruint_Uint_BITS_LIMBS.Implements. }
     { reflexivity. }
   Qed.
 

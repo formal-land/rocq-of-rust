@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_call_runtime_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "call_runtime::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "call_runtime::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "call_runtime::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -128,7 +128,11 @@ Module Impl_core_convert_From_call_runtime_AccountId_for_call_runtime_MultiAddre
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -202,7 +206,11 @@ Module Impl_core_default_Default_for_call_runtime_RuntimeCaller.
   (* Default *)
   Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [] => ltac:(M.monadic (Value.StructTuple "call_runtime::RuntimeCaller" [] [] []))
+    | [], [], [] =>
+      ltac:(M.monadic
+        (M.value_with_ty
+          (Value.StructTuple "call_runtime::RuntimeCaller" [])
+          (Ty.path "call_runtime::RuntimeCaller")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -248,8 +256,12 @@ Module Impl_core_fmt_Debug_for_call_runtime_RuntimeError.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CallRuntimeFailed" |) |) |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CallRuntimeFailed" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -376,7 +388,9 @@ Module Impl_core_convert_From_call_runtime_EnvError_for_call_runtime_RuntimeErro
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "call_runtime::EnvError::CallRuntimeFailed" |) in
-                Value.StructTuple "call_runtime::RuntimeError::CallRuntimeFailed" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "call_runtime::RuntimeError::CallRuntimeFailed" [])
+                  (Ty.path "call_runtime::RuntimeError")));
             fun γ =>
               ltac:(M.monadic
                 (M.never_to_any (|
@@ -387,7 +401,11 @@ Module Impl_core_convert_From_call_runtime_EnvError_for_call_runtime_RuntimeErro
                       [],
                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
                     |),
-                    [ mk_str (| "Unexpected error from `pallet-contracts`." |) ]
+                    [
+                      M.value_with_ty
+                        (mk_str (| "Unexpected error from `pallet-contracts`." |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
                   |)
                 |)))
           ]
@@ -423,7 +441,11 @@ Module Impl_call_runtime_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -451,7 +473,11 @@ Module Impl_call_runtime_RuntimeCaller.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -558,91 +584,112 @@ Module Impl_call_runtime_RuntimeCaller.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [ Ty.tuple []; Ty.path "call_runtime::EnvError" ],
-              M.get_associated_function (|
-                Ty.path "call_runtime::Env",
-                "call_runtime",
-                [],
-                [ Ty.path "call_runtime::RuntimeCall" ]
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "call_runtime::Env",
-                    M.call_closure (|
-                      Ty.path "call_runtime::Env",
-                      M.get_associated_function (|
-                        Ty.path "call_runtime::RuntimeCaller",
-                        "env",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.tuple []; Ty.path "call_runtime::EnvError" ],
+                M.get_associated_function (|
+                  Ty.path "call_runtime::Env",
+                  "call_runtime",
+                  [],
+                  [ Ty.path "call_runtime::RuntimeCall" ]
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
                       M.alloc (|
-                        Ty.path "call_runtime::RuntimeCall",
-                        Value.StructTuple
-                          "call_runtime::RuntimeCall::Balances"
-                          []
-                          []
+                        Ty.path "call_runtime::Env",
+                        M.call_closure (|
+                          Ty.path "call_runtime::Env",
+                          M.get_associated_function (|
+                            Ty.path "call_runtime::RuntimeCaller",
+                            "env",
+                            [],
+                            []
+                          |),
                           [
-                            Value.mkStructRecord
-                              "call_runtime::BalancesCall::Transfer"
-                              []
-                              []
-                              [
-                                ("dest",
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "call_runtime::MultiAddress")
-                                      []
-                                      [ Ty.path "call_runtime::AccountId"; Ty.tuple [] ],
-                                    M.get_trait_method (|
-                                      "core::convert::Into",
-                                      Ty.path "call_runtime::AccountId",
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "call_runtime::MultiAddress")
-                                          []
-                                          [ Ty.path "call_runtime::AccountId"; Ty.tuple [] ]
-                                      ],
-                                      "into",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| receiver |) ]
-                                  |));
-                                ("value", M.read (| value |))
-                              ]
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "call_runtime::RuntimeCaller" ])
                           ]
+                        |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            M.get_trait_method (|
-              "core::convert::Into",
-              Ty.path "call_runtime::EnvError",
-              [],
-              [ Ty.path "call_runtime::RuntimeError" ],
-              "into",
-              [],
-              []
-            |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "call_runtime::Env" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.path "call_runtime::RuntimeCall",
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "call_runtime::RuntimeCall::Balances"
+                                [
+                                  M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "call_runtime::BalancesCall::Transfer"
+                                      [
+                                        ("dest",
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "call_runtime::MultiAddress")
+                                              []
+                                              [ Ty.path "call_runtime::AccountId"; Ty.tuple [] ],
+                                            M.get_trait_method (|
+                                              "core::convert::Into",
+                                              Ty.path "call_runtime::AccountId",
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "call_runtime::MultiAddress")
+                                                  []
+                                                  [ Ty.path "call_runtime::AccountId"; Ty.tuple [] ]
+                                              ],
+                                              "into",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| receiver |))
+                                                (Ty.path "call_runtime::AccountId")
+                                            ]
+                                          |));
+                                        ("value", M.read (| value |))
+                                      ])
+                                    (Ty.path "call_runtime::BalancesCall")
+                                ])
+                              (Ty.path "call_runtime::RuntimeCall")
+                          |)
+                        |)
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "call_runtime::RuntimeCall" ])
+                ]
+              |))
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.tuple []; Ty.path "call_runtime::EnvError" ]);
+            M.value_with_ty
+              (M.get_trait_method (|
+                "core::convert::Into",
+                Ty.path "call_runtime::EnvError",
+                [],
+                [ Ty.path "call_runtime::RuntimeError" ],
+                "into",
+                [],
+                []
+              |))
+              (Ty.function
+                [ Ty.path "call_runtime::EnvError" ]
+                (Ty.path "call_runtime::RuntimeError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -687,51 +734,68 @@ Module Impl_call_runtime_RuntimeCaller.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.tuple []; Ty.path "call_runtime::EnvError" ],
+                M.get_associated_function (|
+                  Ty.path "call_runtime::Env",
+                  "call_runtime",
+                  [],
+                  [ Ty.tuple [] ]
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.path "call_runtime::Env",
+                        M.call_closure (|
+                          Ty.path "call_runtime::Env",
+                          M.get_associated_function (|
+                            Ty.path "call_runtime::RuntimeCaller",
+                            "env",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "call_runtime::RuntimeCaller" ])
+                          ]
+                        |)
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "call_runtime::Env" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (| Pointer.Kind.Ref, M.alloc (| Ty.tuple [], Value.Tuple [] |) |)
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::result::Result")
                 []
-                [ Ty.tuple []; Ty.path "call_runtime::EnvError" ],
-              M.get_associated_function (|
-                Ty.path "call_runtime::Env",
-                "call_runtime",
+                [ Ty.tuple []; Ty.path "call_runtime::EnvError" ]);
+            M.value_with_ty
+              (M.get_trait_method (|
+                "core::convert::Into",
+                Ty.path "call_runtime::EnvError",
                 [],
-                [ Ty.tuple [] ]
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "call_runtime::Env",
-                    M.call_closure (|
-                      Ty.path "call_runtime::Env",
-                      M.get_associated_function (|
-                        Ty.path "call_runtime::RuntimeCaller",
-                        "env",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (| Pointer.Kind.Ref, M.alloc (| Ty.tuple [], Value.Tuple [] |) |)
-                  |)
-                |)
-              ]
-            |);
-            M.get_trait_method (|
-              "core::convert::Into",
-              Ty.path "call_runtime::EnvError",
-              [],
-              [ Ty.path "call_runtime::RuntimeError" ],
-              "into",
-              [],
-              []
-            |)
+                [ Ty.path "call_runtime::RuntimeError" ],
+                "into",
+                [],
+                []
+              |))
+              (Ty.function
+                [ Ty.path "call_runtime::EnvError" ]
+                (Ty.path "call_runtime::RuntimeError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

@@ -110,8 +110,12 @@ Module asserting.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "N/A" |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "N/A" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -186,23 +190,23 @@ Module asserting.
                   "core::asserting::Capture",
                   "elem"
                 |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ E ]
-                  [
-                    M.read (|
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::asserting::Wrapper",
-                            0
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [
+                      M.read (|
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::asserting::Wrapper",
+                              0
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
+                    ])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ E ])
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -280,8 +284,12 @@ Module asserting.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "N/A" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "N/A" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -296,8 +304,12 @@ Module asserting.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_trait_method (| "core::fmt::Debug", E, [], [], "fmt", [], [] |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ E ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)))
             ]
@@ -341,14 +353,20 @@ Module asserting.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "core::asserting::Capture"
-            []
-            [ M_; T ]
-            [
-              ("elem", Value.StructTuple "core::option::Option::None" [] [ M_ ] []);
-              ("phantom", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-            ]))
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "core::asserting::Capture"
+              [
+                ("elem",
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ M_ ]));
+                ("phantom",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+              ])
+            (Ty.apply (Ty.path "core::asserting::Capture") [] [ M_; T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

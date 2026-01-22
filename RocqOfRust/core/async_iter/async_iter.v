@@ -18,7 +18,9 @@ Module async_iter.
             Value.Tuple
               [
                 Value.Integer IntegerKind.Usize 0;
-                Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+                M.value_with_ty
+                  (Value.StructTuple "core::option::Option::None" [])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -84,56 +86,79 @@ Module async_iter.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.MutRef,
                           M.deref (|
-                            M.read (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
                               M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "&mut") [] [ S ] ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::DerefMut",
-                                    Ty.apply
-                                      (Ty.path "core::pin::Pin")
-                                      []
-                                      [
+                                M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "&mut") [] [ S ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::DerefMut",
                                         Ty.apply
-                                          (Ty.path "&mut")
+                                          (Ty.path "core::pin::Pin")
                                           []
-                                          [ Ty.apply (Ty.path "&mut") [] [ S ] ]
-                                      ],
-                                    [],
-                                    [],
-                                    "deref_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "&mut") [] [ S ] ]
+                                          ],
+                                        [],
+                                        [],
+                                        "deref_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.MutRef, self |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::pin::Pin")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&mut") [] [ S ] ]
+                                                ]
+                                            ])
+                                      ]
+                                    |)
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ S ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -168,10 +193,12 @@ Module async_iter.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ S ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -254,8 +281,38 @@ Module async_iter.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::pin::Pin")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] P "Target" ]
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::pin::Pin") [] [ P ],
+                      "as_deref_mut",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply
+                          (Ty.path "core::pin::Pin")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::pin::Pin") [] [ P ] ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::pin::Pin")
                     []
                     [
@@ -263,16 +320,10 @@ Module async_iter.
                         (Ty.path "&mut")
                         []
                         [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] P "Target" ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::pin::Pin") [] [ P ],
-                    "as_deref_mut",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |)
+                    ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -307,27 +358,39 @@ Module async_iter.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] P "Target" ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply (Ty.path "core::pin::Pin") [] [ P ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] P "Target" ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply (Ty.path "core::pin::Pin") [] [ P ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::pin::Pin") [] [ P ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] P "Target" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -371,11 +434,18 @@ Module async_iter.
         | [], [], [ t ] =>
           ltac:(M.monadic
             (let t := M.alloc (| T, t |) in
-            Value.StructTuple
-              "core::task::poll::Poll::Ready"
-              []
-              [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ]
-              [ Value.StructTuple "core::option::Option::Some" [] [ T ] [ M.read (| t |) ] ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::task::poll::Poll::Ready"
+                [
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| t |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ T ])
+                ])
+              (Ty.apply
+                (Ty.path "core::task::poll::Poll")
+                []
+                [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -403,11 +473,12 @@ Module async_iter.
               (Ty.path "core::task::poll::Poll")
               []
               [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ],
-            Value.StructTuple
-              "core::task::poll::Poll::Pending"
-              []
-              [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ]
-              []
+            M.value_with_ty
+              (Value.StructTuple "core::task::poll::Poll::Pending" [])
+              (Ty.apply
+                (Ty.path "core::task::poll::Poll")
+                []
+                [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ])
           |))).
       
       Global Instance AssociatedConstant_value_PENDING :
@@ -434,11 +505,18 @@ Module async_iter.
               (Ty.path "core::task::poll::Poll")
               []
               [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ],
-            Value.StructTuple
-              "core::task::poll::Poll::Ready"
-              []
-              [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ]
-              [ Value.StructTuple "core::option::Option::None" [] [ T ] [] ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::task::poll::Poll::Ready"
+                [
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ T ])
+                ])
+              (Ty.apply
+                (Ty.path "core::task::poll::Poll")
+                []
+                [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ])
           |))).
       
       Global Instance AssociatedConstant_value_FINISHED :

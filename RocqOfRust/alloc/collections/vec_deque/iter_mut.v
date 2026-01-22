@@ -34,11 +34,11 @@ Module collections.
                 M.alloc (| Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ], i1 |) in
               let i2 :=
                 M.alloc (| Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ], i2 |) in
-              Value.mkStructRecord
-                "alloc::collections::vec_deque::iter_mut::IterMut"
-                []
-                [ T ]
-                [ ("i1", M.read (| i1 |)); ("i2", M.read (| i2 |)) ]))
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "alloc::collections::vec_deque::iter_mut::IterMut"
+                  [ ("i1", M.read (| i1 |)); ("i2", M.read (| i2 |)) ])
+                (Ty.apply (Ty.path "alloc::collections::vec_deque::iter_mut::IterMut") [] [ T ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -82,13 +82,15 @@ Module collections.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "alloc::collections::vec_deque::iter_mut::IterMut",
-                              "i1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                self,
+                                "alloc::collections::vec_deque::iter_mut::IterMut",
+                                "i1"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ])
                         ]
                       |)
                     |)
@@ -105,13 +107,15 @@ Module collections.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "alloc::collections::vec_deque::iter_mut::IterMut",
-                              "i2"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                self,
+                                "alloc::collections::vec_deque::iter_mut::IterMut",
+                                "i2"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ])
                         ]
                       |)
                     |)
@@ -159,14 +163,19 @@ Module collections.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::vec_deque::iter_mut::IterMut",
-                              "i1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::vec_deque::iter_mut::IterMut",
+                                "i1"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                         ]
                       |)
                     |)
@@ -183,14 +192,19 @@ Module collections.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::vec_deque::iter_mut::IterMut",
-                              "i2"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::vec_deque::iter_mut::IterMut",
+                                "i2"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                         ]
                       |)
                     |)
@@ -243,14 +257,19 @@ Module collections.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::vec_deque::iter_mut::IterMut",
-                              "i1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::vec_deque::iter_mut::IterMut",
+                                "i1"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                         ]
                       |)
                     |)
@@ -267,14 +286,19 @@ Module collections.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::vec_deque::iter_mut::IterMut",
-                              "i2"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::vec_deque::iter_mut::IterMut",
+                                "i2"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                         ]
                       |)
                     |)
@@ -327,183 +351,243 @@ Module collections.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::builders::DebugTuple",
-                          "field",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.path "core::fmt::builders::DebugTuple" ],
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::builders::DebugTuple",
-                                  "field",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.alloc (|
-                                      Ty.path "core::fmt::builders::DebugTuple",
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::builders::DebugTuple",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::Formatter",
-                                          "debug_tuple",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| f |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| mk_str (| "IterMut" |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.path "core::fmt::builders::DebugTuple" ],
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::builders::DebugTuple",
+                            "field",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
                                   M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "&")
+                                      (Ty.path "&mut")
                                       []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
+                                      [ Ty.path "core::fmt::builders::DebugTuple" ],
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::builders::DebugTuple",
+                                      "field",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.alloc (|
+                                            Ty.path "core::fmt::builders::DebugTuple",
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::builders::DebugTuple",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Formatter",
+                                                "debug_tuple",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| f |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.path "core::fmt::Formatter" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| mk_str (| "IterMut" |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply
                                             (Ty.path "&")
                                             []
-                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                        ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                              M.call_closure (|
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
                                                 Ty.apply
                                                   (Ty.path "&")
                                                   []
-                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::IterMut")
-                                                    []
-                                                    [ T ],
-                                                  "as_slice",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                                      "i1"
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "core::slice::iter::IterMut")
+                                                          []
+                                                          [ T ],
+                                                        "as_slice",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| self |) |),
+                                                              "alloc::collections::vec_deque::iter_mut::IterMut",
+                                                              "i1"
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::slice::iter::IterMut")
+                                                                []
+                                                                [ T ]
+                                                            ])
+                                                      ]
                                                     |)
                                                   |)
-                                                ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)
-                                      |)
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                                     ]
                                   |)
-                                ]
-                              |)
-                            |)
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
+                                |)
+                              |))
                               (Ty.apply
-                                (Ty.path "&")
+                                (Ty.path "&mut")
                                 []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                                [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "&")
                                         []
-                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                                          "as_slice",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::vec_deque::iter_mut::IterMut",
-                                              "i2"
-                                            |)
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::slice::iter::IterMut")
+                                                []
+                                                [ T ],
+                                              "as_slice",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::vec_deque::iter_mut::IterMut",
+                                                    "i2"
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ T ]
+                                                  ])
+                                            ]
                                           |)
-                                        ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -533,40 +617,40 @@ Module collections.
           match ε, τ, α with
           | [], [], [] =>
             ltac:(M.monadic
-              (Value.mkStructRecord
-                "alloc::collections::vec_deque::iter_mut::IterMut"
-                []
-                [ T ]
-                [
-                  ("i1",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                      M.get_trait_method (|
-                        "core::default::Default",
+              (M.value_with_ty
+                (Value.mkStructRecord
+                  "alloc::collections::vec_deque::iter_mut::IterMut"
+                  [
+                    ("i1",
+                      M.call_closure (|
                         Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |));
-                  ("i2",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                      M.get_trait_method (|
-                        "core::default::Default",
+                      |));
+                    ("i2",
+                      M.call_closure (|
                         Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |))
-                ]))
+                      |))
+                  ])
+                (Ty.apply (Ty.path "alloc::collections::vec_deque::iter_mut::IterMut") [] [ T ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -639,14 +723,19 @@ Module collections.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i1"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i1"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                     ]
                   |)
                 |),
@@ -660,11 +749,14 @@ Module collections.
                           0
                         |) in
                       let val := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |) ]));
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |) ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&mut") [] [ T ] ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
@@ -678,32 +770,42 @@ Module collections.
                               [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i1"
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::vec_deque::iter_mut::IterMut",
+                                        "i1"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i2"
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::vec_deque::iter_mut::IterMut",
+                                        "i2"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                             ]
                           |) in
                         M.alloc (|
@@ -726,14 +828,19 @@ Module collections.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::vec_deque::iter_mut::IterMut",
-                                  "i1"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::vec_deque::iter_mut::IterMut",
+                                    "i1"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                             ]
                           |)
                         |)
@@ -808,15 +915,20 @@ Module collections.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i1"
-                        |)
-                      |);
-                      M.read (| n |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i1"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                      M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -829,14 +941,15 @@ Module collections.
                           "core::result::Result::Ok",
                           0
                         |) in
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.tuple [];
-                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                        ]
-                        [ Value.Tuple [] ]));
+                      M.value_with_ty
+                        (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ0_0 :=
@@ -860,32 +973,42 @@ Module collections.
                               [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i1"
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::vec_deque::iter_mut::IterMut",
+                                        "i1"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i2"
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::vec_deque::iter_mut::IterMut",
+                                        "i2"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                             ]
                           |) in
                         M.alloc (|
@@ -920,27 +1043,41 @@ Module collections.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::vec_deque::iter_mut::IterMut",
-                                  "i1"
-                                |)
-                              |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "core::num::nonzero::NonZero")
-                                    []
-                                    [ Ty.path "usize" ],
-                                  "get",
-                                  [],
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::vec_deque::iter_mut::IterMut",
+                                    "i1"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
                                   []
-                                |),
-                                [ M.read (| remaining |) ]
-                              |)
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::num::nonzero::NonZero")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    "get",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| remaining |))
+                                      (Ty.apply
+                                        (Ty.path "core::num::nonzero::NonZero")
+                                        []
+                                        [ Ty.path "usize" ])
+                                  ]
+                                |))
+                                (Ty.path "usize")
                             ]
                           |)
                         |)
@@ -986,7 +1123,19 @@ Module collections.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::vec_deque::iter_mut::IterMut")
+                              []
+                              [ T ]
+                          ])
+                    ]
                   |) in
                 M.alloc (|
                   Ty.tuple
@@ -997,11 +1146,9 @@ Module collections.
                   Value.Tuple
                     [
                       M.read (| len |);
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| len |) ]
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::Some" [ M.read (| len |) ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                     ]
                 |)
               |)))
@@ -1043,15 +1190,19 @@ Module collections.
                       [ Acc; Ty.apply (Ty.path "&mut") [] [ F ] ]
                     |),
                     [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i1"
-                        |)
-                      |);
-                      M.read (| accum |);
-                      M.borrow (| Pointer.Kind.MutRef, f |)
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i1"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ]);
+                      M.value_with_ty (M.read (| accum |)) Acc;
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, f |))
+                        (Ty.apply (Ty.path "&mut") [] [ F ])
                     ]
                   |) in
                 M.alloc (|
@@ -1068,15 +1219,19 @@ Module collections.
                       [ Acc; Ty.apply (Ty.path "&mut") [] [ F ] ]
                     |),
                     [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i2"
-                        |)
-                      |);
-                      M.read (| accum |);
-                      M.borrow (| Pointer.Kind.MutRef, f |)
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i2"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ]);
+                      M.value_with_ty (M.read (| accum |)) Acc;
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, f |))
+                        (Ty.apply (Ty.path "&mut") [] [ F ])
                     ]
                   |)
                 |)
@@ -1147,30 +1302,40 @@ Module collections.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                R,
-                                M.get_trait_method (|
-                                  "core::iter::traits::iterator::Iterator",
-                                  Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                                  [],
-                                  [],
-                                  "try_fold",
-                                  [],
-                                  [ B; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i1"
-                                    |)
-                                  |);
-                                  M.read (| init |);
-                                  M.borrow (| Pointer.Kind.MutRef, f |)
-                                ]
-                              |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  R,
+                                  M.get_trait_method (|
+                                    "core::iter::traits::iterator::Iterator",
+                                    Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
+                                    [],
+                                    [],
+                                    "try_fold",
+                                    [],
+                                    [ B; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::vec_deque::iter_mut::IterMut",
+                                          "i1"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ]
+                                        ]);
+                                    M.value_with_ty (M.read (| init |)) B;
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, f |))
+                                      (Ty.apply (Ty.path "&mut") [] [ F ])
+                                  ]
+                                |))
+                                R
                             ]
                           |)
                         |),
@@ -1214,7 +1379,16 @@ Module collections.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| residual |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| residual |))
+                                          (Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Residual")
+                                      ]
                                     |)
                                   |)
                                 |)
@@ -1245,16 +1419,23 @@ Module collections.
                           [ B; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::vec_deque::iter_mut::IterMut",
-                              "i2"
-                            |)
-                          |);
-                          M.read (| acc |);
-                          M.borrow (| Pointer.Kind.MutRef, f |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::vec_deque::iter_mut::IterMut",
+                                "i2"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                          M.value_with_ty (M.read (| acc |)) B;
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, f |))
+                            (Ty.apply (Ty.path "&mut") [] [ F ])
                         ]
                       |)
                     |)
@@ -1289,7 +1470,19 @@ Module collections.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, self |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::collections::vec_deque::iter_mut::IterMut")
+                          []
+                          [ T ]
+                      ])
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -1348,14 +1541,19 @@ Module collections.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::vec_deque::iter_mut::IterMut",
-                                  "i1"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::vec_deque::iter_mut::IterMut",
+                                    "i1"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                             ]
                           |) in
                         M.alloc (|
@@ -1405,15 +1603,27 @@ Module collections.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                                      "i1"
-                                                    |)
-                                                  |);
-                                                  M.read (| idx |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "alloc::collections::vec_deque::iter_mut::IterMut",
+                                                        "i1"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::slice::iter::IterMut")
+                                                          []
+                                                          [ T ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.read (| idx |))
+                                                    (Ty.path "usize")
                                                 ]
                                               |)
                                             |)
@@ -1440,19 +1650,31 @@ Module collections.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::vec_deque::iter_mut::IterMut",
-                                                  "i2"
-                                                |)
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.sub,
-                                                [ M.read (| idx |); M.read (| i1_len |) ]
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::vec_deque::iter_mut::IterMut",
+                                                    "i2"
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ T ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.sub,
+                                                  [ M.read (| idx |); M.read (| i1_len |) ]
+                                                |))
+                                                (Ty.path "usize")
                                             ]
                                           |)
                                         |)
@@ -1546,14 +1768,19 @@ Module collections.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i2"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i2"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                     ]
                   |)
                 |),
@@ -1567,11 +1794,14 @@ Module collections.
                           0
                         |) in
                       let val := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |) ]));
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |) ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&mut") [] [ T ] ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
@@ -1585,32 +1815,42 @@ Module collections.
                               [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i1"
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::vec_deque::iter_mut::IterMut",
+                                        "i1"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i2"
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::vec_deque::iter_mut::IterMut",
+                                        "i2"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                             ]
                           |) in
                         M.alloc (|
@@ -1633,14 +1873,19 @@ Module collections.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::vec_deque::iter_mut::IterMut",
-                                  "i2"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::vec_deque::iter_mut::IterMut",
+                                    "i2"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                             ]
                           |)
                         |)
@@ -1715,15 +1960,20 @@ Module collections.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i2"
-                        |)
-                      |);
-                      M.read (| n |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i2"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                      M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -1736,14 +1986,15 @@ Module collections.
                           "core::result::Result::Ok",
                           0
                         |) in
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.tuple [];
-                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                        ]
-                        [ Value.Tuple [] ]));
+                      M.value_with_ty
+                        (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ0_0 :=
@@ -1767,32 +2018,42 @@ Module collections.
                               [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i1"
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::vec_deque::iter_mut::IterMut",
+                                        "i1"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i2"
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::vec_deque::iter_mut::IterMut",
+                                        "i2"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                             ]
                           |) in
                         M.alloc (|
@@ -1827,27 +2088,41 @@ Module collections.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::vec_deque::iter_mut::IterMut",
-                                  "i2"
-                                |)
-                              |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "core::num::nonzero::NonZero")
-                                    []
-                                    [ Ty.path "usize" ],
-                                  "get",
-                                  [],
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::vec_deque::iter_mut::IterMut",
+                                    "i2"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
                                   []
-                                |),
-                                [ M.read (| remaining |) ]
-                              |)
+                                  [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::num::nonzero::NonZero")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    "get",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| remaining |))
+                                      (Ty.apply
+                                        (Ty.path "core::num::nonzero::NonZero")
+                                        []
+                                        [ Ty.path "usize" ])
+                                  ]
+                                |))
+                                (Ty.path "usize")
                             ]
                           |)
                         |)
@@ -1892,15 +2167,19 @@ Module collections.
                       [ Acc; Ty.apply (Ty.path "&mut") [] [ F ] ]
                     |),
                     [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i2"
-                        |)
-                      |);
-                      M.read (| accum |);
-                      M.borrow (| Pointer.Kind.MutRef, f |)
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i2"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ]);
+                      M.value_with_ty (M.read (| accum |)) Acc;
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, f |))
+                        (Ty.apply (Ty.path "&mut") [] [ F ])
                     ]
                   |) in
                 M.alloc (|
@@ -1917,15 +2196,19 @@ Module collections.
                       [ Acc; Ty.apply (Ty.path "&mut") [] [ F ] ]
                     |),
                     [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i1"
-                        |)
-                      |);
-                      M.read (| accum |);
-                      M.borrow (| Pointer.Kind.MutRef, f |)
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i1"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ]);
+                      M.value_with_ty (M.read (| accum |)) Acc;
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, f |))
+                        (Ty.apply (Ty.path "&mut") [] [ F ])
                     ]
                   |)
                 |)
@@ -1996,30 +2279,40 @@ Module collections.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                R,
-                                M.get_trait_method (|
-                                  "core::iter::traits::double_ended::DoubleEndedIterator",
-                                  Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                                  [],
-                                  [],
-                                  "try_rfold",
-                                  [],
-                                  [ B; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::iter_mut::IterMut",
-                                      "i2"
-                                    |)
-                                  |);
-                                  M.read (| init |);
-                                  M.borrow (| Pointer.Kind.MutRef, f |)
-                                ]
-                              |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  R,
+                                  M.get_trait_method (|
+                                    "core::iter::traits::double_ended::DoubleEndedIterator",
+                                    Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
+                                    [],
+                                    [],
+                                    "try_rfold",
+                                    [],
+                                    [ B; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::vec_deque::iter_mut::IterMut",
+                                          "i2"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ]
+                                        ]);
+                                    M.value_with_ty (M.read (| init |)) B;
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, f |))
+                                      (Ty.apply (Ty.path "&mut") [] [ F ])
+                                  ]
+                                |))
+                                R
                             ]
                           |)
                         |),
@@ -2063,7 +2356,16 @@ Module collections.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| residual |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| residual |))
+                                          (Ty.associated_in_trait
+                                            "core::ops::try_trait::Try"
+                                            []
+                                            []
+                                            R
+                                            "Residual")
+                                      ]
                                     |)
                                   |)
                                 |)
@@ -2094,16 +2396,23 @@ Module collections.
                           [ B; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::vec_deque::iter_mut::IterMut",
-                              "i1"
-                            |)
-                          |);
-                          M.read (| acc |);
-                          M.borrow (| Pointer.Kind.MutRef, f |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::vec_deque::iter_mut::IterMut",
+                                "i1"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ]);
+                          M.value_with_ty (M.read (| acc |)) B;
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, f |))
+                            (Ty.apply (Ty.path "&mut") [] [ F ])
                         ]
                       |)
                     |)
@@ -2167,14 +2476,19 @@ Module collections.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i1"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i1"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                     ]
                   |);
                   M.call_closure (|
@@ -2189,14 +2503,19 @@ Module collections.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i2"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i2"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                     ]
                   |)
                 ]
@@ -2236,14 +2555,19 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::vec_deque::iter_mut::IterMut",
-                        "i1"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::vec_deque::iter_mut::IterMut",
+                          "i1"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                   ]
                 |),
                 ltac:(M.monadic
@@ -2259,14 +2583,19 @@ Module collections.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::vec_deque::iter_mut::IterMut",
-                          "i2"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::vec_deque::iter_mut::IterMut",
+                            "i2"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                     ]
                   |)))
               |)))

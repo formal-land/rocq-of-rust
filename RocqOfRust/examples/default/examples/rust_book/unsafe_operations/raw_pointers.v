@@ -56,7 +56,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic", [], [] |),
-                      [ mk_str (| "assertion failed: *raw_p == 10" |) ]
+                      [
+                        M.value_with_ty
+                          (mk_str (| "assertion failed: *raw_p == 10" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))

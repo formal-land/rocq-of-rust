@@ -104,109 +104,132 @@ Module gas.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Gas" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "limit" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::Gas",
-                          "limit"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Gas" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "limit" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::Gas",
+                            "limit"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "remaining" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::Gas",
-                          "remaining"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "remaining" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::Gas",
+                            "remaining"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "refunded" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::Gas",
-                          "refunded"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "refunded" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::Gas",
+                            "refunded"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "memory" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::MemoryGas" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::MemoryGas" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_interpreter::gas::Gas",
-                              "memory"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "memory" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::MemoryGas" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_interpreter::gas::MemoryGas" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::gas::Gas",
+                                "memory"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -229,68 +252,68 @@ Module gas.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "revm_interpreter::gas::Gas"
-            []
-            []
-            [
-              ("limit",
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::gas::Gas"
+              [
+                ("limit",
+                  M.call_closure (|
                     Ty.path "u64",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("remaining",
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("remaining",
+                  M.call_closure (|
                     Ty.path "u64",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("refunded",
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("refunded",
+                  M.call_closure (|
                     Ty.path "i64",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "i64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("memory",
-                M.call_closure (|
-                  Ty.path "revm_interpreter::gas::MemoryGas",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("memory",
+                  M.call_closure (|
                     Ty.path "revm_interpreter::gas::MemoryGas",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "revm_interpreter::gas::MemoryGas",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "revm_interpreter::gas::Gas")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -413,22 +436,26 @@ Module gas.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_interpreter::gas::Gas",
-                      "memory"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_interpreter::gas::Gas",
-                      "memory"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::gas::Gas",
+                        "memory"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::MemoryGas" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_interpreter::gas::Gas",
+                        "memory"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::MemoryGas" ])
                 ]
               |)))
           |)))
@@ -523,20 +550,24 @@ Module gas.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::Gas",
-                          "limit"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::Gas",
+                            "limit"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -552,20 +583,24 @@ Module gas.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::Gas",
-                          "remaining"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::Gas",
+                            "remaining"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -581,20 +616,24 @@ Module gas.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::Gas",
-                          "refunded"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::Gas",
+                            "refunded"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -611,20 +650,24 @@ Module gas.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::Gas",
-                          "memory"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::Gas",
+                            "memory"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::MemoryGas" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -659,26 +702,26 @@ Module gas.
       | [], [], [ limit ] =>
         ltac:(M.monadic
           (let limit := M.alloc (| Ty.path "u64", limit |) in
-          Value.mkStructRecord
-            "revm_interpreter::gas::Gas"
-            []
-            []
-            [
-              ("limit", M.read (| limit |));
-              ("remaining", M.read (| limit |));
-              ("refunded", Value.Integer IntegerKind.I64 0);
-              ("memory",
-                M.call_closure (|
-                  Ty.path "revm_interpreter::gas::MemoryGas",
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::gas::Gas"
+              [
+                ("limit", M.read (| limit |));
+                ("remaining", M.read (| limit |));
+                ("refunded", Value.Integer IntegerKind.I64 0);
+                ("memory",
+                  M.call_closure (|
                     Ty.path "revm_interpreter::gas::MemoryGas",
-                    "new",
-                    [],
+                    M.get_associated_function (|
+                      Ty.path "revm_interpreter::gas::MemoryGas",
+                      "new",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "revm_interpreter::gas::Gas")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -701,26 +744,26 @@ Module gas.
       | [], [], [ limit ] =>
         ltac:(M.monadic
           (let limit := M.alloc (| Ty.path "u64", limit |) in
-          Value.mkStructRecord
-            "revm_interpreter::gas::Gas"
-            []
-            []
-            [
-              ("limit", M.read (| limit |));
-              ("remaining", Value.Integer IntegerKind.U64 0);
-              ("refunded", Value.Integer IntegerKind.I64 0);
-              ("memory",
-                M.call_closure (|
-                  Ty.path "revm_interpreter::gas::MemoryGas",
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::gas::Gas"
+              [
+                ("limit", M.read (| limit |));
+                ("remaining", Value.Integer IntegerKind.U64 0);
+                ("refunded", Value.Integer IntegerKind.I64 0);
+                ("memory",
+                  M.call_closure (|
                     Ty.path "revm_interpreter::gas::MemoryGas",
-                    "new",
-                    [],
+                    M.get_associated_function (|
+                      Ty.path "revm_interpreter::gas::MemoryGas",
+                      "new",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "revm_interpreter::gas::Gas")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1085,35 +1128,50 @@ Module gas.
                     Ty.path "u64",
                     M.get_trait_method (| "core::cmp::Ord", Ty.path "u64", [], [], "min", [], [] |),
                     [
-                      M.cast
-                        (Ty.path "u64")
-                        (M.call_closure (|
-                          Ty.path "i64",
-                          M.get_associated_function (|
-                            Ty.path "revm_interpreter::gas::Gas",
-                            "refunded",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |));
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.div,
-                        [
-                          M.call_closure (|
-                            Ty.path "u64",
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u64")
+                          (M.call_closure (|
+                            Ty.path "i64",
                             M.get_associated_function (|
                               Ty.path "revm_interpreter::gas::Gas",
-                              "spent",
+                              "refunded",
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |);
-                          M.read (| max_refund_quotient |)
-                        ]
-                      |)
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::Gas" ])
+                            ]
+                          |)))
+                        (Ty.path "u64");
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.div,
+                          [
+                            M.call_closure (|
+                              Ty.path "u64",
+                              M.get_associated_function (|
+                                Ty.path "revm_interpreter::gas::Gas",
+                                "spent",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_interpreter::gas::Gas" ])
+                              ]
+                            |);
+                            M.read (| max_refund_quotient |)
+                          ]
+                        |))
+                        (Ty.path "u64")
                     ]
                   |))
               |) in
@@ -1190,14 +1248,16 @@ Module gas.
                 Ty.tuple [ Ty.path "u64"; Ty.path "bool" ],
                 M.get_associated_function (| Ty.path "u64", "overflowing_sub", [], [] |),
                 [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_interpreter::gas::Gas",
-                      "remaining"
-                    |)
-                  |);
-                  M.read (| cost |)
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::gas::Gas",
+                        "remaining"
+                      |)
+                    |))
+                    (Ty.path "u64");
+                  M.value_with_ty (M.read (| cost |)) (Ty.path "u64")
                 ]
               |)
             |),
@@ -1286,15 +1346,20 @@ Module gas.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::Gas",
-                          "memory"
-                        |)
-                      |);
-                      M.read (| new_len |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::Gas",
+                            "memory"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.path "revm_interpreter::gas::MemoryGas" ]);
+                      M.value_with_ty (M.read (| new_len |)) (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -1333,11 +1398,18 @@ Module gas.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| self |) |)
-                                                |);
-                                                M.read (| additional_cost |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.path "revm_interpreter::gas::Gas" ]);
+                                                M.value_with_ty
+                                                  (M.read (| additional_cost |))
+                                                  (Ty.path "u64")
                                               ]
                                             |)
                                           ]
@@ -1351,11 +1423,11 @@ Module gas.
                                   M.never_to_any (|
                                     M.read (|
                                       M.return_ (|
-                                        Value.StructTuple
-                                          "revm_interpreter::gas::MemoryExtensionResult::OutOfGas"
-                                          []
-                                          []
-                                          []
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "revm_interpreter::gas::MemoryExtensionResult::OutOfGas"
+                                            [])
+                                          (Ty.path "revm_interpreter::gas::MemoryExtensionResult")
                                       |)
                                     |)
                                   |)));
@@ -1364,22 +1436,22 @@ Module gas.
                           |) in
                         M.alloc (|
                           Ty.path "revm_interpreter::gas::MemoryExtensionResult",
-                          Value.StructTuple
-                            "revm_interpreter::gas::MemoryExtensionResult::Extended"
-                            []
-                            []
-                            []
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "revm_interpreter::gas::MemoryExtensionResult::Extended"
+                              [])
+                            (Ty.path "revm_interpreter::gas::MemoryExtensionResult")
                         |)
                       |)));
                   fun γ =>
                     ltac:(M.monadic
                       (M.read (|
                         M.return_ (|
-                          Value.StructTuple
-                            "revm_interpreter::gas::MemoryExtensionResult::Same"
-                            []
-                            []
-                            []
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "revm_interpreter::gas::MemoryExtensionResult::Same"
+                              [])
+                            (Ty.path "revm_interpreter::gas::MemoryExtensionResult")
                         |)
                       |)))
                 ]
@@ -1490,40 +1562,40 @@ Module gas.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "revm_interpreter::gas::MemoryGas"
-            []
-            []
-            [
-              ("words_num",
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::gas::MemoryGas"
+              [
+                ("words_num",
+                  M.call_closure (|
                     Ty.path "usize",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "usize",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("expansion_cost",
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("expansion_cost",
+                  M.call_closure (|
                     Ty.path "u64",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "revm_interpreter::gas::MemoryGas")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1563,60 +1635,72 @@ Module gas.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MemoryGas" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "words_num" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::MemoryGas",
-                          "words_num"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MemoryGas" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "words_num" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::MemoryGas",
+                            "words_num"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "expansion_cost" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_interpreter::gas::MemoryGas",
-                              "expansion_cost"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "expansion_cost" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::gas::MemoryGas",
+                                "expansion_cost"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1787,20 +1871,24 @@ Module gas.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::MemoryGas",
-                          "words_num"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::MemoryGas",
+                            "words_num"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -1817,20 +1905,24 @@ Module gas.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::gas::MemoryGas",
-                          "expansion_cost"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::gas::MemoryGas",
+                            "expansion_cost"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -1862,14 +1954,14 @@ Module gas.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "revm_interpreter::gas::MemoryGas"
-            []
-            []
-            [
-              ("words_num", Value.Integer IntegerKind.Usize 0);
-              ("expansion_cost", Value.Integer IntegerKind.U64 0)
-            ]))
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::gas::MemoryGas"
+              [
+                ("words_num", Value.Integer IntegerKind.Usize 0);
+                ("expansion_cost", Value.Integer IntegerKind.U64 0)
+              ])
+            (Ty.path "revm_interpreter::gas::MemoryGas")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1934,11 +2026,9 @@ Module gas.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.path "u64" ]
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple "core::option::Option::None" [])
+                                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])
                               |)
                             |)
                           |)));
@@ -1958,54 +2048,58 @@ Module gas.
                   M.call_closure (|
                     Ty.path "u64",
                     M.get_function (| "revm_interpreter::gas::calc::memory_gas", [], [] |),
-                    [ M.read (| new_num |) ]
+                    [ M.value_with_ty (M.read (| new_num |)) (Ty.path "usize") ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_function (| "core::mem::swap", [], [ Ty.path "u64" ] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_interpreter::gas::MemoryGas",
-                              "expansion_cost"
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::gas::MemoryGas",
+                                "expansion_cost"
+                              |)
                             |)
                           |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, cost |) |)
-                      |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, cost |) |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ])
                     ]
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "u64" ]
-                    [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.sub,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_interpreter::gas::MemoryGas",
-                              "expansion_cost"
-                            |)
-                          |);
-                          M.read (| cost |)
-                        ]
-                      |)
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.sub,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::gas::MemoryGas",
+                                "expansion_cost"
+                              |)
+                            |);
+                            M.read (| cost |)
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])
                 |)
               |)))
           |)))

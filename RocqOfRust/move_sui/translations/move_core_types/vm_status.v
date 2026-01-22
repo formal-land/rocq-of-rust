@@ -252,7 +252,9 @@ Module vm_status.
                       γ,
                       "move_core_types::vm_status::StatusType::Validation"
                     |) in
-                  Value.StructTuple "move_core_types::vm_status::StatusType::Validation" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::vm_status::StatusType::Validation" [])
+                    (Ty.path "move_core_types::vm_status::StatusType")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -261,11 +263,9 @@ Module vm_status.
                       γ,
                       "move_core_types::vm_status::StatusType::Verification"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::vm_status::StatusType::Verification"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::vm_status::StatusType::Verification" [])
+                    (Ty.path "move_core_types::vm_status::StatusType")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -274,11 +274,11 @@ Module vm_status.
                       γ,
                       "move_core_types::vm_status::StatusType::InvariantViolation"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::vm_status::StatusType::InvariantViolation"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::vm_status::StatusType::InvariantViolation"
+                      [])
+                    (Ty.path "move_core_types::vm_status::StatusType")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -287,11 +287,9 @@ Module vm_status.
                       γ,
                       "move_core_types::vm_status::StatusType::Deserialization"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::vm_status::StatusType::Deserialization"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::vm_status::StatusType::Deserialization" [])
+                    (Ty.path "move_core_types::vm_status::StatusType")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -300,13 +298,17 @@ Module vm_status.
                       γ,
                       "move_core_types::vm_status::StatusType::Execution"
                     |) in
-                  Value.StructTuple "move_core_types::vm_status::StatusType::Execution" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::vm_status::StatusType::Execution" [])
+                    (Ty.path "move_core_types::vm_status::StatusType")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let _ :=
                     M.is_struct_tuple (| γ, "move_core_types::vm_status::StatusType::Unknown" |) in
-                  Value.StructTuple "move_core_types::vm_status::StatusType::Unknown" [] [] []))
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::vm_status::StatusType::Unknown" [])
+                    (Ty.path "move_core_types::vm_status::StatusType")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -360,7 +362,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusType" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusType" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -370,7 +376,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusType" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusType" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -446,73 +456,80 @@ Module vm_status.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusType::Validation"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Validation" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusType::Verification"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Verification" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusType::InvariantViolation"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvariantViolation" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusType::Deserialization"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Deserialization" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusType::Execution"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Execution" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusType::Unknown"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Unknown" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusType::Validation"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Validation" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusType::Verification"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Verification" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusType::InvariantViolation"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvariantViolation" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusType::Deserialization"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Deserialization" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusType::Execution"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Execution" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusType::Unknown"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Unknown" |) |) |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -550,7 +567,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusType" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusType" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -566,11 +587,15 @@ Module vm_status.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -1969,2446 +1994,2473 @@ Module vm_status.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_VALIDATION_STATUS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_VALIDATION_STATUS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_SIGNATURE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_SIGNATURE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_AUTH_KEY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_AUTH_KEY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_OLD"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SEQUENCE_NUMBER_TOO_OLD" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_NEW"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SEQUENCE_NUMBER_TOO_NEW" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INSUFFICIENT_BALANCE_FOR_TRANSACTION_FEE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INSUFFICIENT_BALANCE_FOR_TRANSACTION_FEE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TRANSACTION_EXPIRED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TRANSACTION_EXPIRED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::SENDING_ACCOUNT_DOES_NOT_EXIST"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SENDING_ACCOUNT_DOES_NOT_EXIST" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::REJECTED_WRITE_SET"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "REJECTED_WRITE_SET" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_WRITE_SET"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_WRITE_SET" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EXCEEDED_MAX_TRANSACTION_SIZE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EXCEEDED_MAX_TRANSACTION_SIZE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_SCRIPT"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_SCRIPT" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_MODULE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_MODULE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MAX_GAS_UNITS_EXCEEDS_MAX_GAS_UNITS_BOUND"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MAX_GAS_UNITS_EXCEEDS_MAX_GAS_UNITS_BOUND" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MAX_GAS_UNITS_BELOW_MIN_TRANSACTION_GAS_UNITS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MAX_GAS_UNITS_BELOW_MIN_TRANSACTION_GAS_UNITS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::GAS_UNIT_PRICE_BELOW_MIN_BOUND"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "GAS_UNIT_PRICE_BELOW_MIN_BOUND" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::GAS_UNIT_PRICE_ABOVE_MAX_BOUND"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "GAS_UNIT_PRICE_ABOVE_MAX_BOUND" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_GAS_SPECIFIER"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_GAS_SPECIFIER" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::SENDING_ACCOUNT_FROZEN"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SENDING_ACCOUNT_FROZEN" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNABLE_TO_DESERIALIZE_ACCOUNT"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNABLE_TO_DESERIALIZE_ACCOUNT" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CURRENCY_INFO_DOES_NOT_EXIST"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CURRENCY_INFO_DOES_NOT_EXIST" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_MODULE_PUBLISHER"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_MODULE_PUBLISHER" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::NO_ACCOUNT_ROLE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NO_ACCOUNT_ROLE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BAD_CHAIN_ID"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_CHAIN_ID" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_BIG"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SEQUENCE_NUMBER_TOO_BIG" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BAD_TRANSACTION_FEE_CURRENCY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BAD_TRANSACTION_FEE_CURRENCY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::FEATURE_UNDER_GATING"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FEATURE_UNDER_GATING" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::SECONDARY_KEYS_ADDRESSES_COUNT_MISMATCH"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SECONDARY_KEYS_ADDRESSES_COUNT_MISMATCH" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::SIGNERS_CONTAIN_DUPLICATES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SIGNERS_CONTAIN_DUPLICATES" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::SEQUENCE_NONCE_INVALID"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SEQUENCE_NONCE_INVALID" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CHAIN_ACCOUNT_INFO_DOES_NOT_EXIST"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CHAIN_ACCOUNT_INFO_DOES_NOT_EXIST" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_VERIFICATION_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_VERIFICATION_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INDEX_OUT_OF_BOUNDS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INDEX_OUT_OF_BOUNDS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_SIGNATURE_TOKEN"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_SIGNATURE_TOKEN" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RECURSIVE_STRUCT_DEFINITION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RECURSIVE_STRUCT_DEFINITION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::FIELD_MISSING_TYPE_ABILITY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FIELD_MISSING_TYPE_ABILITY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_FALL_THROUGH"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_FALL_THROUGH" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::NEGATIVE_STACK_SIZE_WITHIN_BLOCK"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NEGATIVE_STACK_SIZE_WITHIN_BLOCK" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_MAIN_FUNCTION_SIGNATURE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_MAIN_FUNCTION_SIGNATURE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::DUPLICATE_ELEMENT"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "DUPLICATE_ELEMENT" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_MODULE_HANDLE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_MODULE_HANDLE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNIMPLEMENTED_HANDLE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNIMPLEMENTED_HANDLE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::LOOKUP_FAILED"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LOOKUP_FAILED" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TYPE_MISMATCH"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TYPE_MISMATCH" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MISSING_DEPENDENCY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MISSING_DEPENDENCY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::POP_WITHOUT_DROP_ABILITY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "POP_WITHOUT_DROP_ABILITY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BR_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BR_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::ABORT_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ABORT_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::STLOC_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "STLOC_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::STLOC_UNSAFE_TO_DESTROY_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "STLOC_UNSAFE_TO_DESTROY_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNSAFE_RET_LOCAL_OR_RESOURCE_STILL_BORROWED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNSAFE_RET_LOCAL_OR_RESOURCE_STILL_BORROWED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RET_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RET_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RET_BORROWED_MUTABLE_REFERENCE_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RET_BORROWED_MUTABLE_REFERENCE_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::FREEZEREF_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FREEZEREF_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::FREEZEREF_EXISTS_MUTABLE_BORROW_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FREEZEREF_EXISTS_MUTABLE_BORROW_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BORROWFIELD_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BORROWFIELD_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BORROWFIELD_BAD_FIELD_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BORROWFIELD_BAD_FIELD_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BORROWFIELD_EXISTS_MUTABLE_BORROW_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BORROWFIELD_EXISTS_MUTABLE_BORROW_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::COPYLOC_UNAVAILABLE_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "COPYLOC_UNAVAILABLE_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::COPYLOC_WITHOUT_COPY_ABILITY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "COPYLOC_WITHOUT_COPY_ABILITY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::COPYLOC_EXISTS_BORROW_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "COPYLOC_EXISTS_BORROW_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MOVELOC_UNAVAILABLE_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVELOC_UNAVAILABLE_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MOVELOC_EXISTS_BORROW_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVELOC_EXISTS_BORROW_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BORROWLOC_REFERENCE_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BORROWLOC_REFERENCE_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BORROWLOC_UNAVAILABLE_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BORROWLOC_UNAVAILABLE_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BORROWLOC_EXISTS_BORROW_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BORROWLOC_EXISTS_BORROW_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CALL_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CALL_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CALL_BORROWED_MUTABLE_REFERENCE_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CALL_BORROWED_MUTABLE_REFERENCE_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::PACK_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "PACK_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNPACK_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNPACK_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::READREF_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "READREF_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::READREF_WITHOUT_COPY_ABILITY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "READREF_WITHOUT_COPY_ABILITY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::READREF_EXISTS_MUTABLE_BORROW_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "READREF_EXISTS_MUTABLE_BORROW_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::WRITEREF_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "WRITEREF_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::WRITEREF_WITHOUT_DROP_ABILITY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "WRITEREF_WITHOUT_DROP_ABILITY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::WRITEREF_EXISTS_BORROW_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "WRITEREF_EXISTS_BORROW_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::WRITEREF_NO_MUTABLE_REFERENCE_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "WRITEREF_NO_MUTABLE_REFERENCE_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INTEGER_OP_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INTEGER_OP_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BOOLEAN_OP_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BOOLEAN_OP_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EQUALITY_OP_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EQUALITY_OP_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EXISTS_WITHOUT_KEY_ABILITY_OR_BAD_ARGUMENT"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EXISTS_WITHOUT_KEY_ABILITY_OR_BAD_ARGUMENT" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BORROWGLOBAL_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BORROWGLOBAL_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BORROWGLOBAL_WITHOUT_KEY_ABILITY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BORROWGLOBAL_WITHOUT_KEY_ABILITY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MOVEFROM_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVEFROM_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MOVEFROM_WITHOUT_KEY_ABILITY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVEFROM_WITHOUT_KEY_ABILITY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MOVETO_TYPE_MISMATCH_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVETO_TYPE_MISMATCH_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MOVETO_WITHOUT_KEY_ABILITY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MOVETO_WITHOUT_KEY_ABILITY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MODULE_ADDRESS_DOES_NOT_MATCH_SENDER"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MODULE_ADDRESS_DOES_NOT_MATCH_SENDER" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::NO_MODULE_HANDLES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NO_MODULE_HANDLES" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::POSITIVE_STACK_SIZE_AT_BLOCK_END"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "POSITIVE_STACK_SIZE_AT_BLOCK_END" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MISSING_ACQUIRES_ANNOTATION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MISSING_ACQUIRES_ANNOTATION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EXTRANEOUS_ACQUIRES_ANNOTATION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EXTRANEOUS_ACQUIRES_ANNOTATION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::DUPLICATE_ACQUIRES_ANNOTATION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "DUPLICATE_ACQUIRES_ANNOTATION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_ACQUIRES_ANNOTATION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_ACQUIRES_ANNOTATION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::GLOBAL_REFERENCE_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "GLOBAL_REFERENCE_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CONSTRAINT_NOT_SATISFIED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CONSTRAINT_NOT_SATISFIED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::NUMBER_OF_TYPE_ARGUMENTS_MISMATCH"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NUMBER_OF_TYPE_ARGUMENTS_MISMATCH" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::LOOP_IN_INSTANTIATION_GRAPH"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "LOOP_IN_INSTANTIATION_GRAPH" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::ZERO_SIZED_STRUCT"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ZERO_SIZED_STRUCT" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::LINKER_ERROR"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LINKER_ERROR" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_CONSTANT_TYPE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_CONSTANT_TYPE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MALFORMED_CONSTANT_DATA"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MALFORMED_CONSTANT_DATA" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EMPTY_CODE_UNIT"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EMPTY_CODE_UNIT" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_LOOP_SPLIT"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_LOOP_SPLIT" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_LOOP_BREAK"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_LOOP_BREAK" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_LOOP_CONTINUE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_LOOP_CONTINUE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNSAFE_RET_UNUSED_VALUES_WITHOUT_DROP"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNSAFE_RET_UNUSED_VALUES_WITHOUT_DROP" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TOO_MANY_LOCALS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TOO_MANY_LOCALS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::GENERIC_MEMBER_OPCODE_MISMATCH"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "GENERIC_MEMBER_OPCODE_MISMATCH" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::FUNCTION_RESOLUTION_FAILURE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FUNCTION_RESOLUTION_FAILURE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_OPERATION_IN_SCRIPT"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_OPERATION_IN_SCRIPT" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::DUPLICATE_MODULE_NAME"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "DUPLICATE_MODULE_NAME" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BACKWARD_INCOMPATIBLE_MODULE_UPDATE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BACKWARD_INCOMPATIBLE_MODULE_UPDATE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_DEPENDENCY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CYCLIC_MODULE_DEPENDENCY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::NUMBER_OF_ARGUMENTS_MISMATCH"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NUMBER_OF_ARGUMENTS_MISMATCH" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_PARAM_TYPE_FOR_DESERIALIZATION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_PARAM_TYPE_FOR_DESERIALIZATION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::FAILED_TO_DESERIALIZE_ARGUMENT"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FAILED_TO_DESERIALIZE_ARGUMENT" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::NUMBER_OF_SIGNER_ARGUMENTS_MISMATCH"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NUMBER_OF_SIGNER_ARGUMENTS_MISMATCH" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CALLED_SCRIPT_VISIBLE_FROM_NON_SCRIPT_VISIBLE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CALLED_SCRIPT_VISIBLE_FROM_NON_SCRIPT_VISIBLE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EXECUTE_ENTRY_FUNCTION_CALLED_ON_NON_ENTRY_FUNCTION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          mk_str (| "EXECUTE_ENTRY_FUNCTION_CALLED_ON_NON_ENTRY_FUNCTION" |)
-                        |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_SELF"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_FRIEND_DECL_WITH_SELF" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_MODULES_OUTSIDE_ACCOUNT_ADDRESS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          mk_str (| "INVALID_FRIEND_DECL_WITH_MODULES_OUTSIDE_ACCOUNT_ADDRESS" |)
-                        |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_MODULES_IN_DEPENDENCIES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          mk_str (| "INVALID_FRIEND_DECL_WITH_MODULES_IN_DEPENDENCIES" |)
-                        |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_FRIENDSHIP"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CYCLIC_MODULE_FRIENDSHIP" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_PHANTOM_TYPE_PARAM_POSITION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_PHANTOM_TYPE_PARAM_POSITION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VEC_UPDATE_EXISTS_MUTABLE_BORROW_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VEC_UPDATE_EXISTS_MUTABLE_BORROW_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VEC_BORROW_ELEMENT_EXISTS_MUTABLE_BORROW_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VEC_BORROW_ELEMENT_EXISTS_MUTABLE_BORROW_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::LOOP_MAX_DEPTH_REACHED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "LOOP_MAX_DEPTH_REACHED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_PARAMETERS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TOO_MANY_TYPE_PARAMETERS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TOO_MANY_PARAMETERS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TOO_MANY_PARAMETERS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TOO_MANY_BASIC_BLOCKS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TOO_MANY_BASIC_BLOCKS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VALUE_STACK_OVERFLOW"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VALUE_STACK_OVERFLOW" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_NODES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TOO_MANY_TYPE_NODES" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VALUE_STACK_PUSH_OVERFLOW"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VALUE_STACK_PUSH_OVERFLOW" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MAX_DEPENDENCY_DEPTH_REACHED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MAX_DEPENDENCY_DEPTH_REACHED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MAX_FUNCTION_DEFINITIONS_REACHED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MAX_FUNCTION_DEFINITIONS_REACHED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MAX_STRUCT_DEFINITIONS_REACHED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MAX_STRUCT_DEFINITIONS_REACHED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MAX_FIELD_DEFINITIONS_REACHED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MAX_FIELD_DEFINITIONS_REACHED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TOO_MANY_BACK_EDGES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TOO_MANY_BACK_EDGES" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_1"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_1" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_2"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_2" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_3"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_3" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_4"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_4" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_5"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_5" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TOO_MANY_VECTOR_ELEMENTS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TOO_MANY_VECTOR_ELEMENTS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::IDENTIFIER_TOO_LONG"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "IDENTIFIER_TOO_LONG" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::PROGRAM_TOO_COMPLEX"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "PROGRAM_TOO_COMPLEX" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_INVARIANT_VIOLATION_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_INVARIANT_VIOLATION_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EMPTY_VALUE_STACK"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EMPTY_VALUE_STACK" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::PC_OVERFLOW"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PC_OVERFLOW" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VERIFICATION_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VERIFICATION_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::STORAGE_ERROR"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "STORAGE_ERROR" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INTERNAL_TYPE_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INTERNAL_TYPE_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EVENT_KEY_MISMATCH"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EVENT_KEY_MISMATCH" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNREACHABLE"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "UNREACHABLE" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VM_STARTUP_FAILURE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VM_STARTUP_FAILURE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNEXPECTED_ERROR_FROM_KNOWN_MOVE_FUNCTION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNEXPECTED_ERROR_FROM_KNOWN_MOVE_FUNCTION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VERIFIER_INVARIANT_VIOLATION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VERIFIER_INVARIANT_VIOLATION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNEXPECTED_VERIFIER_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNEXPECTED_VERIFIER_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNEXPECTED_DESERIALIZATION_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNEXPECTED_DESERIALIZATION_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::FAILED_TO_SERIALIZE_WRITE_SET_CHANGES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FAILED_TO_SERIALIZE_WRITE_SET_CHANGES" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::FAILED_TO_DESERIALIZE_RESOURCE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FAILED_TO_DESERIALIZE_RESOURCE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TYPE_RESOLUTION_FAILURE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TYPE_RESOLUTION_FAILURE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::DUPLICATE_NATIVE_FUNCTION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "DUPLICATE_NATIVE_FUNCTION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::ARITHMETIC_OVERFLOW"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ARITHMETIC_OVERFLOW" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_BINARY_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_BINARY_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MALFORMED"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MALFORMED" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BAD_MAGIC"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_MAGIC" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_VERSION"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_VERSION" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_TABLE_TYPE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_TABLE_TYPE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_SIGNATURE_TYPE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_SIGNATURE_TYPE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_SERIALIZED_TYPE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_SERIALIZED_TYPE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_OPCODE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_OPCODE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BAD_HEADER_TABLE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BAD_HEADER_TABLE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNEXPECTED_SIGNATURE_TYPE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNEXPECTED_SIGNATURE_TYPE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::DUPLICATE_TABLE"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "DUPLICATE_TABLE" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_ABILITY"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_ABILITY" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_NATIVE_STRUCT_FLAG"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_NATIVE_STRUCT_FLAG" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BAD_U16"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U16" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BAD_U32"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U32" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BAD_U64"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U64" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BAD_U128"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U128" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::BAD_U256"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U256" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VALUE_SERIALIZATION_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VALUE_SERIALIZATION_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VALUE_DESERIALIZATION_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VALUE_DESERIALIZATION_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CODE_DESERIALIZATION_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CODE_DESERIALIZATION_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::INVALID_FLAG_BITS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "INVALID_FLAG_BITS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::TRAILING_BYTES"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "TRAILING_BYTES" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_RUNTIME_STATUS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UNKNOWN_RUNTIME_STATUS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EXECUTED"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EXECUTED" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::OUT_OF_GAS"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OUT_OF_GAS" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RESOURCE_DOES_NOT_EXIST"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RESOURCE_DOES_NOT_EXIST" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::RESOURCE_ALREADY_EXISTS"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RESOURCE_ALREADY_EXISTS" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MISSING_DATA"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MISSING_DATA" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::DATA_FORMAT_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "DATA_FORMAT_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::ABORTED"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ABORTED" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::ARITHMETIC_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ARITHMETIC_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VECTOR_OPERATION_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VECTOR_OPERATION_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::EXECUTION_STACK_OVERFLOW"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EXECUTION_STACK_OVERFLOW" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::CALL_STACK_OVERFLOW"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CALL_STACK_OVERFLOW" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VM_MAX_TYPE_DEPTH_REACHED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VM_MAX_TYPE_DEPTH_REACHED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VM_MAX_VALUE_DEPTH_REACHED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VM_MAX_VALUE_DEPTH_REACHED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VM_EXTENSION_ERROR"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VM_EXTENSION_ERROR" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::STORAGE_WRITE_LIMIT_REACHED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "STORAGE_WRITE_LIMIT_REACHED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::MEMORY_LIMIT_EXCEEDED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MEMORY_LIMIT_EXCEEDED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::VM_MAX_TYPE_NODES_REACHED"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "VM_MAX_TYPE_NODES_REACHED" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_core_types::vm_status::StatusCode::UNKNOWN_STATUS"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "UNKNOWN_STATUS" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_VALIDATION_STATUS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_VALIDATION_STATUS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_SIGNATURE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_SIGNATURE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_AUTH_KEY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_AUTH_KEY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_OLD"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SEQUENCE_NUMBER_TOO_OLD" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_NEW"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SEQUENCE_NUMBER_TOO_NEW" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INSUFFICIENT_BALANCE_FOR_TRANSACTION_FEE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INSUFFICIENT_BALANCE_FOR_TRANSACTION_FEE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TRANSACTION_EXPIRED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TRANSACTION_EXPIRED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::SENDING_ACCOUNT_DOES_NOT_EXIST"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SENDING_ACCOUNT_DOES_NOT_EXIST" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::REJECTED_WRITE_SET"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "REJECTED_WRITE_SET" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_WRITE_SET"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_WRITE_SET" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EXCEEDED_MAX_TRANSACTION_SIZE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EXCEEDED_MAX_TRANSACTION_SIZE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_SCRIPT"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_SCRIPT" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_MODULE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_MODULE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MAX_GAS_UNITS_EXCEEDS_MAX_GAS_UNITS_BOUND"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MAX_GAS_UNITS_EXCEEDS_MAX_GAS_UNITS_BOUND" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MAX_GAS_UNITS_BELOW_MIN_TRANSACTION_GAS_UNITS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MAX_GAS_UNITS_BELOW_MIN_TRANSACTION_GAS_UNITS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::GAS_UNIT_PRICE_BELOW_MIN_BOUND"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "GAS_UNIT_PRICE_BELOW_MIN_BOUND" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::GAS_UNIT_PRICE_ABOVE_MAX_BOUND"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "GAS_UNIT_PRICE_ABOVE_MAX_BOUND" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_GAS_SPECIFIER"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_GAS_SPECIFIER" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::SENDING_ACCOUNT_FROZEN"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SENDING_ACCOUNT_FROZEN" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNABLE_TO_DESERIALIZE_ACCOUNT"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNABLE_TO_DESERIALIZE_ACCOUNT" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CURRENCY_INFO_DOES_NOT_EXIST"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CURRENCY_INFO_DOES_NOT_EXIST" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_MODULE_PUBLISHER"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_MODULE_PUBLISHER" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::NO_ACCOUNT_ROLE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NO_ACCOUNT_ROLE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BAD_CHAIN_ID"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BAD_CHAIN_ID" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_BIG"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SEQUENCE_NUMBER_TOO_BIG" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BAD_TRANSACTION_FEE_CURRENCY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BAD_TRANSACTION_FEE_CURRENCY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::FEATURE_UNDER_GATING"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FEATURE_UNDER_GATING" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::SECONDARY_KEYS_ADDRESSES_COUNT_MISMATCH"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SECONDARY_KEYS_ADDRESSES_COUNT_MISMATCH" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::SIGNERS_CONTAIN_DUPLICATES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SIGNERS_CONTAIN_DUPLICATES" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::SEQUENCE_NONCE_INVALID"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SEQUENCE_NONCE_INVALID" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CHAIN_ACCOUNT_INFO_DOES_NOT_EXIST"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CHAIN_ACCOUNT_INFO_DOES_NOT_EXIST" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_VERIFICATION_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_VERIFICATION_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INDEX_OUT_OF_BOUNDS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INDEX_OUT_OF_BOUNDS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_SIGNATURE_TOKEN"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_SIGNATURE_TOKEN" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RECURSIVE_STRUCT_DEFINITION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RECURSIVE_STRUCT_DEFINITION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::FIELD_MISSING_TYPE_ABILITY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FIELD_MISSING_TYPE_ABILITY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_FALL_THROUGH"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_FALL_THROUGH" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::NEGATIVE_STACK_SIZE_WITHIN_BLOCK"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NEGATIVE_STACK_SIZE_WITHIN_BLOCK" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_MAIN_FUNCTION_SIGNATURE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_MAIN_FUNCTION_SIGNATURE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_ELEMENT"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "DUPLICATE_ELEMENT" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_MODULE_HANDLE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_MODULE_HANDLE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNIMPLEMENTED_HANDLE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNIMPLEMENTED_HANDLE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::LOOKUP_FAILED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "LOOKUP_FAILED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TYPE_MISMATCH"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TYPE_MISMATCH" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MISSING_DEPENDENCY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MISSING_DEPENDENCY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::POP_WITHOUT_DROP_ABILITY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "POP_WITHOUT_DROP_ABILITY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BR_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BR_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::ABORT_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ABORT_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::STLOC_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "STLOC_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::STLOC_UNSAFE_TO_DESTROY_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "STLOC_UNSAFE_TO_DESTROY_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNSAFE_RET_LOCAL_OR_RESOURCE_STILL_BORROWED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNSAFE_RET_LOCAL_OR_RESOURCE_STILL_BORROWED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RET_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RET_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RET_BORROWED_MUTABLE_REFERENCE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RET_BORROWED_MUTABLE_REFERENCE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::FREEZEREF_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FREEZEREF_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::FREEZEREF_EXISTS_MUTABLE_BORROW_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FREEZEREF_EXISTS_MUTABLE_BORROW_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BORROWFIELD_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BORROWFIELD_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BORROWFIELD_BAD_FIELD_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BORROWFIELD_BAD_FIELD_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BORROWFIELD_EXISTS_MUTABLE_BORROW_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BORROWFIELD_EXISTS_MUTABLE_BORROW_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::COPYLOC_UNAVAILABLE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "COPYLOC_UNAVAILABLE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::COPYLOC_WITHOUT_COPY_ABILITY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "COPYLOC_WITHOUT_COPY_ABILITY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::COPYLOC_EXISTS_BORROW_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "COPYLOC_EXISTS_BORROW_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MOVELOC_UNAVAILABLE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVELOC_UNAVAILABLE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MOVELOC_EXISTS_BORROW_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVELOC_EXISTS_BORROW_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BORROWLOC_REFERENCE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BORROWLOC_REFERENCE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BORROWLOC_UNAVAILABLE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BORROWLOC_UNAVAILABLE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BORROWLOC_EXISTS_BORROW_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BORROWLOC_EXISTS_BORROW_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CALL_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CALL_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CALL_BORROWED_MUTABLE_REFERENCE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CALL_BORROWED_MUTABLE_REFERENCE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::PACK_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "PACK_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNPACK_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNPACK_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::READREF_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "READREF_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::READREF_WITHOUT_COPY_ABILITY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "READREF_WITHOUT_COPY_ABILITY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::READREF_EXISTS_MUTABLE_BORROW_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "READREF_EXISTS_MUTABLE_BORROW_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::WRITEREF_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "WRITEREF_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::WRITEREF_WITHOUT_DROP_ABILITY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "WRITEREF_WITHOUT_DROP_ABILITY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::WRITEREF_EXISTS_BORROW_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "WRITEREF_EXISTS_BORROW_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::WRITEREF_NO_MUTABLE_REFERENCE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "WRITEREF_NO_MUTABLE_REFERENCE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INTEGER_OP_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INTEGER_OP_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BOOLEAN_OP_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BOOLEAN_OP_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EQUALITY_OP_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EQUALITY_OP_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EXISTS_WITHOUT_KEY_ABILITY_OR_BAD_ARGUMENT"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EXISTS_WITHOUT_KEY_ABILITY_OR_BAD_ARGUMENT" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BORROWGLOBAL_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BORROWGLOBAL_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BORROWGLOBAL_WITHOUT_KEY_ABILITY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BORROWGLOBAL_WITHOUT_KEY_ABILITY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MOVEFROM_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVEFROM_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MOVEFROM_WITHOUT_KEY_ABILITY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVEFROM_WITHOUT_KEY_ABILITY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MOVETO_TYPE_MISMATCH_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVETO_TYPE_MISMATCH_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MOVETO_WITHOUT_KEY_ABILITY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MOVETO_WITHOUT_KEY_ABILITY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MODULE_ADDRESS_DOES_NOT_MATCH_SENDER"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MODULE_ADDRESS_DOES_NOT_MATCH_SENDER" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::NO_MODULE_HANDLES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NO_MODULE_HANDLES" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::POSITIVE_STACK_SIZE_AT_BLOCK_END"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "POSITIVE_STACK_SIZE_AT_BLOCK_END" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MISSING_ACQUIRES_ANNOTATION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MISSING_ACQUIRES_ANNOTATION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EXTRANEOUS_ACQUIRES_ANNOTATION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EXTRANEOUS_ACQUIRES_ANNOTATION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_ACQUIRES_ANNOTATION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "DUPLICATE_ACQUIRES_ANNOTATION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_ACQUIRES_ANNOTATION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_ACQUIRES_ANNOTATION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::GLOBAL_REFERENCE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "GLOBAL_REFERENCE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CONSTRAINT_NOT_SATISFIED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CONSTRAINT_NOT_SATISFIED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::NUMBER_OF_TYPE_ARGUMENTS_MISMATCH"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NUMBER_OF_TYPE_ARGUMENTS_MISMATCH" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::LOOP_IN_INSTANTIATION_GRAPH"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "LOOP_IN_INSTANTIATION_GRAPH" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::ZERO_SIZED_STRUCT"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ZERO_SIZED_STRUCT" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::LINKER_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "LINKER_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_CONSTANT_TYPE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_CONSTANT_TYPE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MALFORMED_CONSTANT_DATA"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MALFORMED_CONSTANT_DATA" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EMPTY_CODE_UNIT"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EMPTY_CODE_UNIT" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_LOOP_SPLIT"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_LOOP_SPLIT" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_LOOP_BREAK"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_LOOP_BREAK" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_LOOP_CONTINUE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_LOOP_CONTINUE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNSAFE_RET_UNUSED_VALUES_WITHOUT_DROP"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNSAFE_RET_UNUSED_VALUES_WITHOUT_DROP" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_LOCALS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TOO_MANY_LOCALS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::GENERIC_MEMBER_OPCODE_MISMATCH"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "GENERIC_MEMBER_OPCODE_MISMATCH" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::FUNCTION_RESOLUTION_FAILURE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FUNCTION_RESOLUTION_FAILURE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_OPERATION_IN_SCRIPT"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_OPERATION_IN_SCRIPT" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_MODULE_NAME"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "DUPLICATE_MODULE_NAME" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BACKWARD_INCOMPATIBLE_MODULE_UPDATE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BACKWARD_INCOMPATIBLE_MODULE_UPDATE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_DEPENDENCY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CYCLIC_MODULE_DEPENDENCY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::NUMBER_OF_ARGUMENTS_MISMATCH"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NUMBER_OF_ARGUMENTS_MISMATCH" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_PARAM_TYPE_FOR_DESERIALIZATION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_PARAM_TYPE_FOR_DESERIALIZATION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::FAILED_TO_DESERIALIZE_ARGUMENT"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FAILED_TO_DESERIALIZE_ARGUMENT" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::NUMBER_OF_SIGNER_ARGUMENTS_MISMATCH"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NUMBER_OF_SIGNER_ARGUMENTS_MISMATCH" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CALLED_SCRIPT_VISIBLE_FROM_NON_SCRIPT_VISIBLE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CALLED_SCRIPT_VISIBLE_FROM_NON_SCRIPT_VISIBLE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EXECUTE_ENTRY_FUNCTION_CALLED_ON_NON_ENTRY_FUNCTION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            mk_str (| "EXECUTE_ENTRY_FUNCTION_CALLED_ON_NON_ENTRY_FUNCTION" |)
+                          |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_SELF"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_FRIEND_DECL_WITH_SELF" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_MODULES_OUTSIDE_ACCOUNT_ADDRESS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            mk_str (| "INVALID_FRIEND_DECL_WITH_MODULES_OUTSIDE_ACCOUNT_ADDRESS" |)
+                          |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_MODULES_IN_DEPENDENCIES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            mk_str (| "INVALID_FRIEND_DECL_WITH_MODULES_IN_DEPENDENCIES" |)
+                          |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_FRIENDSHIP"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CYCLIC_MODULE_FRIENDSHIP" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_PHANTOM_TYPE_PARAM_POSITION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_PHANTOM_TYPE_PARAM_POSITION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VEC_UPDATE_EXISTS_MUTABLE_BORROW_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VEC_UPDATE_EXISTS_MUTABLE_BORROW_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VEC_BORROW_ELEMENT_EXISTS_MUTABLE_BORROW_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            mk_str (| "VEC_BORROW_ELEMENT_EXISTS_MUTABLE_BORROW_ERROR" |)
+                          |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::LOOP_MAX_DEPTH_REACHED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "LOOP_MAX_DEPTH_REACHED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_PARAMETERS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TOO_MANY_TYPE_PARAMETERS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_PARAMETERS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TOO_MANY_PARAMETERS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_BASIC_BLOCKS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TOO_MANY_BASIC_BLOCKS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VALUE_STACK_OVERFLOW"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VALUE_STACK_OVERFLOW" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_NODES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TOO_MANY_TYPE_NODES" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VALUE_STACK_PUSH_OVERFLOW"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VALUE_STACK_PUSH_OVERFLOW" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MAX_DEPENDENCY_DEPTH_REACHED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MAX_DEPENDENCY_DEPTH_REACHED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MAX_FUNCTION_DEFINITIONS_REACHED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MAX_FUNCTION_DEFINITIONS_REACHED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MAX_STRUCT_DEFINITIONS_REACHED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MAX_STRUCT_DEFINITIONS_REACHED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MAX_FIELD_DEFINITIONS_REACHED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MAX_FIELD_DEFINITIONS_REACHED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_BACK_EDGES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TOO_MANY_BACK_EDGES" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_1"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_1" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_2"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_2" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_3"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_3" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_4"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_4" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_5"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RESERVED_VERIFICATION_ERROR_5" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_VECTOR_ELEMENTS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TOO_MANY_VECTOR_ELEMENTS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::IDENTIFIER_TOO_LONG"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "IDENTIFIER_TOO_LONG" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::PROGRAM_TOO_COMPLEX"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "PROGRAM_TOO_COMPLEX" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_INVARIANT_VIOLATION_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_INVARIANT_VIOLATION_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EMPTY_VALUE_STACK"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EMPTY_VALUE_STACK" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::PC_OVERFLOW"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PC_OVERFLOW" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VERIFICATION_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VERIFICATION_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::STORAGE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "STORAGE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INTERNAL_TYPE_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INTERNAL_TYPE_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EVENT_KEY_MISMATCH"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EVENT_KEY_MISMATCH" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNREACHABLE"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "UNREACHABLE" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VM_STARTUP_FAILURE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VM_STARTUP_FAILURE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNEXPECTED_ERROR_FROM_KNOWN_MOVE_FUNCTION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNEXPECTED_ERROR_FROM_KNOWN_MOVE_FUNCTION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VERIFIER_INVARIANT_VIOLATION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VERIFIER_INVARIANT_VIOLATION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNEXPECTED_VERIFIER_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNEXPECTED_VERIFIER_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNEXPECTED_DESERIALIZATION_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNEXPECTED_DESERIALIZATION_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::FAILED_TO_SERIALIZE_WRITE_SET_CHANGES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FAILED_TO_SERIALIZE_WRITE_SET_CHANGES" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::FAILED_TO_DESERIALIZE_RESOURCE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FAILED_TO_DESERIALIZE_RESOURCE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TYPE_RESOLUTION_FAILURE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TYPE_RESOLUTION_FAILURE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_NATIVE_FUNCTION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "DUPLICATE_NATIVE_FUNCTION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::ARITHMETIC_OVERFLOW"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ARITHMETIC_OVERFLOW" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_BINARY_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_BINARY_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MALFORMED"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MALFORMED" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BAD_MAGIC"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_MAGIC" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_VERSION"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_VERSION" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_TABLE_TYPE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_TABLE_TYPE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_SIGNATURE_TYPE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_SIGNATURE_TYPE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_SERIALIZED_TYPE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_SERIALIZED_TYPE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_OPCODE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_OPCODE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BAD_HEADER_TABLE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BAD_HEADER_TABLE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNEXPECTED_SIGNATURE_TYPE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNEXPECTED_SIGNATURE_TYPE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_TABLE"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "DUPLICATE_TABLE" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_ABILITY"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_ABILITY" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_NATIVE_STRUCT_FLAG"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_NATIVE_STRUCT_FLAG" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BAD_U16"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U16" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BAD_U32"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U32" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BAD_U64"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U64" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BAD_U128"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U128" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::BAD_U256"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BAD_U256" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VALUE_SERIALIZATION_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VALUE_SERIALIZATION_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VALUE_DESERIALIZATION_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VALUE_DESERIALIZATION_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CODE_DESERIALIZATION_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CODE_DESERIALIZATION_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::INVALID_FLAG_BITS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "INVALID_FLAG_BITS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::TRAILING_BYTES"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "TRAILING_BYTES" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_RUNTIME_STATUS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_RUNTIME_STATUS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EXECUTED"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EXECUTED" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::OUT_OF_GAS"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OUT_OF_GAS" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RESOURCE_DOES_NOT_EXIST"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RESOURCE_DOES_NOT_EXIST" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::RESOURCE_ALREADY_EXISTS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RESOURCE_ALREADY_EXISTS" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MISSING_DATA"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MISSING_DATA" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::DATA_FORMAT_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "DATA_FORMAT_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::ABORTED"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ABORTED" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::ARITHMETIC_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ARITHMETIC_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VECTOR_OPERATION_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VECTOR_OPERATION_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::EXECUTION_STACK_OVERFLOW"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EXECUTION_STACK_OVERFLOW" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::CALL_STACK_OVERFLOW"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CALL_STACK_OVERFLOW" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VM_MAX_TYPE_DEPTH_REACHED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VM_MAX_TYPE_DEPTH_REACHED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VM_MAX_VALUE_DEPTH_REACHED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VM_MAX_VALUE_DEPTH_REACHED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VM_EXTENSION_ERROR"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VM_EXTENSION_ERROR" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::STORAGE_WRITE_LIMIT_REACHED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "STORAGE_WRITE_LIMIT_REACHED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::MEMORY_LIMIT_EXCEEDED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MEMORY_LIMIT_EXCEEDED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::VM_MAX_TYPE_NODES_REACHED"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "VM_MAX_TYPE_NODES_REACHED" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_STATUS"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UNKNOWN_STATUS" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4477,7 +4529,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusCode" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusCode" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -4493,11 +4549,15 @@ Module vm_status.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -4553,7 +4613,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusCode" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusCode" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "u64" :=
               M.call_closure (|
@@ -4563,7 +4627,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusCode" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusCode" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -4613,7 +4681,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusCode" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusCode" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "u64" :=
               M.call_closure (|
@@ -4623,7 +4695,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusCode" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusCode" ])
+                ]
               |) in
             M.alloc (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -4639,14 +4715,18 @@ Module vm_status.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
                 ]
               |)
             |)
@@ -4690,7 +4770,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusCode" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusCode" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "u64" :=
               M.call_closure (|
@@ -4700,7 +4784,11 @@ Module vm_status.
                   [],
                   [ Ty.path "move_core_types::vm_status::StatusCode" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::vm_status::StatusCode" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "core::cmp::Ordering",
@@ -4708,14 +4796,18 @@ Module vm_status.
                 Ty.path "core::cmp::Ordering",
                 M.get_trait_method (| "core::cmp::Ord", Ty.path "u64", [], [], "cmp", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
                 ]
               |)
             |)
@@ -4770,20 +4862,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 0
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_VALIDATION_STATUS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_VALIDATION_STATUS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4791,20 +4886,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_SIGNATURE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_SIGNATURE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4812,20 +4910,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_AUTH_KEY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_AUTH_KEY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4833,20 +4934,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_OLD"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_OLD"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4854,20 +4958,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_NEW"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_NEW"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4875,20 +4982,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 5
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INSUFFICIENT_BALANCE_FOR_TRANSACTION_FEE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INSUFFICIENT_BALANCE_FOR_TRANSACTION_FEE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4896,20 +5006,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 6
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TRANSACTION_EXPIRED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TRANSACTION_EXPIRED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4917,20 +5030,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 7
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::SENDING_ACCOUNT_DOES_NOT_EXIST"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::SENDING_ACCOUNT_DOES_NOT_EXIST"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4938,20 +5054,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 8
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::REJECTED_WRITE_SET"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::REJECTED_WRITE_SET"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4959,20 +5078,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 9
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_WRITE_SET"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_WRITE_SET"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4980,20 +5102,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 10
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::EXCEEDED_MAX_TRANSACTION_SIZE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::EXCEEDED_MAX_TRANSACTION_SIZE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5001,20 +5126,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 11
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_SCRIPT"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_SCRIPT"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5022,20 +5150,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 12
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_MODULE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_MODULE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5043,20 +5174,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 13
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MAX_GAS_UNITS_EXCEEDS_MAX_GAS_UNITS_BOUND"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MAX_GAS_UNITS_EXCEEDS_MAX_GAS_UNITS_BOUND"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5064,20 +5198,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 14
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MAX_GAS_UNITS_BELOW_MIN_TRANSACTION_GAS_UNITS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MAX_GAS_UNITS_BELOW_MIN_TRANSACTION_GAS_UNITS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5085,20 +5222,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 15
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::GAS_UNIT_PRICE_BELOW_MIN_BOUND"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::GAS_UNIT_PRICE_BELOW_MIN_BOUND"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5106,20 +5246,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 16
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::GAS_UNIT_PRICE_ABOVE_MAX_BOUND"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::GAS_UNIT_PRICE_ABOVE_MAX_BOUND"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5127,20 +5270,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 17
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_GAS_SPECIFIER"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_GAS_SPECIFIER"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5148,20 +5294,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 18
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::SENDING_ACCOUNT_FROZEN"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::SENDING_ACCOUNT_FROZEN"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5169,20 +5318,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 19
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNABLE_TO_DESERIALIZE_ACCOUNT"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNABLE_TO_DESERIALIZE_ACCOUNT"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5190,20 +5342,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 20
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CURRENCY_INFO_DOES_NOT_EXIST"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CURRENCY_INFO_DOES_NOT_EXIST"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5211,20 +5366,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 21
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_MODULE_PUBLISHER"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_MODULE_PUBLISHER"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5232,20 +5390,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 22
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::NO_ACCOUNT_ROLE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::NO_ACCOUNT_ROLE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5253,20 +5414,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 23
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BAD_CHAIN_ID"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BAD_CHAIN_ID"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5274,20 +5438,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 24
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_BIG"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::SEQUENCE_NUMBER_TOO_BIG"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5295,20 +5462,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 25
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BAD_TRANSACTION_FEE_CURRENCY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BAD_TRANSACTION_FEE_CURRENCY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5316,20 +5486,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 26
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::FEATURE_UNDER_GATING"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::FEATURE_UNDER_GATING"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5337,20 +5510,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 27
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::SECONDARY_KEYS_ADDRESSES_COUNT_MISMATCH"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::SECONDARY_KEYS_ADDRESSES_COUNT_MISMATCH"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5358,20 +5534,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 28
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::SIGNERS_CONTAIN_DUPLICATES"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::SIGNERS_CONTAIN_DUPLICATES"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5379,20 +5558,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 29
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::SEQUENCE_NONCE_INVALID"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::SEQUENCE_NONCE_INVALID"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5400,20 +5582,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 30
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CHAIN_ACCOUNT_INFO_DOES_NOT_EXIST"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CHAIN_ACCOUNT_INFO_DOES_NOT_EXIST"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5421,20 +5606,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1000
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_VERIFICATION_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_VERIFICATION_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5442,20 +5630,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1001
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INDEX_OUT_OF_BOUNDS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INDEX_OUT_OF_BOUNDS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5463,20 +5654,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1003
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_SIGNATURE_TOKEN"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_SIGNATURE_TOKEN"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5484,20 +5678,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1005
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RECURSIVE_STRUCT_DEFINITION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RECURSIVE_STRUCT_DEFINITION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5505,20 +5702,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1006
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::FIELD_MISSING_TYPE_ABILITY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::FIELD_MISSING_TYPE_ABILITY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5526,20 +5726,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1007
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_FALL_THROUGH"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_FALL_THROUGH"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5547,20 +5750,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1009
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::NEGATIVE_STACK_SIZE_WITHIN_BLOCK"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::NEGATIVE_STACK_SIZE_WITHIN_BLOCK"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5568,20 +5774,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1011
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_MAIN_FUNCTION_SIGNATURE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_MAIN_FUNCTION_SIGNATURE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5589,20 +5798,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1012
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::DUPLICATE_ELEMENT"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_ELEMENT"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5610,20 +5822,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1013
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_MODULE_HANDLE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_MODULE_HANDLE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5631,20 +5846,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1014
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNIMPLEMENTED_HANDLE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNIMPLEMENTED_HANDLE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5652,20 +5870,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1017
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::LOOKUP_FAILED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::LOOKUP_FAILED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5673,20 +5894,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1020
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TYPE_MISMATCH"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TYPE_MISMATCH"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5694,20 +5918,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1021
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MISSING_DEPENDENCY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MISSING_DEPENDENCY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5715,20 +5942,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1023
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::POP_WITHOUT_DROP_ABILITY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::POP_WITHOUT_DROP_ABILITY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5736,20 +5966,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1025
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BR_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BR_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5757,20 +5990,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1026
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::ABORT_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::ABORT_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5778,20 +6014,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1027
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::STLOC_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::STLOC_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5799,20 +6038,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1028
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::STLOC_UNSAFE_TO_DESTROY_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::STLOC_UNSAFE_TO_DESTROY_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5820,20 +6062,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1029
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNSAFE_RET_LOCAL_OR_RESOURCE_STILL_BORROWED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNSAFE_RET_LOCAL_OR_RESOURCE_STILL_BORROWED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5841,20 +6086,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1030
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RET_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RET_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5862,20 +6110,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1031
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RET_BORROWED_MUTABLE_REFERENCE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RET_BORROWED_MUTABLE_REFERENCE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5883,20 +6134,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1032
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::FREEZEREF_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::FREEZEREF_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5904,20 +6158,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1033
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::FREEZEREF_EXISTS_MUTABLE_BORROW_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::FREEZEREF_EXISTS_MUTABLE_BORROW_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5925,20 +6182,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1034
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BORROWFIELD_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BORROWFIELD_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5946,20 +6206,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1035
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BORROWFIELD_BAD_FIELD_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BORROWFIELD_BAD_FIELD_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5967,20 +6230,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1036
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BORROWFIELD_EXISTS_MUTABLE_BORROW_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BORROWFIELD_EXISTS_MUTABLE_BORROW_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5988,20 +6254,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1037
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::COPYLOC_UNAVAILABLE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::COPYLOC_UNAVAILABLE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6009,20 +6278,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1038
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::COPYLOC_WITHOUT_COPY_ABILITY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::COPYLOC_WITHOUT_COPY_ABILITY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6030,20 +6302,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1039
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::COPYLOC_EXISTS_BORROW_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::COPYLOC_EXISTS_BORROW_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6051,20 +6326,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1040
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MOVELOC_UNAVAILABLE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MOVELOC_UNAVAILABLE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6072,20 +6350,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1041
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MOVELOC_EXISTS_BORROW_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MOVELOC_EXISTS_BORROW_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6093,20 +6374,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1042
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BORROWLOC_REFERENCE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BORROWLOC_REFERENCE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6114,20 +6398,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1043
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BORROWLOC_UNAVAILABLE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BORROWLOC_UNAVAILABLE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6135,20 +6422,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1044
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BORROWLOC_EXISTS_BORROW_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BORROWLOC_EXISTS_BORROW_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6156,20 +6446,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1045
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CALL_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CALL_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6177,20 +6470,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1046
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CALL_BORROWED_MUTABLE_REFERENCE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CALL_BORROWED_MUTABLE_REFERENCE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6198,20 +6494,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1047
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::PACK_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::PACK_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6219,20 +6518,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1048
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNPACK_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNPACK_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6240,20 +6542,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1049
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::READREF_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::READREF_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6261,20 +6566,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1050
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::READREF_WITHOUT_COPY_ABILITY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::READREF_WITHOUT_COPY_ABILITY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6282,20 +6590,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1051
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::READREF_EXISTS_MUTABLE_BORROW_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::READREF_EXISTS_MUTABLE_BORROW_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6303,20 +6614,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1052
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::WRITEREF_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::WRITEREF_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6324,20 +6638,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1053
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::WRITEREF_WITHOUT_DROP_ABILITY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::WRITEREF_WITHOUT_DROP_ABILITY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6345,20 +6662,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1054
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::WRITEREF_EXISTS_BORROW_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::WRITEREF_EXISTS_BORROW_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6366,20 +6686,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1055
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::WRITEREF_NO_MUTABLE_REFERENCE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::WRITEREF_NO_MUTABLE_REFERENCE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6387,20 +6710,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1056
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INTEGER_OP_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INTEGER_OP_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6408,20 +6734,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1057
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BOOLEAN_OP_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BOOLEAN_OP_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6429,20 +6758,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1058
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::EQUALITY_OP_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::EQUALITY_OP_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6450,20 +6782,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1059
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::EXISTS_WITHOUT_KEY_ABILITY_OR_BAD_ARGUMENT"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::EXISTS_WITHOUT_KEY_ABILITY_OR_BAD_ARGUMENT"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6471,20 +6806,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1060
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BORROWGLOBAL_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BORROWGLOBAL_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6492,20 +6830,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1061
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BORROWGLOBAL_WITHOUT_KEY_ABILITY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BORROWGLOBAL_WITHOUT_KEY_ABILITY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6513,20 +6854,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1062
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MOVEFROM_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MOVEFROM_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6534,20 +6878,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1063
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MOVEFROM_WITHOUT_KEY_ABILITY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MOVEFROM_WITHOUT_KEY_ABILITY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6555,20 +6902,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1064
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MOVETO_TYPE_MISMATCH_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MOVETO_TYPE_MISMATCH_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6576,20 +6926,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1065
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MOVETO_WITHOUT_KEY_ABILITY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MOVETO_WITHOUT_KEY_ABILITY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6597,20 +6950,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1067
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MODULE_ADDRESS_DOES_NOT_MATCH_SENDER"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MODULE_ADDRESS_DOES_NOT_MATCH_SENDER"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6618,20 +6974,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1068
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::NO_MODULE_HANDLES"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::NO_MODULE_HANDLES"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6639,20 +6998,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1069
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::POSITIVE_STACK_SIZE_AT_BLOCK_END"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::POSITIVE_STACK_SIZE_AT_BLOCK_END"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6660,20 +7022,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1070
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MISSING_ACQUIRES_ANNOTATION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MISSING_ACQUIRES_ANNOTATION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6681,20 +7046,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1071
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::EXTRANEOUS_ACQUIRES_ANNOTATION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::EXTRANEOUS_ACQUIRES_ANNOTATION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6702,20 +7070,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1072
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::DUPLICATE_ACQUIRES_ANNOTATION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_ACQUIRES_ANNOTATION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6723,20 +7094,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1073
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_ACQUIRES_ANNOTATION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_ACQUIRES_ANNOTATION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6744,20 +7118,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1074
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::GLOBAL_REFERENCE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::GLOBAL_REFERENCE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6765,20 +7142,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1075
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CONSTRAINT_NOT_SATISFIED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CONSTRAINT_NOT_SATISFIED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6786,20 +7166,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1076
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::NUMBER_OF_TYPE_ARGUMENTS_MISMATCH"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::NUMBER_OF_TYPE_ARGUMENTS_MISMATCH"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6807,20 +7190,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1077
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::LOOP_IN_INSTANTIATION_GRAPH"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::LOOP_IN_INSTANTIATION_GRAPH"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6828,20 +7214,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1080
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::ZERO_SIZED_STRUCT"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::ZERO_SIZED_STRUCT"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6849,20 +7238,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1081
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::LINKER_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::LINKER_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6870,20 +7262,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1082
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_CONSTANT_TYPE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_CONSTANT_TYPE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6891,20 +7286,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1083
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MALFORMED_CONSTANT_DATA"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MALFORMED_CONSTANT_DATA"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6912,20 +7310,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1084
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::EMPTY_CODE_UNIT"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::EMPTY_CODE_UNIT"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6933,20 +7334,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1085
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_LOOP_SPLIT"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_LOOP_SPLIT"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6954,20 +7358,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1086
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_LOOP_BREAK"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_LOOP_BREAK"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6975,20 +7382,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1087
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_LOOP_CONTINUE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_LOOP_CONTINUE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -6996,20 +7406,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1088
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNSAFE_RET_UNUSED_VALUES_WITHOUT_DROP"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNSAFE_RET_UNUSED_VALUES_WITHOUT_DROP"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7017,20 +7430,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1089
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TOO_MANY_LOCALS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_LOCALS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7038,20 +7454,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1090
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::GENERIC_MEMBER_OPCODE_MISMATCH"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::GENERIC_MEMBER_OPCODE_MISMATCH"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7059,20 +7478,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1091
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::FUNCTION_RESOLUTION_FAILURE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::FUNCTION_RESOLUTION_FAILURE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7080,20 +7502,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1094
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_OPERATION_IN_SCRIPT"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_OPERATION_IN_SCRIPT"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7101,20 +7526,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1095
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::DUPLICATE_MODULE_NAME"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_MODULE_NAME"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7122,20 +7550,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1096
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BACKWARD_INCOMPATIBLE_MODULE_UPDATE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BACKWARD_INCOMPATIBLE_MODULE_UPDATE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7143,20 +7574,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1097
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_DEPENDENCY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_DEPENDENCY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7164,20 +7598,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1098
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::NUMBER_OF_ARGUMENTS_MISMATCH"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::NUMBER_OF_ARGUMENTS_MISMATCH"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7185,20 +7622,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1099
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_PARAM_TYPE_FOR_DESERIALIZATION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_PARAM_TYPE_FOR_DESERIALIZATION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7206,20 +7646,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1100
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::FAILED_TO_DESERIALIZE_ARGUMENT"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::FAILED_TO_DESERIALIZE_ARGUMENT"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7227,20 +7670,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1101
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::NUMBER_OF_SIGNER_ARGUMENTS_MISMATCH"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::NUMBER_OF_SIGNER_ARGUMENTS_MISMATCH"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7248,20 +7694,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1102
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CALLED_SCRIPT_VISIBLE_FROM_NON_SCRIPT_VISIBLE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CALLED_SCRIPT_VISIBLE_FROM_NON_SCRIPT_VISIBLE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7269,20 +7718,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1103
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::EXECUTE_ENTRY_FUNCTION_CALLED_ON_NON_ENTRY_FUNCTION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::EXECUTE_ENTRY_FUNCTION_CALLED_ON_NON_ENTRY_FUNCTION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7290,20 +7742,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1104
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_SELF"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_SELF"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7311,20 +7766,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1105
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_MODULES_OUTSIDE_ACCOUNT_ADDRESS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_MODULES_OUTSIDE_ACCOUNT_ADDRESS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7332,20 +7790,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1106
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_MODULES_IN_DEPENDENCIES"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_FRIEND_DECL_WITH_MODULES_IN_DEPENDENCIES"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7353,20 +7814,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1107
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_FRIENDSHIP"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_FRIENDSHIP"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7374,20 +7838,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1108
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_PHANTOM_TYPE_PARAM_POSITION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_PHANTOM_TYPE_PARAM_POSITION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7395,20 +7862,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1109
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VEC_UPDATE_EXISTS_MUTABLE_BORROW_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VEC_UPDATE_EXISTS_MUTABLE_BORROW_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7416,20 +7886,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1110
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VEC_BORROW_ELEMENT_EXISTS_MUTABLE_BORROW_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VEC_BORROW_ELEMENT_EXISTS_MUTABLE_BORROW_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7437,20 +7910,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1111
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::LOOP_MAX_DEPTH_REACHED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::LOOP_MAX_DEPTH_REACHED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7458,20 +7934,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1112
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_PARAMETERS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_PARAMETERS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7479,20 +7958,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1113
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TOO_MANY_PARAMETERS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_PARAMETERS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7500,20 +7982,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1114
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TOO_MANY_BASIC_BLOCKS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_BASIC_BLOCKS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7521,20 +8006,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1115
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VALUE_STACK_OVERFLOW"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VALUE_STACK_OVERFLOW"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7542,20 +8030,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1116
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_NODES"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_TYPE_NODES"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7563,20 +8054,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1117
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VALUE_STACK_PUSH_OVERFLOW"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VALUE_STACK_PUSH_OVERFLOW"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7584,20 +8078,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1118
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MAX_DEPENDENCY_DEPTH_REACHED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MAX_DEPENDENCY_DEPTH_REACHED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7605,20 +8102,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1119
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MAX_FUNCTION_DEFINITIONS_REACHED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MAX_FUNCTION_DEFINITIONS_REACHED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7626,20 +8126,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1120
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MAX_STRUCT_DEFINITIONS_REACHED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MAX_STRUCT_DEFINITIONS_REACHED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7647,20 +8150,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1121
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MAX_FIELD_DEFINITIONS_REACHED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MAX_FIELD_DEFINITIONS_REACHED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7668,20 +8174,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1122
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TOO_MANY_BACK_EDGES"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_BACK_EDGES"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7689,20 +8198,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1123
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_1"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_1"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7710,20 +8222,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1124
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_2"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_2"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7731,20 +8246,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1125
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_3"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_3"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7752,20 +8270,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1126
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_4"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_4"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7773,20 +8294,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1127
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_5"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RESERVED_VERIFICATION_ERROR_5"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7794,20 +8318,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1128
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TOO_MANY_VECTOR_ELEMENTS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TOO_MANY_VECTOR_ELEMENTS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7815,20 +8342,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1129
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::IDENTIFIER_TOO_LONG"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::IDENTIFIER_TOO_LONG"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7836,20 +8366,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 1130
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::PROGRAM_TOO_COMPLEX"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::PROGRAM_TOO_COMPLEX"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7857,20 +8390,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2000
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_INVARIANT_VIOLATION_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_INVARIANT_VIOLATION_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7878,20 +8414,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2003
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::EMPTY_VALUE_STACK"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::EMPTY_VALUE_STACK"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7899,20 +8438,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2005
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::PC_OVERFLOW"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::PC_OVERFLOW"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7920,20 +8462,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2006
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VERIFICATION_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VERIFICATION_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7941,20 +8486,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2008
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::STORAGE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::STORAGE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7962,20 +8510,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2009
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INTERNAL_TYPE_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INTERNAL_TYPE_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -7983,20 +8534,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2010
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::EVENT_KEY_MISMATCH"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::EVENT_KEY_MISMATCH"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8004,20 +8558,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2011
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNREACHABLE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNREACHABLE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8025,20 +8582,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2012
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VM_STARTUP_FAILURE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VM_STARTUP_FAILURE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8046,20 +8606,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2015
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNEXPECTED_ERROR_FROM_KNOWN_MOVE_FUNCTION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNEXPECTED_ERROR_FROM_KNOWN_MOVE_FUNCTION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8067,20 +8630,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2016
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VERIFIER_INVARIANT_VIOLATION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VERIFIER_INVARIANT_VIOLATION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8088,20 +8654,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2017
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNEXPECTED_VERIFIER_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNEXPECTED_VERIFIER_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8109,20 +8678,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2018
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNEXPECTED_DESERIALIZATION_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNEXPECTED_DESERIALIZATION_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8130,20 +8702,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2019
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::FAILED_TO_SERIALIZE_WRITE_SET_CHANGES"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::FAILED_TO_SERIALIZE_WRITE_SET_CHANGES"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8151,20 +8726,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2020
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::FAILED_TO_DESERIALIZE_RESOURCE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::FAILED_TO_DESERIALIZE_RESOURCE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8172,20 +8750,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2021
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TYPE_RESOLUTION_FAILURE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TYPE_RESOLUTION_FAILURE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8193,20 +8774,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2022
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::DUPLICATE_NATIVE_FUNCTION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_NATIVE_FUNCTION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8214,20 +8798,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 2023
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::ARITHMETIC_OVERFLOW"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::ARITHMETIC_OVERFLOW"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8235,20 +8822,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3000
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_BINARY_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_BINARY_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8256,15 +8846,21 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3001
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [ Value.StructTuple "move_core_types::vm_status::StatusCode::MALFORMED" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "move_core_types::vm_status::StatusCode::MALFORMED" [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8272,15 +8868,21 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3002
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [ Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_MAGIC" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_MAGIC" [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8288,20 +8890,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3003
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_VERSION"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_VERSION"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8309,20 +8914,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3004
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_TABLE_TYPE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_TABLE_TYPE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8330,20 +8938,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3005
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_SIGNATURE_TYPE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_SIGNATURE_TYPE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8351,20 +8962,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3006
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_SERIALIZED_TYPE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_SERIALIZED_TYPE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8372,20 +8986,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3007
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_OPCODE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_OPCODE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8393,20 +9010,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3008
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::BAD_HEADER_TABLE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::BAD_HEADER_TABLE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8414,20 +9034,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3009
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNEXPECTED_SIGNATURE_TYPE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNEXPECTED_SIGNATURE_TYPE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8435,20 +9058,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3010
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::DUPLICATE_TABLE"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::DUPLICATE_TABLE"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8456,20 +9082,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3013
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_ABILITY"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_ABILITY"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8477,20 +9106,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3014
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_NATIVE_STRUCT_FLAG"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_NATIVE_STRUCT_FLAG"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8498,15 +9130,21 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3017
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [ Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U16" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U16" [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8514,15 +9152,21 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3018
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [ Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U32" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U32" [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8530,15 +9174,21 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3019
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [ Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U64" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U64" [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8546,15 +9196,21 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3020
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [ Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U128" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U128" [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8562,15 +9218,21 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3021
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [ Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U256" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "move_core_types::vm_status::StatusCode::BAD_U256" [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8578,20 +9240,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3022
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VALUE_SERIALIZATION_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VALUE_SERIALIZATION_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8599,20 +9264,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3023
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VALUE_DESERIALIZATION_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VALUE_DESERIALIZATION_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8620,20 +9288,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3024
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CODE_DESERIALIZATION_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CODE_DESERIALIZATION_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8641,20 +9312,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3025
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::INVALID_FLAG_BITS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::INVALID_FLAG_BITS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8662,20 +9336,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 3026
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::TRAILING_BYTES"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::TRAILING_BYTES"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8683,20 +9360,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4000
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_RUNTIME_STATUS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_RUNTIME_STATUS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8704,15 +9384,21 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4001
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [ Value.StructTuple "move_core_types::vm_status::StatusCode::EXECUTED" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "move_core_types::vm_status::StatusCode::EXECUTED" [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8720,20 +9406,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4002
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::OUT_OF_GAS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::OUT_OF_GAS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8741,20 +9430,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4003
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RESOURCE_DOES_NOT_EXIST"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RESOURCE_DOES_NOT_EXIST"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8762,20 +9454,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4004
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::RESOURCE_ALREADY_EXISTS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::RESOURCE_ALREADY_EXISTS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8783,20 +9478,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4008
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MISSING_DATA"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MISSING_DATA"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8804,20 +9502,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4009
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::DATA_FORMAT_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::DATA_FORMAT_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8825,15 +9526,21 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4016
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [ Value.StructTuple "move_core_types::vm_status::StatusCode::ABORTED" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "move_core_types::vm_status::StatusCode::ABORTED" [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8841,20 +9548,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4017
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::ARITHMETIC_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::ARITHMETIC_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8862,20 +9572,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4018
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VECTOR_OPERATION_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VECTOR_OPERATION_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8883,20 +9596,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4020
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::EXECUTION_STACK_OVERFLOW"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::EXECUTION_STACK_OVERFLOW"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8904,20 +9620,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4021
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::CALL_STACK_OVERFLOW"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::CALL_STACK_OVERFLOW"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8925,20 +9644,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4024
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VM_MAX_TYPE_DEPTH_REACHED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VM_MAX_TYPE_DEPTH_REACHED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8946,20 +9668,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4025
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VM_MAX_VALUE_DEPTH_REACHED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VM_MAX_VALUE_DEPTH_REACHED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8967,20 +9692,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4026
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VM_EXTENSION_ERROR"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VM_EXTENSION_ERROR"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -8988,20 +9716,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4027
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::STORAGE_WRITE_LIMIT_REACHED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::STORAGE_WRITE_LIMIT_REACHED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -9009,20 +9740,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4028
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::MEMORY_LIMIT_EXCEEDED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::MEMORY_LIMIT_EXCEEDED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -9030,20 +9764,23 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 4029
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::VM_MAX_TYPE_NODES_REACHED"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::VM_MAX_TYPE_NODES_REACHED"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -9051,35 +9788,41 @@ Module vm_status.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U64 18446744073709551615
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "move_core_types::vm_status::StatusCode::UNKNOWN_STATUS"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "move_core_types::vm_status::StatusCode::UNKNOWN_STATUS"
+                            [])
+                          (Ty.path "move_core_types::vm_status::StatusCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.path "move_core_types::vm_status::StatusCode";
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                    ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "invalid StatusCode" |) |)
-                      |)
-                    ]))
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "invalid StatusCode" |) |)
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::vm_status::StatusCode";
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -9154,7 +9897,11 @@ Module vm_status.
                       [],
                       []
                     |),
-                    [ M.read (| self |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.path "move_core_types::vm_status::StatusCode")
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -9210,11 +9957,11 @@ Module vm_status.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "move_core_types::vm_status::StatusType::Validation"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "move_core_types::vm_status::StatusType::Validation"
+                                    [])
+                                  (Ty.path "move_core_types::vm_status::StatusType")
                               |)
                             |)
                           |)));
@@ -9275,11 +10022,11 @@ Module vm_status.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "move_core_types::vm_status::StatusType::Verification"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "move_core_types::vm_status::StatusType::Verification"
+                                    [])
+                                  (Ty.path "move_core_types::vm_status::StatusType")
                               |)
                             |)
                           |)));
@@ -9340,11 +10087,11 @@ Module vm_status.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "move_core_types::vm_status::StatusType::InvariantViolation"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "move_core_types::vm_status::StatusType::InvariantViolation"
+                                    [])
+                                  (Ty.path "move_core_types::vm_status::StatusType")
                               |)
                             |)
                           |)));
@@ -9405,11 +10152,11 @@ Module vm_status.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "move_core_types::vm_status::StatusType::Deserialization"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "move_core_types::vm_status::StatusType::Deserialization"
+                                    [])
+                                  (Ty.path "move_core_types::vm_status::StatusType")
                               |)
                             |)
                           |)));
@@ -9470,11 +10217,11 @@ Module vm_status.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "move_core_types::vm_status::StatusType::Execution"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "move_core_types::vm_status::StatusType::Execution"
+                                    [])
+                                  (Ty.path "move_core_types::vm_status::StatusType")
                               |)
                             |)
                           |)));
@@ -9483,7 +10230,9 @@ Module vm_status.
                   |) in
                 M.alloc (|
                   Ty.path "move_core_types::vm_status::StatusType",
-                  Value.StructTuple "move_core_types::vm_status::StatusType::Unknown" [] [] []
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::vm_status::StatusType::Unknown" [])
+                    (Ty.path "move_core_types::vm_status::StatusType")
                 |)
               |)))
           |)))
@@ -9527,20 +10276,26 @@ Module vm_status.
               ],
             M.get_trait_method (| "serde::ser::Serializer", S, [], [], "serialize_u64", [], [] |),
             [
-              M.read (| serializer |);
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  Ty.path "move_core_types::vm_status::StatusCode",
-                  [],
-                  [ Ty.path "u64" ],
-                  "into",
-                  [],
-                  []
-                |),
-                [ M.read (| M.deref (| M.read (| self |) |) |) ]
-              |)
+              M.value_with_ty (M.read (| serializer |)) S;
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_trait_method (|
+                    "core::convert::Into",
+                    Ty.path "move_core_types::vm_status::StatusCode",
+                    [],
+                    [ Ty.path "u64" ],
+                    "into",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.path "move_core_types::vm_status::StatusCode")
+                  ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -9605,12 +10360,14 @@ Module vm_status.
               [ Ty.path "move_core_types::vm_status::deserialize::StatusCodeVisitor" ]
             |),
             [
-              M.read (| deserializer |);
-              Value.StructTuple
-                "move_core_types::vm_status::deserialize::StatusCodeVisitor"
-                []
-                []
-                []
+              M.value_with_ty (M.read (| deserializer |)) D;
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "move_core_types::vm_status::deserialize::StatusCodeVisitor"
+                    [])
+                  (Ty.path "move_core_types::vm_status::deserialize::StatusCodeVisitor"))
+                (Ty.path "move_core_types::vm_status::deserialize::StatusCodeVisitor")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

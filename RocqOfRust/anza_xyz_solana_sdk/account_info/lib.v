@@ -74,58 +74,50 @@ Module Impl_core_clone_Clone_for_solana_account_info_AccountInfo.
             Ty.apply (Ty.path "&") [] [ Ty.path "solana_account_info::AccountInfo" ],
             self
           |) in
-        Value.mkStructRecord
-          "solana_account_info::AccountInfo"
-          []
-          []
-          [
-            ("key",
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+        M.value_with_ty
+          (Value.mkStructRecord
+            "solana_account_info::AccountInfo"
+            [
+              ("key",
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
                       Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "solana_account_info::AccountInfo",
-                              "key"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "solana_account_info::AccountInfo",
+                                  "key"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |));
-            ("lamports",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::rc::Rc")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "core::cell::RefCell")
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
-                    Ty.path "alloc::alloc::Global"
-                  ],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+                |));
+              ("lamports",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::rc::Rc")
                     []
@@ -136,47 +128,58 @@ Module Impl_core_clone_Clone_for_solana_account_info_AccountInfo.
                         [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
                       Ty.path "alloc::alloc::Global"
                     ],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "solana_account_info::AccountInfo",
-                          "lamports"
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |));
-            ("data",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::rc::Rc")
-                  []
-                  [
+                  M.get_trait_method (|
+                    "core::clone::Clone",
                     Ty.apply
-                      (Ty.path "core::cell::RefCell")
+                      (Ty.path "alloc::rc::Rc")
                       []
                       [
                         Ty.apply
-                          (Ty.path "&mut")
+                          (Ty.path "core::cell::RefCell")
                           []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                      ];
-                    Ty.path "alloc::alloc::Global"
-                  ],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "solana_account_info::AccountInfo",
+                              "lamports"
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::rc::Rc")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::cell::RefCell")
+                                []
+                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                              Ty.path "alloc::alloc::Global"
+                            ]
+                        ])
+                  ]
+                |));
+              ("data",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::rc::Rc")
                     []
@@ -192,45 +195,32 @@ Module Impl_core_clone_Clone_for_solana_account_info_AccountInfo.
                         ];
                       Ty.path "alloc::alloc::Global"
                     ],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "solana_account_info::AccountInfo",
-                          "data"
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |));
-            ("owner",
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
-                      Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                      [],
-                      [],
-                      "clone",
-                      [],
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply
+                      (Ty.path "alloc::rc::Rc")
                       []
-                    |),
-                    [
-                      M.borrow (|
+                      [
+                        Ty.apply
+                          (Ty.path "core::cell::RefCell")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                          ];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
                         M.deref (|
                           M.borrow (|
@@ -238,128 +228,193 @@ Module Impl_core_clone_Clone_for_solana_account_info_AccountInfo.
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "solana_account_info::AccountInfo",
-                              "owner"
+                              "data"
                             |)
                           |)
                         |)
-                      |)
-                    ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::rc::Rc")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::cell::RefCell")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                ];
+                              Ty.path "alloc::alloc::Global"
+                            ]
+                        ])
+                  ]
+                |));
+              ("owner",
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "solana_account_info::AccountInfo",
+                                  "owner"
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |));
-            ("_unused",
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+                |));
+              ("_unused",
+                M.call_closure (|
                   Ty.path "u64",
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "u64",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "solana_account_info::AccountInfo",
-                          "_unused"
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "solana_account_info::AccountInfo",
+                              "_unused"
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |));
-            ("is_signer",
-              M.call_closure (|
-                Ty.path "bool",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                  ]
+                |));
+              ("is_signer",
+                M.call_closure (|
                   Ty.path "bool",
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "solana_account_info::AccountInfo",
-                          "is_signer"
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "solana_account_info::AccountInfo",
+                              "is_signer"
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |));
-            ("is_writable",
-              M.call_closure (|
-                Ty.path "bool",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                  ]
+                |));
+              ("is_writable",
+                M.call_closure (|
                   Ty.path "bool",
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "solana_account_info::AccountInfo",
-                          "is_writable"
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "solana_account_info::AccountInfo",
+                              "is_writable"
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |));
-            ("executable",
-              M.call_closure (|
-                Ty.path "bool",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                  ]
+                |));
+              ("executable",
+                M.call_closure (|
                   Ty.path "bool",
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "solana_account_info::AccountInfo",
-                          "executable"
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "solana_account_info::AccountInfo",
+                              "executable"
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |))
-          ]))
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                  ]
+                |))
+            ])
+          (Ty.path "solana_account_info::AccountInfo")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -412,8 +467,12 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AccountInfo" |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AccountInfo" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |) in
           let~ _ : Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ] :=
@@ -426,64 +485,53 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugStruct",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.path "core::fmt::builders::DebugStruct" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::builders::DebugStruct",
-                                "field",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&mut")
-                                        []
-                                        [ Ty.path "core::fmt::builders::DebugStruct" ],
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::builders::DebugStruct",
-                                        "field",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&mut")
-                                                []
-                                                [ Ty.path "core::fmt::builders::DebugStruct" ],
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::builders::DebugStruct",
-                                                "field",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugStruct",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::builders::DebugStruct",
+                                    "field",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::builders::DebugStruct",
+                                              "field",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.MutRef,
                                                   M.deref (|
                                                     M.call_closure (|
@@ -499,58 +547,212 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&mut")
-                                                                []
-                                                                [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "core::fmt::builders::DebugStruct"
+                                                                  ],
+                                                                M.get_associated_function (|
                                                                   Ty.path
-                                                                    "core::fmt::builders::DebugStruct"
-                                                                ],
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "core::fmt::builders::DebugStruct",
-                                                                "field",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  f
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| mk_str (| "key" |) |)
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.apply
-                                                                    (Ty.path "&")
-                                                                    []
-                                                                    [
-                                                                      Ty.dyn
-                                                                        [
-                                                                          ("core::fmt::Debug::Trait",
-                                                                            [])
-                                                                        ]
-                                                                    ],
-                                                                  M.pointer_coercion
-                                                                    M.PointerCoercion.Unsize
+                                                                    "core::fmt::builders::DebugStruct",
+                                                                  "field",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.deref (|
+                                                                        M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path "&mut")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "core::fmt::builders::DebugStruct"
+                                                                            ],
+                                                                          M.get_associated_function (|
+                                                                            Ty.path
+                                                                              "core::fmt::builders::DebugStruct",
+                                                                            "field",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.MutRef,
+                                                                                f
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "core::fmt::builders::DebugStruct"
+                                                                                ]);
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  mk_str (| "key" |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [ Ty.path "str" ]);
+                                                                            M.value_with_ty
+                                                                              (M.call_closure (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.dyn
+                                                                                      [
+                                                                                        ("core::fmt::Debug::Trait",
+                                                                                          [])
+                                                                                      ]
+                                                                                  ],
+                                                                                M.pointer_coercion
+                                                                                  M.PointerCoercion.Unsize
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "solana_address::Address"
+                                                                                        ]
+                                                                                    ])
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.dyn
+                                                                                        [
+                                                                                          ("core::fmt::Debug::Trait",
+                                                                                            [])
+                                                                                        ]
+                                                                                    ]),
+                                                                                [
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.deref (|
+                                                                                      M.borrow (|
+                                                                                        Pointer.Kind.Ref,
+                                                                                        M.SubPointer.get_struct_record_field (|
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              self
+                                                                                            |)
+                                                                                          |),
+                                                                                          "solana_account_info::AccountInfo",
+                                                                                          "key"
+                                                                                        |)
+                                                                                      |)
+                                                                                    |)
+                                                                                  |)
+                                                                                ]
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.dyn
+                                                                                    [
+                                                                                      ("core::fmt::Debug::Trait",
+                                                                                        [])
+                                                                                    ]
+                                                                                ])
+                                                                          ]
+                                                                        |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "core::fmt::builders::DebugStruct"
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        mk_str (| "owner" |)
+                                                                      |)
+                                                                    |))
                                                                     (Ty.apply
                                                                       (Ty.path "&")
                                                                       []
-                                                                      [
-                                                                        Ty.apply
+                                                                      [ Ty.path "str" ]);
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.dyn
+                                                                            [
+                                                                              ("core::fmt::Debug::Trait",
+                                                                                [])
+                                                                            ]
+                                                                        ],
+                                                                      M.pointer_coercion
+                                                                        M.PointerCoercion.Unsize
+                                                                        (Ty.apply
                                                                           (Ty.path "&")
                                                                           []
                                                                           [
-                                                                            Ty.path
-                                                                              "solana_address::Address"
-                                                                          ]
-                                                                      ])
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "solana_address::Address"
+                                                                              ]
+                                                                          ])
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.dyn
+                                                                              [
+                                                                                ("core::fmt::Debug::Trait",
+                                                                                  [])
+                                                                              ]
+                                                                          ]),
+                                                                      [
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.SubPointer.get_struct_record_field (|
+                                                                                M.deref (|
+                                                                                  M.read (| self |)
+                                                                                |),
+                                                                                "solana_account_info::AccountInfo",
+                                                                                "owner"
+                                                                              |)
+                                                                            |)
+                                                                          |)
+                                                                        |)
+                                                                      ]
+                                                                    |))
                                                                     (Ty.apply
                                                                       (Ty.path "&")
                                                                       []
@@ -560,88 +762,94 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                                                                             ("core::fmt::Debug::Trait",
                                                                               [])
                                                                           ]
-                                                                      ]),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.SubPointer.get_struct_record_field (|
-                                                                            M.deref (|
-                                                                              M.read (| self |)
-                                                                            |),
-                                                                            "solana_account_info::AccountInfo",
-                                                                            "key"
-                                                                          |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              ]
+                                                                      ])
+                                                                ]
+                                                              |)
                                                             |)
-                                                          |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| mk_str (| "owner" |) |)
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "&")
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
                                                             []
                                                             [
-                                                              Ty.dyn
-                                                                [ ("core::fmt::Debug::Trait", []) ]
-                                                            ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.Unsize
-                                                            (Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "solana_address::Address"
-                                                                  ]
-                                                              ])
-                                                            (Ty.apply
+                                                              Ty.path
+                                                                "core::fmt::builders::DebugStruct"
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| mk_str (| "is_signer" |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "str" ]);
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
                                                               (Ty.path "&")
                                                               []
                                                               [
                                                                 Ty.dyn
                                                                   [ ("core::fmt::Debug::Trait", [])
                                                                   ]
-                                                              ]),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    M.deref (| M.read (| self |) |),
-                                                                    "solana_account_info::AccountInfo",
-                                                                    "owner"
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [ Ty.path "bool" ])
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.dyn
+                                                                    [
+                                                                      ("core::fmt::Debug::Trait",
+                                                                        [])
+                                                                    ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.deref (|
+                                                                        M.read (| self |)
+                                                                      |),
+                                                                      "solana_account_info::AccountInfo",
+                                                                      "is_signer"
+                                                                    |)
                                                                   |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.dyn
+                                                                [ ("core::fmt::Debug::Trait", []) ]
+                                                            ])
                                                       ]
                                                     |)
                                                   |)
-                                                |);
-                                                M.borrow (|
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.deref (| mk_str (| "is_signer" |) |)
-                                                |);
-                                                M.call_closure (|
+                                                  M.deref (| mk_str (| "is_writable" |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                              M.value_with_ty
+                                                (M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -663,163 +871,176 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                                                           M.SubPointer.get_struct_record_field (|
                                                             M.deref (| M.read (| self |) |),
                                                             "solana_account_info::AccountInfo",
-                                                            "is_signer"
+                                                            "is_writable"
                                                           |)
                                                         |)
                                                       |)
                                                     |)
                                                   ]
-                                                |)
-                                              ]
-                                            |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                            ]
                                           |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| mk_str (| "is_writable" |) |)
-                                        |);
-                                        M.call_closure (|
-                                          Ty.apply
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "executable" |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.Unsize
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                                          (Ty.apply
                                             (Ty.path "&")
                                             []
-                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                          M.pointer_coercion
-                                            M.PointerCoercion.Unsize
-                                            (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                                            (Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "solana_account_info::AccountInfo",
-                                                    "is_writable"
-                                                  |)
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "solana_account_info::AccountInfo",
+                                                  "executable"
                                                 |)
                                               |)
                                             |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
+                                          |)
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "lamports" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "executable" |) |)
-                                |);
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
-                                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                  [
+                                  M.deref (|
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "solana_account_info::AccountInfo",
-                                            "executable"
-                                          |)
+                                      M.alloc (|
+                                        Ty.path "u64",
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          M.get_associated_function (|
+                                            Ty.path "solana_account_info::AccountInfo",
+                                            "lamports",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "solana_account_info::AccountInfo" ])
+                                          ]
                                         |)
                                       |)
                                     |)
-                                  ]
+                                  |)
                                 |)
                               ]
-                            |)
-                          |)
-                        |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "lamports" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.path "u64",
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      M.get_associated_function (|
-                                        Ty.path "solana_account_info::AccountInfo",
-                                        "lamports",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data.len" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.path "usize",
-                            M.call_closure (|
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data.len" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
                               Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.path "solana_account_info::AccountInfo",
-                                "data_len",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.path "solana_account_info::AccountInfo",
+                                  "data_len",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "solana_account_info::AccountInfo" ])
+                                ]
+                              |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -831,25 +1052,15 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                            ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        M.deref (|
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::cell::Ref")
+                              (Ty.path "&")
                               []
                               [
                                 Ty.apply
@@ -857,41 +1068,33 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                                   []
                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                               ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "core::cell::Ref")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                ],
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::cell::Ref")
-                                      []
-                                      [
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
                                         Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                      ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::cell::Ref")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                        ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "core::cell::RefCell")
+                                          (Ty.path "core::cell::Ref")
                                           []
                                           [
                                             Ty.apply
@@ -899,16 +1102,123 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                                               []
                                               [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                           ],
-                                        "borrow",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::cell::Ref")
+                                            []
+                                            [
                                               Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                            ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::cell::RefCell")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                              ],
+                                            "borrow",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::cell::RefCell")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "core::ops::deref::Deref",
+                                                      Ty.apply
+                                                        (Ty.path "alloc::rc::Rc")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "core::cell::RefCell")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ]
+                                                            ];
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ],
+                                                      [],
+                                                      [],
+                                                      "deref",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "solana_account_info::AccountInfo",
+                                                            "data"
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::rc::Rc")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "core::cell::RefCell")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ Ty.path "u8" ]
+                                                                      ]
+                                                                  ];
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ])
+                                                    ]
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "&")
                                                 []
                                                 [
@@ -926,64 +1236,40 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                                                             [ Ty.path "u8" ]
                                                         ]
                                                     ]
-                                                ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply
-                                                  (Ty.path "alloc::rc::Rc")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::cell::RefCell")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "&mut")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
-                                                              [ Ty.path "u8" ]
-                                                          ]
-                                                      ];
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "solana_account_info::AccountInfo",
-                                                    "data"
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
+                                                ])
+                                          ]
                                         |)
-                                      ]
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
-                            |)
-                          ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::cell::Ref")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                      ]
+                                  ])
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.borrow (| Pointer.Kind.MutRef, f |) |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.borrow (| Pointer.Kind.MutRef, f |) |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
               ]
             |) in
           M.alloc (|
@@ -1002,7 +1288,11 @@ Module Impl_core_fmt_Debug_for_solana_account_info_AccountInfo.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.MutRef, f |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, f |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
+              ]
             |)
           |)
         |)))
@@ -1056,31 +1346,35 @@ Module Impl_solana_account_info_AccountInfo.
                       "is_signer"
                     |)) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ]
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "solana_account_info::AccountInfo",
-                            "key"
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "solana_account_info::AccountInfo",
+                              "key"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]));
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::option::Option::None"
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ]
-                  []))
+                (M.value_with_ty
+                  (Value.StructTuple "core::option::Option::None" [])
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1158,76 +1452,113 @@ Module Impl_solana_account_info_AccountInfo.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::cell::Ref")
-                          []
-                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::cell::Ref")
                             []
                             [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                          M.get_associated_function (|
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::cell::RefCell")
+                              (Ty.path "core::cell::Ref")
                               []
                               [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                            "borrow",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::cell::RefCell")
+                                []
+                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                              "borrow",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
                                       Ty.apply
-                                        (Ty.path "core::cell::RefCell")
+                                        (Ty.path "&")
                                         []
-                                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::Deref",
-                                    Ty.apply
-                                      (Ty.path "alloc::rc::Rc")
-                                      []
-                                      [
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::cell::RefCell")
+                                            []
+                                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::Deref",
                                         Ty.apply
-                                          (Ty.path "core::cell::RefCell")
+                                          (Ty.path "alloc::rc::Rc")
                                           []
-                                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
-                                        Ty.path "alloc::alloc::Global"
-                                      ],
-                                    [],
-                                    [],
-                                    "deref",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "solana_account_info::AccountInfo",
-                                        "lamports"
-                                      |)
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::cell::RefCell")
+                                              []
+                                              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        [],
+                                        [],
+                                        "deref",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "solana_account_info::AccountInfo",
+                                              "lamports"
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::rc::Rc")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::cell::RefCell")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
+                                                    ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ]
+                                            ])
+                                      ]
                                     |)
-                                  ]
-                                |)
-                              |)
-                            |)
-                          ]
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::cell::RefCell")
+                                      []
+                                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::cell::Ref")
+                            []
+                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                        ])
                   ]
                 |)
               |)
@@ -1261,212 +1592,263 @@ Module Impl_solana_account_info_AccountInfo.
             []
             [ Ty.path "u64"; Ty.path "solana_program_error::ProgramError" ]) (|
           ltac:(M.monadic
-            (Value.StructTuple
-              "core::result::Result::Ok"
-              []
-              [ Ty.path "u64"; Ty.path "solana_program_error::ProgramError" ]
-              [
-                M.read (|
-                  M.deref (|
-                    M.read (|
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
+            (M.value_with_ty
+              (Value.StructTuple
+                "core::result::Result::Ok"
+                [
+                  M.read (|
+                    M.deref (|
+                      M.read (|
+                        M.deref (|
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::cell::Ref")
+                              (Ty.path "&")
                               []
                               [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "core::cell::Ref")
-                                  []
-                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                M.match_operator (|
-                                  Ty.apply
-                                    (Ty.path "core::cell::Ref")
-                                    []
-                                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "core::cell::Ref")
+                                []
+                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
                                   M.alloc (|
                                     Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      (Ty.path "core::cell::Ref")
                                       []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "solana_program_error::ProgramError"
-                                          ];
-                                        Ty.apply
-                                          (Ty.path "core::cell::Ref")
-                                          []
-                                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
-                                      ],
-                                    M.call_closure (|
+                                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                                    M.match_operator (|
                                       Ty.apply
-                                        (Ty.path "core::ops::control_flow::ControlFlow")
+                                        (Ty.path "core::cell::Ref")
                                         []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [
-                                              Ty.path "core::convert::Infallible";
-                                              Ty.path "solana_program_error::ProgramError"
-                                            ];
-                                          Ty.apply
-                                            (Ty.path "core::cell::Ref")
-                                            []
-                                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                                      M.alloc (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::cell::Ref")
-                                              []
-                                              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
-                                            Ty.path "solana_program_error::ProgramError"
-                                          ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::cell::Ref")
-                                                []
-                                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
-                                              Ty.path "solana_program_error::ProgramError"
-                                            ],
-                                          M.get_associated_function (|
-                                            Ty.path "solana_account_info::AccountInfo",
-                                            "try_borrow_lamports",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "solana_program_error::ProgramError"
+                                              ];
+                                            Ty.apply
+                                              (Ty.path "core::cell::Ref")
+                                              []
+                                              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                                          ],
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::ops::control_flow::ControlFlow")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "solana_program_error::ProgramError"
+                                                ];
+                                              Ty.apply
+                                                (Ty.path "core::cell::Ref")
+                                                []
+                                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                                            ],
+                                          M.get_trait_method (|
+                                            "core::ops::try_trait::Try",
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::cell::Ref")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
+                                                  ];
+                                                Ty.path "solana_program_error::ProgramError"
                                               ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
+                                            [],
+                                            [],
+                                            "branch",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
                                                 Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
                                                   [
-                                                    Ty.path "u64";
+                                                    Ty.apply
+                                                      (Ty.path "core::cell::Ref")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [ Ty.path "u64" ]
+                                                      ];
                                                     Ty.path "solana_program_error::ProgramError"
                                                   ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
-                                                  Ty.apply
-                                                    (Ty.path "core::result::Result")
-                                                    []
-                                                    [
-                                                      Ty.path "u64";
-                                                      Ty.path "solana_program_error::ProgramError"
-                                                    ],
+                                                M.get_associated_function (|
+                                                  Ty.path "solana_account_info::AccountInfo",
+                                                  "try_borrow_lamports",
                                                   [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| self |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "solana_account_info::AccountInfo"
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::cell::Ref")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
+                                                    ];
+                                                  Ty.path "solana_program_error::ProgramError"
+                                                ])
+                                          ]
+                                        |)
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let γ0_0 :=
+                                              M.SubPointer.get_struct_tuple_field (|
+                                                γ,
+                                                "core::ops::control_flow::ControlFlow::Break",
+                                                0
+                                              |) in
+                                            let residual :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
                                                   [
+                                                    Ty.path "core::convert::Infallible";
+                                                    Ty.path "solana_program_error::ProgramError"
+                                                  ],
+                                                γ0_0
+                                              |) in
+                                            M.never_to_any (|
+                                              M.read (|
+                                                M.return_ (|
+                                                  M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path "u64";
                                                         Ty.path "solana_program_error::ProgramError"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "core::ops::try_trait::FromResidual",
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "u64";
+                                                          Ty.path
+                                                            "solana_program_error::ProgramError"
+                                                        ],
+                                                      [],
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::result::Result")
+                                                          []
+                                                          [
+                                                            Ty.path "core::convert::Infallible";
+                                                            Ty.path
+                                                              "solana_program_error::ProgramError"
+                                                          ]
+                                                      ],
+                                                      "from_residual",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| residual |))
+                                                        (Ty.apply
+                                                          (Ty.path "core::result::Result")
+                                                          []
+                                                          [
+                                                            Ty.path "core::convert::Infallible";
+                                                            Ty.path
+                                                              "solana_program_error::ProgramError"
+                                                          ])
+                                                    ]
+                                                  |)
+                                                |)
                                               |)
-                                            |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val :=
-                                          M.copy (|
-                                            Ty.apply
-                                              (Ty.path "core::cell::Ref")
-                                              []
-                                              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                                            γ0_0
-                                          |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
-                              |)
-                            |)
-                          ]
+                                            |)));
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let γ0_0 :=
+                                              M.SubPointer.get_struct_tuple_field (|
+                                                γ,
+                                                "core::ops::control_flow::ControlFlow::Continue",
+                                                0
+                                              |) in
+                                            let val :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::cell::Ref")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
+                                                  ],
+                                                γ0_0
+                                              |) in
+                                            M.read (| val |)))
+                                      ]
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::cell::Ref")
+                                      []
+                                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                                  ])
+                            ]
+                          |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]))
+                ])
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.path "u64"; Ty.path "solana_program_error::ProgramError" ])))
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -1525,7 +1907,12 @@ Module Impl_solana_account_info_AccountInfo.
                   [],
                   []
                 |),
-                [ M.read (| key_ptr |); Value.Integer IntegerKind.Isize (-4) ]
+                [
+                  M.value_with_ty
+                    (M.read (| key_ptr |))
+                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                  M.value_with_ty (Value.Integer IntegerKind.Isize (-4)) (Ty.path "isize")
+                ]
               |)) in
           M.alloc (|
             Ty.path "usize",
@@ -1563,25 +1950,15 @@ Module Impl_solana_account_info_AccountInfo.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.read (|
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                        ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.read (|
+                    M.deref (|
+                      M.call_closure (|
                         Ty.apply
-                          (Ty.path "core::cell::Ref")
+                          (Ty.path "&")
                           []
                           [
                             Ty.apply
@@ -1589,38 +1966,30 @@ Module Impl_solana_account_info_AccountInfo.
                               []
                               [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                           ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "core::cell::Ref")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                              ],
-                            M.call_closure (|
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "core::cell::Ref")
+                            []
+                            [
                               Ty.apply
-                                (Ty.path "core::cell::Ref")
+                                (Ty.path "&mut")
                                 []
-                                [
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                ],
-                              M.get_associated_function (|
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                            ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
                                 Ty.apply
-                                  (Ty.path "core::cell::RefCell")
+                                  (Ty.path "core::cell::Ref")
                                   []
                                   [
                                     Ty.apply
@@ -1628,16 +1997,123 @@ Module Impl_solana_account_info_AccountInfo.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                   ],
-                                "borrow",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::cell::Ref")
+                                    []
+                                    [
                                       Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::cell::RefCell")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                      ],
+                                    "borrow",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::cell::RefCell")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ]
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::ops::deref::Deref",
+                                              Ty.apply
+                                                (Ty.path "alloc::rc::Rc")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::cell::RefCell")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ]
+                                                    ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ],
+                                              [],
+                                              [],
+                                              "deref",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "solana_account_info::AccountInfo",
+                                                    "data"
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::rc::Rc")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::cell::RefCell")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
                                         (Ty.path "&")
                                         []
                                         [
@@ -1650,53 +2126,32 @@ Module Impl_solana_account_info_AccountInfo.
                                                 []
                                                 [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                             ]
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply
-                                          (Ty.path "alloc::rc::Rc")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::cell::RefCell")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "&mut")
-                                                  []
-                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                              ];
-                                            Ty.path "alloc::alloc::Global"
-                                          ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "solana_account_info::AccountInfo",
-                                            "data"
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
+                                        ])
+                                  ]
                                 |)
-                              ]
-                            |)
-                          |)
-                        |)
-                      ]
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::Ref")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                  ]
+                              ])
+                        ]
+                      |)
                     |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1726,56 +2181,37 @@ Module Impl_solana_account_info_AccountInfo.
             []
             [ Ty.path "usize"; Ty.path "solana_program_error::ProgramError" ]) (|
           ltac:(M.monadic
-            (Value.StructTuple
-              "core::result::Result::Ok"
-              []
-              [ Ty.path "usize"; Ty.path "solana_program_error::ProgramError" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                    "len",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
+            (M.value_with_ty
+              (Value.StructTuple
+                "core::result::Result::Ok"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                      "len",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
                           M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
+                            M.read (|
+                              M.deref (|
+                                M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "&mut")
+                                    (Ty.path "&")
                                     []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.apply
-                                  (Ty.path "core::cell::Ref")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                  ],
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
                                     Ty.apply
                                       (Ty.path "core::cell::Ref")
                                       []
@@ -1785,28 +2221,27 @@ Module Impl_solana_account_info_AccountInfo.
                                           []
                                           [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                       ],
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::cell::Ref")
-                                        []
-                                        [
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.apply
-                                            (Ty.path "&mut")
+                                            (Ty.path "core::cell::Ref")
                                             []
-                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                        ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::ops::control_flow::ControlFlow")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "core::convert::Infallible";
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ];
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                            ],
+                                          M.match_operator (|
                                             Ty.apply
                                               (Ty.path "core::cell::Ref")
                                               []
@@ -1815,65 +2250,19 @@ Module Impl_solana_account_info_AccountInfo.
                                                   (Ty.path "&mut")
                                                   []
                                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                              ]
-                                          ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::ops::control_flow::ControlFlow")
-                                            []
-                                            [
+                                              ],
+                                            M.alloc (|
                                               Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.path "core::convert::Infallible";
-                                                  Ty.path "solana_program_error::ProgramError"
-                                                ];
-                                              Ty.apply
-                                                (Ty.path "core::cell::Ref")
+                                                (Ty.path "core::ops::control_flow::ControlFlow")
                                                 []
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "&mut")
+                                                    (Ty.path "core::result::Result")
                                                     []
-                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
-                                                    ]
-                                                ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::try_trait::Try",
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::cell::Ref")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "&mut")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ]
-                                                  ];
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ],
-                                            [],
-                                            [],
-                                            "branch",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ];
                                                   Ty.apply
                                                     (Ty.path "core::cell::Ref")
                                                     []
@@ -1887,126 +2276,269 @@ Module Impl_solana_account_info_AccountInfo.
                                                             []
                                                             [ Ty.path "u8" ]
                                                         ]
-                                                    ];
-                                                  Ty.path "solana_program_error::ProgramError"
+                                                    ]
                                                 ],
-                                              M.get_associated_function (|
-                                                Ty.path "solana_account_info::AccountInfo",
-                                                "try_borrow_data",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Break",
-                                                0
-                                              |) in
-                                            let residual :=
-                                              M.copy (|
+                                              M.call_closure (|
                                                 Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                  (Ty.path "core::ops::control_flow::ControlFlow")
                                                   []
                                                   [
-                                                    Ty.path "core::convert::Infallible";
-                                                    Ty.path "solana_program_error::ProgramError"
-                                                  ],
-                                                γ0_0
-                                              |) in
-                                            M.never_to_any (|
-                                              M.read (|
-                                                M.return_ (|
-                                                  M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path "usize";
+                                                        Ty.path "core::convert::Infallible";
                                                         Ty.path "solana_program_error::ProgramError"
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::try_trait::FromResidual",
+                                                      ];
+                                                    Ty.apply
+                                                      (Ty.path "core::cell::Ref")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "slice")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ]
+                                                      ]
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::ops::try_trait::Try",
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::cell::Ref")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ]
+                                                        ];
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ],
+                                                  [],
+                                                  [],
+                                                  "branch",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
                                                       Ty.apply
                                                         (Ty.path "core::result::Result")
                                                         []
                                                         [
-                                                          Ty.path "usize";
+                                                          Ty.apply
+                                                            (Ty.path "core::cell::Ref")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ]
+                                                            ];
                                                           Ty.path
                                                             "solana_program_error::ProgramError"
                                                         ],
-                                                      [],
+                                                      M.get_associated_function (|
+                                                        Ty.path "solana_account_info::AccountInfo",
+                                                        "try_borrow_data",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| self |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "solana_account_info::AccountInfo"
+                                                            ])
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
                                                       [
                                                         Ty.apply
-                                                          (Ty.path "core::result::Result")
+                                                          (Ty.path "core::cell::Ref")
                                                           []
                                                           [
-                                                            Ty.path "core::convert::Infallible";
-                                                            Ty.path
-                                                              "solana_program_error::ProgramError"
-                                                          ]
-                                                      ],
-                                                      "from_residual",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| residual |) ]
-                                                  |)
-                                                |)
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ];
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ])
+                                                ]
                                               |)
-                                            |)));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Continue",
-                                                0
-                                              |) in
-                                            let val :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::cell::Ref")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "&mut")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ]
-                                                  ],
-                                                γ0_0
-                                              |) in
-                                            M.read (| val |)))
-                                      ]
-                                    |)
-                                  |)
+                                            |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Break",
+                                                      0
+                                                    |) in
+                                                  let residual :=
+                                                    M.copy (|
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path
+                                                            "solana_program_error::ProgramError"
+                                                        ],
+                                                      γ0_0
+                                                    |) in
+                                                  M.never_to_any (|
+                                                    M.read (|
+                                                      M.return_ (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path "usize";
+                                                              Ty.path
+                                                                "solana_program_error::ProgramError"
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::try_trait::FromResidual",
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "usize";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ],
+                                                            [],
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible";
+                                                                  Ty.path
+                                                                    "solana_program_error::ProgramError"
+                                                                ]
+                                                            ],
+                                                            "from_residual",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| residual |))
+                                                              (Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible";
+                                                                  Ty.path
+                                                                    "solana_program_error::ProgramError"
+                                                                ])
+                                                          ]
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |)));
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Continue",
+                                                      0
+                                                    |) in
+                                                  let val :=
+                                                    M.copy (|
+                                                      Ty.apply
+                                                        (Ty.path "core::cell::Ref")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ]
+                                                        ],
+                                                      γ0_0
+                                                    |) in
+                                                  M.read (| val |)))
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::cell::Ref")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                            ]
+                                        ])
+                                  ]
                                 |)
-                              ]
+                              |)
                             |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
+                  |)
+                ])
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.path "usize"; Ty.path "solana_program_error::ProgramError" ])))
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -2039,25 +2571,15 @@ Module Impl_solana_account_info_AccountInfo.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.read (|
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                        ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.read (|
+                    M.deref (|
+                      M.call_closure (|
                         Ty.apply
-                          (Ty.path "core::cell::Ref")
+                          (Ty.path "&")
                           []
                           [
                             Ty.apply
@@ -2065,38 +2587,30 @@ Module Impl_solana_account_info_AccountInfo.
                               []
                               [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                           ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "core::cell::Ref")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                              ],
-                            M.call_closure (|
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "core::cell::Ref")
+                            []
+                            [
                               Ty.apply
-                                (Ty.path "core::cell::Ref")
+                                (Ty.path "&mut")
                                 []
-                                [
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                ],
-                              M.get_associated_function (|
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                            ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
                                 Ty.apply
-                                  (Ty.path "core::cell::RefCell")
+                                  (Ty.path "core::cell::Ref")
                                   []
                                   [
                                     Ty.apply
@@ -2104,16 +2618,123 @@ Module Impl_solana_account_info_AccountInfo.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                   ],
-                                "borrow",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::cell::Ref")
+                                    []
+                                    [
                                       Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::cell::RefCell")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                      ],
+                                    "borrow",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::cell::RefCell")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ]
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::ops::deref::Deref",
+                                              Ty.apply
+                                                (Ty.path "alloc::rc::Rc")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::cell::RefCell")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ]
+                                                    ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ],
+                                              [],
+                                              [],
+                                              "deref",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "solana_account_info::AccountInfo",
+                                                    "data"
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::rc::Rc")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::cell::RefCell")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
                                         (Ty.path "&")
                                         []
                                         [
@@ -2126,53 +2747,32 @@ Module Impl_solana_account_info_AccountInfo.
                                                 []
                                                 [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                             ]
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply
-                                          (Ty.path "alloc::rc::Rc")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::cell::RefCell")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "&mut")
-                                                  []
-                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                              ];
-                                            Ty.path "alloc::alloc::Global"
-                                          ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "solana_account_info::AccountInfo",
-                                            "data"
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
+                                        ])
+                                  ]
                                 |)
-                              ]
-                            |)
-                          |)
-                        |)
-                      ]
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::Ref")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                  ]
+                              ])
+                        ]
+                      |)
                     |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2203,56 +2803,37 @@ Module Impl_solana_account_info_AccountInfo.
             []
             [ Ty.path "bool"; Ty.path "solana_program_error::ProgramError" ]) (|
           ltac:(M.monadic
-            (Value.StructTuple
-              "core::result::Result::Ok"
-              []
-              [ Ty.path "bool"; Ty.path "solana_program_error::ProgramError" ]
-              [
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                    "is_empty",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
+            (M.value_with_ty
+              (Value.StructTuple
+                "core::result::Result::Ok"
+                [
+                  M.call_closure (|
+                    Ty.path "bool",
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                      "is_empty",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
                           M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
+                            M.read (|
+                              M.deref (|
+                                M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "&mut")
+                                    (Ty.path "&")
                                     []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.apply
-                                  (Ty.path "core::cell::Ref")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                  ],
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
                                     Ty.apply
                                       (Ty.path "core::cell::Ref")
                                       []
@@ -2262,28 +2843,27 @@ Module Impl_solana_account_info_AccountInfo.
                                           []
                                           [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                       ],
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::cell::Ref")
-                                        []
-                                        [
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.apply
-                                            (Ty.path "&mut")
+                                            (Ty.path "core::cell::Ref")
                                             []
-                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                        ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::ops::control_flow::ControlFlow")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "core::convert::Infallible";
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ];
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                            ],
+                                          M.match_operator (|
                                             Ty.apply
                                               (Ty.path "core::cell::Ref")
                                               []
@@ -2292,65 +2872,19 @@ Module Impl_solana_account_info_AccountInfo.
                                                   (Ty.path "&mut")
                                                   []
                                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                              ]
-                                          ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::ops::control_flow::ControlFlow")
-                                            []
-                                            [
+                                              ],
+                                            M.alloc (|
                                               Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.path "core::convert::Infallible";
-                                                  Ty.path "solana_program_error::ProgramError"
-                                                ];
-                                              Ty.apply
-                                                (Ty.path "core::cell::Ref")
+                                                (Ty.path "core::ops::control_flow::ControlFlow")
                                                 []
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "&mut")
+                                                    (Ty.path "core::result::Result")
                                                     []
-                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
-                                                    ]
-                                                ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::try_trait::Try",
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::cell::Ref")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "&mut")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ]
-                                                  ];
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ],
-                                            [],
-                                            [],
-                                            "branch",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ];
                                                   Ty.apply
                                                     (Ty.path "core::cell::Ref")
                                                     []
@@ -2364,126 +2898,269 @@ Module Impl_solana_account_info_AccountInfo.
                                                             []
                                                             [ Ty.path "u8" ]
                                                         ]
-                                                    ];
-                                                  Ty.path "solana_program_error::ProgramError"
+                                                    ]
                                                 ],
-                                              M.get_associated_function (|
-                                                Ty.path "solana_account_info::AccountInfo",
-                                                "try_borrow_data",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Break",
-                                                0
-                                              |) in
-                                            let residual :=
-                                              M.copy (|
+                                              M.call_closure (|
                                                 Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                  (Ty.path "core::ops::control_flow::ControlFlow")
                                                   []
                                                   [
-                                                    Ty.path "core::convert::Infallible";
-                                                    Ty.path "solana_program_error::ProgramError"
-                                                  ],
-                                                γ0_0
-                                              |) in
-                                            M.never_to_any (|
-                                              M.read (|
-                                                M.return_ (|
-                                                  M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path "bool";
+                                                        Ty.path "core::convert::Infallible";
                                                         Ty.path "solana_program_error::ProgramError"
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::try_trait::FromResidual",
+                                                      ];
+                                                    Ty.apply
+                                                      (Ty.path "core::cell::Ref")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "slice")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ]
+                                                      ]
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::ops::try_trait::Try",
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::cell::Ref")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ]
+                                                        ];
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ],
+                                                  [],
+                                                  [],
+                                                  "branch",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
                                                       Ty.apply
                                                         (Ty.path "core::result::Result")
                                                         []
                                                         [
-                                                          Ty.path "bool";
+                                                          Ty.apply
+                                                            (Ty.path "core::cell::Ref")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ]
+                                                            ];
                                                           Ty.path
                                                             "solana_program_error::ProgramError"
                                                         ],
-                                                      [],
+                                                      M.get_associated_function (|
+                                                        Ty.path "solana_account_info::AccountInfo",
+                                                        "try_borrow_data",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| self |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "solana_account_info::AccountInfo"
+                                                            ])
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
                                                       [
                                                         Ty.apply
-                                                          (Ty.path "core::result::Result")
+                                                          (Ty.path "core::cell::Ref")
                                                           []
                                                           [
-                                                            Ty.path "core::convert::Infallible";
-                                                            Ty.path
-                                                              "solana_program_error::ProgramError"
-                                                          ]
-                                                      ],
-                                                      "from_residual",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| residual |) ]
-                                                  |)
-                                                |)
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ];
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ])
+                                                ]
                                               |)
-                                            |)));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Continue",
-                                                0
-                                              |) in
-                                            let val :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::cell::Ref")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "&mut")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ]
-                                                  ],
-                                                γ0_0
-                                              |) in
-                                            M.read (| val |)))
-                                      ]
-                                    |)
-                                  |)
+                                            |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Break",
+                                                      0
+                                                    |) in
+                                                  let residual :=
+                                                    M.copy (|
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path
+                                                            "solana_program_error::ProgramError"
+                                                        ],
+                                                      γ0_0
+                                                    |) in
+                                                  M.never_to_any (|
+                                                    M.read (|
+                                                      M.return_ (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path "bool";
+                                                              Ty.path
+                                                                "solana_program_error::ProgramError"
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::try_trait::FromResidual",
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "bool";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ],
+                                                            [],
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible";
+                                                                  Ty.path
+                                                                    "solana_program_error::ProgramError"
+                                                                ]
+                                                            ],
+                                                            "from_residual",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| residual |))
+                                                              (Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible";
+                                                                  Ty.path
+                                                                    "solana_program_error::ProgramError"
+                                                                ])
+                                                          ]
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |)));
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Continue",
+                                                      0
+                                                    |) in
+                                                  let val :=
+                                                    M.copy (|
+                                                      Ty.apply
+                                                        (Ty.path "core::cell::Ref")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ]
+                                                        ],
+                                                      γ0_0
+                                                    |) in
+                                                  M.read (| val |)))
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::cell::Ref")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                            ]
+                                        ])
+                                  ]
                                 |)
-                              ]
+                              |)
                             |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
+                  |)
+                ])
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.path "bool"; Ty.path "solana_program_error::ProgramError" ])))
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -2541,8 +3218,101 @@ Module Impl_solana_account_info_AccountInfo.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::cell::Ref")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                    Ty.path "core::cell::BorrowError"
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::cell::RefCell")
+                    []
+                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                  "try_borrow",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::cell::RefCell")
+                                []
+                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                            ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::RefCell")
+                                  []
+                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "solana_account_info::AccountInfo",
+                                  "lamports"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::rc::Rc")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::cell::RefCell")
+                                        []
+                                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::cell::RefCell")
+                          []
+                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                      ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::result::Result")
                 []
                 [
@@ -2551,84 +3321,32 @@ Module Impl_solana_account_info_AccountInfo.
                     []
                     [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
                   Ty.path "core::cell::BorrowError"
-                ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "core::cell::RefCell")
-                  []
-                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                "try_borrow",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::cell::RefCell")
-                            []
-                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
-                        ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "alloc::rc::Rc")
-                          []
+                ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "solana_program_error::ProgramError",
+                          M.alloc (| Ty.path "core::cell::BorrowError", α0 |),
                           [
-                            Ty.apply
-                              (Ty.path "core::cell::RefCell")
-                              []
-                              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "solana_account_info::AccountInfo",
-                            "lamports"
-                          |)
-                        |)
-                      ]
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "solana_program_error::ProgramError",
-                        M.alloc (| Ty.path "core::cell::BorrowError", α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (Value.StructTuple
-                                "solana_program_error::ProgramError::AccountBorrowFailed"
-                                []
-                                []
-                                []))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.value_with_ty
+                                  (Value.StructTuple
+                                    "solana_program_error::ProgramError::AccountBorrowFailed"
+                                    [])
+                                  (Ty.path "solana_program_error::ProgramError")))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.path "core::cell::BorrowError" ]
+                (Ty.path "solana_program_error::ProgramError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2687,8 +3405,101 @@ Module Impl_solana_account_info_AccountInfo.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::cell::RefMut")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                    Ty.path "core::cell::BorrowMutError"
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::cell::RefCell")
+                    []
+                    [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                  "try_borrow_mut",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::cell::RefCell")
+                                []
+                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                            ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::RefCell")
+                                  []
+                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "solana_account_info::AccountInfo",
+                                  "lamports"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::rc::Rc")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::cell::RefCell")
+                                        []
+                                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::cell::RefCell")
+                          []
+                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                      ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::result::Result")
                 []
                 [
@@ -2697,84 +3508,32 @@ Module Impl_solana_account_info_AccountInfo.
                     []
                     [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
                   Ty.path "core::cell::BorrowMutError"
-                ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "core::cell::RefCell")
-                  []
-                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                "try_borrow_mut",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::cell::RefCell")
-                            []
-                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
-                        ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "alloc::rc::Rc")
-                          []
+                ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "solana_program_error::ProgramError",
+                          M.alloc (| Ty.path "core::cell::BorrowMutError", α0 |),
                           [
-                            Ty.apply
-                              (Ty.path "core::cell::RefCell")
-                              []
-                              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "solana_account_info::AccountInfo",
-                            "lamports"
-                          |)
-                        |)
-                      ]
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "solana_program_error::ProgramError",
-                        M.alloc (| Ty.path "core::cell::BorrowMutError", α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (Value.StructTuple
-                                "solana_program_error::ProgramError::AccountBorrowFailed"
-                                []
-                                []
-                                []))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.value_with_ty
+                                  (Value.StructTuple
+                                    "solana_program_error::ProgramError::AccountBorrowFailed"
+                                    [])
+                                  (Ty.path "solana_program_error::ProgramError")))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.path "core::cell::BorrowMutError" ]
+                (Ty.path "solana_program_error::ProgramError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2834,8 +3593,131 @@ Module Impl_solana_account_info_AccountInfo.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::cell::Ref")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                      ];
+                    Ty.path "core::cell::BorrowError"
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::cell::RefCell")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                    ],
+                  "try_borrow",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::cell::RefCell")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                ]
+                            ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::RefCell")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "solana_account_info::AccountInfo",
+                                  "data"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::rc::Rc")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::cell::RefCell")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                        ];
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::cell::RefCell")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                          ]
+                      ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::result::Result")
                 []
                 [
@@ -2849,95 +3731,32 @@ Module Impl_solana_account_info_AccountInfo.
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                     ];
                   Ty.path "core::cell::BorrowError"
-                ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "core::cell::RefCell")
-                  []
-                  [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                  ],
-                "try_borrow",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::cell::RefCell")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                            ]
-                        ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "alloc::rc::Rc")
-                          []
+                ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "solana_program_error::ProgramError",
+                          M.alloc (| Ty.path "core::cell::BorrowError", α0 |),
                           [
-                            Ty.apply
-                              (Ty.path "core::cell::RefCell")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                              ];
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "solana_account_info::AccountInfo",
-                            "data"
-                          |)
-                        |)
-                      ]
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "solana_program_error::ProgramError",
-                        M.alloc (| Ty.path "core::cell::BorrowError", α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (Value.StructTuple
-                                "solana_program_error::ProgramError::AccountBorrowFailed"
-                                []
-                                []
-                                []))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.value_with_ty
+                                  (Value.StructTuple
+                                    "solana_program_error::ProgramError::AccountBorrowFailed"
+                                    [])
+                                  (Ty.path "solana_program_error::ProgramError")))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.path "core::cell::BorrowError" ]
+                (Ty.path "solana_program_error::ProgramError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2997,8 +3816,131 @@ Module Impl_solana_account_info_AccountInfo.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::cell::RefMut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                      ];
+                    Ty.path "core::cell::BorrowMutError"
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "core::cell::RefCell")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                    ],
+                  "try_borrow_mut",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::cell::RefCell")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                ]
+                            ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::RefCell")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "solana_account_info::AccountInfo",
+                                  "data"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::rc::Rc")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::cell::RefCell")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                        ];
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::cell::RefCell")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                          ]
+                      ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::result::Result")
                 []
                 [
@@ -3012,95 +3954,32 @@ Module Impl_solana_account_info_AccountInfo.
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                     ];
                   Ty.path "core::cell::BorrowMutError"
-                ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "core::cell::RefCell")
-                  []
-                  [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                  ],
-                "try_borrow_mut",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::cell::RefCell")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                            ]
-                        ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "alloc::rc::Rc")
-                          []
+                ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "solana_program_error::ProgramError",
+                          M.alloc (| Ty.path "core::cell::BorrowMutError", α0 |),
                           [
-                            Ty.apply
-                              (Ty.path "core::cell::RefCell")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                              ];
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "solana_account_info::AccountInfo",
-                            "data"
-                          |)
-                        |)
-                      ]
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "solana_program_error::ProgramError",
-                        M.alloc (| Ty.path "core::cell::BorrowMutError", α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (Value.StructTuple
-                                "solana_program_error::ProgramError::AccountBorrowFailed"
-                                []
-                                []
-                                []))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.value_with_ty
+                                  (Value.StructTuple
+                                    "solana_program_error::ProgramError::AccountBorrowFailed"
+                                    [])
+                                  (Ty.path "solana_program_error::ProgramError")))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.path "core::cell::BorrowMutError" ]
+                (Ty.path "solana_program_error::ProgramError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3252,8 +4131,39 @@ Module Impl_solana_account_info_AccountInfo.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::RefMut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                  ];
+                                Ty.path "solana_program_error::ProgramError"
+                              ],
+                            M.get_associated_function (|
+                              Ty.path "solana_account_info::AccountInfo",
+                              "try_borrow_mut_data",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "solana_account_info::AccountInfo" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
                             [
@@ -3267,15 +4177,7 @@ Module Impl_solana_account_info_AccountInfo.
                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                 ];
                               Ty.path "solana_program_error::ProgramError"
-                            ],
-                          M.get_associated_function (|
-                            Ty.path "solana_account_info::AccountInfo",
-                            "try_borrow_mut_data",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
+                            ])
                       ]
                     |)
                   |),
@@ -3327,7 +4229,17 @@ Module Impl_solana_account_info_AccountInfo.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "solana_program_error::ProgramError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -3366,25 +4278,15 @@ Module Impl_solana_account_info_AccountInfo.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.read (|
+                            M.deref (|
+                              M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "core::cell::RefMut")
+                                  (Ty.path "&")
                                   []
                                   [
                                     Ty.apply
@@ -3392,18 +4294,47 @@ Module Impl_solana_account_info_AccountInfo.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                   ],
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, data |) ]
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.apply
+                                    (Ty.path "core::cell::RefMut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                    ],
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, data |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::cell::RefMut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                          ]
+                                      ])
+                                ]
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -3427,11 +4358,12 @@ Module Impl_solana_account_info_AccountInfo.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ]
-                                [ Value.Tuple [] ]
+                              M.value_with_ty
+                                (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ])
                             |)
                           |)
                         |)));
@@ -3447,7 +4379,11 @@ Module Impl_solana_account_info_AccountInfo.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "solana_account_info::AccountInfo" ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -3472,7 +4408,12 @@ Module Impl_solana_account_info_AccountInfo.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| new_len |); M.read (| original_data_len |) ]
+                                    [
+                                      M.value_with_ty (M.read (| new_len |)) (Ty.path "usize");
+                                      M.value_with_ty
+                                        (M.read (| original_data_len |))
+                                        (Ty.path "usize")
+                                    ]
                                   |);
                                   M.read (|
                                     get_constant (|
@@ -3487,17 +4428,20 @@ Module Impl_solana_account_info_AccountInfo.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ]
-                                [
-                                  Value.StructTuple
-                                    "solana_program_error::ProgramError::InvalidRealloc"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "solana_program_error::ProgramError::InvalidRealloc"
+                                        [])
+                                      (Ty.path "solana_program_error::ProgramError")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ])
                             |)
                           |)
                         |)));
@@ -3516,25 +4460,15 @@ Module Impl_solana_account_info_AccountInfo.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.read (|
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "&mut")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::DerefMut",
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.read (|
+                                M.deref (|
+                                  M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "core::cell::RefMut")
+                                      (Ty.path "&mut")
                                       []
                                       [
                                         Ty.apply
@@ -3542,18 +4476,50 @@ Module Impl_solana_account_info_AccountInfo.
                                           []
                                           [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                                       ],
-                                    [],
-                                    [],
-                                    "deref_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, data |) ]
+                                    M.get_trait_method (|
+                                      "core::ops::deref::DerefMut",
+                                      Ty.apply
+                                        (Ty.path "core::cell::RefMut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                        ],
+                                      [],
+                                      [],
+                                      "deref_mut",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, data |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::cell::RefMut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                              ]
+                                          ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
-                          |)
-                        |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -3569,7 +4535,14 @@ Module Impl_solana_account_info_AccountInfo.
                               [],
                               []
                             |),
-                            [ M.read (| data_ptr |); Value.Integer IntegerKind.Isize (-8) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| data_ptr |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (Value.Integer IntegerKind.Isize (-8))
+                                (Ty.path "isize")
+                            ]
                           |))
                       |),
                       M.cast (Ty.path "u64") (M.read (| new_len |))
@@ -3605,7 +4578,24 @@ Module Impl_solana_account_info_AccountInfo.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.MutRef, data |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, data |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::cell::RefMut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                    ]
+                                ])
+                          ]
                         |)
                       |),
                       M.borrow (|
@@ -3621,7 +4611,12 @@ Module Impl_solana_account_info_AccountInfo.
                               [],
                               [ Ty.path "u8" ]
                             |),
-                            [ M.read (| data_ptr |); M.read (| new_len |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| data_ptr |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| new_len |)) (Ty.path "usize")
+                            ]
                           |)
                         |)
                       |)
@@ -3632,7 +4627,10 @@ Module Impl_solana_account_info_AccountInfo.
                 M.call_closure (|
                   Ty.path "usize",
                   M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
-                  [ M.read (| new_len |); M.read (| old_len |) ]
+                  [
+                    M.value_with_ty (M.read (| new_len |)) (Ty.path "usize");
+                    M.value_with_ty (M.read (| old_len |)) (Ty.path "usize")
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -3658,93 +4656,137 @@ Module Impl_solana_account_info_AccountInfo.
                               Ty.tuple [],
                               M.get_function (| "solana_program_memory::sol_memset", [], [] |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                          M.get_trait_method (|
-                                            "core::ops::index::IndexMut",
-                                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                            [],
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                            M.get_trait_method (|
+                                              "core::ops::index::IndexMut",
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::ops::range::RangeFrom")
+                                                  []
+                                                  [ Ty.path "usize" ]
+                                              ],
+                                              "index_mut",
+                                              [],
+                                              []
+                                            |),
                                             [
-                                              Ty.apply
-                                                (Ty.path "core::ops::range::RangeFrom")
-                                                []
-                                                [ Ty.path "usize" ]
-                                            ],
-                                            "index_mut",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (|
-                                                M.read (|
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
                                                   M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&mut")
-                                                        []
-                                                        [
+                                                    M.read (|
+                                                      M.deref (|
+                                                        M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "&mut")
                                                             []
                                                             [
                                                               Ty.apply
-                                                                (Ty.path "slice")
+                                                                (Ty.path "&mut")
                                                                 []
-                                                                [ Ty.path "u8" ]
-                                                            ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::deref::DerefMut",
-                                                        Ty.apply
-                                                          (Ty.path "core::cell::RefMut")
-                                                          []
-                                                          [
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::deref::DerefMut",
                                                             Ty.apply
-                                                              (Ty.path "&mut")
+                                                              (Ty.path "core::cell::RefMut")
                                                               []
                                                               [
                                                                 Ty.apply
-                                                                  (Ty.path "slice")
+                                                                  (Ty.path "&mut")
                                                                   []
-                                                                  [ Ty.path "u8" ]
-                                                              ]
-                                                          ],
-                                                        [],
-                                                        [],
-                                                        "deref_mut",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.MutRef, data |) ]
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [ Ty.path "u8" ]
+                                                                  ]
+                                                              ],
+                                                            [],
+                                                            [],
+                                                            "deref_mut",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                data
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "core::cell::RefMut")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "slice")
+                                                                            []
+                                                                            [ Ty.path "u8" ]
+                                                                        ]
+                                                                    ]
+                                                                ])
+                                                          ]
+                                                        |)
+                                                      |)
                                                     |)
                                                   |)
-                                                |)
-                                              |)
-                                            |);
-                                            Value.mkStructRecord
-                                              "core::ops::range::RangeFrom"
-                                              []
-                                              [ Ty.path "usize" ]
-                                              [ ("start", M.read (| old_len |)) ]
-                                          ]
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.mkStructRecord
+                                                    "core::ops::range::RangeFrom"
+                                                    [ ("start", M.read (| old_len |)) ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::ops::range::RangeFrom")
+                                                    []
+                                                    [ Ty.path "usize" ]))
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::RangeFrom")
+                                                  []
+                                                  [ Ty.path "usize" ])
+                                            ]
+                                          |)
                                         |)
                                       |)
                                     |)
-                                  |)
-                                |);
-                                Value.Integer IntegerKind.U8 0;
-                                M.read (| len_increase |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                                M.value_with_ty (M.read (| len_increase |)) (Ty.path "usize")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3757,11 +4799,12 @@ Module Impl_solana_account_info_AccountInfo.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ])
               |)
             |)))
         |)))
@@ -3808,7 +4851,35 @@ Module Impl_solana_account_info_AccountInfo.
                 ]
               |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.apply
+                      (Ty.path "*mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [ Ty.path "u8" ]
+                      ])
+                    (M.read (|
+                      M.use
+                        (M.alloc (|
+                          Ty.apply (Ty.path "*const") [] [ Ty.path "solana_address::Address" ],
+                          M.borrow (|
+                            Pointer.Kind.ConstPointer,
+                            M.deref (|
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "solana_account_info::AccountInfo",
+                                  "owner"
+                                |)
+                              |)
+                            |)
+                          |)
+                        |))
+                    |)))
                   (Ty.apply
                     (Ty.path "*mut")
                     []
@@ -3817,38 +4888,29 @@ Module Impl_solana_account_info_AccountInfo.
                         (Ty.path "array")
                         [ Value.Integer IntegerKind.Usize 32 ]
                         [ Ty.path "u8" ]
-                    ])
-                  (M.read (|
-                    M.use
-                      (M.alloc (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.path "solana_address::Address" ],
-                        M.borrow (|
-                          Pointer.Kind.ConstPointer,
-                          M.deref (|
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "solana_account_info::AccountInfo",
-                                "owner"
-                              |)
-                            |)
-                          |)
-                        |)
-                      |))
-                  |));
-                M.call_closure (|
-                  Ty.apply
+                    ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.path "solana_address::Address",
+                      "to_bytes",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| new_owner |) |) |))
+                        (Ty.path "solana_address::Address")
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "array")
                     [ Value.Integer IntegerKind.Usize 32 ]
-                    [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.path "solana_address::Address",
-                    "to_bytes",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| new_owner |) |) |) ]
-                |)
+                    [ Ty.path "u8" ])
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3900,27 +4962,15 @@ Module Impl_solana_account_info_AccountInfo.
         let owner :=
           M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ], owner |) in
         let executable := M.alloc (| Ty.path "bool", executable |) in
-        Value.mkStructRecord
-          "solana_account_info::AccountInfo"
-          []
-          []
-          [
-            ("key", M.read (| key |));
-            ("is_signer", M.read (| is_signer |));
-            ("is_writable", M.read (| is_writable |));
-            ("lamports",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::rc::Rc")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "core::cell::RefCell")
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
-                    Ty.path "alloc::alloc::Global"
-                  ],
-                M.get_associated_function (|
+        M.value_with_ty
+          (Value.mkStructRecord
+            "solana_account_info::AccountInfo"
+            [
+              ("key", M.read (| key |));
+              ("is_signer", M.read (| is_signer |));
+              ("is_writable", M.read (| is_writable |));
+              ("lamports",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::rc::Rc")
                     []
@@ -3931,47 +4981,54 @@ Module Impl_solana_account_info_AccountInfo.
                         [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
                       Ty.path "alloc::alloc::Global"
                     ],
-                  "new",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
+                  M.get_associated_function (|
                     Ty.apply
-                      (Ty.path "core::cell::RefCell")
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::cell::RefCell")
-                        []
-                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| lamports |) |) |) ]
-                  |)
-                ]
-              |));
-            ("data",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::rc::Rc")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "core::cell::RefCell")
+                      (Ty.path "alloc::rc::Rc")
                       []
                       [
                         Ty.apply
-                          (Ty.path "&mut")
+                          (Ty.path "core::cell::RefCell")
                           []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                      ];
-                    Ty.path "alloc::alloc::Global"
-                  ],
-                M.get_associated_function (|
+                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    "new",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::cell::RefCell")
+                          []
+                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::cell::RefCell")
+                            []
+                            [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.read (| lamports |) |)
+                            |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ])
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::cell::RefCell")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ])
+                  ]
+                |));
+              ("data",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::rc::Rc")
                     []
@@ -3987,23 +5044,62 @@ Module Impl_solana_account_info_AccountInfo.
                         ];
                       Ty.path "alloc::alloc::Global"
                     ],
-                  "new",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
+                  M.get_associated_function (|
                     Ty.apply
-                      (Ty.path "core::cell::RefCell")
+                      (Ty.path "alloc::rc::Rc")
                       []
                       [
                         Ty.apply
-                          (Ty.path "&mut")
+                          (Ty.path "core::cell::RefCell")
                           []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                          ];
+                        Ty.path "alloc::alloc::Global"
                       ],
-                    M.get_associated_function (|
-                      Ty.apply
+                    "new",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::cell::RefCell")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::cell::RefCell")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::cell::RefCell")
                         []
                         [
@@ -4011,19 +5107,14 @@ Module Impl_solana_account_info_AccountInfo.
                             (Ty.path "&mut")
                             []
                             [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                        ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |) ]
-                  |)
-                ]
-              |));
-            ("owner", M.read (| owner |));
-            ("executable", M.read (| executable |));
-            ("_unused", Value.Integer IntegerKind.U64 0)
-          ]))
+                        ])
+                  ]
+                |));
+              ("owner", M.read (| owner |));
+              ("executable", M.read (| executable |));
+              ("_unused", Value.Integer IntegerKind.U64 0)
+            ])
+          (Ty.path "solana_account_info::AccountInfo")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -4060,7 +5151,7 @@ Module Impl_core_convert_From_where_solana_account_info_IntoAccountInfo_T_T_for_
             [],
             []
           |),
-          [ M.read (| src |) ]
+          [ M.value_with_ty (M.read (| src |)) T ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -4159,7 +5250,11 @@ Module Impl_solana_account_info_IntoAccountInfo_where_solana_account_info_Accoun
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| account |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| account |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ T ])
+                      ]
                     |)
                   |),
                   [
@@ -4194,13 +5289,27 @@ Module Impl_solana_account_info_IntoAccountInfo_where_solana_account_info_Accoun
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |);
-                            Value.Bool false;
-                            Value.Bool false;
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| lamports |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| owner |) |) |);
-                            M.read (| executable |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+                            M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                            M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.read (| lamports |) |)
+                              |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| owner |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+                            M.value_with_ty (M.read (| executable |)) (Ty.path "bool")
                           ]
                         |)))
                   ]
@@ -4305,7 +5414,11 @@ Module Impl_solana_account_info_IntoAccountInfo_where_solana_account_info_Accoun
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| account |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| account |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ T ])
+                      ]
                     |)
                   |),
                   [
@@ -4340,13 +5453,27 @@ Module Impl_solana_account_info_IntoAccountInfo_where_solana_account_info_Accoun
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |);
-                            M.read (| is_signer |);
-                            Value.Bool false;
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| lamports |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| owner |) |) |);
-                            M.read (| executable |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+                            M.value_with_ty (M.read (| is_signer |)) (Ty.path "bool");
+                            M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.read (| lamports |) |)
+                              |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| owner |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+                            M.value_with_ty (M.read (| executable |)) (Ty.path "bool")
                           ]
                         |)))
                   ]
@@ -4440,7 +5567,11 @@ Module Impl_solana_account_info_IntoAccountInfo_where_solana_account_info_Accoun
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| account |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| account |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ T ])
+                      ]
                     |)
                   |),
                   [
@@ -4475,13 +5606,27 @@ Module Impl_solana_account_info_IntoAccountInfo_where_solana_account_info_Accoun
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |);
-                            Value.Bool false;
-                            Value.Bool false;
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| lamports |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| owner |) |) |);
-                            M.read (| executable |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+                            M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                            M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.read (| lamports |) |)
+                              |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| owner |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+                            M.value_with_ty (M.read (| executable |)) (Ty.path "bool")
                           ]
                         |)))
                   ]
@@ -4531,23 +5676,36 @@ Definition next_account_info (ε : list Value.t) (τ : list Ty.t) (α : list Val
           [ Ty.path "solana_program_error::ProgramError" ]
         |),
         [
-          M.call_closure (|
-            Ty.apply
+          M.value_with_ty
+            (M.call_closure (|
+              Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_account_info::AccountInfo" ] ],
+              M.get_trait_method (|
+                "core::iter::traits::iterator::Iterator",
+                I,
+                [],
+                [],
+                "next",
+                [],
+                []
+              |),
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| iter |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ I ])
+              ]
+            |))
+            (Ty.apply
               (Ty.path "core::option::Option")
               []
-              [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_account_info::AccountInfo" ] ],
-            M.get_trait_method (|
-              "core::iter::traits::iterator::Iterator",
-              I,
-              [],
-              [],
-              "next",
-              [],
-              []
-            |),
-            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| iter |) |) |) ]
-          |);
-          Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [] [] []
+              [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_account_info::AccountInfo" ] ]);
+          M.value_with_ty
+            (M.value_with_ty
+              (Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [])
+              (Ty.path "solana_program_error::ProgramError"))
+            (Ty.path "solana_program_error::ProgramError")
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -4623,7 +5781,19 @@ Definition next_account_infos (ε : list Value.t) (τ : list Ty.t) (α : list Va
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| iter |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| iter |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::slice::iter::Iter")
+                          []
+                          [ Ty.path "solana_account_info::AccountInfo" ]
+                      ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.match_operator (|
@@ -4652,10 +5822,20 @@ Definition next_account_infos (ε : list Value.t) (τ : list Ty.t) (α : list Va
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| accounts |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| accounts |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.path "solana_account_info::AccountInfo" ]
+                                        ])
                                   ]
                                 |);
                                 M.read (| count |)
@@ -4666,28 +5846,31 @@ Definition next_account_infos (ε : list Value.t) (τ : list Ty.t) (α : list Va
                       M.never_to_any (|
                         M.read (|
                           M.return_ (|
-                            Value.StructTuple
-                              "core::result::Result::Err"
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "slice")
-                                      []
-                                      [ Ty.path "solana_account_info::AccountInfo" ]
-                                  ];
-                                Ty.path "solana_program_error::ProgramError"
-                              ]
-                              [
-                                Value.StructTuple
-                                  "solana_program_error::ProgramError::NotEnoughAccountKeys"
-                                  []
-                                  []
-                                  []
-                              ]
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::result::Result::Err"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "solana_program_error::ProgramError::NotEnoughAccountKeys"
+                                      [])
+                                    (Ty.path "solana_program_error::ProgramError")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "solana_account_info::AccountInfo" ]
+                                    ];
+                                  Ty.path "solana_program_error::ProgramError"
+                                ])
                           |)
                         |)
                       |)));
@@ -4769,8 +5952,18 @@ Definition next_account_infos (ε : list Value.t) (τ : list Ty.t) (α : list Va
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |);
-                      M.read (| count |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.path "solana_account_info::AccountInfo" ]
+                          ]);
+                      M.value_with_ty (M.read (| count |)) (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -4824,10 +6017,20 @@ Definition next_account_infos (ε : list Value.t) (τ : list Ty.t) (α : list Va
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| remaining |) |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| remaining |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "solana_account_info::AccountInfo" ]
+                                    ])
                               ]
                             |)
                           |) in
@@ -4847,22 +6050,26 @@ Definition next_account_infos (ε : list Value.t) (τ : list Ty.t) (α : list Va
                                 ];
                               Ty.path "solana_program_error::ProgramError"
                             ],
-                          Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "solana_account_info::AccountInfo" ]
-                                ];
-                              Ty.path "solana_program_error::ProgramError"
-                            ]
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |) ]
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::result::Result::Ok"
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |)
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "solana_account_info::AccountInfo" ]
+                                  ];
+                                Ty.path "solana_program_error::ProgramError"
+                              ])
                         |)
                       |)))
                 ]
@@ -4993,7 +6200,14 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
               [],
               []
             |),
-            [ lib.repeat (| Value.Integer IntegerKind.U8 10, Value.Integer IntegerKind.Usize 32 |) ]
+            [
+              M.value_with_ty
+                (lib.repeat (|
+                  Value.Integer IntegerKind.U8 10,
+                  Value.Integer IntegerKind.Usize 32
+                |))
+                (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ])
+            ]
           |) in
         let~ lamports : Ty.path "u64" := Value.Integer IntegerKind.U64 31 in
         let~ data :
@@ -5013,43 +6227,35 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
               [ Ty.path "alloc::alloc::Global" ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::boxed::Box")
-                  []
-                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]; Ty.path "alloc::alloc::Global"
-                  ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 5 ]
-                        [ Ty.path "u8" ];
-                      Ty.path "alloc::alloc::Global"
-                    ])
-                  (Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]; Ty.path "alloc::alloc::Global"
-                    ]),
-                [
-                  M.read (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::boxed::Box")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 5 ]
-                            [ Ty.path "u8" ];
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      M.get_associated_function (|
+                    ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 5 ]
+                          [ Ty.path "u8" ];
+                        Ty.path "alloc::alloc::Global"
+                      ])
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ];
+                        Ty.path "alloc::alloc::Global"
+                      ]),
+                  [
+                    M.read (|
+                      M.call_closure (|
                         Ty.apply
                           (Ty.path "alloc::boxed::Box")
                           []
@@ -5060,30 +6266,46 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                               [ Ty.path "u8" ];
                             Ty.path "alloc::alloc::Global"
                           ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.alloc (|
+                        M.get_associated_function (|
                           Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 5 ]
-                            [ Ty.path "u8" ],
-                          Value.Array
+                            (Ty.path "alloc::boxed::Box")
+                            []
                             [
-                              Value.Integer IntegerKind.U8 1;
-                              Value.Integer IntegerKind.U8 2;
-                              Value.Integer IntegerKind.U8 3;
-                              Value.Integer IntegerKind.U8 4;
-                              Value.Integer IntegerKind.U8 5
-                            ]
-                        |)
-                      ]
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 5 ]
+                                [ Ty.path "u8" ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 5 ]
+                              [ Ty.path "u8" ],
+                            Value.Array
+                              [
+                                Value.Integer IntegerKind.U8 1;
+                                Value.Integer IntegerKind.U8 2;
+                                Value.Integer IntegerKind.U8 3;
+                                Value.Integer IntegerKind.U8 4;
+                                Value.Integer IntegerKind.U8 5
+                              ]
+                          |)
+                        ]
+                      |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply
+                  (Ty.path "alloc::boxed::Box")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]; Ty.path "alloc::alloc::Global"
+                  ])
             ]
           |) in
         let~ owner : Ty.path "solana_address::Address" :=
@@ -5095,7 +6317,14 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
               [],
               []
             |),
-            [ lib.repeat (| Value.Integer IntegerKind.U8 22, Value.Integer IntegerKind.Usize 32 |) ]
+            [
+              M.value_with_ty
+                (lib.repeat (|
+                  Value.Integer IntegerKind.U8 22,
+                  Value.Integer IntegerKind.Usize 32
+                |))
+                (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ])
+            ]
           |) in
         let~ account_info : Ty.path "solana_account_info::AccountInfo" :=
           M.call_closure (|
@@ -5107,41 +6336,68 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, key |) |) |);
-              Value.Bool true;
-              Value.Bool false;
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.borrow (| Pointer.Kind.MutRef, lamports |) |)
-              |);
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_trait_method (|
-                      "core::ops::deref::DerefMut",
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.borrow (| Pointer.Kind.Ref, key |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+              M.value_with_ty (Value.Bool true) (Ty.path "bool");
+              M.value_with_ty (Value.Bool false) (Ty.path "bool");
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.borrow (| Pointer.Kind.MutRef, lamports |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
                       Ty.apply
-                        (Ty.path "alloc::vec::Vec")
+                        (Ty.path "&mut")
                         []
-                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                      [],
-                      [],
-                      "deref_mut",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, data |) |)
-                      |)
-                    ]
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_trait_method (|
+                        "core::ops::deref::DerefMut",
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "deref_mut",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (| M.borrow (| Pointer.Kind.MutRef, data |) |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                            ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |) |);
-              Value.Bool true
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+              M.value_with_ty (Value.Bool true) (Ty.path "bool")
             ]
           |) in
         let~ account_info_addr : Ty.path "u64" :=
@@ -5218,7 +6474,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -5229,30 +6487,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                     [ Ty.path "usize"; Ty.path "usize" ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -5335,14 +6605,24 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "solana_address::Address" ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "solana_address::Address" ])
                                           ]
                                         |)
                                       ]
@@ -5353,7 +6633,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -5367,30 +6649,48 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                         ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "solana_address::Address" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "solana_address::Address" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -5464,7 +6764,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -5475,30 +6777,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                     [ Ty.path "usize"; Ty.path "usize" ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -5579,46 +6893,78 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::cell::RefCell")
-                                              []
-                                              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::ops::deref::Deref",
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
                                           Ty.apply
-                                            (Ty.path "alloc::rc::Rc")
+                                            (Ty.path "&")
                                             []
                                             [
                                               Ty.apply
                                                 (Ty.path "core::cell::RefCell")
                                                 []
-                                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ];
-                                              Ty.path "alloc::alloc::Global"
+                                                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
                                             ],
-                                          [],
-                                          [],
-                                          "deref",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| lamports_ptr |) |)
-                                          |)
-                                        ]
+                                          M.get_trait_method (|
+                                            "core::ops::deref::Deref",
+                                            Ty.apply
+                                              (Ty.path "alloc::rc::Rc")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::cell::RefCell")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ]
+                                                  ];
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            [],
+                                            [],
+                                            "deref",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| lamports_ptr |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::rc::Rc")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::cell::RefCell")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [ Ty.path "u64" ]
+                                                        ];
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ]
+                                                ])
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::cell::RefCell")
+                                          []
+                                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ] ]
+                                      ])
                                 ]
                               |)
                             |)
@@ -5670,7 +7016,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -5681,30 +7029,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                         [ Ty.path "u64"; Ty.path "u64" ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -5778,7 +7138,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -5789,30 +7151,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                     [ Ty.path "usize"; Ty.path "usize" ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -5901,27 +7275,18 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.read (|
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "*mut")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "&mut")
-                                                  []
-                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                              ],
-                                            M.get_associated_function (|
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "core::cell::RefCell")
+                                                (Ty.path "*mut")
                                                 []
                                                 [
                                                   Ty.apply
@@ -5930,80 +7295,150 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
                                                     ]
                                                 ],
-                                              "as_ptr",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.call_closure (|
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "core::cell::RefCell")
+                                                  []
+                                                  [
                                                     Ty.apply
-                                                      (Ty.path "&")
+                                                      (Ty.path "&mut")
                                                       []
                                                       [
                                                         Ty.apply
-                                                          (Ty.path "core::cell::RefCell")
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ],
+                                                "as_ptr",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "&")
                                                           []
                                                           [
                                                             Ty.apply
-                                                              (Ty.path "&mut")
+                                                              (Ty.path "core::cell::RefCell")
                                                               []
                                                               [
                                                                 Ty.apply
-                                                                  (Ty.path "slice")
+                                                                  (Ty.path "&mut")
                                                                   []
-                                                                  [ Ty.path "u8" ]
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [ Ty.path "u8" ]
+                                                                  ]
                                                               ]
-                                                          ]
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::deref::Deref",
-                                                      Ty.apply
-                                                        (Ty.path "alloc::rc::Rc")
-                                                        []
-                                                        [
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::ops::deref::Deref",
                                                           Ty.apply
-                                                            (Ty.path "core::cell::RefCell")
+                                                            (Ty.path "alloc::rc::Rc")
                                                             []
                                                             [
                                                               Ty.apply
-                                                                (Ty.path "&mut")
+                                                                (Ty.path "core::cell::RefCell")
                                                                 []
                                                                 [
                                                                   Ty.apply
-                                                                    (Ty.path "slice")
+                                                                    (Ty.path "&mut")
                                                                     []
-                                                                    [ Ty.path "u8" ]
-                                                                ]
-                                                            ];
-                                                          Ty.path "alloc::alloc::Global"
-                                                        ],
-                                                      [],
-                                                      [],
-                                                      "deref",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| data_ptr |) |)
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ Ty.path "u8" ]
+                                                                    ]
+                                                                ];
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ],
+                                                          [],
+                                                          [],
+                                                          "deref",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| data_ptr |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::rc::Rc")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::cell::RefCell")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "slice")
+                                                                              []
+                                                                              [ Ty.path "u8" ]
+                                                                          ]
+                                                                      ];
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ]
+                                                              ])
+                                                        ]
                                                       |)
-                                                    ]
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::cell::RefCell")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ]
+                                                        ]
+                                                    ])
+                                              ]
+                                            |)
                                           |)
                                         |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |);
-                              Value.StructTuple "core::ops::range::RangeFull" [] [] []
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::ops::range::RangeFull" [])
+                                  (Ty.path "core::ops::range::RangeFull"))
+                                (Ty.path "core::ops::range::RangeFull")
                             ]
                           |)
                         |)
@@ -6029,8 +7464,22 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, data |);
-                              Value.StructTuple "core::ops::range::RangeFull" [] [] []
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, data |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::ops::range::RangeFull" [])
+                                  (Ty.path "core::ops::range::RangeFull"))
+                                (Ty.path "core::ops::range::RangeFull")
                             ]
                           |)
                         |)
@@ -6084,14 +7533,24 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                           ]
                                         |)
                                       ]
@@ -6102,7 +7561,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -6116,30 +7577,48 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                         ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -6213,7 +7692,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -6224,30 +7705,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                     [ Ty.path "usize"; Ty.path "usize" ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -6334,14 +7827,24 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "solana_address::Address" ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "solana_address::Address" ])
                                           ]
                                         |)
                                       ]
@@ -6352,7 +7855,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -6366,30 +7871,48 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                         ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "solana_address::Address" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "solana_address::Address" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -6465,7 +7988,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -6476,30 +8001,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                         [ Ty.path "usize"; Ty.path "usize" ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -6575,7 +8112,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -6586,30 +8125,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                         [ Ty.path "u64"; Ty.path "u64" ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -6683,7 +8234,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -6694,30 +8247,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                     [ Ty.path "usize"; Ty.path "usize" ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -6760,7 +8325,11 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: *is_signer_ptr" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: *is_signer_ptr" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -6829,7 +8398,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -6840,30 +8411,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                     [ Ty.path "usize"; Ty.path "usize" ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -6912,7 +8495,11 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: !*is_writable_ptr" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: !*is_writable_ptr" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -6981,7 +8568,9 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -6992,30 +8581,42 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                                     [ Ty.path "usize"; Ty.path "usize" ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -7056,7 +8657,11 @@ Definition check_type_assumptions (ε : list Value.t) (τ : list Ty.t) (α : lis
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic", [], [] |),
-                      [ mk_str (| "assertion failed: *executable_ptr" |) ]
+                      [
+                        M.value_with_ty
+                          (mk_str (| "assertion failed: *executable_ptr" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))

@@ -26,11 +26,11 @@ Module AccountState.
     φ x :=
       match x with
       | Uninitialized =>
-          Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" [] [] []
+          Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" []
       | Initialized =>
-          Value.StructTuple "spl_token_interface::state::AccountState::Initialized" [] [] []
+          Value.StructTuple "spl_token_interface::state::AccountState::Initialized" []
       | Frozen =>
-          Value.StructTuple "spl_token_interface::state::AccountState::Frozen" [] [] []
+          Value.StructTuple "spl_token_interface::state::AccountState::Frozen" []
       end
   }.
 
@@ -41,42 +41,42 @@ Module AccountState.
   }.
 
   Instance IsOfValueWith_Uninitialized :
-    OfValueWith.C t (Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" []) :=
   {
     value := Uninitialized;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Uninitialized :
-    OfValue.C (Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" [] [] []) :=
+    OfValue.C (Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" []) :=
   {
     value := Uninitialized;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Initialized :
-    OfValueWith.C t (Value.StructTuple "spl_token_interface::state::AccountState::Initialized" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::state::AccountState::Initialized" []) :=
   {
     value := Initialized;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Initialized :
-    OfValue.C (Value.StructTuple "spl_token_interface::state::AccountState::Initialized" [] [] []) :=
+    OfValue.C (Value.StructTuple "spl_token_interface::state::AccountState::Initialized" []) :=
   {
     value := Initialized;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Frozen :
-    OfValueWith.C t (Value.StructTuple "spl_token_interface::state::AccountState::Frozen" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::state::AccountState::Frozen" []) :=
   {
     value := Frozen;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Frozen :
-    OfValue.C (Value.StructTuple "spl_token_interface::state::AccountState::Frozen" [] [] []) :=
+    OfValue.C (Value.StructTuple "spl_token_interface::state::AccountState::Frozen" []) :=
   {
     value := Frozen;
     eq := eq_refl;
@@ -108,7 +108,7 @@ Module Mint.
   Instance IsLink : Link t := {
     Φ := Ty.path "spl_token_interface::state::Mint";
     φ x :=
-      Value.StructRecord "spl_token_interface::state::Mint" [] [] [
+      Value.StructRecord "spl_token_interface::state::Mint" [
         ("decimals", φ x.(decimals));
         ("freeze_authority", φ x.(freeze_authority));
         ("is_initialized", φ x.(is_initialized));
@@ -130,7 +130,7 @@ Module Mint.
       (mint_authority' : Value.t) {H_mint_authority : OfValueWith.C (COption.t Address.t) mint_authority'}
       (supply' : Value.t) {H_supply : OfValueWith.C (u64) supply'}
       :
-    OfValueWith.C t (Value.StructRecord "spl_token_interface::state::Mint" [] [] [
+    OfValueWith.C t (Value.StructRecord "spl_token_interface::state::Mint" [
       ("decimals", decimals');
       ("freeze_authority", freeze_authority');
       ("is_initialized", is_initialized');
@@ -155,7 +155,7 @@ Module Mint.
       (mint_authority' : Value.t) {H_mint_authority : OfValueWith.C (COption.t Address.t) mint_authority'}
       (supply' : Value.t) {H_supply : OfValueWith.C (u64) supply'}
       :
-    OfValue.C (Value.StructRecord "spl_token_interface::state::Mint" [] [] [
+    OfValue.C (Value.StructRecord "spl_token_interface::state::Mint" [
       ("decimals", decimals');
       ("freeze_authority", freeze_authority');
       ("is_initialized", is_initialized');
@@ -274,7 +274,7 @@ Module Account.
   Instance IsLink : Link t := {
     Φ := Ty.path "spl_token_interface::state::Account";
     φ x :=
-      Value.StructRecord "spl_token_interface::state::Account" [] [] [
+      Value.StructRecord "spl_token_interface::state::Account" [
         ("amount", φ x.(amount));
         ("close_authority", φ x.(close_authority));
         ("delegate", φ x.(delegate));
@@ -302,7 +302,7 @@ Module Account.
       (owner' : Value.t) {H_owner : OfValueWith.C (Address.t) owner'}
       (state' : Value.t) {H_state : OfValueWith.C (AccountState.t) state'}
       :
-    OfValueWith.C t (Value.StructRecord "spl_token_interface::state::Account" [] [] [
+    OfValueWith.C t (Value.StructRecord "spl_token_interface::state::Account" [
       ("amount", amount');
       ("close_authority", close_authority');
       ("delegate", delegate');
@@ -336,7 +336,7 @@ Module Account.
       (owner' : Value.t) {H_owner : OfValueWith.C (Address.t) owner'}
       (state' : Value.t) {H_state : OfValueWith.C (AccountState.t) state'}
       :
-    OfValue.C (Value.StructRecord "spl_token_interface::state::Account" [] [] [
+    OfValue.C (Value.StructRecord "spl_token_interface::state::Account" [
       ("amount", amount');
       ("close_authority", close_authority');
       ("delegate", delegate');

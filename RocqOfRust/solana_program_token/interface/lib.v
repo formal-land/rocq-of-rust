@@ -48,24 +48,47 @@ Definition check_program_account (ε : list Value.t) (τ : list Ty.t) (α : list
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, spl_token_program_id |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "solana_address::Address",
-                                        M.call_closure (|
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, spl_token_program_id |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "solana_address::Address" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "solana_address::Address" ],
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.path "solana_address::Address",
-                                          M.get_function (| "spl_token_interface::id", [], [] |),
-                                          []
+                                          M.call_closure (|
+                                            Ty.path "solana_address::Address",
+                                            M.get_function (| "spl_token_interface::id", [], [] |),
+                                            []
+                                          |)
                                         |)
                                       |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "solana_address::Address" ]
+                                    ])
                               ]
                             |)
                           |)) in
@@ -73,17 +96,20 @@ Definition check_program_account (ε : list Value.t) (τ : list Ty.t) (α : list
                       M.never_to_any (|
                         M.read (|
                           M.return_ (|
-                            Value.StructTuple
-                              "core::result::Result::Err"
-                              []
-                              [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ]
-                              [
-                                Value.StructTuple
-                                  "solana_program_error::ProgramError::IncorrectProgramId"
-                                  []
-                                  []
-                                  []
-                              ]
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::result::Result::Err"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "solana_program_error::ProgramError::IncorrectProgramId"
+                                      [])
+                                    (Ty.path "solana_program_error::ProgramError")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ])
                           |)
                         |)
                       |)));
@@ -95,11 +121,12 @@ Definition check_program_account (ε : list Value.t) (τ : list Ty.t) (α : list
                 (Ty.path "core::result::Result")
                 []
                 [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-              Value.StructTuple
-                "core::result::Result::Ok"
-                []
-                [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ]
-                [ Value.Tuple [] ]
+              M.value_with_ty
+                (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                (Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ])
             |)
           |)))
       |)))

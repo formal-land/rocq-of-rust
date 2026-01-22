@@ -50,7 +50,11 @@ Module iter.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Self ])
+                    ]
                   |) in
                 M.alloc (|
                   Ty.associated_in_trait "core::iter::traits::iterator::Iterator" [] [] Self "Item",
@@ -77,7 +81,21 @@ Module iter.
                       [],
                       []
                     |),
-                    [ M.read (| opt |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| opt |))
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "core::iter::traits::iterator::Iterator"
+                              []
+                              []
+                              Self
+                              "Item"
+                          ])
+                    ]
                   |)
                 |)
               |)))

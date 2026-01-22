@@ -39,44 +39,63 @@ Module fmt.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                M.get_associated_function (| Ty.path "core::fmt::Arguments", "as_str", [], [] |),
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, args |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::option::Option")
                 []
-                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-              M.get_associated_function (| Ty.path "core::fmt::Arguments", "as_str", [], [] |),
-              [ M.borrow (| Pointer.Kind.Ref, args |) ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "alloc::string::String",
-                        M.alloc (| Ty.tuple [], α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.call_closure (|
-                                Ty.path "alloc::string::String",
-                                M.get_function (| "alloc::fmt::format.format_inner", [], [] |),
-                                [ M.read (| args |) ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end));
-            M.get_trait_method (|
-              "alloc::borrow::ToOwned",
-              Ty.path "str",
-              [],
-              [],
-              "to_owned",
-              [],
-              []
-            |)
+                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "alloc::string::String",
+                          M.alloc (| Ty.tuple [], α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "alloc::string::String",
+                                  M.get_function (| "alloc::fmt::format.format_inner", [], [] |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| args |))
+                                      (Ty.path "core::fmt::Arguments")
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function [] (Ty.path "alloc::string::String"));
+            M.value_with_ty
+              (M.get_trait_method (|
+                "alloc::borrow::ToOwned",
+                Ty.path "str",
+                [],
+                [],
+                "to_owned",
+                [],
+                []
+              |))
+              (Ty.function
+                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                (Ty.associated_in_trait "alloc::borrow::ToOwned" [] [] (Ty.path "str") "Owned"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -112,7 +131,11 @@ Module fmt.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, args |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, args |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ])
+                ]
               |) in
             let~ output : Ty.path "alloc::string::String" :=
               M.call_closure (|
@@ -123,7 +146,7 @@ Module fmt.
                   [],
                   []
                 |),
-                [ M.read (| capacity |) ]
+                [ M.value_with_ty (M.read (| capacity |)) (Ty.path "usize") ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -138,30 +161,42 @@ Module fmt.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                      M.get_trait_method (|
+                        "core::fmt::Write",
+                        Ty.path "alloc::string::String",
+                        [],
+                        [],
+                        "write_fmt",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, output |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "alloc::string::String" ]);
+                        M.value_with_ty (M.read (| args |)) (Ty.path "core::fmt::Arguments")
+                      ]
+                    |))
+                    (Ty.apply
                       (Ty.path "core::result::Result")
                       []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_trait_method (|
-                      "core::fmt::Write",
-                      Ty.path "alloc::string::String",
-                      [],
-                      [],
-                      "write_fmt",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, output |); M.read (| args |) ]
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      mk_str (|
-                        "a formatting trait implementation returned an error when the underlying stream did not"
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        mk_str (|
+                          "a formatting trait implementation returned an error when the underlying stream did not"
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             output

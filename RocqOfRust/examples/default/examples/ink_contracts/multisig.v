@@ -22,40 +22,40 @@ Module Impl_core_default_Default_where_core_default_Default_K_where_core_default
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "multisig::Mapping"
-          []
-          [ K; V ]
-          [
-            ("_key",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "multisig::Mapping"
+            [
+              ("_key",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("_value",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("_value",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.apply (Ty.path "multisig::Mapping") [] [ K; V ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -92,7 +92,11 @@ Module Impl_multisig_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -124,7 +128,11 @@ Module Impl_multisig_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -157,7 +165,11 @@ Module Impl_multisig_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -189,7 +201,11 @@ Module Impl_multisig_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -221,7 +237,11 @@ Module Impl_multisig_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -253,7 +273,11 @@ Module Impl_multisig_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -282,25 +306,25 @@ Module Impl_core_default_Default_for_multisig_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "multisig::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "multisig::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "multisig::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -333,36 +357,42 @@ Module Impl_core_fmt_Debug_for_multisig_AccountId.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AccountId" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "multisig::AccountId",
-                            0
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AccountId" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "multisig::AccountId",
+                              0
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -528,32 +558,36 @@ Module Impl_core_cmp_PartialOrd_multisig_AccountId_for_multisig_AccountId.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::AccountId",
-                    0
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::AccountId",
+                      0
+                    |)
                   |)
                 |)
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "multisig::AccountId",
-                    0
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "multisig::AccountId",
+                      0
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -584,32 +618,36 @@ Module Impl_core_cmp_Ord_for_multisig_AccountId.
           Ty.path "core::cmp::Ordering",
           M.get_trait_method (| "core::cmp::Ord", Ty.path "u128", [], [], "cmp", [], [] |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::AccountId",
-                    0
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::AccountId",
+                      0
+                    |)
                   |)
                 |)
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "multisig::AccountId",
-                    0
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "multisig::AccountId",
+                      0
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -756,102 +794,105 @@ Module Impl_core_default_Default_for_multisig_Transaction.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "multisig::Transaction"
-          []
-          []
-          [
-            ("callee",
-              M.call_closure (|
-                Ty.path "multisig::AccountId",
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "multisig::Transaction"
+            [
+              ("callee",
+                M.call_closure (|
                   Ty.path "multisig::AccountId",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "multisig::AccountId",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("selector",
-              M.call_closure (|
-                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("selector",
+                M.call_closure (|
                   Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      [ Ty.path "u8" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("input",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::Vec")
-                  []
-                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("input",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::vec::Vec")
                     []
                     [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("transferred_value",
-              M.call_closure (|
-                Ty.path "u128",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("transferred_value",
+                M.call_closure (|
                   Ty.path "u128",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u128",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("gas_limit",
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("gas_limit",
+                M.call_closure (|
                   Ty.path "u64",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u64",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("allow_reentry",
-              M.call_closure (|
-                Ty.path "bool",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("allow_reentry",
+                M.call_closure (|
                   Ty.path "bool",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "multisig::Transaction")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -1002,46 +1043,46 @@ Module Impl_core_default_Default_for_multisig_Transactions.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "multisig::Transactions"
-          []
-          []
-          [
-            ("transactions",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::Vec")
-                  []
-                  [ Ty.path "u32"; Ty.path "alloc::alloc::Global" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "multisig::Transactions"
+            [
+              ("transactions",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::vec::Vec")
                     []
                     [ Ty.path "u32"; Ty.path "alloc::alloc::Global" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u32"; Ty.path "alloc::alloc::Global" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("next_id",
-              M.call_closure (|
-                Ty.path "u32",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("next_id",
+                M.call_closure (|
                   Ty.path "u32",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u32",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "multisig::Transactions")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -1237,7 +1278,11 @@ Module Impl_multisig_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1262,7 +1307,11 @@ Module Impl_multisig_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1287,7 +1336,11 @@ Module Impl_multisig_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1338,134 +1391,134 @@ Module Impl_core_default_Default_for_multisig_Multisig.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "multisig::Multisig"
-          []
-          []
-          [
-            ("confirmations",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "multisig::Mapping")
-                  []
-                  [ Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ]; Ty.tuple [] ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "multisig::Multisig"
+            [
+              ("confirmations",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "multisig::Mapping")
                     []
                     [ Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ]; Ty.tuple [] ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "multisig::Mapping")
+                      []
+                      [ Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ]; Ty.tuple [] ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("confirmation_count",
-              M.call_closure (|
-                Ty.apply (Ty.path "multisig::Mapping") [] [ Ty.path "u32"; Ty.path "u32" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("confirmation_count",
+                M.call_closure (|
                   Ty.apply (Ty.path "multisig::Mapping") [] [ Ty.path "u32"; Ty.path "u32" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "multisig::Mapping") [] [ Ty.path "u32"; Ty.path "u32" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("transactions",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "multisig::Mapping")
-                  []
-                  [ Ty.path "u32"; Ty.path "multisig::Transaction" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("transactions",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "multisig::Mapping")
                     []
                     [ Ty.path "u32"; Ty.path "multisig::Transaction" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "multisig::Mapping")
+                      []
+                      [ Ty.path "u32"; Ty.path "multisig::Transaction" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("transaction_list",
-              M.call_closure (|
-                Ty.path "multisig::Transactions",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("transaction_list",
+                M.call_closure (|
                   Ty.path "multisig::Transactions",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "multisig::Transactions",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("owners",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::Vec")
-                  []
-                  [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("owners",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::vec::Vec")
                     []
                     [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("is_owner",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "multisig::Mapping")
-                  []
-                  [ Ty.path "multisig::AccountId"; Ty.tuple [] ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("is_owner",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "multisig::Mapping")
                     []
                     [ Ty.path "multisig::AccountId"; Ty.tuple [] ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "multisig::Mapping")
+                      []
+                      [ Ty.path "multisig::AccountId"; Ty.tuple [] ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("requirement",
-              M.call_closure (|
-                Ty.path "u32",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("requirement",
+                M.call_closure (|
                   Ty.path "u32",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u32",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "multisig::Multisig")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -1540,9 +1593,11 @@ Definition ensure_requirement_is_valid (ε : list Value.t) (τ : list Ty.t) (α 
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic", [], [] |),
                       [
-                        mk_str (|
-                          "assertion failed: 0 < requirement && requirement <= owners && owners <= MAX_OWNERS"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "assertion failed: 0 < requirement && requirement <= owners && owners <= MAX_OWNERS"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -1575,7 +1630,11 @@ Module Impl_multisig_Multisig.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1663,30 +1722,47 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "multisig::AccountId" ] ],
-                      M.get_trait_method (|
-                        "core::ops::deref::DerefMut",
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
                         Ty.apply
-                          (Ty.path "alloc::vec::Vec")
+                          (Ty.path "&mut")
                           []
-                          [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref_mut",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.MutRef, owners |) ]
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "multisig::AccountId" ] ],
+                        M.get_trait_method (|
+                          "core::ops::deref::DerefMut",
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref_mut",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, owners |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "multisig::AccountId" ] ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -1701,29 +1777,55 @@ Module Impl_multisig_Multisig.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.MutRef, owners |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, owners |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ]
+                    ])
+              ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "multisig::ensure_requirement_is_valid", [], [] |),
               [
-                M.cast
-                  (Ty.path "u32")
-                  (M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
+                M.value_with_ty
+                  (M.cast
+                    (Ty.path "u32")
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
+                        "len",
+                        [],
                         []
-                        [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
-                      "len",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, owners |) ]
-                  |));
-                M.read (| requirement |)
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, owners |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ]
+                            ])
+                      ]
+                    |)))
+                  (Ty.path "u32");
+                M.value_with_ty (M.read (| requirement |)) (Ty.path "u32")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -1760,7 +1862,19 @@ Module Impl_multisig_Multisig.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, owners |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, owners |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
                       |)
                     |),
                     [
@@ -1812,10 +1926,20 @@ Module Impl_multisig_Multisig.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::slice::iter::Iter")
+                                                  []
+                                                  [ Ty.path "multisig::AccountId" ]
+                                              ])
                                         ]
                                       |)
                                     |),
@@ -1865,16 +1989,31 @@ Module Impl_multisig_Multisig.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      contract,
-                                                      "multisig::Multisig",
-                                                      "is_owner"
-                                                    |)
-                                                  |);
-                                                  M.read (| M.deref (| M.read (| owner |) |) |);
-                                                  Value.Tuple []
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        contract,
+                                                        "multisig::Multisig",
+                                                        "is_owner"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "multisig::Mapping")
+                                                          []
+                                                          [
+                                                            Ty.path "multisig::AccountId";
+                                                            Ty.tuple []
+                                                          ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.read (| M.deref (| M.read (| owner |) |) |))
+                                                    (Ty.path "multisig::AccountId");
+                                                  M.value_with_ty (Value.Tuple []) (Ty.tuple [])
                                                 ]
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1981,46 +2120,67 @@ Module Impl_multisig_Multisig.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "u32" ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "multisig::Mapping")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "u32" ],
+                                            "get",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "multisig::Multisig",
+                                                  "confirmation_count"
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "multisig::Mapping")
+                                                    []
+                                                    [ Ty.path "u32"; Ty.path "u32" ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (| Pointer.Kind.Ref, trans_id |)
+                                                |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.path "u32" ],
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "multisig::Mapping")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "u32" ],
-                                          "get",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "multisig::Multisig",
-                                              "confirmation_count"
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, trans_id |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            get_constant (|
-                                              "multisig::WRONG_TRANSACTION_ID",
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                          [ Ty.path "u32" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              get_constant (|
+                                                "multisig::WRONG_TRANSACTION_ID",
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                     ]
                                   |);
                                   M.read (|
@@ -2041,10 +2201,12 @@ Module Impl_multisig_Multisig.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic", [], [] |),
                         [
-                          mk_str (|
-                            "assertion failed: self.confirmation_count.get(&trans_id).expect(WRONG_TRANSACTION_ID) >=
+                          M.value_with_ty
+                            (mk_str (|
+                              "assertion failed: self.confirmation_count.get(&trans_id).expect(WRONG_TRANSACTION_ID) >=
     self.requirement"
-                          |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)
                     |)));
@@ -2086,43 +2248,65 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "multisig::Transaction" ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
-                      (Ty.path "multisig::Mapping")
+                      (Ty.path "core::option::Option")
                       []
-                      [ Ty.path "u32"; Ty.path "multisig::Transaction" ],
-                    "get",
-                    [],
+                      [ Ty.path "multisig::Transaction" ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "multisig::Mapping")
+                        []
+                        [ Ty.path "u32"; Ty.path "multisig::Transaction" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "multisig::Multisig",
+                            "transactions"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "multisig::Mapping")
+                              []
+                              [ Ty.path "u32"; Ty.path "multisig::Transaction" ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, trans_id |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
                     []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "multisig::Multisig",
-                        "transactions"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, trans_id |) |)
-                    |)
-                  ]
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      get_constant (|
-                        "multisig::WRONG_TRANSACTION_ID",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                    [ Ty.path "multisig::Transaction" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        get_constant (|
+                          "multisig::WRONG_TRANSACTION_ID",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2176,15 +2360,30 @@ Module Impl_multisig_Multisig.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "multisig::Multisig",
-                                      "is_owner"
-                                    |)
-                                  |);
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| owner |) |) |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "multisig::Multisig",
+                                        "is_owner"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "multisig::Mapping")
+                                          []
+                                          [ Ty.path "multisig::AccountId"; Ty.tuple [] ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| owner |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
                                 ]
                               |)
                             ]
@@ -2195,7 +2394,11 @@ Module Impl_multisig_Multisig.
                       M.call_closure (|
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic", [], [] |),
-                        [ mk_str (| "assertion failed: self.is_owner.contains(owner)" |) ]
+                        [
+                          M.value_with_ty
+                            (mk_str (| "assertion failed: self.is_owner.contains(owner)" |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
                       |)
                     |)));
                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2228,41 +2431,61 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Multisig", "ensure_owner", [], [] |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "multisig::AccountId",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "multisig::AccountId",
-                          M.get_associated_function (| Ty.path "multisig::Env", "caller", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "multisig::Env",
-                                M.call_closure (|
-                                  Ty.path "multisig::Env",
-                                  M.get_associated_function (|
-                                    Ty.path "multisig::Multisig",
-                                    "env",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
-                                |)
-                              |)
-                            |)
-                          ]
+                          M.call_closure (|
+                            Ty.path "multisig::AccountId",
+                            M.get_associated_function (|
+                              Ty.path "multisig::Env",
+                              "caller",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.path "multisig::Env",
+                                    M.call_closure (|
+                                      Ty.path "multisig::Env",
+                                      M.get_associated_function (|
+                                        Ty.path "multisig::Multisig",
+                                        "env",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "multisig::Multisig" ])
+                                      ]
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ])
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2306,23 +2529,31 @@ Module Impl_multisig_Multisig.
                           Ty.path "multisig::AccountId",
                           M.get_associated_function (| Ty.path "multisig::Env", "caller", [], [] |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "multisig::Env",
-                                M.call_closure (|
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.path "multisig::Env",
-                                  M.get_associated_function (|
-                                    Ty.path "multisig::Multisig",
-                                    "env",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
+                                  M.call_closure (|
+                                    Ty.path "multisig::Env",
+                                    M.get_associated_function (|
+                                      Ty.path "multisig::Multisig",
+                                      "env",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ])
                           ]
                         |)
                       |)
@@ -2340,23 +2571,31 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "multisig::Env",
-                                M.call_closure (|
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.path "multisig::Env",
-                                  M.get_associated_function (|
-                                    Ty.path "multisig::Multisig",
-                                    "env",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
+                                  M.call_closure (|
+                                    Ty.path "multisig::Env",
+                                    M.get_associated_function (|
+                                      Ty.path "multisig::Multisig",
+                                      "env",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ])
                           ]
                         |)
                       |)
@@ -2404,14 +2643,24 @@ Module Impl_multisig_Multisig.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "multisig::AccountId" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "multisig::AccountId" ])
                                         ]
                                       |)
                                     ]
@@ -2422,7 +2671,9 @@ Module Impl_multisig_Multisig.
                             M.never_to_any (|
                               M.read (|
                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                  Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                    (Ty.path "core::panicking::AssertKind") in
                                 M.alloc (|
                                   Ty.path "never",
                                   M.call_closure (|
@@ -2434,30 +2685,48 @@ Module Impl_multisig_Multisig.
                                       ]
                                     |),
                                     [
-                                      M.read (| kind |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
+                                      M.value_with_ty
+                                        (M.read (| kind |))
+                                        (Ty.path "core::panicking::AssertKind");
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "multisig::AccountId" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [ Ty.path "core::fmt::Arguments" ]
-                                        []
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "multisig::AccountId" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ])
                                     ]
                                   |)
                                 |)
@@ -2523,18 +2792,33 @@ Module Impl_multisig_Multisig.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "multisig::Multisig",
-                                          "is_owner"
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| owner |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "multisig::Multisig",
+                                            "is_owner"
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "multisig::Mapping")
+                                              []
+                                              [ Ty.path "multisig::AccountId"; Ty.tuple [] ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| owner |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "multisig::AccountId" ])
                                     ]
                                   |)
                                 ]
@@ -2547,7 +2831,11 @@ Module Impl_multisig_Multisig.
                       M.call_closure (|
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic", [], [] |),
-                        [ mk_str (| "assertion failed: !self.is_owner.contains(owner)" |) ]
+                        [
+                          M.value_with_ty
+                            (mk_str (| "assertion failed: !self.is_owner.contains(owner)" |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
                       |)
                     |)));
                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2591,7 +2879,11 @@ Module Impl_multisig_Multisig.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+              ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
@@ -2603,11 +2895,15 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, new_owner |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, new_owner |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -2615,44 +2911,59 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_function (| "multisig::ensure_requirement_is_valid", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.add,
-                  [
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "alloc::vec::Vec")
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u32",
+                    BinOp.Wrap.add,
+                    [
+                      M.cast
+                        (Ty.path "u32")
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
+                            "len",
+                            [],
                             []
-                            [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
-                          "len",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "multisig::Multisig",
-                              "owners"
-                            |)
-                          |)
-                        ]
-                      |));
-                    Value.Integer IntegerKind.U32 1
-                  ]
-                |);
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "requirement"
-                  |)
-                |)
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "multisig::Multisig",
+                                  "owners"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |));
+                      Value.Integer IntegerKind.U32 1
+                    ]
+                  |))
+                  (Ty.path "u32");
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "requirement"
+                    |)
+                  |))
+                  (Ty.path "u32")
               ]
             |) in
           let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
@@ -2668,16 +2979,26 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "is_owner"
-                  |)
-                |);
-                M.read (| new_owner |);
-                Value.Tuple []
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "is_owner"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "multisig::Mapping")
+                        []
+                        [ Ty.path "multisig::AccountId"; Ty.tuple [] ]
+                    ]);
+                M.value_with_ty (M.read (| new_owner |)) (Ty.path "multisig::AccountId");
+                M.value_with_ty (Value.Tuple []) (Ty.tuple [])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -2693,15 +3014,25 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "owners"
-                  |)
-                |);
-                M.read (| new_owner |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "owners"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ]
+                    ]);
+                M.value_with_ty (M.read (| new_owner |)) (Ty.path "multisig::AccountId")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -2709,28 +3040,36 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "multisig::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "multisig::Env",
-                      M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "multisig::Env",
+                        M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "multisig::Event::OwnerAddition"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "multisig::OwnerAddition"
-                      []
-                      []
-                      [ ("owner", M.read (| new_owner |)) ]
-                  ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "multisig::Event::OwnerAddition"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "multisig::OwnerAddition"
+                            [ ("owner", M.read (| new_owner |)) ])
+                          (Ty.path "multisig::OwnerAddition")
+                      ])
+                    (Ty.path "multisig::Event"))
+                  (Ty.path "multisig::Event")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2770,137 +3109,196 @@ Module Impl_multisig_Multisig.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
-                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "multisig::AccountId" ],
-                  [],
-                  [],
-                  "position",
-                  [],
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                  M.get_trait_method (|
+                    "core::iter::traits::iterator::Iterator",
+                    Ty.apply
+                      (Ty.path "core::slice::iter::Iter")
+                      []
+                      [ Ty.path "multisig::AccountId" ],
+                    [],
+                    [],
+                    "position",
+                    [],
+                    [
+                      Ty.function
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ] ]
+                        (Ty.path "bool")
+                    ]
+                  |),
                   [
-                    Ty.function
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ] ]
-                      (Ty.path "bool")
-                  ]
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::slice::iter::Iter")
-                        []
-                        [ Ty.path "multisig::AccountId" ],
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::slice::iter::Iter")
-                          []
-                          [ Ty.path "multisig::AccountId" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ Ty.path "multisig::AccountId" ],
-                          "iter",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "multisig::AccountId" ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::Deref",
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global"
-                                    ],
-                                  [],
-                                  [],
-                                  "deref",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "multisig::Multisig",
-                                      "owners"
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
-                    |)
-                  |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "bool",
-                              M.alloc (|
-                                Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let x :=
-                                      M.copy (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ],
-                                        γ
-                                      |) in
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "core::slice::iter::Iter")
+                            []
+                            [ Ty.path "multisig::AccountId" ],
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::slice::iter::Iter")
+                              []
+                              [ Ty.path "multisig::AccountId" ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "slice") [] [ Ty.path "multisig::AccountId" ],
+                              "iter",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
                                     M.call_closure (|
-                                      Ty.path "bool",
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.path "multisig::AccountId" ]
+                                        ],
                                       M.get_trait_method (|
-                                        "core::cmp::PartialEq",
-                                        Ty.path "multisig::AccountId",
+                                        "core::ops::deref::Deref",
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [
+                                            Ty.path "multisig::AccountId";
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
                                         [],
-                                        [ Ty.path "multisig::AccountId" ],
-                                        "eq",
+                                        [],
+                                        "deref",
                                         [],
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| x |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| owner |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "multisig::Multisig",
+                                              "owners"
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [
+                                                  Ty.path "multisig::AccountId";
+                                                  Ty.path "alloc::alloc::Global"
+                                                ]
+                                            ])
                                       ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  mk_str (|
-                    "This is only called after it was already verified that the id is
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "multisig::AccountId" ]
+                                  ])
+                            ]
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::slice::iter::Iter")
+                            []
+                            [ Ty.path "multisig::AccountId" ]
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.path "bool",
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ],
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let x :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "multisig::AccountId" ],
+                                            γ
+                                          |) in
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          M.get_trait_method (|
+                                            "core::cmp::PartialEq",
+                                            Ty.path "multisig::AccountId",
+                                            [],
+                                            [ Ty.path "multisig::AccountId" ],
+                                            "eq",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| x |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "multisig::AccountId" ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| owner |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "multisig::AccountId" ])
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ] ]
+                        (Ty.path "bool"))
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    mk_str (|
+                      "This is only called after it was already verified that the id is
                actually an owner."
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |))))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2960,18 +3358,28 @@ Module Impl_multisig_Multisig.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
                           M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "multisig::Multisig",
-                            "transaction_list"
-                          |),
-                          "multisig::Transactions",
-                          "transactions"
-                        |)
-                      |)
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "multisig::Multisig",
+                              "transaction_list"
+                            |),
+                            "multisig::Transactions",
+                            "transactions"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "u32"; Ty.path "alloc::alloc::Global" ]
+                          ])
                     ]
                   |)
                 |),
@@ -3011,10 +3419,20 @@ Module Impl_multisig_Multisig.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::slice::iter::Iter")
+                                              []
+                                              [ Ty.path "u32" ]
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -3077,20 +3495,52 @@ Module Impl_multisig_Multisig.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "multisig::Multisig",
-                                                                "confirmations"
-                                                              |)
-                                                            |);
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (| Pointer.Kind.Ref, key |)
-                                                              |)
-                                                            |)
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "multisig::Multisig",
+                                                                  "confirmations"
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "multisig::Mapping")
+                                                                    []
+                                                                    [
+                                                                      Ty.tuple
+                                                                        [
+                                                                          Ty.path "u32";
+                                                                          Ty.path
+                                                                            "multisig::AccountId"
+                                                                        ];
+                                                                      Ty.tuple []
+                                                                    ]
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    key
+                                                                  |)
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.tuple
+                                                                    [
+                                                                      Ty.path "u32";
+                                                                      Ty.path "multisig::AccountId"
+                                                                    ]
+                                                                ])
                                                           ]
                                                         |)
                                                       |)) in
@@ -3120,15 +3570,39 @@ Module Impl_multisig_Multisig.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "multisig::Multisig",
-                                                              "confirmations"
-                                                            |)
-                                                          |);
-                                                          M.read (| key |)
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "multisig::Multisig",
+                                                                "confirmations"
+                                                              |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "multisig::Mapping")
+                                                                  []
+                                                                  [
+                                                                    Ty.tuple
+                                                                      [
+                                                                        Ty.path "u32";
+                                                                        Ty.path
+                                                                          "multisig::AccountId"
+                                                                      ];
+                                                                    Ty.tuple []
+                                                                  ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.read (| key |))
+                                                            (Ty.tuple
+                                                              [
+                                                                Ty.path "u32";
+                                                                Ty.path "multisig::AccountId"
+                                                              ])
                                                         ]
                                                       |) in
                                                     let~ count : Ty.path "u32" :=
@@ -3144,42 +3618,72 @@ Module Impl_multisig_Multisig.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.apply
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [ Ty.path "u32" ],
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path "multisig::Mapping")
+                                                                  []
+                                                                  [ Ty.path "u32"; Ty.path "u32" ],
+                                                                "get",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.deref (|
+                                                                        M.read (| self |)
+                                                                      |),
+                                                                      "multisig::Multisig",
+                                                                      "confirmation_count"
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "multisig::Mapping")
+                                                                        []
+                                                                        [
+                                                                          Ty.path "u32";
+                                                                          Ty.path "u32"
+                                                                        ]
+                                                                    ]);
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.read (| trans_id |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [ Ty.path "u32" ])
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
                                                               (Ty.path "core::option::Option")
                                                               []
-                                                              [ Ty.path "u32" ],
-                                                            M.get_associated_function (|
-                                                              Ty.apply
-                                                                (Ty.path "multisig::Mapping")
-                                                                []
-                                                                [ Ty.path "u32"; Ty.path "u32" ],
-                                                              "get",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "multisig::Multisig",
-                                                                  "confirmation_count"
-                                                                |)
-                                                              |);
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (| M.read (| trans_id |) |)
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.read (|
-                                                            M.use
-                                                              (M.alloc (|
-                                                                Ty.path "u32",
-                                                                Value.Integer IntegerKind.U32 0
-                                                              |))
-                                                          |)
+                                                              [ Ty.path "u32" ]);
+                                                          M.value_with_ty
+                                                            (M.read (|
+                                                              M.use
+                                                                (M.alloc (|
+                                                                  Ty.path "u32",
+                                                                  Value.Integer IntegerKind.U32 0
+                                                                |))
+                                                            |))
+                                                            (Ty.path "u32")
                                                         ]
                                                       |) in
                                                     let~ _ : Ty.tuple [] :=
@@ -3215,18 +3719,32 @@ Module Impl_multisig_Multisig.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "multisig::Multisig",
-                                                              "confirmation_count"
-                                                            |)
-                                                          |);
-                                                          M.read (|
-                                                            M.deref (| M.read (| trans_id |) |)
-                                                          |);
-                                                          M.read (| count |)
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "multisig::Multisig",
+                                                                "confirmation_count"
+                                                              |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "multisig::Mapping")
+                                                                  []
+                                                                  [ Ty.path "u32"; Ty.path "u32" ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.read (|
+                                                              M.deref (| M.read (| trans_id |) |)
+                                                            |))
+                                                            (Ty.path "u32");
+                                                          M.value_with_ty
+                                                            (M.read (| count |))
+                                                            (Ty.path "u32")
                                                         ]
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3286,18 +3804,26 @@ Module Impl_multisig_Multisig.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+              ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Multisig", "ensure_owner", [], [] |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
               ]
             |) in
           let~ len : Ty.path "u32" :=
@@ -3319,14 +3845,24 @@ Module Impl_multisig_Multisig.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "multisig::Multisig",
-                          "owners"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "multisig::Multisig",
+                            "owners"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ]
+                          ])
                     ]
                   |));
                 Value.Integer IntegerKind.U32 1
@@ -3337,21 +3873,26 @@ Module Impl_multisig_Multisig.
               Ty.path "u32",
               M.get_trait_method (| "core::cmp::Ord", Ty.path "u32", [], [], "min", [], [] |),
               [
-                M.read (| len |);
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "requirement"
-                  |)
-                |)
+                M.value_with_ty (M.read (| len |)) (Ty.path "u32");
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "requirement"
+                    |)
+                  |))
+                  (Ty.path "u32")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "multisig::ensure_requirement_is_valid", [], [] |),
-              [ M.read (| len |); M.read (| requirement |) ]
+              [
+                M.value_with_ty (M.read (| len |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| requirement |)) (Ty.path "u32")
+              ]
             |) in
           let~ owner_index : Ty.path "usize" :=
             M.cast
@@ -3360,11 +3901,15 @@ Module Impl_multisig_Multisig.
                 Ty.path "u32",
                 M.get_associated_function (| Ty.path "multisig::Multisig", "owner_index", [], [] |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
                 ]
               |)) in
           let~ _ : Ty.path "multisig::AccountId" :=
@@ -3380,15 +3925,25 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "owners"
-                  |)
-                |);
-                M.read (| owner_index |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "owners"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ]
+                    ]);
+                M.value_with_ty (M.read (| owner_index |)) (Ty.path "usize")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -3404,15 +3959,25 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "is_owner"
-                  |)
-                |);
-                M.read (| owner |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "is_owner"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "multisig::Mapping")
+                        []
+                        [ Ty.path "multisig::AccountId"; Ty.tuple [] ]
+                    ]);
+                M.value_with_ty (M.read (| owner |)) (Ty.path "multisig::AccountId")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -3434,11 +3999,15 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -3446,28 +4015,36 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "multisig::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "multisig::Env",
-                      M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "multisig::Env",
+                        M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "multisig::Event::OwnerRemoval"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "multisig::OwnerRemoval"
-                      []
-                      []
-                      [ ("owner", M.read (| owner |)) ]
-                  ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "multisig::Event::OwnerRemoval"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "multisig::OwnerRemoval"
+                            [ ("owner", M.read (| owner |)) ])
+                          (Ty.path "multisig::OwnerRemoval")
+                      ])
+                    (Ty.path "multisig::Event"))
+                  (Ty.path "multisig::Event")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3514,18 +4091,26 @@ Module Impl_multisig_Multisig.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+              ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Multisig", "ensure_owner", [], [] |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, old_owner |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, old_owner |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -3538,11 +4123,15 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, new_owner |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, new_owner |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
               ]
             |) in
           let~ owner_index : Ty.path "u32" :=
@@ -3550,11 +4139,15 @@ Module Impl_multisig_Multisig.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "multisig::Multisig", "owner_index", [], [] |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, old_owner |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, old_owner |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -3575,15 +4168,27 @@ Module Impl_multisig_Multisig.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "multisig::Multisig",
-                        "owners"
-                      |)
-                    |);
-                    M.cast (Ty.path "usize") (M.read (| owner_index |))
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "multisig::Multisig",
+                          "owners"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ]
+                        ]);
+                    M.value_with_ty
+                      (M.cast (Ty.path "usize") (M.read (| owner_index |)))
+                      (Ty.path "usize")
                   ]
                 |)
               |),
@@ -3602,15 +4207,25 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "is_owner"
-                  |)
-                |);
-                M.read (| old_owner |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "is_owner"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "multisig::Mapping")
+                        []
+                        [ Ty.path "multisig::AccountId"; Ty.tuple [] ]
+                    ]);
+                M.value_with_ty (M.read (| old_owner |)) (Ty.path "multisig::AccountId")
               ]
             |) in
           let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
@@ -3626,16 +4241,26 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "is_owner"
-                  |)
-                |);
-                M.read (| new_owner |);
-                Value.Tuple []
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "is_owner"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "multisig::Mapping")
+                        []
+                        [ Ty.path "multisig::AccountId"; Ty.tuple [] ]
+                    ]);
+                M.value_with_ty (M.read (| new_owner |)) (Ty.path "multisig::AccountId");
+                M.value_with_ty (Value.Tuple []) (Ty.tuple [])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -3648,11 +4273,15 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, old_owner |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, old_owner |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::AccountId" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -3660,28 +4289,36 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "multisig::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "multisig::Env",
-                      M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "multisig::Env",
+                        M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "multisig::Event::OwnerRemoval"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "multisig::OwnerRemoval"
-                      []
-                      []
-                      [ ("owner", M.read (| old_owner |)) ]
-                  ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "multisig::Event::OwnerRemoval"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "multisig::OwnerRemoval"
+                            [ ("owner", M.read (| old_owner |)) ])
+                          (Ty.path "multisig::OwnerRemoval")
+                      ])
+                    (Ty.path "multisig::Event"))
+                  (Ty.path "multisig::Event")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -3689,28 +4326,36 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "multisig::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "multisig::Env",
-                      M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "multisig::Env",
+                        M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "multisig::Event::OwnerAddition"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "multisig::OwnerAddition"
-                      []
-                      []
-                      [ ("owner", M.read (| new_owner |)) ]
-                  ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "multisig::Event::OwnerAddition"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "multisig::OwnerAddition"
+                            [ ("owner", M.read (| new_owner |)) ])
+                          (Ty.path "multisig::OwnerAddition")
+                      ])
+                    (Ty.path "multisig::Event"))
+                  (Ty.path "multisig::Event")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3751,38 +4396,54 @@ Module Impl_multisig_Multisig.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+              ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "multisig::ensure_requirement_is_valid", [], [] |),
               [
-                M.cast
-                  (Ty.path "u32")
-                  (M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
+                M.value_with_ty
+                  (M.cast
+                    (Ty.path "u32")
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
+                        "len",
+                        [],
                         []
-                        [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ],
-                      "len",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "multisig::Multisig",
-                          "owners"
-                        |)
-                      |)
-                    ]
-                  |));
-                M.read (| new_requirement |)
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "multisig::Multisig",
+                              "owners"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [ Ty.path "multisig::AccountId"; Ty.path "alloc::alloc::Global" ]
+                            ])
+                      ]
+                    |)))
+                  (Ty.path "u32");
+                M.value_with_ty (M.read (| new_requirement |)) (Ty.path "u32")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -3799,28 +4460,36 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "multisig::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "multisig::Env",
-                      M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "multisig::Env",
+                        M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "multisig::Event::RequirementChange"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "multisig::RequirementChange"
-                      []
-                      []
-                      [ ("new_requirement", M.read (| new_requirement |)) ]
-                  ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "multisig::Event::RequirementChange"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "multisig::RequirementChange"
+                            [ ("new_requirement", M.read (| new_requirement |)) ])
+                          (Ty.path "multisig::RequirementChange")
+                      ])
+                    (Ty.path "multisig::Event"))
+                  (Ty.path "multisig::Event")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3886,30 +4555,48 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "multisig::Mapping") [] [ Ty.path "u32"; Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "multisig::Multisig",
-                        "confirmation_count"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, transaction |) |)
-                    |)
-                  ]
-                |);
-                M.read (| M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 0 |)) |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "multisig::Mapping") [] [ Ty.path "u32"; Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "multisig::Multisig",
+                            "confirmation_count"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "multisig::Mapping")
+                              []
+                              [ Ty.path "u32"; Ty.path "u32" ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, transaction |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ]);
+                M.value_with_ty
+                  (M.read (|
+                    M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 0 |))
+                  |))
+                  (Ty.path "u32")
               ]
             |) in
           let~ key : Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ] :=
@@ -3931,18 +4618,34 @@ Module Impl_multisig_Multisig.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "multisig::Multisig",
-                        "confirmations"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, key |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "multisig::Multisig",
+                          "confirmations"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "multisig::Mapping")
+                            []
+                            [ Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ]; Ty.tuple []
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, key |) |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ] ])
                   ]
                 |)
               ]
@@ -3983,16 +4686,31 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "multisig::Multisig",
-                                "confirmations"
-                              |)
-                            |);
-                            M.read (| key |);
-                            Value.Tuple []
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "multisig::Multisig",
+                                  "confirmations"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "multisig::Mapping")
+                                    []
+                                    [
+                                      Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ];
+                                      Ty.tuple []
+                                    ]
+                                ]);
+                            M.value_with_ty
+                              (M.read (| key |))
+                              (Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ]);
+                            M.value_with_ty (Value.Tuple []) (Ty.tuple [])
                           ]
                         |) in
                       let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
@@ -4008,16 +4726,26 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "multisig::Multisig",
-                                "confirmation_count"
-                              |)
-                            |);
-                            M.read (| transaction |);
-                            M.read (| count |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "multisig::Multisig",
+                                  "confirmation_count"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "multisig::Mapping")
+                                    []
+                                    [ Ty.path "u32"; Ty.path "u32" ]
+                                ]);
+                            M.value_with_ty (M.read (| transaction |)) (Ty.path "u32");
+                            M.value_with_ty (M.read (| count |)) (Ty.path "u32")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4052,29 +4780,31 @@ Module Impl_multisig_Multisig.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple "multisig::ConfirmationStatus::Confirmed" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "multisig::ConfirmationStatus::Confirmed" [])
+                      (Ty.path "multisig::ConfirmationStatus")));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "multisig::ConfirmationStatus::ConfirmationsNeeded"
-                      []
-                      []
-                      [
-                        M.call_closure (|
-                          Ty.path "u32",
-                          BinOp.Wrap.sub,
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "multisig::Multisig",
-                                "requirement"
-                              |)
-                            |);
-                            M.read (| count |)
-                          ]
-                        |)
-                      ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "multisig::ConfirmationStatus::ConfirmationsNeeded"
+                        [
+                          M.call_closure (|
+                            Ty.path "u32",
+                            BinOp.Wrap.sub,
+                            [
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "multisig::Multisig",
+                                  "requirement"
+                                |)
+                              |);
+                              M.read (| count |)
+                            ]
+                          |)
+                        ])
+                      (Ty.path "multisig::ConfirmationStatus")))
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -4097,38 +4827,48 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "multisig::Env",
-                                M.call_closure (|
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.path "multisig::Env",
-                                  M.get_associated_function (|
-                                    Ty.path "multisig::Multisig",
-                                    "env",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
+                                  M.call_closure (|
+                                    Ty.path "multisig::Env",
+                                    M.get_associated_function (|
+                                      Ty.path "multisig::Multisig",
+                                      "env",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |);
-                            Value.StructTuple
-                              "multisig::Event::Confirmation"
-                              []
-                              []
-                              [
-                                Value.mkStructRecord
-                                  "multisig::Confirmation"
-                                  []
-                                  []
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "multisig::Event::Confirmation"
                                   [
-                                    ("transaction", M.read (| transaction |));
-                                    ("from", M.read (| confirmer |));
-                                    ("status", M.read (| status |))
-                                  ]
-                              ]
+                                    M.value_with_ty
+                                      (Value.mkStructRecord
+                                        "multisig::Confirmation"
+                                        [
+                                          ("transaction", M.read (| transaction |));
+                                          ("from", M.read (| confirmer |));
+                                          ("status", M.read (| status |))
+                                        ])
+                                      (Ty.path "multisig::Confirmation")
+                                  ])
+                                (Ty.path "multisig::Event"))
+                              (Ty.path "multisig::Event")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4184,7 +4924,11 @@ Module Impl_multisig_Multisig.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+              ]
             |) in
           let~ trans_id : Ty.path "u32" :=
             M.read (|
@@ -4218,20 +4962,26 @@ Module Impl_multisig_Multisig.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                    M.get_associated_function (| Ty.path "u32", "checked_add", [], [] |),
-                    [
-                      M.read (| trans_id |);
-                      M.read (|
-                        M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 1 |))
-                      |)
-                    ]
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| mk_str (| "Transaction ids exhausted." |) |)
-                  |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
+                      M.get_associated_function (| Ty.path "u32", "checked_add", [], [] |),
+                      [
+                        M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32");
+                        M.value_with_ty
+                          (M.read (|
+                            M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 1 |))
+                          |))
+                          (Ty.path "u32")
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| mk_str (| "Transaction ids exhausted." |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |)
             |) in
@@ -4248,16 +4998,26 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "transactions"
-                  |)
-                |);
-                M.read (| trans_id |);
-                M.read (| transaction |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "transactions"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "multisig::Mapping")
+                        []
+                        [ Ty.path "u32"; Ty.path "multisig::Transaction" ]
+                    ]);
+                M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| transaction |)) (Ty.path "multisig::Transaction")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -4273,19 +5033,29 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
                     M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "multisig::Multisig",
-                      "transaction_list"
-                    |),
-                    "multisig::Transactions",
-                    "transactions"
-                  |)
-                |);
-                M.read (| trans_id |)
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "multisig::Multisig",
+                        "transaction_list"
+                      |),
+                      "multisig::Transactions",
+                      "transactions"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u32"; Ty.path "alloc::alloc::Global" ]
+                    ]);
+                M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -4293,28 +5063,36 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "multisig::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "multisig::Env",
-                      M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "multisig::Env",
+                        M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "multisig::Event::Submission"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "multisig::Submission"
-                      []
-                      []
-                      [ ("transaction", M.read (| trans_id |)) ]
-                  ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "multisig::Event::Submission"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "multisig::Submission"
+                            [ ("transaction", M.read (| trans_id |)) ])
+                          (Ty.path "multisig::Submission")
+                      ])
+                    (Ty.path "multisig::Event"))
+                  (Ty.path "multisig::Event")
               ]
             |) in
           M.alloc (|
@@ -4331,30 +5109,43 @@ Module Impl_multisig_Multisig.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.call_closure (|
-                      Ty.path "multisig::AccountId",
-                      M.get_associated_function (| Ty.path "multisig::Env", "caller", [], [] |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.path "multisig::Env",
-                            M.call_closure (|
-                              Ty.path "multisig::Env",
-                              M.get_associated_function (|
-                                Ty.path "multisig::Multisig",
-                                "env",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| trans_id |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "multisig::Multisig" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "multisig::AccountId",
+                        M.get_associated_function (| Ty.path "multisig::Env", "caller", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.path "multisig::Env",
+                                M.call_closure (|
+                                  Ty.path "multisig::Env",
+                                  M.get_associated_function (|
+                                    Ty.path "multisig::Multisig",
+                                    "env",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ])
+                        ]
+                      |))
+                      (Ty.path "multisig::AccountId");
+                    M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
                   ]
                 |)
               ]
@@ -4410,18 +5201,30 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "multisig::Multisig",
-                    "transactions"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, trans_id |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "multisig::Multisig",
+                      "transactions"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "multisig::Mapping")
+                        []
+                        [ Ty.path "u32"; Ty.path "multisig::Transaction" ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, trans_id |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -4446,7 +5249,19 @@ Module Impl_multisig_Multisig.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, transaction |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, transaction |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "multisig::Transaction" ]
+                                  ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -4464,15 +5279,25 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "multisig::Multisig",
-                                "transactions"
-                              |)
-                            |);
-                            M.read (| trans_id |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "multisig::Multisig",
+                                  "transactions"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "multisig::Mapping")
+                                    []
+                                    [ Ty.path "u32"; Ty.path "multisig::Transaction" ]
+                                ]);
+                            M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
                           ]
                         |) in
                       let~ pos : Ty.path "usize" :=
@@ -4485,142 +5310,219 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                              M.get_trait_method (|
-                                "core::iter::traits::iterator::Iterator",
-                                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u32" ],
-                                [],
-                                [],
-                                "position",
-                                [],
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u32" ],
+                                  [],
+                                  [],
+                                  "position",
+                                  [],
+                                  [
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                                      (Ty.path "bool")
+                                  ]
+                                |),
                                 [
-                                  Ty.function
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
-                                    (Ty.path "bool")
-                                ]
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::slice::iter::Iter")
-                                      []
-                                      [ Ty.path "u32" ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::slice::iter::Iter")
-                                        []
-                                        [ Ty.path "u32" ],
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u32" ],
-                                        "iter",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u32" ] ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply
-                                                  (Ty.path "alloc::vec::Vec")
-                                                  []
-                                                  [ Ty.path "u32"; Ty.path "alloc::alloc::Global" ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "multisig::Multisig",
-                                                      "transaction_list"
-                                                    |),
-                                                    "multisig::Transactions",
-                                                    "transactions"
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
-                                M.closure
-                                  (fun γ =>
-                                    ltac:(M.monadic
-                                      match γ with
-                                      | [ α0 ] =>
-                                        ltac:(M.monadic
-                                          (M.match_operator (|
-                                            Ty.path "bool",
-                                            M.alloc (|
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
-                                              α0
-                                            |),
-                                            [
-                                              fun γ =>
-                                                ltac:(M.monadic
-                                                  (let t :=
-                                                    M.copy (|
-                                                      Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
-                                                      γ
-                                                    |) in
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [ Ty.path "u32" ],
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::slice::iter::Iter")
+                                            []
+                                            [ Ty.path "u32" ],
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "slice") [] [ Ty.path "u32" ],
+                                            "iter",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
                                                   M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_trait_method (|
-                                                      "core::cmp::PartialEq",
-                                                      Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
-                                                      [],
-                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u32" ]
                                                       ],
-                                                      "eq",
+                                                    M.get_trait_method (|
+                                                      "core::ops::deref::Deref",
+                                                      Ty.apply
+                                                        (Ty.path "alloc::vec::Vec")
+                                                        []
+                                                        [
+                                                          Ty.path "u32";
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ],
+                                                      [],
+                                                      [],
+                                                      "deref",
                                                       [],
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (| Pointer.Kind.Ref, t |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.alloc (|
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| self |) |),
+                                                              "multisig::Multisig",
+                                                              "transaction_list"
+                                                            |),
+                                                            "multisig::Transactions",
+                                                            "transactions"
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.path "u32";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ])
+                                                    ]
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u32" ] ])
+                                          ]
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [ Ty.path "u32" ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.closure
+                                      (fun γ =>
+                                        ltac:(M.monadic
+                                          match γ with
+                                          | [ α0 ] =>
+                                            ltac:(M.monadic
+                                              (M.match_operator (|
+                                                Ty.path "bool",
+                                                M.alloc (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                                                  α0
+                                                |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let t :=
+                                                        M.copy (|
                                                           Ty.apply
                                                             (Ty.path "&")
                                                             []
                                                             [ Ty.path "u32" ],
-                                                          M.borrow (| Pointer.Kind.Ref, trans_id |)
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)))
-                                            ]
-                                          |)))
-                                      | _ => M.impossible "wrong number of arguments"
-                                      end))
-                              ]
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                mk_str (|
-                                  "The transaction exists hence it must also be in the list."
+                                                          γ
+                                                        |) in
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        M.get_trait_method (|
+                                                          "core::cmp::PartialEq",
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "u32" ],
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "u32" ]
+                                                          ],
+                                                          "eq",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (| Pointer.Kind.Ref, t |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "u32" ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.alloc (|
+                                                                Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "u32" ],
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  trans_id
+                                                                |)
+                                                              |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "u32" ]
+                                                              ])
+                                                        ]
+                                                      |)))
+                                                ]
+                                              |)))
+                                          | _ => M.impossible "wrong number of arguments"
+                                          end)))
+                                    (Ty.function
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                                      (Ty.path "bool"))
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  mk_str (|
+                                    "The transaction exists hence it must also be in the list."
+                                  |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                           ]
                         |) in
                       let~ _ : Ty.path "u32" :=
@@ -4636,19 +5538,29 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
                                 M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "multisig::Multisig",
-                                  "transaction_list"
-                                |),
-                                "multisig::Transactions",
-                                "transactions"
-                              |)
-                            |);
-                            M.read (| pos |)
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "multisig::Multisig",
+                                    "transaction_list"
+                                  |),
+                                  "multisig::Transactions",
+                                  "transactions"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [ Ty.path "u32"; Ty.path "alloc::alloc::Global" ]
+                                ]);
+                            M.value_with_ty (M.read (| pos |)) (Ty.path "usize")
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4681,64 +5593,92 @@ Module Impl_multisig_Multisig.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::slice::iter::Iter")
-                                          []
-                                          [ Ty.path "multisig::AccountId" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply
-                                            (Ty.path "slice")
+                                            (Ty.path "core::slice::iter::Iter")
                                             []
                                             [ Ty.path "multisig::AccountId" ],
-                                          "iter",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [ Ty.path "multisig::AccountId" ],
+                                            "iter",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "slice")
+                                                      (Ty.path "&")
                                                       []
-                                                      [ Ty.path "multisig::AccountId" ]
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::ops::deref::Deref",
-                                                  Ty.apply
-                                                    (Ty.path "alloc::vec::Vec")
-                                                    []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "multisig::AccountId" ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "core::ops::deref::Deref",
+                                                      Ty.apply
+                                                        (Ty.path "alloc::vec::Vec")
+                                                        []
+                                                        [
+                                                          Ty.path "multisig::AccountId";
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ],
+                                                      [],
+                                                      [],
+                                                      "deref",
+                                                      [],
+                                                      []
+                                                    |),
                                                     [
-                                                      Ty.path "multisig::AccountId";
-                                                      Ty.path "alloc::alloc::Global"
-                                                    ],
-                                                  [],
-                                                  [],
-                                                  "deref",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "multisig::Multisig",
-                                                      "owners"
-                                                    |)
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "multisig::Multisig",
+                                                            "owners"
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.path "multisig::AccountId";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ])
+                                                    ]
                                                   |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [ Ty.path "multisig::AccountId" ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [ Ty.path "multisig::AccountId" ])
                                     ]
                                   |)
                                 |),
@@ -4791,12 +5731,22 @@ Module Impl_multisig_Multisig.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (|
-                                                          M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                        |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.deref (|
+                                                            M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "core::slice::iter::Iter")
+                                                              []
+                                                              [ Ty.path "multisig::AccountId" ]
+                                                          ])
                                                     ]
                                                   |)
                                                 |),
@@ -4848,21 +5798,47 @@ Module Impl_multisig_Multisig.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "multisig::Multisig",
-                                                                  "confirmations"
-                                                                |)
-                                                              |);
-                                                              Value.Tuple
-                                                                [
-                                                                  M.read (| trans_id |);
-                                                                  M.read (|
-                                                                    M.deref (| M.read (| owner |) |)
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (| M.read (| self |) |),
+                                                                    "multisig::Multisig",
+                                                                    "confirmations"
                                                                   |)
-                                                                ]
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "multisig::Mapping")
+                                                                      []
+                                                                      [
+                                                                        Ty.tuple
+                                                                          [
+                                                                            Ty.path "u32";
+                                                                            Ty.path
+                                                                              "multisig::AccountId"
+                                                                          ];
+                                                                        Ty.tuple []
+                                                                      ]
+                                                                  ]);
+                                                              M.value_with_ty
+                                                                (Value.Tuple
+                                                                  [
+                                                                    M.read (| trans_id |);
+                                                                    M.read (|
+                                                                      M.deref (|
+                                                                        M.read (| owner |)
+                                                                      |)
+                                                                    |)
+                                                                  ])
+                                                                (Ty.tuple
+                                                                  [
+                                                                    Ty.path "u32";
+                                                                    Ty.path "multisig::AccountId"
+                                                                  ])
                                                             ]
                                                           |) in
                                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4889,15 +5865,25 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "multisig::Multisig",
-                                "confirmation_count"
-                              |)
-                            |);
-                            M.read (| trans_id |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "multisig::Multisig",
+                                  "confirmation_count"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "multisig::Mapping")
+                                    []
+                                    [ Ty.path "u32"; Ty.path "u32" ]
+                                ]);
+                            M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4942,7 +5928,11 @@ Module Impl_multisig_Multisig.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+              ]
             |) in
           M.alloc (|
             Ty.tuple [],
@@ -4968,34 +5958,49 @@ Module Impl_multisig_Multisig.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [ Ty.path "multisig::Transaction" ],
-                                  M.call_closure (|
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
                                     Ty.apply
                                       (Ty.path "core::option::Option")
                                       []
                                       [ Ty.path "multisig::Transaction" ],
-                                    M.get_associated_function (|
-                                      Ty.path "multisig::Multisig",
-                                      "take_transaction",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      M.read (| trans_id |)
-                                    ]
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "multisig::Transaction" ],
+                                      M.get_associated_function (|
+                                        Ty.path "multisig::Multisig",
+                                        "take_transaction",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "multisig::Multisig" ]);
+                                        M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
+                                      ]
+                                    |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "multisig::Transaction" ]
+                                  ])
                             ]
                           |)
                         |)) in
@@ -5011,34 +6016,44 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "multisig::Env",
-                                M.call_closure (|
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.path "multisig::Env",
-                                  M.get_associated_function (|
-                                    Ty.path "multisig::Multisig",
-                                    "env",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
+                                  M.call_closure (|
+                                    Ty.path "multisig::Env",
+                                    M.get_associated_function (|
+                                      Ty.path "multisig::Multisig",
+                                      "env",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |);
-                            Value.StructTuple
-                              "multisig::Event::Cancellation"
-                              []
-                              []
-                              [
-                                Value.mkStructRecord
-                                  "multisig::Cancellation"
-                                  []
-                                  []
-                                  [ ("transaction", M.read (| trans_id |)) ]
-                              ]
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "multisig::Event::Cancellation"
+                                  [
+                                    M.value_with_ty
+                                      (Value.mkStructRecord
+                                        "multisig::Cancellation"
+                                        [ ("transaction", M.read (| trans_id |)) ])
+                                      (Ty.path "multisig::Cancellation")
+                                  ])
+                                (Ty.path "multisig::Event"))
+                              (Ty.path "multisig::Event")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5080,7 +6095,11 @@ Module Impl_multisig_Multisig.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+              ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
@@ -5092,8 +6111,10 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.read (| trans_id |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
               ]
             |) in
           M.alloc (|
@@ -5107,30 +6128,40 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                M.call_closure (|
-                  Ty.path "multisig::AccountId",
-                  M.get_associated_function (| Ty.path "multisig::Env", "caller", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "multisig::Env",
-                        M.call_closure (|
-                          Ty.path "multisig::Env",
-                          M.get_associated_function (|
-                            Ty.path "multisig::Multisig",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| trans_id |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "multisig::AccountId",
+                    M.get_associated_function (| Ty.path "multisig::Env", "caller", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.path "multisig::Env",
+                            M.call_closure (|
+                              Ty.path "multisig::Env",
+                              M.get_associated_function (|
+                                Ty.path "multisig::Multisig",
+                                "env",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ])
+                    ]
+                  |))
+                  (Ty.path "multisig::AccountId");
+                M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
               ]
             |)
           |)
@@ -5180,24 +6211,34 @@ Module Impl_multisig_Multisig.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+              ]
             |) in
           let~ caller : Ty.path "multisig::AccountId" :=
             M.call_closure (|
               Ty.path "multisig::AccountId",
               M.get_associated_function (| Ty.path "multisig::Env", "caller", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "multisig::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "multisig::Env",
-                      M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "multisig::Env",
+                        M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ])
               ]
             |) in
           M.alloc (|
@@ -5227,26 +6268,44 @@ Module Impl_multisig_Multisig.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "multisig::Multisig",
-                                  "confirmations"
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ],
-                                      Value.Tuple [ M.read (| trans_id |); M.read (| caller |) ]
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "multisig::Multisig",
+                                    "confirmations"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "multisig::Mapping")
+                                      []
+                                      [
+                                        Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ];
+                                        Ty.tuple []
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ],
+                                        Value.Tuple [ M.read (| trans_id |); M.read (| caller |) ]
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ] ])
                             ]
                           |)
                         |)) in
@@ -5268,15 +6327,30 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "multisig::Multisig",
-                                "confirmations"
-                              |)
-                            |);
-                            Value.Tuple [ M.read (| trans_id |); M.read (| caller |) ]
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "multisig::Multisig",
+                                  "confirmations"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "multisig::Mapping")
+                                    []
+                                    [
+                                      Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ];
+                                      Ty.tuple []
+                                    ]
+                                ]);
+                            M.value_with_ty
+                              (Value.Tuple [ M.read (| trans_id |); M.read (| caller |) ])
+                              (Ty.tuple [ Ty.path "u32"; Ty.path "multisig::AccountId" ])
                           ]
                         |) in
                       let~ confirmation_count : Ty.path "u32" :=
@@ -5289,40 +6363,56 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "multisig::Mapping")
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "multisig::Mapping")
+                                    []
+                                    [ Ty.path "u32"; Ty.path "u32" ],
+                                  "get",
+                                  [],
                                   []
-                                  [ Ty.path "u32"; Ty.path "u32" ],
-                                "get",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "multisig::Multisig",
-                                    "confirmation_count"
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "multisig::Multisig",
+                                        "confirmation_count"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "multisig::Mapping")
+                                          []
+                                          [ Ty.path "u32"; Ty.path "u32" ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, trans_id |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  mk_str (|
+                                    "There is a entry in `self.confirmations`. Hence a count must exit."
                                   |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.borrow (| Pointer.Kind.Ref, trans_id |) |)
                                 |)
-                              ]
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                mk_str (|
-                                  "There is a entry in `self.confirmations`. Hence a count must exit."
-                                |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -5348,16 +6438,26 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "multisig::Multisig",
-                                "confirmation_count"
-                              |)
-                            |);
-                            M.read (| trans_id |);
-                            M.read (| confirmation_count |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "multisig::Multisig",
+                                  "confirmation_count"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "multisig::Mapping")
+                                    []
+                                    [ Ty.path "u32"; Ty.path "u32" ]
+                                ]);
+                            M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32");
+                            M.value_with_ty (M.read (| confirmation_count |)) (Ty.path "u32")
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -5370,37 +6470,47 @@ Module Impl_multisig_Multisig.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "multisig::Env",
-                                M.call_closure (|
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.path "multisig::Env",
-                                  M.get_associated_function (|
-                                    Ty.path "multisig::Multisig",
-                                    "env",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
+                                  M.call_closure (|
+                                    Ty.path "multisig::Env",
+                                    M.get_associated_function (|
+                                      Ty.path "multisig::Multisig",
+                                      "env",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |);
-                            Value.StructTuple
-                              "multisig::Event::Revocation"
-                              []
-                              []
-                              [
-                                Value.mkStructRecord
-                                  "multisig::Revocation"
-                                  []
-                                  []
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "multisig::Event::Revocation"
                                   [
-                                    ("transaction", M.read (| trans_id |));
-                                    ("from", M.read (| caller |))
-                                  ]
-                              ]
+                                    M.value_with_ty
+                                      (Value.mkStructRecord
+                                        "multisig::Revocation"
+                                        [
+                                          ("transaction", M.read (| trans_id |));
+                                          ("from", M.read (| caller |))
+                                        ])
+                                      (Ty.path "multisig::Revocation")
+                                  ])
+                                (Ty.path "multisig::Event"))
+                              (Ty.path "multisig::Event")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5463,8 +6573,10 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.read (| trans_id |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
               ]
             |) in
           let~ t : Ty.path "multisig::Transaction" :=
@@ -5477,30 +6589,42 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "multisig::Transaction" ],
-                  M.get_associated_function (|
-                    Ty.path "multisig::Multisig",
-                    "take_transaction",
-                    [],
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "multisig::Transaction" ],
+                    M.get_associated_function (|
+                      Ty.path "multisig::Multisig",
+                      "take_transaction",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "multisig::Multisig" ]);
+                      M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
                     []
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| trans_id |)
-                  ]
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      get_constant (|
-                        "multisig::WRONG_TRANSACTION_ID",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                    [ Ty.path "multisig::Transaction" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        get_constant (|
+                          "multisig::WRONG_TRANSACTION_ID",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -5531,27 +6655,34 @@ Module Impl_multisig_Multisig.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.path "multisig::Env",
-                                          M.call_closure (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
                                             Ty.path "multisig::Env",
-                                            M.get_associated_function (|
-                                              Ty.path "multisig::Multisig",
-                                              "env",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
+                                            M.call_closure (|
+                                              Ty.path "multisig::Env",
+                                              M.get_associated_function (|
+                                                Ty.path "multisig::Multisig",
+                                                "env",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "multisig::Multisig" ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ])
                                     ]
                                   |);
                                   M.read (|
@@ -5572,9 +6703,11 @@ Module Impl_multisig_Multisig.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic", [], [] |),
                         [
-                          mk_str (|
-                            "assertion failed: self.env().transferred_value() == t.transferred_value"
-                          |)
+                          M.value_with_ty
+                            (mk_str (|
+                              "assertion failed: self.env().transferred_value() == t.transferred_value"
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)
                     |)));
@@ -5602,7 +6735,11 @@ Module Impl_multisig_Multisig.
               M.call_closure (|
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic", [], [] |),
-                [ mk_str (| "not yet implemented" |) ]
+                [
+                  M.value_with_ty
+                    (mk_str (| "not yet implemented" |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |)
             |) in
           let~ result :
@@ -5627,18 +6764,26 @@ Module Impl_multisig_Multisig.
                         "core::result::Result::Ok",
                         0
                       |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [ Ty.tuple []; Ty.path "multisig::Error" ]
-                      [ Value.Tuple [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "multisig::Error" ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.tuple []; Ty.path "multisig::Error" ]
-                      [ Value.StructTuple "multisig::Error::TransactionFailed" [] [] [] ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "multisig::Error::TransactionFailed" [])
+                            (Ty.path "multisig::Error")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "multisig::Error" ])))
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -5646,116 +6791,149 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "multisig::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "multisig::Env",
-                      M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "multisig::Env",
+                        M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "multisig::Event::Execution"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "multisig::Execution"
-                      []
-                      []
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "multisig::Event::Execution"
                       [
-                        ("transaction", M.read (| trans_id |));
-                        ("result",
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                  ];
-                                Ty.path "multisig::Error"
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [ Ty.tuple []; Ty.path "multisig::Error" ],
-                              "map",
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                  ];
-                                Ty.function
-                                  [ Ty.tuple [] ]
-                                  (Ty.apply
-                                    (Ty.path "core::option::Option")
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "multisig::Execution"
+                            [
+                              ("transaction", M.read (| trans_id |));
+                              ("result",
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "alloc::vec::Vec")
+                                        (Ty.path "core::option::Option")
                                         []
-                                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                    ])
-                              ]
-                            |),
-                            [
-                              M.read (| result |);
-                              M.closure
-                                (fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ α0 ] =>
-                                      ltac:(M.monadic
-                                        (M.match_operator (|
+                                        [
                                           Ty.apply
-                                            (Ty.path "core::option::Option")
+                                            (Ty.path "alloc::vec::Vec")
                                             []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::vec::Vec")
-                                                []
-                                                [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                            ],
-                                          M.alloc (| Ty.tuple [], α0 |),
+                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                        ];
+                                      Ty.path "multisig::Error"
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "multisig::Error" ],
+                                    "map",
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                        ];
+                                      Ty.function
+                                        [ Ty.tuple [] ]
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
                                           [
-                                            fun γ =>
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                          ])
+                                    ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| result |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.tuple []; Ty.path "multisig::Error" ]);
+                                    M.value_with_ty
+                                      (M.closure
+                                        (fun γ =>
+                                          ltac:(M.monadic
+                                            match γ with
+                                            | [ α0 ] =>
                                               ltac:(M.monadic
-                                                (Value.StructTuple
-                                                  "core::option::Option::None"
-                                                  []
+                                                (M.match_operator (|
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::vec::Vec")
+                                                        []
+                                                        [
+                                                          Ty.path "u8";
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]
+                                                    ],
+                                                  M.alloc (| Ty.tuple [], α0 |),
                                                   [
-                                                    Ty.apply
-                                                      (Ty.path "alloc::vec::Vec")
-                                                      []
-                                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global"
-                                                      ]
+                                                    fun γ =>
+                                                      ltac:(M.monadic
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::option::Option::None"
+                                                            [])
+                                                          (Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "alloc::vec::Vec")
+                                                                []
+                                                                [
+                                                                  Ty.path "u8";
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ]
+                                                            ])))
                                                   ]
-                                                  []))
-                                          ]
-                                        |)))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end))
-                            ]
-                          |))
-                      ]
-                  ]
+                                                |)))
+                                            | _ => M.impossible "wrong number of arguments"
+                                            end)))
+                                      (Ty.function
+                                        [ Ty.tuple [] ]
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                          ]))
+                                  ]
+                                |))
+                            ])
+                          (Ty.path "multisig::Execution")
+                      ])
+                    (Ty.path "multisig::Event"))
+                  (Ty.path "multisig::Event")
               ]
             |) in
           result
@@ -5812,8 +6990,10 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.read (| trans_id |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ]);
+                M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
               ]
             |) in
           let~ t : Ty.path "multisig::Transaction" :=
@@ -5826,30 +7006,42 @@ Module Impl_multisig_Multisig.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "multisig::Transaction" ],
-                  M.get_associated_function (|
-                    Ty.path "multisig::Multisig",
-                    "take_transaction",
-                    [],
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "multisig::Transaction" ],
+                    M.get_associated_function (|
+                      Ty.path "multisig::Multisig",
+                      "take_transaction",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "multisig::Multisig" ]);
+                      M.value_with_ty (M.read (| trans_id |)) (Ty.path "u32")
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
                     []
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| trans_id |)
-                  ]
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      get_constant (|
-                        "multisig::WRONG_TRANSACTION_ID",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                    [ Ty.path "multisig::Transaction" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        get_constant (|
+                          "multisig::WRONG_TRANSACTION_ID",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |) in
           let~ result :
@@ -5873,7 +7065,11 @@ Module Impl_multisig_Multisig.
               M.call_closure (|
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic", [], [] |),
-                [ mk_str (| "not yet implemented" |) ]
+                [
+                  M.value_with_ty
+                    (mk_str (| "not yet implemented" |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |)
             |) in
           let~ result :
@@ -5918,30 +7114,38 @@ Module Impl_multisig_Multisig.
                           [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
                         γ1_0
                       |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
-                          []
-                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
-                        Ty.path "multisig::Error"
-                      ]
-                      [ M.read (| v |) ]));
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Ok" [ M.read (| v |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                          Ty.path "multisig::Error"
+                        ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
-                          []
-                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
-                        Ty.path "multisig::Error"
-                      ]
-                      [ Value.StructTuple "multisig::Error::TransactionFailed" [] [] [] ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "multisig::Error::TransactionFailed" [])
+                            (Ty.path "multisig::Error")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                          Ty.path "multisig::Error"
+                        ])))
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -5949,131 +7153,178 @@ Module Impl_multisig_Multisig.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "multisig::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "multisig::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "multisig::Env",
-                      M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "multisig::Env",
+                        M.get_associated_function (| Ty.path "multisig::Multisig", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Multisig" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "multisig::Event::Execution"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "multisig::Execution"
-                      []
-                      []
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "multisig::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "multisig::Event::Execution"
                       [
-                        ("transaction", M.read (| trans_id |));
-                        ("result",
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                  ];
-                                Ty.path "multisig::Error"
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
-                                  Ty.path "multisig::Error"
-                                ],
-                              "map",
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                  ];
-                                Ty.function
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                  ]
-                                  (Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::vec::Vec")
-                                        []
-                                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                    ])
-                              ]
-                            |),
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "multisig::Execution"
                             [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::result::Result")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
-                                    Ty.path "multisig::Error"
-                                  ],
-                                M.get_trait_method (|
-                                  "core::clone::Clone",
+                              ("transaction", M.read (| trans_id |));
+                              ("result",
+                                M.call_closure (|
                                   Ty.apply
                                     (Ty.path "core::result::Result")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "alloc::vec::Vec")
+                                        (Ty.path "core::option::Option")
                                         []
-                                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                        ];
                                       Ty.path "multisig::Error"
                                     ],
-                                  [],
-                                  [],
-                                  "clone",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, result |) ]
-                              |);
-                              M.constructor_as_closure
-                                "core::option::Option::Some"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                ]
-                            ]
-                          |))
-                      ]
-                  ]
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                                        Ty.path "multisig::Error"
+                                      ],
+                                    "map",
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                        ];
+                                      Ty.function
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                        ]
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                          ])
+                                    ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                                            Ty.path "multisig::Error"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::clone::Clone",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                                              Ty.path "multisig::Error"
+                                            ],
+                                          [],
+                                          [],
+                                          "clone",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, result |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
+                                                      []
+                                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global"
+                                                      ];
+                                                    Ty.path "multisig::Error"
+                                                  ]
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                                          Ty.path "multisig::Error"
+                                        ]);
+                                    M.value_with_ty
+                                      (M.constructor_as_closure "core::option::Option::Some")
+                                      (Ty.function
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                        ]
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                          ]))
+                                  ]
+                                |))
+                            ])
+                          (Ty.path "multisig::Execution")
+                      ])
+                    (Ty.path "multisig::Event"))
+                  (Ty.path "multisig::Event")
               ]
             |) in
           result

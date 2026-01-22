@@ -28,14 +28,14 @@ Module vec.
         | [], [], [ len ] =>
           ltac:(M.monadic
             (let len := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ], len |) in
-            Value.mkStructRecord
-              "alloc::vec::set_len_on_drop::SetLenOnDrop"
-              []
-              []
-              [
-                ("local_len", M.read (| M.deref (| M.read (| len |) |) |));
-                ("len", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| len |) |) |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::vec::set_len_on_drop::SetLenOnDrop"
+                [
+                  ("local_len", M.read (| M.deref (| M.read (| len |) |) |));
+                  ("len", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| len |) |) |))
+                ])
+              (Ty.path "alloc::vec::set_len_on_drop::SetLenOnDrop")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       

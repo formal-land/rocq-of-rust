@@ -89,7 +89,7 @@ Module signature.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| v |) ]
+                                      [ M.value_with_ty (M.read (| v |)) (Ty.path "u64") ]
                                     |)
                                   ]
                                 |)
@@ -99,11 +99,9 @@ Module signature.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.path "bool" ]
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple "core::option::Option::None" [])
+                                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ])
                               |)
                             |)
                           |)));
@@ -120,24 +118,24 @@ Module signature.
                     |)) in
                 M.alloc (|
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "bool" ]
-                    [
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.eq,
-                        [
-                          M.call_closure (|
-                            Ty.path "u64",
-                            BinOp.Wrap.rem,
-                            [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
-                          |);
-                          M.read (| cmp |)
-                        ]
-                      |)
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.eq,
+                          [
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.rem,
+                              [ M.read (| v |); Value.Integer IntegerKind.U64 2 ]
+                            |);
+                            M.read (| cmp |)
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ])
                 |)
               |)))
           |)))

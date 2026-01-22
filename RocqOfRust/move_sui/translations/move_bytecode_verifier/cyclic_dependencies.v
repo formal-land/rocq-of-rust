@@ -40,75 +40,102 @@ Module cyclic_dependencies.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
+                M.get_function (|
+                  "move_bytecode_verifier::cyclic_dependencies::verify_module_impl",
+                  [],
+                  [ D ]
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+                  M.value_with_ty (M.read (| imm_deps |)) D
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::result::Result")
                 []
-                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-              M.get_function (|
-                "move_bytecode_verifier::cyclic_dependencies::verify_module_impl",
-                [],
-                [ D ]
-              |),
-              [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-                M.read (| imm_deps |)
-              ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "move_binary_format::errors::VMError",
-                        M.alloc (| Ty.path "move_binary_format::errors::PartialVMError", α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let e :=
-                                M.copy (|
-                                  Ty.path "move_binary_format::errors::PartialVMError",
-                                  γ
-                                |) in
-                              M.call_closure (|
-                                Ty.path "move_binary_format::errors::VMError",
-                                M.get_associated_function (|
-                                  Ty.path "move_binary_format::errors::PartialVMError",
-                                  "finish",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| e |);
-                                  Value.StructTuple
-                                    "move_binary_format::errors::Location::Module"
+                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "move_binary_format::errors::VMError",
+                          M.alloc (| Ty.path "move_binary_format::errors::PartialVMError", α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let e :=
+                                  M.copy (|
+                                    Ty.path "move_binary_format::errors::PartialVMError",
+                                    γ
+                                  |) in
+                                M.call_closure (|
+                                  Ty.path "move_binary_format::errors::VMError",
+                                  M.get_associated_function (|
+                                    Ty.path "move_binary_format::errors::PartialVMError",
+                                    "finish",
+                                    [],
                                     []
-                                    []
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "move_core_types::language_storage::ModuleId",
-                                        M.get_associated_function (|
-                                          Ty.path "move_binary_format::file_format::CompiledModule",
-                                          "self_id",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| module |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| e |))
+                                      (Ty.path "move_binary_format::errors::PartialVMError");
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple
+                                          "move_binary_format::errors::Location::Module"
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "move_core_types::language_storage::ModuleId",
+                                              M.get_associated_function (|
+                                                Ty.path
+                                                  "move_binary_format::file_format::CompiledModule",
+                                                "self_id",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| module |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_binary_format::file_format::CompiledModule"
+                                                    ])
+                                              ]
+                                            |)
+                                          ])
+                                        (Ty.path "move_binary_format::errors::Location"))
+                                      (Ty.path "move_binary_format::errors::Location")
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.path "move_binary_format::errors::PartialVMError" ]
+                (Ty.path "move_binary_format::errors::VMError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -185,7 +212,14 @@ Module cyclic_dependencies.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                  ]
                 |) in
               let~ visited :
                   Ty.apply
@@ -256,23 +290,41 @@ Module cyclic_dependencies.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [
+                                      Ty.path "move_core_types::language_storage::ModuleId";
+                                      Ty.path "alloc::alloc::Global"
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.path "move_binary_format::file_format::CompiledModule",
+                                    "immediate_dependencies",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| module |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "move_binary_format::file_format::CompiledModule"
+                                        ])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "alloc::vec::Vec")
                                   []
                                   [
                                     Ty.path "move_core_types::language_storage::ModuleId";
                                     Ty.path "alloc::alloc::Global"
-                                  ],
-                                M.get_associated_function (|
-                                  Ty.path "move_binary_format::file_format::CompiledModule",
-                                  "immediate_dependencies",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |)
-                                ]
-                              |)
+                                  ])
                             ]
                           |)
                         |),
@@ -326,12 +378,26 @@ Module cyclic_dependencies.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_core_types::language_storage::ModuleId";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -424,8 +490,99 @@ Module cyclic_dependencies.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.call_closure (|
-                                                                      Ty.apply
+                                                                    M.value_with_ty
+                                                                      (M.call_closure (|
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.path "bool";
+                                                                            Ty.path
+                                                                              "move_binary_format::errors::PartialVMError"
+                                                                          ],
+                                                                        M.get_function (|
+                                                                          "move_bytecode_verifier::cyclic_dependencies::verify_module_impl.detect_cycles",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  self_id
+                                                                                |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "move_core_types::language_storage::ModuleId"
+                                                                              ]);
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  dep
+                                                                                |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "move_core_types::language_storage::ModuleId"
+                                                                              ]);
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              M.deref (|
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.MutRef,
+                                                                                  visited
+                                                                                |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&mut")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "alloc::collections::btree::set::BTreeSet")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "move_core_types::language_storage::ModuleId";
+                                                                                    Ty.path
+                                                                                      "alloc::alloc::Global"
+                                                                                  ]
+                                                                              ]);
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  imm_deps
+                                                                                |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ D ])
+                                                                        ]
+                                                                      |))
+                                                                      (Ty.apply
                                                                         (Ty.path
                                                                           "core::result::Result")
                                                                         []
@@ -433,51 +590,7 @@ Module cyclic_dependencies.
                                                                           Ty.path "bool";
                                                                           Ty.path
                                                                             "move_binary_format::errors::PartialVMError"
-                                                                        ],
-                                                                      M.get_function (|
-                                                                        "move_bytecode_verifier::cyclic_dependencies::verify_module_impl.detect_cycles",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              self_id
-                                                                            |)
-                                                                          |)
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              dep
-                                                                            |)
-                                                                          |)
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.MutRef,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              visited
-                                                                            |)
-                                                                          |)
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              imm_deps
-                                                                            |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
-                                                                    |)
+                                                                        ])
                                                                   ]
                                                                 |)
                                                               |),
@@ -545,7 +658,21 @@ Module cyclic_dependencies.
                                                                               [],
                                                                               []
                                                                             |),
-                                                                            [ M.read (| residual |)
+                                                                            [
+                                                                              M.value_with_ty
+                                                                                (M.read (|
+                                                                                  residual
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::result::Result")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "core::convert::Infallible";
+                                                                                    Ty.path
+                                                                                      "move_binary_format::errors::PartialVMError"
+                                                                                  ])
                                                                             ]
                                                                           |)
                                                                         |)
@@ -576,34 +703,41 @@ Module cyclic_dependencies.
                                                       M.never_to_any (|
                                                         M.read (|
                                                           M.return_ (|
-                                                            Value.StructTuple
-                                                              "core::result::Result::Err"
-                                                              []
-                                                              [
-                                                                Ty.tuple [];
-                                                                Ty.path
-                                                                  "move_binary_format::errors::PartialVMError"
-                                                              ]
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path
-                                                                    "move_binary_format::errors::PartialVMError",
-                                                                  M.get_associated_function (|
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::result::Result::Err"
+                                                                [
+                                                                  M.call_closure (|
                                                                     Ty.path
                                                                       "move_binary_format::errors::PartialVMError",
-                                                                    "new",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    Value.StructTuple
-                                                                      "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_DEPENDENCY"
+                                                                    M.get_associated_function (|
+                                                                      Ty.path
+                                                                        "move_binary_format::errors::PartialVMError",
+                                                                      "new",
+                                                                      [],
                                                                       []
-                                                                      []
-                                                                      []
-                                                                  ]
-                                                                |)
-                                                              ]
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "move_core_types::vm_status::StatusCode::CYCLIC_MODULE_DEPENDENCY"
+                                                                            [])
+                                                                          (Ty.path
+                                                                            "move_core_types::vm_status::StatusCode"))
+                                                                        (Ty.path
+                                                                          "move_core_types::vm_status::StatusCode")
+                                                                    ]
+                                                                  |)
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.tuple [];
+                                                                  Ty.path
+                                                                    "move_binary_format::errors::PartialVMError"
+                                                                ])
                                                           |)
                                                         |)
                                                       |)));
@@ -624,11 +758,12 @@ Module cyclic_dependencies.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
               |)
             |)))
         |)))
@@ -737,8 +872,30 @@ Module cyclic_dependencies.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, cursor |);
-                                    M.borrow (| Pointer.Kind.Ref, target |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, cursor |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "move_core_types::language_storage::ModuleId"
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, target |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "move_core_types::language_storage::ModuleId"
+                                            ]
+                                        ])
                                   ]
                                 |)
                               |)) in
@@ -747,14 +904,15 @@ Module cyclic_dependencies.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "bool";
-                                    Ty.path "move_binary_format::errors::PartialVMError"
-                                  ]
-                                  [ Value.Bool true ]
+                                M.value_with_ty
+                                  (Value.StructTuple "core::result::Result::Ok" [ Value.Bool true ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "bool";
+                                      Ty.path "move_binary_format::errors::PartialVMError"
+                                    ])
                               |)
                             |)
                           |)));
@@ -791,28 +949,52 @@ Module cyclic_dependencies.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| visited |) |)
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "move_core_types::language_storage::ModuleId",
-                                          M.get_trait_method (|
-                                            "core::clone::Clone",
-                                            Ty.path "move_core_types::language_storage::ModuleId",
-                                            [],
-                                            [],
-                                            "clone",
-                                            [],
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| visited |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
                                             []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| cursor |) |)
-                                            |)
-                                          ]
-                                        |)
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::btree::set::BTreeSet")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_core_types::language_storage::ModuleId";
+                                                  Ty.path "alloc::alloc::Global"
+                                                ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.path "move_core_types::language_storage::ModuleId",
+                                            M.get_trait_method (|
+                                              "core::clone::Clone",
+                                              Ty.path "move_core_types::language_storage::ModuleId",
+                                              [],
+                                              [],
+                                              "clone",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| cursor |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_core_types::language_storage::ModuleId"
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "move_core_types::language_storage::ModuleId")
                                       ]
                                     |)
                                   ]
@@ -858,37 +1040,17 @@ Module cyclic_dependencies.
                                         []
                                       |),
                                       [
-                                        M.match_operator (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [
-                                              Ty.path "move_core_types::language_storage::ModuleId";
-                                              Ty.path "alloc::alloc::Global"
-                                            ],
-                                          M.alloc (|
+                                        M.value_with_ty
+                                          (M.match_operator (|
                                             Ty.apply
-                                              (Ty.path "core::ops::control_flow::ControlFlow")
+                                              (Ty.path "alloc::vec::Vec")
                                               []
                                               [
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [
-                                                    Ty.path "core::convert::Infallible";
-                                                    Ty.path
-                                                      "move_binary_format::errors::PartialVMError"
-                                                  ];
-                                                Ty.apply
-                                                  (Ty.path "alloc::vec::Vec")
-                                                  []
-                                                  [
-                                                    Ty.path
-                                                      "move_core_types::language_storage::ModuleId";
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
+                                                Ty.path
+                                                  "move_core_types::language_storage::ModuleId";
+                                                Ty.path "alloc::alloc::Global"
                                               ],
-                                            M.call_closure (|
+                                            M.alloc (|
                                               Ty.apply
                                                 (Ty.path "core::ops::control_flow::ControlFlow")
                                                 []
@@ -910,12 +1072,19 @@ Module cyclic_dependencies.
                                                       Ty.path "alloc::alloc::Global"
                                                     ]
                                                 ],
-                                              M.get_trait_method (|
-                                                "core::ops::try_trait::Try",
+                                              M.call_closure (|
                                                 Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                  (Ty.path "core::ops::control_flow::ControlFlow")
                                                   []
                                                   [
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path
+                                                          "move_binary_format::errors::PartialVMError"
+                                                      ];
                                                     Ty.apply
                                                       (Ty.path "alloc::vec::Vec")
                                                       []
@@ -923,18 +1092,10 @@ Module cyclic_dependencies.
                                                         Ty.path
                                                           "move_core_types::language_storage::ModuleId";
                                                         Ty.path "alloc::alloc::Global"
-                                                      ];
-                                                    Ty.path
-                                                      "move_binary_format::errors::PartialVMError"
+                                                      ]
                                                   ],
-                                                [],
-                                                [],
-                                                "branch",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.call_closure (|
+                                                M.get_trait_method (|
+                                                  "core::ops::try_trait::Try",
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
@@ -950,78 +1111,120 @@ Module cyclic_dependencies.
                                                       Ty.path
                                                         "move_binary_format::errors::PartialVMError"
                                                     ],
-                                                  M.get_trait_method (|
-                                                    "core::ops::function::Fn",
-                                                    D,
-                                                    [],
-                                                    [
-                                                      Ty.tuple
+                                                  [],
+                                                  [],
+                                                  "branch",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
                                                         [
                                                           Ty.apply
-                                                            (Ty.path "&")
+                                                            (Ty.path "alloc::vec::Vec")
                                                             []
                                                             [
                                                               Ty.path
-                                                                "move_core_types::language_storage::ModuleId"
+                                                                "move_core_types::language_storage::ModuleId";
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ];
+                                                          Ty.path
+                                                            "move_binary_format::errors::PartialVMError"
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::ops::function::Fn",
+                                                        D,
+                                                        [],
+                                                        [
+                                                          Ty.tuple
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_core_types::language_storage::ModuleId"
+                                                                ]
                                                             ]
-                                                        ]
-                                                    ],
-                                                    "call",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| deps |) |)
-                                                    |);
-                                                    Value.Tuple
+                                                        ],
+                                                        "call",
+                                                        [],
+                                                        []
+                                                      |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| cursor |) |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| deps |) |)
+                                                          |))
+                                                          (Ty.apply (Ty.path "&") [] [ D ]);
+                                                        M.value_with_ty
+                                                          (Value.Tuple
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| cursor |) |)
+                                                              |)
+                                                            ])
+                                                          (Ty.tuple
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_core_types::language_storage::ModuleId"
+                                                                ]
+                                                            ])
                                                       ]
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
-                                          |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ0_0 :=
-                                                  M.SubPointer.get_struct_tuple_field (|
-                                                    γ,
-                                                    "core::ops::control_flow::ControlFlow::Break",
-                                                    0
-                                                  |) in
-                                                let residual :=
-                                                  M.copy (|
-                                                    Ty.apply
+                                                    |))
+                                                    (Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path
-                                                          "move_binary_format::errors::PartialVMError"
-                                                      ],
-                                                    γ0_0
-                                                  |) in
-                                                M.never_to_any (|
-                                                  M.read (|
-                                                    M.return_ (|
-                                                      M.call_closure (|
                                                         Ty.apply
-                                                          (Ty.path "core::result::Result")
+                                                          (Ty.path "alloc::vec::Vec")
                                                           []
                                                           [
-                                                            Ty.path "bool";
                                                             Ty.path
-                                                              "move_binary_format::errors::PartialVMError"
-                                                          ],
-                                                        M.get_trait_method (|
-                                                          "core::ops::try_trait::FromResidual",
+                                                              "move_core_types::language_storage::ModuleId";
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ];
+                                                        Ty.path
+                                                          "move_binary_format::errors::PartialVMError"
+                                                      ])
+                                                ]
+                                              |)
+                                            |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Break",
+                                                      0
+                                                    |) in
+                                                  let residual :=
+                                                    M.copy (|
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path
+                                                            "move_binary_format::errors::PartialVMError"
+                                                        ],
+                                                      γ0_0
+                                                    |) in
+                                                  M.never_to_any (|
+                                                    M.read (|
+                                                      M.return_ (|
+                                                        M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "core::result::Result")
                                                             []
@@ -1030,49 +1233,79 @@ Module cyclic_dependencies.
                                                               Ty.path
                                                                 "move_binary_format::errors::PartialVMError"
                                                             ],
-                                                          [],
-                                                          [
+                                                          M.get_trait_method (|
+                                                            "core::ops::try_trait::FromResidual",
                                                             Ty.apply
                                                               (Ty.path "core::result::Result")
                                                               []
                                                               [
-                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.path "bool";
                                                                 Ty.path
                                                                   "move_binary_format::errors::PartialVMError"
-                                                              ]
-                                                          ],
-                                                          "from_residual",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.read (| residual |) ]
+                                                              ],
+                                                            [],
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible";
+                                                                  Ty.path
+                                                                    "move_binary_format::errors::PartialVMError"
+                                                                ]
+                                                            ],
+                                                            "from_residual",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| residual |))
+                                                              (Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible";
+                                                                  Ty.path
+                                                                    "move_binary_format::errors::PartialVMError"
+                                                                ])
+                                                          ]
+                                                        |)
                                                       |)
                                                     |)
-                                                  |)
-                                                |)));
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let γ0_0 :=
-                                                  M.SubPointer.get_struct_tuple_field (|
-                                                    γ,
-                                                    "core::ops::control_flow::ControlFlow::Continue",
-                                                    0
-                                                  |) in
-                                                let val :=
-                                                  M.copy (|
-                                                    Ty.apply
-                                                      (Ty.path "alloc::vec::Vec")
-                                                      []
-                                                      [
-                                                        Ty.path
-                                                          "move_core_types::language_storage::ModuleId";
-                                                        Ty.path "alloc::alloc::Global"
-                                                      ],
-                                                    γ0_0
-                                                  |) in
-                                                M.read (| val |)))
-                                          ]
-                                        |)
+                                                  |)));
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Continue",
+                                                      0
+                                                    |) in
+                                                  let val :=
+                                                    M.copy (|
+                                                      Ty.apply
+                                                        (Ty.path "alloc::vec::Vec")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::language_storage::ModuleId";
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ],
+                                                      γ0_0
+                                                    |) in
+                                                  M.read (| val |)))
+                                            ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [
+                                              Ty.path "move_core_types::language_storage::ModuleId";
+                                              Ty.path "alloc::alloc::Global"
+                                            ])
                                       ]
                                     |)
                                   |),
@@ -1130,12 +1363,30 @@ Module cyclic_dependencies.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                          |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                iter
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "alloc::vec::into_iter::IntoIter")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_core_types::language_storage::ModuleId";
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ]
+                                                            ])
                                                       ]
                                                     |)
                                                   |),
@@ -1230,8 +1481,101 @@ Module cyclic_dependencies.
                                                                               []
                                                                             |),
                                                                             [
-                                                                              M.call_closure (|
-                                                                                Ty.apply
+                                                                              M.value_with_ty
+                                                                                (M.call_closure (|
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "bool";
+                                                                                      Ty.path
+                                                                                        "move_binary_format::errors::PartialVMError"
+                                                                                    ],
+                                                                                  M.get_function (|
+                                                                                    "move_bytecode_verifier::cyclic_dependencies::verify_module_impl.detect_cycles",
+                                                                                    [],
+                                                                                    []
+                                                                                  |),
+                                                                                  [
+                                                                                    M.value_with_ty
+                                                                                      (M.borrow (|
+                                                                                        Pointer.Kind.Ref,
+                                                                                        M.deref (|
+                                                                                          M.read (|
+                                                                                            target
+                                                                                          |)
+                                                                                        |)
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "move_core_types::language_storage::ModuleId"
+                                                                                        ]);
+                                                                                    M.value_with_ty
+                                                                                      (M.borrow (|
+                                                                                        Pointer.Kind.Ref,
+                                                                                        M.deref (|
+                                                                                          M.borrow (|
+                                                                                            Pointer.Kind.Ref,
+                                                                                            dep
+                                                                                          |)
+                                                                                        |)
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "move_core_types::language_storage::ModuleId"
+                                                                                        ]);
+                                                                                    M.value_with_ty
+                                                                                      (M.borrow (|
+                                                                                        Pointer.Kind.MutRef,
+                                                                                        M.deref (|
+                                                                                          M.read (|
+                                                                                            visited
+                                                                                          |)
+                                                                                        |)
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&mut")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "alloc::collections::btree::set::BTreeSet")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "move_core_types::language_storage::ModuleId";
+                                                                                              Ty.path
+                                                                                                "alloc::alloc::Global"
+                                                                                            ]
+                                                                                        ]);
+                                                                                    M.value_with_ty
+                                                                                      (M.borrow (|
+                                                                                        Pointer.Kind.Ref,
+                                                                                        M.deref (|
+                                                                                          M.read (|
+                                                                                            deps
+                                                                                          |)
+                                                                                        |)
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [ D ])
+                                                                                  ]
+                                                                                |))
+                                                                                (Ty.apply
                                                                                   (Ty.path
                                                                                     "core::result::Result")
                                                                                   []
@@ -1239,48 +1583,7 @@ Module cyclic_dependencies.
                                                                                     Ty.path "bool";
                                                                                     Ty.path
                                                                                       "move_binary_format::errors::PartialVMError"
-                                                                                  ],
-                                                                                M.get_function (|
-                                                                                  "move_bytecode_verifier::cyclic_dependencies::verify_module_impl.detect_cycles",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
-                                                                                [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        target
-                                                                                      |)
-                                                                                    |)
-                                                                                  |);
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        dep
-                                                                                      |)
-                                                                                    |)
-                                                                                  |);
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.MutRef,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        visited
-                                                                                      |)
-                                                                                    |)
-                                                                                  |);
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        deps
-                                                                                      |)
-                                                                                    |)
-                                                                                  |)
-                                                                                ]
-                                                                              |)
+                                                                                  ])
                                                                             ]
                                                                           |)
                                                                         |),
@@ -1351,9 +1654,20 @@ Module cyclic_dependencies.
                                                                                         []
                                                                                       |),
                                                                                       [
-                                                                                        M.read (|
-                                                                                          residual
-                                                                                        |)
+                                                                                        M.value_with_ty
+                                                                                          (M.read (|
+                                                                                            residual
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "core::result::Result")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "core::convert::Infallible";
+                                                                                              Ty.path
+                                                                                                "move_binary_format::errors::PartialVMError"
+                                                                                            ])
                                                                                       ]
                                                                                     |)
                                                                                   |)
@@ -1384,15 +1698,19 @@ Module cyclic_dependencies.
                                                                 M.never_to_any (|
                                                                   M.read (|
                                                                     M.return_ (|
-                                                                      Value.StructTuple
-                                                                        "core::result::Result::Ok"
-                                                                        []
-                                                                        [
-                                                                          Ty.path "bool";
-                                                                          Ty.path
-                                                                            "move_binary_format::errors::PartialVMError"
-                                                                        ]
-                                                                        [ Value.Bool true ]
+                                                                      M.value_with_ty
+                                                                        (Value.StructTuple
+                                                                          "core::result::Result::Ok"
+                                                                          [ Value.Bool true ])
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.path "bool";
+                                                                            Ty.path
+                                                                              "move_binary_format::errors::PartialVMError"
+                                                                          ])
                                                                     |)
                                                                   |)
                                                                 |)));
@@ -1417,11 +1735,12 @@ Module cyclic_dependencies.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.path "bool"; Ty.path "move_binary_format::errors::PartialVMError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.path "bool"; Ty.path "move_binary_format::errors::PartialVMError" ]
-                    [ Value.Bool false ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Bool false ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.path "bool"; Ty.path "move_binary_format::errors::PartialVMError" ])
                 |)
               |)))
           |)))

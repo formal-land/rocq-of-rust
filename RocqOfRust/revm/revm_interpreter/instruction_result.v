@@ -360,457 +360,479 @@ Module instruction_result.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::Continue"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Continue" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::Stop"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Stop" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::Return"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Return" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::SelfDestruct"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SelfDestruct" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::ReturnContract"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ReturnContract" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::Revert"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Revert" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::CallTooDeep"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CallTooDeep" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::OutOfFunds"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfFunds" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeStartingEF00"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateInitCodeStartingEF00" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::InvalidEOFInitCode"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidEOFInitCode" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::InvalidExtDelegateCallTarget"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidExtDelegateCallTarget" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::CallOrCreate"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CallOrCreate" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfGas" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::MemoryOOG"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MemoryOOG" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MemoryLimitOOG" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PrecompileOOG" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidOperandOOG" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ReentrancySentryOOG" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "OpcodeNotFound" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CallNotAllowedInsideStatic" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "StateChangeDuringStaticCall" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidFEOpcode" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::InvalidJump"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidJump" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::NotActivated"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NotActivated" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "StackUnderflow" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::StackOverflow"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "StackOverflow" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::OutOfOffset"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfOffset" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::CreateCollision"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateCollision" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::OverflowPayment"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "OverflowPayment" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::PrecompileError"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "PrecompileError" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::NonceOverflow"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NonceOverflow" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateContractSizeLimit" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateContractStartingWithEF" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateInitCodeSizeLimit" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::FatalExternalError"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FatalExternalError" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::ReturnContractInNotInitEOF"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ReturnContractInNotInitEOF" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::EOFOpcodeDisabledInLegacy"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EOFOpcodeDisabledInLegacy" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SubRoutineStackOverflow" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofAuxDataOverflow" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofAuxDataTooSmall" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidEXTCALLTarget" |) |)
-                      |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::Continue"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Continue" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::Stop"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Stop" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::Return"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Return" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::SelfDestruct"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SelfDestruct" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::ReturnContract"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ReturnContract" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::Revert"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Revert" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::CallTooDeep"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CallTooDeep" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::OutOfFunds"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfFunds" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeStartingEF00"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateInitCodeStartingEF00" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::InvalidEOFInitCode"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidEOFInitCode" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::InvalidExtDelegateCallTarget"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidExtDelegateCallTarget" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::CallOrCreate"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CallOrCreate" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfGas" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::MemoryOOG"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MemoryOOG" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MemoryLimitOOG" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "PrecompileOOG" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidOperandOOG" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ReentrancySentryOOG" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "OpcodeNotFound" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CallNotAllowedInsideStatic" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "StateChangeDuringStaticCall" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidFEOpcode" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::InvalidJump"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidJump" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::NotActivated"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NotActivated" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "StackUnderflow" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::StackOverflow"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "StackOverflow" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::OutOfOffset"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfOffset" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::CreateCollision"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateCollision" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::OverflowPayment"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "OverflowPayment" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::PrecompileError"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "PrecompileError" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::NonceOverflow"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NonceOverflow" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateContractSizeLimit" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateContractStartingWithEF" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateInitCodeSizeLimit" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::FatalExternalError"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FatalExternalError" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::ReturnContractInNotInitEOF"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ReturnContractInNotInitEOF" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::EOFOpcodeDisabledInLegacy"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EOFOpcodeDisabledInLegacy" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SubRoutineStackOverflow" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EofAuxDataOverflow" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EofAuxDataTooSmall" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidEXTCALLTarget" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -833,11 +855,11 @@ Module instruction_result.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple
-            "revm_interpreter::instruction_result::InstructionResult::Continue"
-            []
-            []
-            []))
+          (M.value_with_ty
+            (Value.StructTuple
+              "revm_interpreter::instruction_result::InstructionResult::Continue"
+              [])
+            (Ty.path "revm_interpreter::instruction_result::InstructionResult")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -895,7 +917,14 @@ Module instruction_result.
                   [],
                   [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "u8" :=
               M.call_closure (|
@@ -905,7 +934,14 @@ Module instruction_result.
                   [],
                   [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -989,7 +1025,14 @@ Module instruction_result.
                   [],
                   [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -1005,11 +1048,15 @@ Module instruction_result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -1055,11 +1102,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::journaled_state::TransferError::OutOfFunds"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::OutOfFunds"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::OutOfFunds"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1067,11 +1114,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::journaled_state::TransferError::OverflowPayment"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::OverflowPayment"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::OverflowPayment"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1079,11 +1126,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::journaled_state::TransferError::CreateCollision"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::CreateCollision"
-                    []
-                    []
-                    []))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::CreateCollision"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1754,11 +1801,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::SuccessReason::Return"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::Return"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::Return"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1766,11 +1813,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::SuccessReason::Stop"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::Stop"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::Stop"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1778,11 +1825,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::SuccessReason::SelfDestruct"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::SelfDestruct"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::SelfDestruct"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1790,11 +1837,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::SuccessReason::EofReturnContract"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::ReturnContract"
-                    []
-                    []
-                    []))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::ReturnContract"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1878,11 +1925,11 @@ Module instruction_result.
                               γ,
                               "revm_context_interface::result::OutOfGasError::Basic"
                             |) in
-                          Value.StructTuple
-                            "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                            []
-                            []
-                            []));
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
+                              [])
+                            (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
                       fun γ =>
                         ltac:(M.monadic
                           (let _ :=
@@ -1890,11 +1937,11 @@ Module instruction_result.
                               γ,
                               "revm_context_interface::result::OutOfGasError::InvalidOperand"
                             |) in
-                          Value.StructTuple
-                            "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG"
-                            []
-                            []
-                            []));
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG"
+                              [])
+                            (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
                       fun γ =>
                         ltac:(M.monadic
                           (let _ :=
@@ -1902,11 +1949,11 @@ Module instruction_result.
                               γ,
                               "revm_context_interface::result::OutOfGasError::Memory"
                             |) in
-                          Value.StructTuple
-                            "revm_interpreter::instruction_result::InstructionResult::MemoryOOG"
-                            []
-                            []
-                            []));
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "revm_interpreter::instruction_result::InstructionResult::MemoryOOG"
+                              [])
+                            (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
                       fun γ =>
                         ltac:(M.monadic
                           (let _ :=
@@ -1914,11 +1961,11 @@ Module instruction_result.
                               γ,
                               "revm_context_interface::result::OutOfGasError::MemoryLimit"
                             |) in
-                          Value.StructTuple
-                            "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG"
-                            []
-                            []
-                            []));
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG"
+                              [])
+                            (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
                       fun γ =>
                         ltac:(M.monadic
                           (let _ :=
@@ -1926,11 +1973,11 @@ Module instruction_result.
                               γ,
                               "revm_context_interface::result::OutOfGasError::Precompile"
                             |) in
-                          Value.StructTuple
-                            "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG"
-                            []
-                            []
-                            []));
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG"
+                              [])
+                            (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
                       fun γ =>
                         ltac:(M.monadic
                           (let _ :=
@@ -1938,11 +1985,11 @@ Module instruction_result.
                               γ,
                               "revm_context_interface::result::OutOfGasError::ReentrancySentry"
                             |) in
-                          Value.StructTuple
-                            "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG"
-                            []
-                            []
-                            []))
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG"
+                              [])
+                            (Ty.path "revm_interpreter::instruction_result::InstructionResult")))
                     ]
                   |)));
               fun γ =>
@@ -1952,11 +1999,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::OpcodeNotFound"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1964,11 +2011,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::InvalidFEOpcode"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1976,11 +2023,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::InvalidJump"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::InvalidJump"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::InvalidJump"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -1988,11 +2035,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::NotActivated"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::NotActivated"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::NotActivated"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2000,11 +2047,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::StackOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::StackOverflow"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::StackOverflow"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2012,11 +2059,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::StackUnderflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2024,11 +2071,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::OutOfOffset"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::OutOfOffset"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::OutOfOffset"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2036,11 +2083,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::CreateCollision"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::CreateCollision"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::CreateCollision"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2048,11 +2095,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::PrecompileError"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::PrecompileError"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::PrecompileError"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2060,11 +2107,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::NonceOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::NonceOverflow"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::NonceOverflow"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2072,11 +2119,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::CreateContractSizeLimit"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2084,11 +2131,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::CreateContractStartingWithEF"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2096,11 +2143,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::CreateInitCodeSizeLimit"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2108,11 +2155,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::OverflowPayment"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::OverflowPayment"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::OverflowPayment"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2120,11 +2167,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::StateChangeDuringStaticCall"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2132,11 +2179,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::CallNotAllowedInsideStatic"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2144,11 +2191,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::OutOfFunds"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::OutOfFunds"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::OutOfFunds"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2156,11 +2203,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::CallTooDeep"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::CallTooDeep"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::CallTooDeep"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2168,11 +2215,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::EofAuxDataOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2180,11 +2227,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::EofAuxDataTooSmall"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2192,11 +2239,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::SubRoutineStackOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2204,11 +2251,11 @@ Module instruction_result.
                       γ,
                       "revm_context_interface::result::HaltReason::InvalidEXTCALLTarget"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget"
-                    []
-                    []
-                    []))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget"
+                      [])
+                    (Ty.path "revm_interpreter::instruction_result::InstructionResult")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2289,61 +2336,65 @@ Module instruction_result.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InternalResult::InternalContinue"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InternalContinue" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InternalResult::InternalCallOrCreate"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InternalCallOrCreate" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InternalResult::CreateInitCodeStartingEF00"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateInitCodeStartingEF00" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_interpreter::instruction_result::InternalResult::InvalidExtDelegateCallTarget"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidExtDelegateCallTarget" |) |)
-                      |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InternalResult::InternalContinue"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InternalContinue" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InternalResult::InternalCallOrCreate"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InternalCallOrCreate" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InternalResult::CreateInitCodeStartingEF00"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateInitCodeStartingEF00" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_interpreter::instruction_result::InternalResult::InvalidExtDelegateCallTarget"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidExtDelegateCallTarget" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2444,7 +2495,14 @@ Module instruction_result.
                   [],
                   [ Ty.path "revm_interpreter::instruction_result::InternalResult" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::instruction_result::InternalResult" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -2454,7 +2512,14 @@ Module instruction_result.
                   [],
                   [ Ty.path "revm_interpreter::instruction_result::InternalResult" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::instruction_result::InternalResult" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -2538,7 +2603,14 @@ Module instruction_result.
                   [],
                   [ Ty.path "revm_interpreter::instruction_result::InternalResult" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::instruction_result::InternalResult" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -2554,11 +2626,15 @@ Module instruction_result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -2683,25 +2759,35 @@ Module instruction_result.
                         [ Ty.path "revm_context_interface::result::SuccessReason" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Success"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        Ty.path "revm_context_interface::result::SuccessReason",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Success"
+                      [
+                        M.call_closure (|
                           Ty.path "revm_context_interface::result::SuccessReason",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "revm_context_interface::result::SuccessReason",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_context_interface::result::SuccessReason" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2710,11 +2796,14 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::SuccessOrHalt::Revert"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Revert"
-                    []
-                    [ HaltReasonT ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Revert"
+                      [])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2725,25 +2814,32 @@ Module instruction_result.
                       0
                     |) in
                   let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonT ], γ1_0 |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
                           HaltReasonT,
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            HaltReasonT,
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ HaltReasonT ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2752,11 +2848,14 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::SuccessOrHalt::FatalExternalError"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::FatalExternalError"
-                    []
-                    [ HaltReasonT ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::FatalExternalError"
+                      [])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2774,25 +2873,35 @@ Module instruction_result.
                         [ Ty.path "revm_interpreter::instruction_result::InternalResult" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Internal"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        Ty.path "revm_interpreter::instruction_result::InternalResult",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Internal"
+                      [
+                        M.call_closure (|
                           Ty.path "revm_interpreter::instruction_result::InternalResult",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]))
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "revm_interpreter::instruction_result::InternalResult",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_interpreter::instruction_result::InternalResult" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2869,32 +2978,38 @@ Module instruction_result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Success" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_context_interface::result::SuccessReason" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Success" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::result::SuccessReason" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -2917,8 +3032,12 @@ Module instruction_result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Revert" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Revert" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -2943,24 +3062,33 @@ Module instruction_result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Halt" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ HaltReasonT ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Halt" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ HaltReasonT ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -2983,11 +3111,15 @@ Module instruction_result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "FatalExternalError" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "FatalExternalError" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -3019,32 +3151,38 @@ Module instruction_result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Internal" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_interpreter::instruction_result::InternalResult" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Internal" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_interpreter::instruction_result::InternalResult" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -3126,7 +3264,19 @@ Module instruction_result.
                       [ HaltReasonT ]
                   ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                          []
+                          [ HaltReasonT ]
+                      ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -3141,7 +3291,19 @@ Module instruction_result.
                       [ HaltReasonT ]
                   ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                          []
+                          [ HaltReasonT ]
+                      ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -3233,8 +3395,28 @@ Module instruction_result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_context_interface::result::SuccessReason" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_context_interface::result::SuccessReason" ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -3271,8 +3453,18 @@ Module instruction_result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ HaltReasonT ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ HaltReasonT ] ])
                             ]
                           |)));
                       fun γ =>
@@ -3329,8 +3521,34 @@ Module instruction_result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.path
+                                          "revm_interpreter::instruction_result::InternalResult"
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.path
+                                          "revm_interpreter::instruction_result::InternalResult"
+                                      ]
+                                  ])
                             ]
                           |)));
                       fun γ => ltac:(M.monadic (Value.Bool true))
@@ -3467,7 +3685,19 @@ Module instruction_result.
                       [ HaltReasonT ]
                   ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                          []
+                          [ HaltReasonT ]
+                      ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -3482,11 +3712,15 @@ Module instruction_result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -3524,8 +3758,15 @@ Module instruction_result.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_context_interface::result::SuccessReason" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)));
                   fun γ =>
@@ -3551,8 +3792,12 @@ Module instruction_result.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ HaltReasonT ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)));
                   fun γ =>
@@ -3584,8 +3829,15 @@ Module instruction_result.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_interpreter::instruction_result::InternalResult" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -3701,18 +3953,20 @@ Module instruction_result.
                     |) in
                   let reason :=
                     M.copy (| Ty.path "revm_context_interface::result::SuccessReason", γ0_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_context_interface::result::SuccessReason" ]
-                    [ M.read (| reason |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| reason |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_context_interface::result::SuccessReason" ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "revm_context_interface::result::SuccessReason" ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_context_interface::result::SuccessReason" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3858,14 +4112,14 @@ Module instruction_result.
                       0
                     |) in
                   let reason := M.copy (| HaltReasonT, γ0_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ HaltReasonT ]
-                    [ M.read (| reason |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| reason |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple "core::option::Option::None" [] [ HaltReasonT ] []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ HaltReasonT ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3894,25 +4148,29 @@ Module instruction_result.
         ltac:(M.monadic
           (let reason :=
             M.alloc (| Ty.path "revm_context_interface::result::HaltReason", reason |) in
-          Value.StructTuple
-            "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-            []
-            [ HALT ]
-            [
-              M.call_closure (|
-                HALT,
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  Ty.path "revm_context_interface::result::HaltReason",
-                  [],
-                  [ HALT ],
-                  "into",
-                  [],
-                  []
-                |),
-                [ M.read (| reason |) ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+              [
+                M.call_closure (|
+                  HALT,
+                  M.get_trait_method (|
+                    "core::convert::Into",
+                    Ty.path "revm_context_interface::result::HaltReason",
+                    [],
+                    [ HALT ],
+                    "into",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| reason |))
+                      (Ty.path "revm_context_interface::result::HaltReason")
+                  ]
+                |)
+              ])
+            (Ty.apply (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt") [] [ HALT ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4040,17 +4298,20 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::Continue"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Internal"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      Value.StructTuple
-                        "revm_interpreter::instruction_result::InternalResult::InternalContinue"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Internal"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_interpreter::instruction_result::InternalResult::InternalContinue"
+                            [])
+                          (Ty.path "revm_interpreter::instruction_result::InternalResult")
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4058,17 +4319,20 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::Stop"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Success"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      Value.StructTuple
-                        "revm_context_interface::result::SuccessReason::Stop"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Success"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_context_interface::result::SuccessReason::Stop"
+                            [])
+                          (Ty.path "revm_context_interface::result::SuccessReason")
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4076,17 +4340,20 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::Return"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Success"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      Value.StructTuple
-                        "revm_context_interface::result::SuccessReason::Return"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Success"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_context_interface::result::SuccessReason::Return"
+                            [])
+                          (Ty.path "revm_context_interface::result::SuccessReason")
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4094,17 +4361,20 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::SelfDestruct"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Success"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      Value.StructTuple
-                        "revm_context_interface::result::SuccessReason::SelfDestruct"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Success"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_context_interface::result::SuccessReason::SelfDestruct"
+                            [])
+                          (Ty.path "revm_context_interface::result::SuccessReason")
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4112,11 +4382,14 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::Revert"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Revert"
-                    []
-                    [ HaltReasonT ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Revert"
+                      [])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4124,11 +4397,14 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeStartingEF00"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Revert"
-                    []
-                    [ HaltReasonT ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Revert"
+                      [])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4136,17 +4412,20 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::CallOrCreate"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Internal"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      Value.StructTuple
-                        "revm_interpreter::instruction_result::InternalResult::InternalCallOrCreate"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Internal"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_interpreter::instruction_result::InternalResult::InternalCallOrCreate"
+                            [])
+                          (Ty.path "revm_interpreter::instruction_result::InternalResult")
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4154,31 +4433,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::CallTooDeep"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::CallTooDeep"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::CallTooDeep"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4186,31 +4470,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::OutOfFunds"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OutOfFunds"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OutOfFunds"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4218,37 +4507,42 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OutOfGas"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            [
-                              Value.StructTuple
-                                "revm_context_interface::result::OutOfGasError::Basic"
-                                []
-                                []
-                                []
-                            ]
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OutOfGas"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "revm_context_interface::result::OutOfGasError::Basic"
+                                        [])
+                                      (Ty.path "revm_context_interface::result::OutOfGasError")
+                                  ])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4256,37 +4550,42 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OutOfGas"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            [
-                              Value.StructTuple
-                                "revm_context_interface::result::OutOfGasError::MemoryLimit"
-                                []
-                                []
-                                []
-                            ]
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OutOfGas"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "revm_context_interface::result::OutOfGasError::MemoryLimit"
+                                        [])
+                                      (Ty.path "revm_context_interface::result::OutOfGasError")
+                                  ])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4294,37 +4593,42 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::MemoryOOG"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OutOfGas"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            [
-                              Value.StructTuple
-                                "revm_context_interface::result::OutOfGasError::Memory"
-                                []
-                                []
-                                []
-                            ]
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OutOfGas"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "revm_context_interface::result::OutOfGasError::Memory"
+                                        [])
+                                      (Ty.path "revm_context_interface::result::OutOfGasError")
+                                  ])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4332,37 +4636,42 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OutOfGas"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            [
-                              Value.StructTuple
-                                "revm_context_interface::result::OutOfGasError::Precompile"
-                                []
-                                []
-                                []
-                            ]
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OutOfGas"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "revm_context_interface::result::OutOfGasError::Precompile"
+                                        [])
+                                      (Ty.path "revm_context_interface::result::OutOfGasError")
+                                  ])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4370,37 +4679,42 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OutOfGas"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            [
-                              Value.StructTuple
-                                "revm_context_interface::result::OutOfGasError::InvalidOperand"
-                                []
-                                []
-                                []
-                            ]
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OutOfGas"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "revm_context_interface::result::OutOfGasError::InvalidOperand"
+                                        [])
+                                      (Ty.path "revm_context_interface::result::OutOfGasError")
+                                  ])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4408,37 +4722,42 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OutOfGas"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            [
-                              Value.StructTuple
-                                "revm_context_interface::result::OutOfGasError::ReentrancySentry"
-                                []
-                                []
-                                []
-                            ]
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OutOfGas"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "revm_context_interface::result::OutOfGasError::ReentrancySentry"
+                                        [])
+                                      (Ty.path "revm_context_interface::result::OutOfGasError")
+                                  ])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.find_or_pattern (Ty.tuple []) (|
@@ -4466,31 +4785,36 @@ Module instruction_result.
                         match γ with
                         | [] =>
                           ltac:(M.monadic
-                            (Value.StructTuple
-                              "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                              []
-                              [ HaltReasonT ]
-                              [
-                                M.call_closure (|
-                                  HaltReasonT,
-                                  M.get_trait_method (|
-                                    "core::convert::Into",
-                                    Ty.path "revm_context_interface::result::HaltReason",
-                                    [],
-                                    [ HaltReasonT ],
-                                    "into",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    Value.StructTuple
-                                      "revm_context_interface::result::HaltReason::OpcodeNotFound"
+                            (M.value_with_ty
+                              (Value.StructTuple
+                                "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                                [
+                                  M.call_closure (|
+                                    HaltReasonT,
+                                    M.get_trait_method (|
+                                      "core::convert::Into",
+                                      Ty.path "revm_context_interface::result::HaltReason",
+                                      [],
+                                      [ HaltReasonT ],
+                                      "into",
+                                      [],
                                       []
-                                      []
-                                      []
-                                  ]
-                                |)
-                              ]))
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple
+                                            "revm_context_interface::result::HaltReason::OpcodeNotFound"
+                                            [])
+                                          (Ty.path "revm_context_interface::result::HaltReason"))
+                                        (Ty.path "revm_context_interface::result::HaltReason")
+                                    ]
+                                  |)
+                                ])
+                              (Ty.apply
+                                (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                                []
+                                [ HaltReasonT ])))
                         | _ => M.impossible "wrong number of arguments"
                         end)
                   |)));
@@ -4501,31 +4825,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::CallNotAllowedInsideStatic"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::CallNotAllowedInsideStatic"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4533,31 +4862,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::StateChangeDuringStaticCall"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::StateChangeDuringStaticCall"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4565,31 +4899,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::InvalidFEOpcode"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::InvalidFEOpcode"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4597,31 +4936,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::InvalidJump"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::InvalidJump"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::InvalidJump"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4629,31 +4973,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::NotActivated"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::NotActivated"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::NotActivated"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4661,31 +5010,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::StackUnderflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::StackUnderflow"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::StackUnderflow"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4693,31 +5047,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::StackOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::StackOverflow"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::StackOverflow"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4725,31 +5084,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::OutOfOffset"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OutOfOffset"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OutOfOffset"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4757,31 +5121,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::CreateCollision"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::CreateCollision"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::CreateCollision"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4789,31 +5158,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::OverflowPayment"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OverflowPayment"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OverflowPayment"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4821,31 +5195,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::PrecompileError"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::PrecompileError"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::PrecompileError"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4853,31 +5232,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::NonceOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::NonceOverflow"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::NonceOverflow"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.find_or_pattern (Ty.tuple []) (|
@@ -4905,31 +5289,36 @@ Module instruction_result.
                         match γ with
                         | [] =>
                           ltac:(M.monadic
-                            (Value.StructTuple
-                              "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                              []
-                              [ HaltReasonT ]
-                              [
-                                M.call_closure (|
-                                  HaltReasonT,
-                                  M.get_trait_method (|
-                                    "core::convert::Into",
-                                    Ty.path "revm_context_interface::result::HaltReason",
-                                    [],
-                                    [ HaltReasonT ],
-                                    "into",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    Value.StructTuple
-                                      "revm_context_interface::result::HaltReason::CreateContractSizeLimit"
+                            (M.value_with_ty
+                              (Value.StructTuple
+                                "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                                [
+                                  M.call_closure (|
+                                    HaltReasonT,
+                                    M.get_trait_method (|
+                                      "core::convert::Into",
+                                      Ty.path "revm_context_interface::result::HaltReason",
+                                      [],
+                                      [ HaltReasonT ],
+                                      "into",
+                                      [],
                                       []
-                                      []
-                                      []
-                                  ]
-                                |)
-                              ]))
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple
+                                            "revm_context_interface::result::HaltReason::CreateContractSizeLimit"
+                                            [])
+                                          (Ty.path "revm_context_interface::result::HaltReason"))
+                                        (Ty.path "revm_context_interface::result::HaltReason")
+                                    ]
+                                  |)
+                                ])
+                              (Ty.apply
+                                (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                                []
+                                [ HaltReasonT ])))
                         | _ => M.impossible "wrong number of arguments"
                         end)
                   |)));
@@ -4940,31 +5329,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::CreateInitCodeSizeLimit"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::CreateInitCodeSizeLimit"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4972,11 +5366,14 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::InvalidEOFInitCode"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Revert"
-                    []
-                    [ HaltReasonT ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Revert"
+                      [])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4984,11 +5381,14 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::FatalExternalError"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::FatalExternalError"
-                    []
-                    [ HaltReasonT ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::FatalExternalError"
+                      [])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -4996,31 +5396,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::EOFOpcodeDisabledInLegacy"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::OpcodeNotFound"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::OpcodeNotFound"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5028,31 +5433,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::SubRoutineStackOverflow"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::SubRoutineStackOverflow"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5060,17 +5470,20 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::ReturnContract"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Success"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      Value.StructTuple
-                        "revm_context_interface::result::SuccessReason::EofReturnContract"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Success"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_context_interface::result::SuccessReason::EofReturnContract"
+                            [])
+                          (Ty.path "revm_context_interface::result::SuccessReason")
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5078,31 +5491,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::EofAuxDataOverflow"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::EofAuxDataOverflow"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5110,31 +5528,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::EofAuxDataTooSmall"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::EofAuxDataTooSmall"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5142,31 +5565,36 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      M.call_closure (|
-                        HaltReasonT,
-                        M.get_trait_method (|
-                          "core::convert::Into",
-                          Ty.path "revm_context_interface::result::HaltReason",
-                          [],
-                          [ HaltReasonT ],
-                          "into",
-                          [],
-                          []
-                        |),
-                        [
-                          Value.StructTuple
-                            "revm_context_interface::result::HaltReason::InvalidEXTCALLTarget"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Halt"
+                      [
+                        M.call_closure (|
+                          HaltReasonT,
+                          M.get_trait_method (|
+                            "core::convert::Into",
+                            Ty.path "revm_context_interface::result::HaltReason",
+                            [],
+                            [ HaltReasonT ],
+                            "into",
+                            [],
                             []
-                            []
-                            []
-                        ]
-                      |)
-                    ]));
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_context_interface::result::HaltReason::InvalidEXTCALLTarget"
+                                  [])
+                                (Ty.path "revm_context_interface::result::HaltReason"))
+                              (Ty.path "revm_context_interface::result::HaltReason")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5174,17 +5602,20 @@ Module instruction_result.
                       γ,
                       "revm_interpreter::instruction_result::InstructionResult::InvalidExtDelegateCallTarget"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::SuccessOrHalt::Internal"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      Value.StructTuple
-                        "revm_interpreter::instruction_result::InternalResult::InvalidExtDelegateCallTarget"
-                        []
-                        []
-                        []
-                    ]))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::SuccessOrHalt::Internal"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_interpreter::instruction_result::InternalResult::InvalidExtDelegateCallTarget"
+                            [])
+                          (Ty.path "revm_interpreter::instruction_result::InternalResult")
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_interpreter::instruction_result::SuccessOrHalt")
+                      []
+                      [ HaltReasonT ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

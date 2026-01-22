@@ -17,8 +17,8 @@ Module ControlFlow.
   Instance IsLink (B C : Set) `{Link B} `{Link C} : Link (t B C) := {
     Φ := Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [Φ B; Φ C];
     φ x := match x with
-    | Continue c => Value.StructTuple "core::ops::control_flow::ControlFlow::Continue" [] [Φ B; Φ C] [φ c]
-    | Break b => Value.StructTuple "core::ops::control_flow::ControlFlow::Break" [] [Φ B; Φ C] [φ b]
+    | Continue c => Value.StructTuple "core::ops::control_flow::ControlFlow::Continue" [φ c]
+    | Break b => Value.StructTuple "core::ops::control_flow::ControlFlow::Break" [φ b]
     end;
   }.
 
@@ -34,7 +34,7 @@ Module ControlFlow.
   Lemma of_value_with_Continue {B C : Set} `{Link B} `{Link C}
     (c : C) c' :
     c' = φ c ->
-    Value.StructTuple "core::ops::control_flow::ControlFlow::Continue" [] [Φ B; Φ C] [c'] =
+    Value.StructTuple "core::ops::control_flow::ControlFlow::Continue" [c'] =
     φ (Continue (B := B) (C := C) c).
   Proof.
     intros; subst; reflexivity.
@@ -44,7 +44,7 @@ Module ControlFlow.
   Lemma of_value_with_Break {B C : Set} `{Link B} `{Link C}
     (b : B) b' :
     b' = φ b ->
-    Value.StructTuple "core::ops::control_flow::ControlFlow::Break" [] [Φ B; Φ C] [b'] =
+    Value.StructTuple "core::ops::control_flow::ControlFlow::Break" [b'] =
     φ (Break (B := B) (C := C) b).
   Proof.
     intros; subst; reflexivity.
@@ -56,7 +56,7 @@ Module ControlFlow.
       (of_ty_B : OfTy.t B')
       (of_value_c : OfValue.t c'),
     C' = Φ (OfValue.get_Set of_value_c) ->
-    OfValue.t (Value.StructTuple "core::ops::control_flow::ControlFlow::Continue" [] [B'; C'] [c']).
+    OfValue.t (Value.StructTuple "core::ops::control_flow::ControlFlow::Continue" [c']).
   Proof.
     intros [B] [C ? c] **.
     eapply OfValue.Make with (A := t B C) (value := Continue c).
@@ -70,7 +70,7 @@ Module ControlFlow.
       (of_ty_C : OfTy.t C')
       (of_value_b : OfValue.t b'),
     B' = Φ (OfValue.get_Set of_value_b) ->
-    OfValue.t (Value.StructTuple "core::ops::control_flow::ControlFlow::Break" [] [B'; C'] [b']).
+    OfValue.t (Value.StructTuple "core::ops::control_flow::ControlFlow::Break" [b']).
   Proof.
     intros [C] [B ? b] **.
     eapply OfValue.Make with (A := t B C) (value := Break b).

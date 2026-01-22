@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_contract_ref_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "contract_ref::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "contract_ref::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "contract_ref::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -132,8 +132,12 @@ Module Impl_core_fmt_Debug_for_contract_ref_FlipperError.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FlipperError" |) |) |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FlipperError" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -164,7 +168,11 @@ Module Impl_contract_ref_FlipperRef.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -207,11 +215,9 @@ Module Impl_contract_ref_FlipperRef.
     | [], [], [ init_value ] =>
       ltac:(M.monadic
         (let init_value := M.alloc (| Ty.path "bool", init_value |) in
-        Value.mkStructRecord
-          "contract_ref::FlipperRef"
-          []
-          []
-          [ ("value", M.read (| init_value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord "contract_ref::FlipperRef" [ ("value", M.read (| init_value |)) ])
+          (Ty.path "contract_ref::FlipperRef")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -232,19 +238,21 @@ Module Impl_contract_ref_FlipperRef.
           Ty.path "contract_ref::FlipperRef",
           M.get_associated_function (| Ty.path "contract_ref::FlipperRef", "new", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_trait_method (|
-                "core::default::Default",
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "bool",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "bool",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
+              |))
+              (Ty.path "bool")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -280,29 +288,39 @@ Module Impl_contract_ref_FlipperRef.
               ltac:(M.monadic
                 (let γ := M.use succeed in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.path "contract_ref::FlipperRef"; Ty.path "contract_ref::FlipperError" ]
-                  [
-                    M.call_closure (|
-                      Ty.path "contract_ref::FlipperRef",
-                      M.get_associated_function (|
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
                         Ty.path "contract_ref::FlipperRef",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ Value.Bool true ]
-                    |)
-                  ]));
+                        M.get_associated_function (|
+                          Ty.path "contract_ref::FlipperRef",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.value_with_ty (Value.Bool true) (Ty.path "bool") ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "contract_ref::FlipperRef"; Ty.path "contract_ref::FlipperError" ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [ Ty.path "contract_ref::FlipperRef"; Ty.path "contract_ref::FlipperError" ]
-                  [ Value.StructTuple "contract_ref::FlipperError" [] [] [] ]))
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple "contract_ref::FlipperError" [])
+                        (Ty.path "contract_ref::FlipperError")
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "contract_ref::FlipperRef"; Ty.path "contract_ref::FlipperError" ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -419,7 +437,7 @@ Module Impl_contract_ref_ContractRef.
             M.call_closure (|
               Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               M.get_associated_function (| Ty.path "u32", "to_le_bytes", [], [] |),
-              [ M.read (| version |) ]
+              [ M.value_with_ty (M.read (| version |)) (Ty.path "u32") ]
             |) in
           let~ flipper : Ty.path "contract_ref::FlipperRef" :=
             M.call_closure (|
@@ -434,11 +452,11 @@ Module Impl_contract_ref_ContractRef.
             |) in
           M.alloc (|
             Ty.path "contract_ref::ContractRef",
-            Value.mkStructRecord
-              "contract_ref::ContractRef"
-              []
-              []
-              [ ("flipper", M.read (| flipper |)) ]
+            M.value_with_ty
+              (Value.mkStructRecord
+                "contract_ref::ContractRef"
+                [ ("flipper", M.read (| flipper |)) ])
+              (Ty.path "contract_ref::ContractRef")
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -483,7 +501,7 @@ Module Impl_contract_ref_ContractRef.
             M.call_closure (|
               Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
               M.get_associated_function (| Ty.path "u32", "to_le_bytes", [], [] |),
-              [ M.read (| version |) ]
+              [ M.value_with_ty (M.read (| version |)) (Ty.path "u32") ]
             |) in
           let~ flipper : Ty.path "contract_ref::FlipperRef" :=
             M.call_closure (|
@@ -498,28 +516,33 @@ Module Impl_contract_ref_ContractRef.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.path "contract_ref::FlipperRef"; Ty.path "contract_ref::FlipperError" ],
+                    M.get_associated_function (|
+                      Ty.path "contract_ref::FlipperRef",
+                      "try_new",
+                      [],
+                      []
+                    |),
+                    [ M.value_with_ty (M.read (| succeed |)) (Ty.path "bool") ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::result::Result")
                     []
-                    [ Ty.path "contract_ref::FlipperRef"; Ty.path "contract_ref::FlipperError" ],
-                  M.get_associated_function (|
-                    Ty.path "contract_ref::FlipperRef",
-                    "try_new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| succeed |) ]
-                |)
+                    [ Ty.path "contract_ref::FlipperRef"; Ty.path "contract_ref::FlipperError" ])
               ]
             |) in
           M.alloc (|
             Ty.path "contract_ref::ContractRef",
-            Value.mkStructRecord
-              "contract_ref::ContractRef"
-              []
-              []
-              [ ("flipper", M.read (| flipper |)) ]
+            M.value_with_ty
+              (Value.mkStructRecord
+                "contract_ref::ContractRef"
+                [ ("flipper", M.read (| flipper |)) ])
+              (Ty.path "contract_ref::ContractRef")
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -549,14 +572,16 @@ Module Impl_contract_ref_ContractRef.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "contract_ref::FlipperRef", "flip", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "contract_ref::ContractRef",
-                    "flipper"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "contract_ref::ContractRef",
+                      "flipper"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "contract_ref::FlipperRef" ])
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -586,14 +611,16 @@ Module Impl_contract_ref_ContractRef.
           Ty.path "bool",
           M.get_associated_function (| Ty.path "contract_ref::FlipperRef", "get", [], [] |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "contract_ref::ContractRef",
-                "flipper"
-              |)
-            |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "contract_ref::ContractRef",
+                  "flipper"
+                |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "contract_ref::FlipperRef" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

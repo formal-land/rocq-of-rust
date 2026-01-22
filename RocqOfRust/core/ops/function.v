@@ -33,11 +33,13 @@ Module ops.
                 Ty.associated_in_trait "core::ops::function::FnOnce" [] [ A ] F "Output",
                 M.get_trait_method (| "core::ops::function::Fn", F, [], [ A ], "call", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |);
-                  M.read (| args |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ F ]);
+                  M.value_with_ty (M.read (| args |)) A
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -81,11 +83,13 @@ Module ops.
                 Ty.associated_in_trait "core::ops::function::FnOnce" [] [ A ] F "Output",
                 M.get_trait_method (| "core::ops::function::Fn", F, [], [ A ], "call", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |);
-                  M.read (| args |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ F ]);
+                  M.value_with_ty (M.read (| args |)) A
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -129,8 +133,10 @@ Module ops.
                 Ty.associated_in_trait "core::ops::function::FnOnce" [] [ A ] F "Output",
                 M.get_trait_method (| "core::ops::function::Fn", F, [], [ A ], "call", [], [] |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.read (| args |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ F ]);
+                  M.value_with_ty (M.read (| args |)) A
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -186,11 +192,13 @@ Module ops.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |);
-                  M.read (| args |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                  M.value_with_ty (M.read (| args |)) A
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -242,8 +250,10 @@ Module ops.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| args |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                  M.value_with_ty (M.read (| args |)) A
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"

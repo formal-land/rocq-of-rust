@@ -68,30 +68,38 @@ Module from.
                   let __self_0 :=
                     M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
                   let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
-                  Value.StructTuple
-                    "ruint::from::ToUintError::ValueTooLarge"
-                    []
-                    [ T ]
-                    [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "ruint::from::ToUintError::ValueTooLarge"
+                      [
+                        M.call_closure (|
                           Ty.path "usize",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        T,
-                        M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "usize",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                          ]
+                        |);
+                        M.call_closure (|
+                          T,
+                          M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "ruint::from::ToUintError") [] [ T ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -110,30 +118,38 @@ Module from.
                   let __self_0 :=
                     M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
                   let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
-                  Value.StructTuple
-                    "ruint::from::ToUintError::ValueNegative"
-                    []
-                    [ T ]
-                    [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "ruint::from::ToUintError::ValueNegative"
+                      [
+                        M.call_closure (|
                           Ty.path "usize",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        T,
-                        M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "usize",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                          ]
+                        |);
+                        M.call_closure (|
+                          T,
+                          M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "ruint::from::ToUintError") [] [ T ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -145,25 +161,29 @@ Module from.
                     |) in
                   let __self_0 :=
                     M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                  Value.StructTuple
-                    "ruint::from::ToUintError::NotANumber"
-                    []
-                    [ T ]
-                    [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "ruint::from::ToUintError::NotANumber"
+                      [
+                        M.call_closure (|
                           Ty.path "usize",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]))
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "usize",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "ruint::from::ToUintError") [] [ T ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -245,35 +265,46 @@ Module from.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ValueTooLarge" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ValueTooLarge" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -306,35 +337,46 @@ Module from.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ValueNegative" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ValueNegative" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -360,27 +402,33 @@ Module from.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NotANumber" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NotANumber" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -485,7 +533,14 @@ Module from.
                   [],
                   [ Ty.apply (Ty.path "ruint::from::ToUintError") [] [ T ] ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::from::ToUintError") [] [ T ] ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -495,7 +550,14 @@ Module from.
                   [],
                   [ Ty.apply (Ty.path "ruint::from::ToUintError") [] [ T ] ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::from::ToUintError") [] [ T ] ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -572,8 +634,18 @@ Module from.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -589,8 +661,12 @@ Module from.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
                                 ]
                               |)))
                           |)));
@@ -643,8 +719,18 @@ Module from.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -660,8 +746,12 @@ Module from.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
                                 ]
                               |)))
                           |)));
@@ -699,8 +789,18 @@ Module from.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -754,7 +854,14 @@ Module from.
                   [],
                   [ Ty.apply (Ty.path "ruint::from::ToUintError") [] [ T ] ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::from::ToUintError") [] [ T ] ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -769,11 +876,15 @@ Module from.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -814,8 +925,18 @@ Module from.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -832,8 +953,18 @@ Module from.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ T ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -870,8 +1001,18 @@ Module from.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -888,8 +1029,18 @@ Module from.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ T ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -917,8 +1068,12 @@ Module from.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)))
                 ]
@@ -1017,67 +1172,101 @@ Module from.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (| "Value is too large for Uint<" |);
+                                          mk_str (| ">" |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "Value is too large for Uint<" |); mk_str (| ">" |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, bits |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, bits |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -1108,69 +1297,103 @@ Module from.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (|
+                                            "Negative values cannot be represented as Uint<"
+                                          |);
+                                          mk_str (| ">" |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "Negative values cannot be represented as Uint<" |);
-                                      mk_str (| ">" |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, bits |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, bits |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -1195,71 +1418,103 @@ Module from.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (|
+                                            "'Not a number' (NaN) cannot be represented as Uint<"
+                                          |);
+                                          mk_str (| ">" |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (|
-                                        "'Not a number' (NaN) cannot be represented as Uint<"
-                                      |);
-                                      mk_str (| ">" |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, bits |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, bits |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)))
             ]
@@ -1341,35 +1596,47 @@ Module from.
                     M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
                   let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
                   let __self_2 := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_2 |) in
-                  Value.StructTuple
-                    "ruint::from::FromUintError::Overflow"
-                    []
-                    [ T ]
-                    [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "ruint::from::FromUintError::Overflow"
+                      [
+                        M.call_closure (|
                           Ty.path "usize",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        T,
-                        M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        T,
-                        M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_2 |) |) |) ]
-                      |)
-                    ]))
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "usize",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                          ]
+                        |);
+                        M.call_closure (|
+                          T,
+                          M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ])
+                          ]
+                        |);
+                        M.call_closure (|
+                          T,
+                          M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_2 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "ruint::from::FromUintError") [] [ T ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1461,46 +1728,56 @@ Module from.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Overflow" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ T ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_2 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Overflow" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ T ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_2 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -1637,8 +1914,18 @@ Module from.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                          M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
                         ]
                       |),
                       ltac:(M.monadic
@@ -1654,8 +1941,12 @@ Module from.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                            M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
                           ]
                         |)))
                     |),
@@ -1672,8 +1963,12 @@ Module from.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, __self_2 |);
-                          M.borrow (| Pointer.Kind.Ref, __arg1_2 |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, __self_2 |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, __arg1_2 |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
                         ]
                       |)))
                   |)))
@@ -1802,8 +2097,12 @@ Module from.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
@@ -1811,8 +2110,12 @@ Module from.
                         Ty.tuple [],
                         M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ T ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |) in
                     M.alloc (|
@@ -1821,8 +2124,12 @@ Module from.
                         Ty.tuple [],
                         M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_2 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_2 |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ T ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)
                     |)
@@ -1913,148 +2220,216 @@ Module from.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "Uint<" |); mk_str (| "> value is too large for " |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  M.match_operator (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 2 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
                                     M.alloc (|
-                                      Ty.tuple
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
                                         [
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
-                                        ],
-                                      Value.Tuple
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                                M.get_function (|
-                                                  "core::any::type_name",
-                                                  [],
-                                                  [ T ]
-                                                |),
-                                                []
-                                              |)
-                                            |)
-                                          |);
-                                          M.borrow (| Pointer.Kind.Ref, bits |)
+                                          mk_str (| "Uint<" |);
+                                          mk_str (| "> value is too large for " |)
                                         ]
-                                    |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let args :=
-                                            M.copy (|
-                                              Ty.tuple
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]
-                                                    ]
-                                                ],
-                                              γ
-                                            |) in
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.read (|
-                                                        M.SubPointer.get_tuple_field (| args, 1 |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.read (|
-                                                        M.SubPointer.get_tuple_field (| args, 0 |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            ]))
-                                    ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      M.match_operator (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 2 ]
+                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                        M.alloc (|
+                                          Ty.tuple
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                                            ],
+                                          Value.Tuple
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                  M.call_closure (|
+                                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                    M.get_function (|
+                                                      "core::any::type_name",
+                                                      [],
+                                                      [ T ]
+                                                    |),
+                                                    []
+                                                  |)
+                                                |)
+                                              |);
+                                              M.borrow (| Pointer.Kind.Ref, bits |)
+                                            ]
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let args :=
+                                                M.copy (|
+                                                  Ty.tuple
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "str" ]
+                                                        ];
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "usize" ]
+                                                        ]
+                                                    ],
+                                                  γ
+                                                |) in
+                                              Value.Array
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      "new_display",
+                                                      [],
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ]
+                                                      ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.SubPointer.get_tuple_field (|
+                                                                args,
+                                                                1
+                                                              |)
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "usize" ]
+                                                          ])
+                                                    ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      "new_display",
+                                                      [],
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.SubPointer.get_tuple_field (|
+                                                                args,
+                                                                0
+                                                              |)
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ])
+                                                    ]
+                                                  |)
+                                                ]))
+                                        ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)))
             ]
@@ -2109,8 +2484,12 @@ Module from.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NotInField" |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NotInField" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2215,13 +2594,17 @@ Module from.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          mk_str (| "Number is equal or larger than the target field modulus." |)
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            mk_str (| "Number is equal or larger than the target field modulus." |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)))
             ]
@@ -2297,7 +2680,7 @@ Module from.
                   [],
                   []
                 |),
-                [ M.read (| value |) ]
+                [ M.value_with_ty (M.read (| value |)) T ]
               |)
             |),
             [
@@ -2324,75 +2707,112 @@ Module from.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_v1",
+                              [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
+                              ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array [ mk_str (| "Uint conversion error: " |) ]
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array [ mk_str (| "Uint conversion error: " |) ]
+                                      |)
+                                    |)
                                   |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "ruint::from::ToUintError")
-                                                []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                        Value.Array
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
+                                                    (Ty.path "ruint::from::ToUintError")
                                                     []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        []
+                                                    ]
                                                 ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, e |) |)
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.borrow (| Pointer.Kind.Ref, e |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::from::ToUintError")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            []
+                                                        ]
+                                                    ])
+                                              ]
                                             |)
                                           ]
-                                        |)
-                                      ]
+                                      |)
+                                    |)
                                   |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)))
@@ -2463,7 +2883,7 @@ Module from.
                   [],
                   []
                 |),
-                [ M.read (| value |) ]
+                [ M.value_with_ty (M.read (| value |)) T ]
               |)
             |),
             [
@@ -2589,7 +3009,7 @@ Module from.
                   [],
                   []
                 |),
-                [ M.read (| value |) ]
+                [ M.value_with_ty (M.read (| value |)) T ]
               |)
             |),
             [
@@ -2745,23 +3165,40 @@ Module from.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ T; Ty.apply (Ty.path "ruint::from::FromUintError") [] [ T ] ],
+                  M.get_trait_method (|
+                    "ruint::from::UintTryTo",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [ T ],
+                    "uint_try_to",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
-                  [ T; Ty.apply (Ty.path "ruint::from::FromUintError") [] [ T ] ],
-                M.get_trait_method (|
-                  "ruint::from::UintTryTo",
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ T ],
-                  "uint_try_to",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Uint conversion error" |) |) |)
+                  [ T; Ty.apply (Ty.path "ruint::from::FromUintError") [] [ T ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| mk_str (| "Uint conversion error" |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2819,7 +3256,14 @@ Module from.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                ]
               |)
             |),
             [
@@ -2931,7 +3375,14 @@ Module from.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                ]
               |)
             |),
             [
@@ -3025,36 +3476,45 @@ Module from.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "ruint::Uint") [ BITS_SRC; LIMBS_SRC ] [],
-                          "as_limbs",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, value |) ]
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "ruint::Uint") [ BITS_SRC; LIMBS_SRC ] [],
+                            "as_limbs",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, value |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS_SRC; LIMBS_SRC ] [] ])
+                          ]
+                        |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3097,36 +3557,45 @@ Module from.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "ruint::Uint") [ BITS_SRC; LIMBS_SRC ] [],
-                          "as_limbs",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, value |) ]
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "ruint::Uint") [ BITS_SRC; LIMBS_SRC ] [],
+                            "as_limbs",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, value |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS_SRC; LIMBS_SRC ] [] ])
+                          ]
+                        |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3183,7 +3652,7 @@ Module from.
               [],
               []
             |),
-            [ M.read (| value |) ]
+            [ M.value_with_ty (M.read (| value |)) T ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -3246,39 +3715,48 @@ Module from.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ])
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS_SRC; LIMBS_SRC ] [],
-                              "as_limbs",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ])
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "array") [ LIMBS_SRC ] [ Ty.path "u64" ] ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS_SRC; LIMBS_SRC ] [],
+                                "as_limbs",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, value |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS_SRC; LIMBS_SRC ] [] ])
+                              ]
+                            |)
                           |)
                         |)
-                      |)
-                    ]
-                  |)
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
                 ]
               |)
             |),
@@ -3307,36 +3785,43 @@ Module from.
                           (let γ := M.use overflow in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.StructTuple
-                            "core::result::Result::Err"
-                            []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::ToUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                            ]
-                            [
-                              Value.StructTuple
-                                "ruint::from::ToUintError::ValueTooLarge"
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                [ BITS; M.read (| n |) ]
-                            ]));
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::result::Result::Err"
+                              [
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "ruint::from::ToUintError::ValueTooLarge"
+                                    [ BITS; M.read (| n |) ])
+                                  (Ty.apply
+                                    (Ty.path "ruint::from::ToUintError")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                Ty.apply
+                                  (Ty.path "ruint::from::ToUintError")
+                                  []
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                              ])));
                       fun γ =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::ToUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                            ]
-                            [ M.read (| n |) ]))
+                          (M.value_with_ty
+                            (Value.StructTuple "core::result::Result::Ok" [ M.read (| n |) ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                Ty.apply
+                                  (Ty.path "ruint::from::ToUintError")
+                                  []
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                              ])))
                     ]
                   |)))
             ]
@@ -3398,7 +3883,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -3468,39 +3957,48 @@ Module from.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ])
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              "as_limbs",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ])
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                "as_limbs",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                              ]
+                            |)
                           |)
                         |)
-                      |)
-                    ]
-                  |)
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
                 ]
               |)
             |),
@@ -3533,46 +4031,59 @@ Module from.
                           (let γ := M.use overflow in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.StructTuple
-                            "core::result::Result::Err"
-                            []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::FromUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [] ]
-                            ]
-                            [
-                              Value.StructTuple
-                                "ruint::from::FromUintError::Overflow"
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [] ]
-                                [
-                                  BITS_DST;
-                                  M.read (| n |);
-                                  M.read (|
-                                    get_associated_constant (|
-                                      Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [],
-                                      "MAX",
-                                      Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] []
-                                    |)
-                                  |)
-                                ]
-                            ]));
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::result::Result::Err"
+                              [
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "ruint::from::FromUintError::Overflow"
+                                    [
+                                      BITS_DST;
+                                      M.read (| n |);
+                                      M.read (|
+                                        get_associated_constant (|
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [ BITS_DST; LIMBS_DST ]
+                                            [],
+                                          "MAX",
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [ BITS_DST; LIMBS_DST ]
+                                            []
+                                        |)
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "ruint::from::FromUintError")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [] ])
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [];
+                                Ty.apply
+                                  (Ty.path "ruint::from::FromUintError")
+                                  []
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [] ]
+                              ])));
                       fun γ =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::FromUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [] ]
-                            ]
-                            [ M.read (| n |) ]))
+                          (M.value_with_ty
+                            (Value.StructTuple "core::result::Result::Ok" [ M.read (| n |) ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [];
+                                Ty.apply
+                                  (Ty.path "ruint::from::FromUintError")
+                                  []
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS_DST; LIMBS_DST ] [] ]
+                              ])))
                     ]
                   |)))
             ]
@@ -3770,51 +4281,67 @@ Module from.
                                               ]
                                             |) in
                                           M.return_ (|
-                                            Value.StructTuple
-                                              "core::result::Result::Err"
-                                              []
-                                              [
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                                Ty.apply
-                                                  (Ty.path "ruint::from::ToUintError")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [ BITS; LIMBS ]
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::result::Result::Err"
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "ruint::from::ToUintError::ValueTooLarge"
+                                                      [
+                                                        BITS;
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [ BITS; LIMBS ]
+                                                              [],
+                                                            "from_limbs",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| limbs |))
+                                                              (Ty.apply
+                                                                (Ty.path "array")
+                                                                [ LIMBS ]
+                                                                [ Ty.path "u64" ])
+                                                          ]
+                                                        |)
+                                                      ])
+                                                    (Ty.apply
+                                                      (Ty.path "ruint::from::ToUintError")
                                                       []
-                                                  ]
-                                              ]
-                                              [
-                                                Value.StructTuple
-                                                  "ruint::from::ToUintError::ValueTooLarge"
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [ BITS; LIMBS ]
-                                                      []
-                                                  ]
-                                                  [
-                                                    BITS;
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [ BITS; LIMBS ]
-                                                        [],
-                                                      M.get_associated_function (|
+                                                      [
                                                         Ty.apply
                                                           (Ty.path "ruint::Uint")
                                                           [ BITS; LIMBS ]
-                                                          [],
-                                                        "from_limbs",
-                                                        [],
+                                                          []
+                                                      ])
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [];
+                                                  Ty.apply
+                                                    (Ty.path "ruint::from::ToUintError")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
                                                         []
-                                                      |),
-                                                      [ M.read (| limbs |) ]
-                                                    |)
-                                                  ]
-                                              ]
+                                                    ]
+                                                ])
                                           |)
                                         |)
                                       |)));
@@ -3847,36 +4374,42 @@ Module from.
                                       M.never_to_any (|
                                         M.read (|
                                           M.return_ (|
-                                            Value.StructTuple
-                                              "core::result::Result::Ok"
-                                              []
-                                              [
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                                Ty.apply
-                                                  (Ty.path "ruint::from::ToUintError")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [ BITS; LIMBS ]
-                                                      []
-                                                  ]
-                                              ]
-                                              [
-                                                M.read (|
-                                                  get_associated_constant (|
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [ BITS; LIMBS ]
-                                                      [],
-                                                    "ZERO",
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [ BITS; LIMBS ]
-                                                      []
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::result::Result::Ok"
+                                                [
+                                                  M.read (|
+                                                    get_associated_constant (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "ZERO",
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        []
+                                                    |)
                                                   |)
-                                                |)
-                                              ]
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [];
+                                                  Ty.apply
+                                                    (Ty.path "ruint::from::ToUintError")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        []
+                                                    ]
+                                                ])
                                           |)
                                         |)
                                       |)));
@@ -3906,28 +4439,35 @@ Module from.
                         []
                         [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                      Ty.apply
-                        (Ty.path "ruint::from::ToUintError")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ]
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                        M.get_associated_function (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.call_closure (|
                           Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                          "from_limbs",
-                          [],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                            "from_limbs",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| limbs |))
+                              (Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                        Ty.apply
+                          (Ty.path "ruint::from::ToUintError")
                           []
-                        |),
-                        [ M.read (| limbs |) ]
-                      |)
-                    ]
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ])
                 |)
               |)))
           |)))
@@ -4058,7 +4598,11 @@ Module from.
                                     [],
                                     []
                                   |),
-                                  [ M.cast (Ty.path "u64") (M.read (| value |)) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "u64") (M.read (| value |)))
+                                      (Ty.path "u64")
+                                  ]
                                 |)
                               |)
                             |)
@@ -4139,8 +4683,35 @@ Module from.
                                     ]
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                            Ty.apply
+                                              (Ty.path "ruint::from::ToUintError")
+                                              []
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ]
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::convert::TryFrom",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          [],
+                                          [ Ty.path "u64" ],
+                                          "try_from",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.cast (Ty.path "u64") (M.read (| value |)))
+                                            (Ty.path "u64")
+                                        ]
+                                      |))
+                                      (Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [
@@ -4149,95 +4720,105 @@ Module from.
                                             (Ty.path "ruint::from::ToUintError")
                                             []
                                             [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::convert::TryFrom",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        [],
-                                        [ Ty.path "u64" ],
-                                        "try_from",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.cast (Ty.path "u64") (M.read (| value |)) ]
-                                    |);
-                                    M.closure
-                                      (fun γ =>
-                                        ltac:(M.monadic
-                                          match γ with
-                                          | [ α0 ] =>
-                                            ltac:(M.monadic
-                                              (M.match_operator (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [ BITS; LIMBS ]
-                                                      [];
-                                                    Ty.apply
-                                                      (Ty.path "ruint::from::ToUintError")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "ruint::Uint")
-                                                          [ BITS; LIMBS ]
-                                                          []
-                                                      ]
-                                                  ],
-                                                M.alloc (|
+                                        ]);
+                                    M.value_with_ty
+                                      (M.closure
+                                        (fun γ =>
+                                          ltac:(M.monadic
+                                            match γ with
+                                            | [ α0 ] =>
+                                              ltac:(M.monadic
+                                                (M.match_operator (|
                                                   Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    [],
-                                                  α0
-                                                |),
-                                                [
-                                                  fun γ =>
-                                                    ltac:(M.monadic
-                                                      (let n :=
-                                                        M.copy (|
-                                                          Ty.apply
-                                                            (Ty.path "ruint::Uint")
-                                                            [ BITS; LIMBS ]
-                                                            [],
-                                                          γ
-                                                        |) in
-                                                      Value.StructTuple
-                                                        "core::result::Result::Err"
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [];
+                                                      Ty.apply
+                                                        (Ty.path "ruint::from::ToUintError")
                                                         []
                                                         [
                                                           Ty.apply
                                                             (Ty.path "ruint::Uint")
                                                             [ BITS; LIMBS ]
-                                                            [];
-                                                          Ty.apply
-                                                            (Ty.path "ruint::from::ToUintError")
                                                             []
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "ruint::Uint")
-                                                                [ BITS; LIMBS ]
-                                                                []
-                                                            ]
                                                         ]
-                                                        [
-                                                          Value.StructTuple
-                                                            "ruint::from::ToUintError::ValueTooLarge"
+                                                    ],
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    α0
+                                                  |),
+                                                  [
+                                                    fun γ =>
+                                                      ltac:(M.monadic
+                                                        (let n :=
+                                                          M.copy (|
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [ BITS; LIMBS ]
+                                                              [],
+                                                            γ
+                                                          |) in
+                                                        M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::result::Result::Err"
+                                                            [
+                                                              M.value_with_ty
+                                                                (Value.StructTuple
+                                                                  "ruint::from::ToUintError::ValueTooLarge"
+                                                                  [ BITS; M.read (| n |) ])
+                                                                (Ty.apply
+                                                                  (Ty.path
+                                                                    "ruint::from::ToUintError")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "ruint::Uint")
+                                                                      [ BITS; LIMBS ]
+                                                                      []
+                                                                  ])
+                                                            ])
+                                                          (Ty.apply
+                                                            (Ty.path "core::result::Result")
                                                             []
                                                             [
                                                               Ty.apply
                                                                 (Ty.path "ruint::Uint")
                                                                 [ BITS; LIMBS ]
+                                                                [];
+                                                              Ty.apply
+                                                                (Ty.path "ruint::from::ToUintError")
                                                                 []
-                                                            ]
-                                                            [ BITS; M.read (| n |) ]
-                                                        ]))
-                                                ]
-                                              |)))
-                                          | _ => M.impossible "wrong number of arguments"
-                                          end))
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "ruint::Uint")
+                                                                    [ BITS; LIMBS ]
+                                                                    []
+                                                                ]
+                                                            ])))
+                                                  ]
+                                                |)))
+                                            | _ => M.impossible "wrong number of arguments"
+                                            end)))
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                            Ty.apply
+                                              (Ty.path "ruint::from::ToUintError")
+                                              []
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ]
+                                          ]))
                                   ]
                                 |)
                               |)
@@ -4368,61 +4949,81 @@ Module from.
                                     []
                                     [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                                 ],
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                  Ty.apply
-                                    (Ty.path "ruint::from::ToUintError")
-                                    []
-                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                ]
-                                [
-                                  Value.StructTuple
-                                    "ruint::from::ToUintError::ValueTooLarge"
-                                    []
-                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                    [
-                                      BITS;
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          "from_limbs",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| limbs |) ]
-                                      |)
-                                    ]
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "ruint::from::ToUintError::ValueTooLarge"
+                                        [
+                                          BITS;
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              "from_limbs",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| limbs |))
+                                                (Ty.apply
+                                                  (Ty.path "array")
+                                                  [ LIMBS ]
+                                                  [ Ty.path "u64" ])
+                                            ]
+                                          |)
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "ruint::from::ToUintError")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                    Ty.apply
+                                      (Ty.path "ruint::from::ToUintError")
+                                      []
+                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                  ])
                             |)
                           |)));
                       fun γ =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::ToUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                            ]
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                M.get_associated_function (|
+                          (M.value_with_ty
+                            (Value.StructTuple
+                              "core::result::Result::Ok"
+                              [
+                                M.call_closure (|
                                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "from_limbs",
-                                  [],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "from_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| limbs |))
+                                      (Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ])
+                                  ]
+                                |)
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                Ty.apply
+                                  (Ty.path "ruint::from::ToUintError")
                                   []
-                                |),
-                                [ M.read (| limbs |) ]
-                              |)
-                            ]))
+                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                              ])))
                     ]
                   |)
                 |)
@@ -4492,7 +5093,7 @@ Module from.
               [],
               []
             |),
-            [ M.cast (Ty.path "u64") (M.read (| value |)) ]
+            [ M.value_with_ty (M.cast (Ty.path "u64") (M.read (| value |))) (Ty.path "u64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -4558,7 +5159,7 @@ Module from.
               [],
               []
             |),
-            [ M.cast (Ty.path "u64") (M.read (| value |)) ]
+            [ M.value_with_ty (M.cast (Ty.path "u64") (M.read (| value |))) (Ty.path "u64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -4624,7 +5225,7 @@ Module from.
               [],
               []
             |),
-            [ M.cast (Ty.path "u64") (M.read (| value |)) ]
+            [ M.value_with_ty (M.cast (Ty.path "u64") (M.read (| value |))) (Ty.path "u64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -4690,7 +5291,7 @@ Module from.
               [],
               []
             |),
-            [ M.cast (Ty.path "u64") (M.read (| value |)) ]
+            [ M.value_with_ty (M.cast (Ty.path "u64") (M.read (| value |))) (Ty.path "u64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -4756,7 +5357,7 @@ Module from.
               [],
               []
             |),
-            [ M.cast (Ty.path "u64") (M.read (| value |)) ]
+            [ M.value_with_ty (M.cast (Ty.path "u64") (M.read (| value |))) (Ty.path "u64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -4833,38 +5434,20 @@ Module from.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "i8", "is_negative", [], [] |),
-                          [ M.read (| value |) ]
+                          [ M.value_with_ty (M.read (| value |)) (Ty.path "i8") ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                      Ty.apply
-                        (Ty.path "ruint::from::ToUintError")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ]
-                    [
-                      M.match_operator (|
-                        Ty.apply
-                          (Ty.path "ruint::from::ToUintError")
-                          []
-                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                        M.alloc (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.match_operator (|
                           Ty.apply
-                            (Ty.path "core::result::Result")
+                            (Ty.path "ruint::from::ToUintError")
                             []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::ToUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                            ],
-                          M.call_closure (|
+                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
@@ -4875,92 +5458,125 @@ Module from.
                                   []
                                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                               ],
-                            M.get_trait_method (|
-                              "core::convert::TryFrom",
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              [],
-                              [ Ty.path "u8" ],
-                              "try_from",
-                              [],
-                              []
-                            |),
-                            [ M.cast (Ty.path "u8") (M.read (| value |)) ]
-                          |)
-                        |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.find_or_pattern
-                                (Ty.tuple
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
-                                γ,
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Ok",
-                                          0
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ0_0
-                                        |) in
-                                      Value.Tuple [ n ]));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Err",
-                                          0
-                                        |) in
-                                      let γ1_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          0
-                                        |) in
-                                      let γ1_1 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          1
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ1_1
-                                        |) in
-                                      Value.Tuple [ n ]))
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                  Ty.apply
+                                    (Ty.path "ruint::from::ToUintError")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                                 ],
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ n ] =>
+                              M.get_trait_method (|
+                                "core::convert::TryFrom",
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                [],
+                                [ Ty.path "u8" ],
+                                "try_from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.cast (Ty.path "u8") (M.read (| value |)))
+                                  (Ty.path "u8")
+                              ]
+                            |)
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.find_or_pattern
+                                  (Ty.tuple
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
+                                  γ,
+                                  [
+                                    fun γ =>
                                       ltac:(M.monadic
-                                        (Value.StructTuple
-                                          "ruint::from::ToUintError::ValueNegative"
-                                          []
-                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                          [ BITS; M.read (| n |) ]))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end)
-                              |)));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.never_to_any (|
-                                M.call_closure (|
-                                  Ty.path "never",
-                                  M.get_function (| "core::panicking::panic", [], [] |),
-                                  [ mk_str (| "internal error: entered unreachable code" |) ]
-                                |)
-                              |)))
-                        ]
-                      |)
-                    ]));
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Ok",
+                                            0
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ0_0
+                                          |) in
+                                        Value.Tuple [ n ]));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Err",
+                                            0
+                                          |) in
+                                        let γ1_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            0
+                                          |) in
+                                        let γ1_1 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            1
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ1_1
+                                          |) in
+                                        Value.Tuple [ n ]))
+                                  ],
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ n ] =>
+                                        ltac:(M.monadic
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "ruint::from::ToUintError::ValueNegative"
+                                              [ BITS; M.read (| n |) ])
+                                            (Ty.apply
+                                              (Ty.path "ruint::from::ToUintError")
+                                              []
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ])))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.never_to_any (|
+                                  M.call_closure (|
+                                    Ty.path "never",
+                                    M.get_function (| "core::panicking::panic", [], [] |),
+                                    [
+                                      M.value_with_ty
+                                        (mk_str (| "internal error: entered unreachable code" |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
+                                |)))
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                        Ty.apply
+                          (Ty.path "ruint::from::ToUintError")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.call_closure (|
@@ -4983,7 +5599,7 @@ Module from.
                       [],
                       []
                     |),
-                    [ M.cast (Ty.path "u8") (M.read (| value |)) ]
+                    [ M.value_with_ty (M.cast (Ty.path "u8") (M.read (| value |))) (Ty.path "u8") ]
                   |)))
             ]
           |)))
@@ -5062,38 +5678,20 @@ Module from.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "i16", "is_negative", [], [] |),
-                          [ M.read (| value |) ]
+                          [ M.value_with_ty (M.read (| value |)) (Ty.path "i16") ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                      Ty.apply
-                        (Ty.path "ruint::from::ToUintError")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ]
-                    [
-                      M.match_operator (|
-                        Ty.apply
-                          (Ty.path "ruint::from::ToUintError")
-                          []
-                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                        M.alloc (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.match_operator (|
                           Ty.apply
-                            (Ty.path "core::result::Result")
+                            (Ty.path "ruint::from::ToUintError")
                             []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::ToUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                            ],
-                          M.call_closure (|
+                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
@@ -5104,92 +5702,125 @@ Module from.
                                   []
                                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                               ],
-                            M.get_trait_method (|
-                              "core::convert::TryFrom",
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              [],
-                              [ Ty.path "u16" ],
-                              "try_from",
-                              [],
-                              []
-                            |),
-                            [ M.cast (Ty.path "u16") (M.read (| value |)) ]
-                          |)
-                        |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.find_or_pattern
-                                (Ty.tuple
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
-                                γ,
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Ok",
-                                          0
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ0_0
-                                        |) in
-                                      Value.Tuple [ n ]));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Err",
-                                          0
-                                        |) in
-                                      let γ1_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          0
-                                        |) in
-                                      let γ1_1 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          1
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ1_1
-                                        |) in
-                                      Value.Tuple [ n ]))
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                  Ty.apply
+                                    (Ty.path "ruint::from::ToUintError")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                                 ],
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ n ] =>
+                              M.get_trait_method (|
+                                "core::convert::TryFrom",
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                [],
+                                [ Ty.path "u16" ],
+                                "try_from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.cast (Ty.path "u16") (M.read (| value |)))
+                                  (Ty.path "u16")
+                              ]
+                            |)
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.find_or_pattern
+                                  (Ty.tuple
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
+                                  γ,
+                                  [
+                                    fun γ =>
                                       ltac:(M.monadic
-                                        (Value.StructTuple
-                                          "ruint::from::ToUintError::ValueNegative"
-                                          []
-                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                          [ BITS; M.read (| n |) ]))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end)
-                              |)));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.never_to_any (|
-                                M.call_closure (|
-                                  Ty.path "never",
-                                  M.get_function (| "core::panicking::panic", [], [] |),
-                                  [ mk_str (| "internal error: entered unreachable code" |) ]
-                                |)
-                              |)))
-                        ]
-                      |)
-                    ]));
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Ok",
+                                            0
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ0_0
+                                          |) in
+                                        Value.Tuple [ n ]));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Err",
+                                            0
+                                          |) in
+                                        let γ1_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            0
+                                          |) in
+                                        let γ1_1 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            1
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ1_1
+                                          |) in
+                                        Value.Tuple [ n ]))
+                                  ],
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ n ] =>
+                                        ltac:(M.monadic
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "ruint::from::ToUintError::ValueNegative"
+                                              [ BITS; M.read (| n |) ])
+                                            (Ty.apply
+                                              (Ty.path "ruint::from::ToUintError")
+                                              []
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ])))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.never_to_any (|
+                                  M.call_closure (|
+                                    Ty.path "never",
+                                    M.get_function (| "core::panicking::panic", [], [] |),
+                                    [
+                                      M.value_with_ty
+                                        (mk_str (| "internal error: entered unreachable code" |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
+                                |)))
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                        Ty.apply
+                          (Ty.path "ruint::from::ToUintError")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.call_closure (|
@@ -5212,7 +5843,8 @@ Module from.
                       [],
                       []
                     |),
-                    [ M.cast (Ty.path "u16") (M.read (| value |)) ]
+                    [ M.value_with_ty (M.cast (Ty.path "u16") (M.read (| value |))) (Ty.path "u16")
+                    ]
                   |)))
             ]
           |)))
@@ -5291,38 +5923,20 @@ Module from.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "i32", "is_negative", [], [] |),
-                          [ M.read (| value |) ]
+                          [ M.value_with_ty (M.read (| value |)) (Ty.path "i32") ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                      Ty.apply
-                        (Ty.path "ruint::from::ToUintError")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ]
-                    [
-                      M.match_operator (|
-                        Ty.apply
-                          (Ty.path "ruint::from::ToUintError")
-                          []
-                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                        M.alloc (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.match_operator (|
                           Ty.apply
-                            (Ty.path "core::result::Result")
+                            (Ty.path "ruint::from::ToUintError")
                             []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::ToUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                            ],
-                          M.call_closure (|
+                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
@@ -5333,92 +5947,125 @@ Module from.
                                   []
                                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                               ],
-                            M.get_trait_method (|
-                              "core::convert::TryFrom",
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              [],
-                              [ Ty.path "u32" ],
-                              "try_from",
-                              [],
-                              []
-                            |),
-                            [ M.cast (Ty.path "u32") (M.read (| value |)) ]
-                          |)
-                        |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.find_or_pattern
-                                (Ty.tuple
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
-                                γ,
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Ok",
-                                          0
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ0_0
-                                        |) in
-                                      Value.Tuple [ n ]));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Err",
-                                          0
-                                        |) in
-                                      let γ1_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          0
-                                        |) in
-                                      let γ1_1 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          1
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ1_1
-                                        |) in
-                                      Value.Tuple [ n ]))
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                  Ty.apply
+                                    (Ty.path "ruint::from::ToUintError")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                                 ],
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ n ] =>
+                              M.get_trait_method (|
+                                "core::convert::TryFrom",
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                [],
+                                [ Ty.path "u32" ],
+                                "try_from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.cast (Ty.path "u32") (M.read (| value |)))
+                                  (Ty.path "u32")
+                              ]
+                            |)
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.find_or_pattern
+                                  (Ty.tuple
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
+                                  γ,
+                                  [
+                                    fun γ =>
                                       ltac:(M.monadic
-                                        (Value.StructTuple
-                                          "ruint::from::ToUintError::ValueNegative"
-                                          []
-                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                          [ BITS; M.read (| n |) ]))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end)
-                              |)));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.never_to_any (|
-                                M.call_closure (|
-                                  Ty.path "never",
-                                  M.get_function (| "core::panicking::panic", [], [] |),
-                                  [ mk_str (| "internal error: entered unreachable code" |) ]
-                                |)
-                              |)))
-                        ]
-                      |)
-                    ]));
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Ok",
+                                            0
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ0_0
+                                          |) in
+                                        Value.Tuple [ n ]));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Err",
+                                            0
+                                          |) in
+                                        let γ1_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            0
+                                          |) in
+                                        let γ1_1 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            1
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ1_1
+                                          |) in
+                                        Value.Tuple [ n ]))
+                                  ],
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ n ] =>
+                                        ltac:(M.monadic
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "ruint::from::ToUintError::ValueNegative"
+                                              [ BITS; M.read (| n |) ])
+                                            (Ty.apply
+                                              (Ty.path "ruint::from::ToUintError")
+                                              []
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ])))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.never_to_any (|
+                                  M.call_closure (|
+                                    Ty.path "never",
+                                    M.get_function (| "core::panicking::panic", [], [] |),
+                                    [
+                                      M.value_with_ty
+                                        (mk_str (| "internal error: entered unreachable code" |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
+                                |)))
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                        Ty.apply
+                          (Ty.path "ruint::from::ToUintError")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.call_closure (|
@@ -5441,7 +6088,8 @@ Module from.
                       [],
                       []
                     |),
-                    [ M.cast (Ty.path "u32") (M.read (| value |)) ]
+                    [ M.value_with_ty (M.cast (Ty.path "u32") (M.read (| value |))) (Ty.path "u32")
+                    ]
                   |)))
             ]
           |)))
@@ -5520,38 +6168,20 @@ Module from.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "i64", "is_negative", [], [] |),
-                          [ M.read (| value |) ]
+                          [ M.value_with_ty (M.read (| value |)) (Ty.path "i64") ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                      Ty.apply
-                        (Ty.path "ruint::from::ToUintError")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ]
-                    [
-                      M.match_operator (|
-                        Ty.apply
-                          (Ty.path "ruint::from::ToUintError")
-                          []
-                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                        M.alloc (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.match_operator (|
                           Ty.apply
-                            (Ty.path "core::result::Result")
+                            (Ty.path "ruint::from::ToUintError")
                             []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::ToUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                            ],
-                          M.call_closure (|
+                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
@@ -5562,92 +6192,125 @@ Module from.
                                   []
                                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                               ],
-                            M.get_trait_method (|
-                              "core::convert::TryFrom",
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              [],
-                              [ Ty.path "u64" ],
-                              "try_from",
-                              [],
-                              []
-                            |),
-                            [ M.cast (Ty.path "u64") (M.read (| value |)) ]
-                          |)
-                        |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.find_or_pattern
-                                (Ty.tuple
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
-                                γ,
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Ok",
-                                          0
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ0_0
-                                        |) in
-                                      Value.Tuple [ n ]));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Err",
-                                          0
-                                        |) in
-                                      let γ1_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          0
-                                        |) in
-                                      let γ1_1 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          1
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ1_1
-                                        |) in
-                                      Value.Tuple [ n ]))
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                  Ty.apply
+                                    (Ty.path "ruint::from::ToUintError")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                                 ],
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ n ] =>
+                              M.get_trait_method (|
+                                "core::convert::TryFrom",
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                [],
+                                [ Ty.path "u64" ],
+                                "try_from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.cast (Ty.path "u64") (M.read (| value |)))
+                                  (Ty.path "u64")
+                              ]
+                            |)
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.find_or_pattern
+                                  (Ty.tuple
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
+                                  γ,
+                                  [
+                                    fun γ =>
                                       ltac:(M.monadic
-                                        (Value.StructTuple
-                                          "ruint::from::ToUintError::ValueNegative"
-                                          []
-                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                          [ BITS; M.read (| n |) ]))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end)
-                              |)));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.never_to_any (|
-                                M.call_closure (|
-                                  Ty.path "never",
-                                  M.get_function (| "core::panicking::panic", [], [] |),
-                                  [ mk_str (| "internal error: entered unreachable code" |) ]
-                                |)
-                              |)))
-                        ]
-                      |)
-                    ]));
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Ok",
+                                            0
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ0_0
+                                          |) in
+                                        Value.Tuple [ n ]));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Err",
+                                            0
+                                          |) in
+                                        let γ1_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            0
+                                          |) in
+                                        let γ1_1 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            1
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ1_1
+                                          |) in
+                                        Value.Tuple [ n ]))
+                                  ],
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ n ] =>
+                                        ltac:(M.monadic
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "ruint::from::ToUintError::ValueNegative"
+                                              [ BITS; M.read (| n |) ])
+                                            (Ty.apply
+                                              (Ty.path "ruint::from::ToUintError")
+                                              []
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ])))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.never_to_any (|
+                                  M.call_closure (|
+                                    Ty.path "never",
+                                    M.get_function (| "core::panicking::panic", [], [] |),
+                                    [
+                                      M.value_with_ty
+                                        (mk_str (| "internal error: entered unreachable code" |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
+                                |)))
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                        Ty.apply
+                          (Ty.path "ruint::from::ToUintError")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.call_closure (|
@@ -5670,7 +6333,8 @@ Module from.
                       [],
                       []
                     |),
-                    [ M.cast (Ty.path "u64") (M.read (| value |)) ]
+                    [ M.value_with_ty (M.cast (Ty.path "u64") (M.read (| value |))) (Ty.path "u64")
+                    ]
                   |)))
             ]
           |)))
@@ -5749,38 +6413,20 @@ Module from.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "i128", "is_negative", [], [] |),
-                          [ M.read (| value |) ]
+                          [ M.value_with_ty (M.read (| value |)) (Ty.path "i128") ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                      Ty.apply
-                        (Ty.path "ruint::from::ToUintError")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ]
-                    [
-                      M.match_operator (|
-                        Ty.apply
-                          (Ty.path "ruint::from::ToUintError")
-                          []
-                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                        M.alloc (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.match_operator (|
                           Ty.apply
-                            (Ty.path "core::result::Result")
+                            (Ty.path "ruint::from::ToUintError")
                             []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::ToUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                            ],
-                          M.call_closure (|
+                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
@@ -5791,92 +6437,125 @@ Module from.
                                   []
                                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                               ],
-                            M.get_trait_method (|
-                              "core::convert::TryFrom",
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              [],
-                              [ Ty.path "u128" ],
-                              "try_from",
-                              [],
-                              []
-                            |),
-                            [ M.cast (Ty.path "u128") (M.read (| value |)) ]
-                          |)
-                        |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.find_or_pattern
-                                (Ty.tuple
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
-                                γ,
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Ok",
-                                          0
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ0_0
-                                        |) in
-                                      Value.Tuple [ n ]));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Err",
-                                          0
-                                        |) in
-                                      let γ1_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          0
-                                        |) in
-                                      let γ1_1 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          1
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ1_1
-                                        |) in
-                                      Value.Tuple [ n ]))
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                  Ty.apply
+                                    (Ty.path "ruint::from::ToUintError")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                                 ],
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ n ] =>
+                              M.get_trait_method (|
+                                "core::convert::TryFrom",
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                [],
+                                [ Ty.path "u128" ],
+                                "try_from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.cast (Ty.path "u128") (M.read (| value |)))
+                                  (Ty.path "u128")
+                              ]
+                            |)
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.find_or_pattern
+                                  (Ty.tuple
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
+                                  γ,
+                                  [
+                                    fun γ =>
                                       ltac:(M.monadic
-                                        (Value.StructTuple
-                                          "ruint::from::ToUintError::ValueNegative"
-                                          []
-                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                          [ BITS; M.read (| n |) ]))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end)
-                              |)));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.never_to_any (|
-                                M.call_closure (|
-                                  Ty.path "never",
-                                  M.get_function (| "core::panicking::panic", [], [] |),
-                                  [ mk_str (| "internal error: entered unreachable code" |) ]
-                                |)
-                              |)))
-                        ]
-                      |)
-                    ]));
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Ok",
+                                            0
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ0_0
+                                          |) in
+                                        Value.Tuple [ n ]));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Err",
+                                            0
+                                          |) in
+                                        let γ1_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            0
+                                          |) in
+                                        let γ1_1 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            1
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ1_1
+                                          |) in
+                                        Value.Tuple [ n ]))
+                                  ],
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ n ] =>
+                                        ltac:(M.monadic
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "ruint::from::ToUintError::ValueNegative"
+                                              [ BITS; M.read (| n |) ])
+                                            (Ty.apply
+                                              (Ty.path "ruint::from::ToUintError")
+                                              []
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ])))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.never_to_any (|
+                                  M.call_closure (|
+                                    Ty.path "never",
+                                    M.get_function (| "core::panicking::panic", [], [] |),
+                                    [
+                                      M.value_with_ty
+                                        (mk_str (| "internal error: entered unreachable code" |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
+                                |)))
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                        Ty.apply
+                          (Ty.path "ruint::from::ToUintError")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.call_closure (|
@@ -5899,7 +6578,11 @@ Module from.
                       [],
                       []
                     |),
-                    [ M.cast (Ty.path "u128") (M.read (| value |)) ]
+                    [
+                      M.value_with_ty
+                        (M.cast (Ty.path "u128") (M.read (| value |)))
+                        (Ty.path "u128")
+                    ]
                   |)))
             ]
           |)))
@@ -5978,38 +6661,20 @@ Module from.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "isize", "is_negative", [], [] |),
-                          [ M.read (| value |) ]
+                          [ M.value_with_ty (M.read (| value |)) (Ty.path "isize") ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                      Ty.apply
-                        (Ty.path "ruint::from::ToUintError")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ]
-                    [
-                      M.match_operator (|
-                        Ty.apply
-                          (Ty.path "ruint::from::ToUintError")
-                          []
-                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                        M.alloc (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.match_operator (|
                           Ty.apply
-                            (Ty.path "core::result::Result")
+                            (Ty.path "ruint::from::ToUintError")
                             []
-                            [
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                              Ty.apply
-                                (Ty.path "ruint::from::ToUintError")
-                                []
-                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                            ],
-                          M.call_closure (|
+                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
@@ -6020,92 +6685,125 @@ Module from.
                                   []
                                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                               ],
-                            M.get_trait_method (|
-                              "core::convert::TryFrom",
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              [],
-                              [ Ty.path "usize" ],
-                              "try_from",
-                              [],
-                              []
-                            |),
-                            [ M.cast (Ty.path "usize") (M.read (| value |)) ]
-                          |)
-                        |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.find_or_pattern
-                                (Ty.tuple
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
-                                γ,
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Ok",
-                                          0
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ0_0
-                                        |) in
-                                      Value.Tuple [ n ]));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::result::Result::Err",
-                                          0
-                                        |) in
-                                      let γ1_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          0
-                                        |) in
-                                      let γ1_1 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ0_0,
-                                          "ruint::from::ToUintError::ValueTooLarge",
-                                          1
-                                        |) in
-                                      let n :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          γ1_1
-                                        |) in
-                                      Value.Tuple [ n ]))
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                  Ty.apply
+                                    (Ty.path "ruint::from::ToUintError")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                                 ],
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ n ] =>
+                              M.get_trait_method (|
+                                "core::convert::TryFrom",
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                [],
+                                [ Ty.path "usize" ],
+                                "try_from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.cast (Ty.path "usize") (M.read (| value |)))
+                                  (Ty.path "usize")
+                              ]
+                            |)
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.find_or_pattern
+                                  (Ty.tuple
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]) (|
+                                  γ,
+                                  [
+                                    fun γ =>
                                       ltac:(M.monadic
-                                        (Value.StructTuple
-                                          "ruint::from::ToUintError::ValueNegative"
-                                          []
-                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                          [ BITS; M.read (| n |) ]))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end)
-                              |)));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (M.never_to_any (|
-                                M.call_closure (|
-                                  Ty.path "never",
-                                  M.get_function (| "core::panicking::panic", [], [] |),
-                                  [ mk_str (| "internal error: entered unreachable code" |) ]
-                                |)
-                              |)))
-                        ]
-                      |)
-                    ]));
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Ok",
+                                            0
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ0_0
+                                          |) in
+                                        Value.Tuple [ n ]));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ,
+                                            "core::result::Result::Err",
+                                            0
+                                          |) in
+                                        let γ1_0 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            0
+                                          |) in
+                                        let γ1_1 :=
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            γ0_0,
+                                            "ruint::from::ToUintError::ValueTooLarge",
+                                            1
+                                          |) in
+                                        let n :=
+                                          M.copy (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            γ1_1
+                                          |) in
+                                        Value.Tuple [ n ]))
+                                  ],
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ n ] =>
+                                        ltac:(M.monadic
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "ruint::from::ToUintError::ValueNegative"
+                                              [ BITS; M.read (| n |) ])
+                                            (Ty.apply
+                                              (Ty.path "ruint::from::ToUintError")
+                                              []
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ])))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.never_to_any (|
+                                  M.call_closure (|
+                                    Ty.path "never",
+                                    M.get_function (| "core::panicking::panic", [], [] |),
+                                    [
+                                      M.value_with_ty
+                                        (mk_str (| "internal error: entered unreachable code" |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
+                                |)))
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                        Ty.apply
+                          (Ty.path "ruint::from::ToUintError")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.call_closure (|
@@ -6128,7 +6826,11 @@ Module from.
                       [],
                       []
                     |),
-                    [ M.cast (Ty.path "usize") (M.read (| value |)) ]
+                    [
+                      M.value_with_ty
+                        (M.cast (Ty.path "usize") (M.read (| value |)))
+                        (Ty.path "usize")
+                    ]
                   |)))
             ]
           |)))
@@ -6264,7 +6966,7 @@ Module from.
                                 M.call_closure (|
                                   Ty.path "bool",
                                   M.get_associated_function (| Ty.path "f64", "is_nan", [], [] |),
-                                  [ M.read (| value |) ]
+                                  [ M.value_with_ty (M.read (| value |)) (Ty.path "f64") ]
                                 |)
                               |)) in
                           let _ :=
@@ -6272,23 +6974,29 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                    Ty.apply
-                                      (Ty.path "ruint::from::ToUintError")
-                                      []
-                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::ToUintError::NotANumber"
-                                      []
-                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                      [ BITS ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::ToUintError::NotANumber"
+                                          [ BITS ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::ToUintError")
+                                          []
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                      Ty.apply
+                                        (Ty.path "ruint::from::ToUintError")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -6326,21 +7034,10 @@ Module from.
                                     []
                                   |),
                                   [
-                                    M.match_operator (|
-                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                            Ty.apply
-                                              (Ty.path "ruint::from::ToUintError")
-                                              []
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ]
-                                          ],
-                                        M.call_closure (|
+                                    M.value_with_ty
+                                      (M.match_operator (|
+                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                        M.alloc (|
                                           Ty.apply
                                             (Ty.path "core::result::Result")
                                             []
@@ -6356,127 +7053,162 @@ Module from.
                                                     []
                                                 ]
                                             ],
-                                          M.get_trait_method (|
-                                            "core::convert::TryFrom",
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            [],
-                                            [ Ty.path "f64" ],
-                                            "try_from",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "f64",
-                                              M.get_associated_function (|
-                                                Ty.path "f64",
-                                                "abs",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| value |) ]
-                                            |)
-                                          ]
-                                        |)
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (M.find_or_pattern
-                                              (Ty.tuple
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                                Ty.apply
+                                                  (Ty.path "ruint::from::ToUintError")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      []
+                                                  ]
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::convert::TryFrom",
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              [],
+                                              [ Ty.path "f64" ],
+                                              "try_from",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "f64",
+                                                  M.get_associated_function (|
+                                                    Ty.path "f64",
+                                                    "abs",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| value |))
+                                                      (Ty.path "f64")
+                                                  ]
+                                                |))
+                                                (Ty.path "f64")
+                                            ]
+                                          |)
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (M.find_or_pattern
+                                                (Ty.tuple
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      []
+                                                  ]) (|
+                                                γ,
                                                 [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let γ0_0 :=
+                                                        M.SubPointer.get_struct_tuple_field (|
+                                                          γ,
+                                                          "core::result::Result::Ok",
+                                                          0
+                                                        |) in
+                                                      let n :=
+                                                        M.copy (|
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            [],
+                                                          γ0_0
+                                                        |) in
+                                                      Value.Tuple [ n ]));
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let γ0_0 :=
+                                                        M.SubPointer.get_struct_tuple_field (|
+                                                          γ,
+                                                          "core::result::Result::Err",
+                                                          0
+                                                        |) in
+                                                      let γ1_0 :=
+                                                        M.SubPointer.get_struct_tuple_field (|
+                                                          γ0_0,
+                                                          "ruint::from::ToUintError::ValueTooLarge",
+                                                          0
+                                                        |) in
+                                                      let γ1_1 :=
+                                                        M.SubPointer.get_struct_tuple_field (|
+                                                          γ0_0,
+                                                          "ruint::from::ToUintError::ValueTooLarge",
+                                                          1
+                                                        |) in
+                                                      let n :=
+                                                        M.copy (|
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            [],
+                                                          γ1_1
+                                                        |) in
+                                                      Value.Tuple [ n ]))
+                                                ],
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    match γ with
+                                                    | [ n ] => ltac:(M.monadic (M.read (| n |)))
+                                                    | _ => M.impossible "wrong number of arguments"
+                                                    end)
+                                              |)));
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (M.read (|
+                                                get_associated_constant (|
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [],
+                                                  "ZERO",
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
                                                     []
-                                                ]) (|
-                                              γ,
-                                              [
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let γ0_0 :=
-                                                      M.SubPointer.get_struct_tuple_field (|
-                                                        γ,
-                                                        "core::result::Result::Ok",
-                                                        0
-                                                      |) in
-                                                    let n :=
-                                                      M.copy (|
-                                                        Ty.apply
-                                                          (Ty.path "ruint::Uint")
-                                                          [ BITS; LIMBS ]
-                                                          [],
-                                                        γ0_0
-                                                      |) in
-                                                    Value.Tuple [ n ]));
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let γ0_0 :=
-                                                      M.SubPointer.get_struct_tuple_field (|
-                                                        γ,
-                                                        "core::result::Result::Err",
-                                                        0
-                                                      |) in
-                                                    let γ1_0 :=
-                                                      M.SubPointer.get_struct_tuple_field (|
-                                                        γ0_0,
-                                                        "ruint::from::ToUintError::ValueTooLarge",
-                                                        0
-                                                      |) in
-                                                    let γ1_1 :=
-                                                      M.SubPointer.get_struct_tuple_field (|
-                                                        γ0_0,
-                                                        "ruint::from::ToUintError::ValueTooLarge",
-                                                        1
-                                                      |) in
-                                                    let n :=
-                                                      M.copy (|
-                                                        Ty.apply
-                                                          (Ty.path "ruint::Uint")
-                                                          [ BITS; LIMBS ]
-                                                          [],
-                                                        γ1_1
-                                                      |) in
-                                                    Value.Tuple [ n ]))
-                                              ],
-                                              fun γ =>
-                                                ltac:(M.monadic
-                                                  match γ with
-                                                  | [ n ] => ltac:(M.monadic (M.read (| n |)))
-                                                  | _ => M.impossible "wrong number of arguments"
-                                                  end)
-                                            |)));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (M.read (|
-                                              get_associated_constant (|
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                "ZERO",
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              |)
-                                            |)))
-                                      ]
-                                    |)
+                                                |)
+                                              |)))
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                                   ]
                                 |) in
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                    Ty.apply
-                                      (Ty.path "ruint::from::ToUintError")
-                                      []
-                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::ToUintError::ValueNegative"
-                                      []
-                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                      [ BITS; M.read (| wrapped |) ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::ToUintError::ValueNegative"
+                                          [ BITS; M.read (| wrapped |) ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::ToUintError")
+                                          []
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                      Ty.apply
+                                        (Ty.path "ruint::from::ToUintError")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -6488,15 +7220,17 @@ Module from.
                     Ty.path "f64",
                     M.get_associated_function (| Ty.path "f64", "exp2", [], [] |),
                     [
-                      M.cast
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "f64")
+                          (M.read (|
+                            get_associated_constant (|
+                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                              "BITS",
+                              Ty.path "usize"
+                            |)
+                          |)))
                         (Ty.path "f64")
-                        (M.read (|
-                          get_associated_constant (|
-                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                            "BITS",
-                            Ty.path "usize"
-                          |)
-                        |))
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -6555,11 +7289,13 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "f64",
-                                          BinOp.Wrap.rem,
-                                          [ M.read (| value |); M.read (| modulus |) ]
-                                        |)
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.path "f64",
+                                            BinOp.Wrap.rem,
+                                            [ M.read (| value |); M.read (| modulus |) ]
+                                          |))
+                                          (Ty.path "f64")
                                       ]
                                     |)
                                   |),
@@ -6638,23 +7374,29 @@ Module from.
                                   ]
                                 |) in
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                    Ty.apply
-                                      (Ty.path "ruint::from::ToUintError")
-                                      []
-                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::ToUintError::ValueTooLarge"
-                                      []
-                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                      [ BITS; M.read (| wrapped |) ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::ToUintError::ValueTooLarge"
+                                          [ BITS; M.read (| wrapped |) ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::ToUintError")
+                                          []
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                      Ty.apply
+                                        (Ty.path "ruint::from::ToUintError")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -6683,25 +7425,28 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                    Ty.apply
-                                      (Ty.path "ruint::from::ToUintError")
-                                      []
-                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                  ]
-                                  [
-                                    M.read (|
-                                      get_associated_constant (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "ZERO",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [
+                                      M.read (|
+                                        get_associated_constant (|
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          "ZERO",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                        |)
                                       |)
-                                    |)
-                                  ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                      Ty.apply
+                                        (Ty.path "ruint::from::ToUintError")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -6731,7 +7476,7 @@ Module from.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| value |) ]
+                                      [ M.value_with_ty (M.read (| value |)) (Ty.path "f64") ]
                                     |)
                                   ]
                                 |)
@@ -6742,7 +7487,11 @@ Module from.
                             M.call_closure (|
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic", [], [] |),
-                              [ mk_str (| "assertion failed: value.is_normal()" |) ]
+                              [
+                                M.value_with_ty
+                                  (mk_str (| "assertion failed: value.is_normal()" |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
                           |)));
                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -6758,7 +7507,7 @@ Module from.
                   M.call_closure (|
                     Ty.path "u64",
                     M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                    [ M.read (| value |) ]
+                    [ M.value_with_ty (M.read (| value |)) (Ty.path "f64") ]
                   |) in
                 let~ sign : Ty.path "u64" :=
                   M.call_closure (|
@@ -6795,7 +7544,11 @@ Module from.
                             M.call_closure (|
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic", [], [] |),
-                              [ mk_str (| "assertion failed: sign == 0" |) ]
+                              [
+                                M.value_with_ty
+                                  (mk_str (| "assertion failed: sign == 0" |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
                           |)));
                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -6846,7 +7599,11 @@ Module from.
                             M.call_closure (|
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic", [], [] |),
-                              [ mk_str (| "assertion failed: biased_exponent >= 1023" |) ]
+                              [
+                                M.value_with_ty
+                                  (mk_str (| "assertion failed: biased_exponent >= 1023" |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
                           |)));
                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -6908,32 +7665,38 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                    Ty.apply
-                                      (Ty.path "ruint::from::ToUintError")
-                                      []
-                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::ToUintError::ValueTooLarge"
-                                      []
-                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                      [
-                                        BITS;
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            "ZERO",
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::ToUintError::ValueTooLarge"
+                                          [
+                                            BITS;
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                                "ZERO",
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              |)
+                                            |)
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::ToUintError")
+                                          []
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                      Ty.apply
+                                        (Ty.path "ruint::from::ToUintError")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -6999,18 +7762,20 @@ Module from.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                BinOp.Wrap.shr,
-                                [
-                                  M.read (| mantissa |);
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.sub,
-                                    [ Value.Integer IntegerKind.U64 52; M.read (| exponent |) ]
-                                  |)
-                                ]
-                              |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  BinOp.Wrap.shr,
+                                  [
+                                    M.read (| mantissa |);
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.sub,
+                                      [ Value.Integer IntegerKind.U64 52; M.read (| exponent |) ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64")
                             ]
                           |)));
                       fun γ =>
@@ -7082,8 +7847,36 @@ Module from.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                              Ty.apply
+                                                (Ty.path "ruint::from::ToUintError")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []
+                                                ]
+                                            ],
+                                          M.get_trait_method (|
+                                            "core::convert::TryFrom",
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            [],
+                                            [ Ty.path "u64" ],
+                                            "try_from",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.value_with_ty (M.read (| mantissa |)) (Ty.path "u64")
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
@@ -7093,18 +7886,7 @@ Module from.
                                               []
                                               [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
                                               ]
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::convert::TryFrom",
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          [],
-                                          [ Ty.path "u64" ],
-                                          "try_from",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| mantissa |) ]
-                                      |)
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -7200,7 +7982,25 @@ Module from.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| residual |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.apply
+                                                        (Ty.path "ruint::from::ToUintError")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            []
+                                                        ]
+                                                    ])
+                                              ]
                                             |)
                                           |)
                                         |)
@@ -7261,7 +8061,12 @@ Module from.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| n |); M.read (| exponent |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| n |))
+                                        (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                      M.value_with_ty (M.read (| exponent |)) (Ty.path "usize")
+                                    ]
                                   |)
                                 |),
                                 [
@@ -7297,57 +8102,66 @@ Module from.
                                                   M.read (| γ |),
                                                   Value.Bool true
                                                 |) in
-                                              Value.StructTuple
-                                                "core::result::Result::Err"
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    [];
-                                                  Ty.apply
-                                                    (Ty.path "ruint::from::ToUintError")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [ BITS; LIMBS ]
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::result::Result::Err"
+                                                  [
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "ruint::from::ToUintError::ValueTooLarge"
+                                                        [ BITS; M.read (| n |) ])
+                                                      (Ty.apply
+                                                        (Ty.path "ruint::from::ToUintError")
                                                         []
-                                                    ]
-                                                ]
-                                                [
-                                                  Value.StructTuple
-                                                    "ruint::from::ToUintError::ValueTooLarge"
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [ BITS; LIMBS ]
-                                                        []
-                                                    ]
-                                                    [ BITS; M.read (| n |) ]
-                                                ]));
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            []
+                                                        ])
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [];
+                                                    Ty.apply
+                                                      (Ty.path "ruint::from::ToUintError")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [ BITS; LIMBS ]
+                                                          []
+                                                      ]
+                                                  ])));
                                           fun γ =>
                                             ltac:(M.monadic
-                                              (Value.StructTuple
-                                                "core::result::Result::Ok"
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    [];
-                                                  Ty.apply
-                                                    (Ty.path "ruint::from::ToUintError")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [ BITS; LIMBS ]
-                                                        []
-                                                    ]
-                                                ]
-                                                [ M.read (| n |) ]))
+                                              (M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::result::Result::Ok"
+                                                  [ M.read (| n |) ])
+                                                (Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [];
+                                                    Ty.apply
+                                                      (Ty.path "ruint::from::ToUintError")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [ BITS; LIMBS ]
+                                                          []
+                                                      ]
+                                                  ])))
                                         ]
                                       |)))
                                 ]
@@ -7424,7 +8238,7 @@ Module from.
               [],
               []
             |),
-            [ M.cast (Ty.path "f64") (M.read (| value |)) ]
+            [ M.value_with_ty (M.cast (Ty.path "f64") (M.read (| value |))) (Ty.path "f64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -7483,7 +8297,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -7577,17 +8395,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "bool";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "bool" ]
-                                  ]
-                                  [ Value.Bool false ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Bool false ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "bool";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "bool" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -7618,10 +8439,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     Value.Integer IntegerKind.Usize 1
@@ -7633,42 +8459,60 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "bool";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "bool" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "bool" ]
-                                      [
-                                        BITS;
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            "bit",
-                                            [],
-                                            []
-                                          |),
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| value |) |)
+                                            BITS;
+                                            M.call_closure (|
+                                              Ty.path "bool",
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                                "bit",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| value |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        []
+                                                    ]);
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.Usize 0)
+                                                  (Ty.path "usize")
+                                              ]
                                             |);
-                                            Value.Integer IntegerKind.Usize 0
-                                          ]
-                                        |);
-                                        Value.Bool true
-                                      ]
-                                  ]
+                                            Value.Bool true
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "bool" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "bool";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "bool" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -7683,47 +8527,55 @@ Module from.
                       Ty.path "bool";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "bool" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "bool";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "bool" ]
-                    ]
-                    [
-                      M.call_closure (|
-                        Ty.path "bool",
-                        BinOp.ne,
-                        [
-                          M.read (|
-                            M.SubPointer.get_array_field (|
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                  M.get_associated_function (|
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                    "as_limbs",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| value |) |)
-                                    |)
-                                  ]
-                                |)
-                              |),
-                              Value.Integer IntegerKind.Usize 0
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U64 0
-                        ]
-                      |)
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.call_closure (|
+                          Ty.path "bool",
+                          BinOp.ne,
+                          [
+                            M.read (|
+                              M.SubPointer.get_array_field (|
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      "as_limbs",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| value |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                    ]
+                                  |)
+                                |),
+                                Value.Integer IntegerKind.Usize 0
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U64 0
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "bool";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "bool" ]
+                      ])
                 |)
               |)))
           |)))
@@ -7782,7 +8634,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -7882,17 +8738,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "i8";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i8" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.I8 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.I8 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i8";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i8" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -7923,10 +8782,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -7943,44 +8807,50 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "i8";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i8" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "i8" ]
-                                      [
-                                        BITS;
-                                        M.cast
-                                          (Ty.path "i8")
-                                          (M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.cast
+                                              (Ty.path "i8")
+                                              (M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |)
+                                              |));
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "i8",
+                                                "MAX",
+                                                Ty.path "i8"
+                                              |)
                                             |)
-                                          |));
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "i8",
-                                            "MAX",
-                                            Ty.path "i8"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "i8" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i8";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i8" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -7995,38 +8865,50 @@ Module from.
                       Ty.path "i8";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i8" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "i8";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i8" ]
-                    ]
-                    [
-                      M.cast
-                        (Ty.path "i8")
-                        (M.read (|
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |)
-                        |))
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.cast
+                          (Ty.path "i8")
+                          (M.read (|
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "i8";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i8" ]
+                      ])
                 |)
               |)))
           |)))
@@ -8085,7 +8967,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -8185,17 +9071,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "u8";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u8" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.U8 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.U8 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u8";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -8226,10 +9115,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -8246,44 +9140,50 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "u8";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u8" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "u8" ]
-                                      [
-                                        BITS;
-                                        M.cast
-                                          (Ty.path "u8")
-                                          (M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.cast
+                                              (Ty.path "u8")
+                                              (M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |)
+                                              |));
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "u8",
+                                                "MAX",
+                                                Ty.path "u8"
+                                              |)
                                             |)
-                                          |));
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "u8",
-                                            "MAX",
-                                            Ty.path "u8"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "u8" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u8";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -8298,38 +9198,50 @@ Module from.
                       Ty.path "u8";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u8" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "u8";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u8" ]
-                    ]
-                    [
-                      M.cast
-                        (Ty.path "u8")
-                        (M.read (|
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |)
-                        |))
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.cast
+                          (Ty.path "u8")
+                          (M.read (|
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "u8";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u8" ]
+                      ])
                 |)
               |)))
           |)))
@@ -8389,7 +9301,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -8489,17 +9405,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "i16";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i16" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.I16 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.I16 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i16";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i16" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -8530,10 +9449,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -8550,44 +9474,50 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "i16";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i16" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "i16" ]
-                                      [
-                                        BITS;
-                                        M.cast
-                                          (Ty.path "i16")
-                                          (M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.cast
+                                              (Ty.path "i16")
+                                              (M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |)
+                                              |));
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "i16",
+                                                "MAX",
+                                                Ty.path "i16"
+                                              |)
                                             |)
-                                          |));
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "i16",
-                                            "MAX",
-                                            Ty.path "i16"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "i16" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i16";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i16" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -8602,38 +9532,50 @@ Module from.
                       Ty.path "i16";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i16" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "i16";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i16" ]
-                    ]
-                    [
-                      M.cast
-                        (Ty.path "i16")
-                        (M.read (|
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |)
-                        |))
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.cast
+                          (Ty.path "i16")
+                          (M.read (|
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "i16";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i16" ]
+                      ])
                 |)
               |)))
           |)))
@@ -8693,7 +9635,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -8793,17 +9739,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "u16";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u16" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.U16 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.U16 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u16";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u16" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -8834,10 +9783,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -8854,44 +9808,50 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "u16";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u16" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "u16" ]
-                                      [
-                                        BITS;
-                                        M.cast
-                                          (Ty.path "u16")
-                                          (M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.cast
+                                              (Ty.path "u16")
+                                              (M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |)
+                                              |));
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "u16",
+                                                "MAX",
+                                                Ty.path "u16"
+                                              |)
                                             |)
-                                          |));
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "u16",
-                                            "MAX",
-                                            Ty.path "u16"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "u16" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u16";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u16" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -8906,38 +9866,50 @@ Module from.
                       Ty.path "u16";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u16" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "u16";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u16" ]
-                    ]
-                    [
-                      M.cast
-                        (Ty.path "u16")
-                        (M.read (|
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |)
-                        |))
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.cast
+                          (Ty.path "u16")
+                          (M.read (|
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "u16";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u16" ]
+                      ])
                 |)
               |)))
           |)))
@@ -8997,7 +9969,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -9097,17 +10073,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "i32";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i32" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.I32 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.I32 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i32";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i32" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -9138,10 +10117,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -9158,44 +10142,50 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "i32";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i32" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "i32" ]
-                                      [
-                                        BITS;
-                                        M.cast
-                                          (Ty.path "i32")
-                                          (M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.cast
+                                              (Ty.path "i32")
+                                              (M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |)
+                                              |));
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "i32",
+                                                "MAX",
+                                                Ty.path "i32"
+                                              |)
                                             |)
-                                          |));
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "i32",
-                                            "MAX",
-                                            Ty.path "i32"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "i32" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i32";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i32" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -9210,38 +10200,50 @@ Module from.
                       Ty.path "i32";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i32" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "i32";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i32" ]
-                    ]
-                    [
-                      M.cast
-                        (Ty.path "i32")
-                        (M.read (|
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |)
-                        |))
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.cast
+                          (Ty.path "i32")
+                          (M.read (|
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "i32";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i32" ]
+                      ])
                 |)
               |)))
           |)))
@@ -9301,7 +10303,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -9401,17 +10407,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "u32";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u32" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.U32 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.U32 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u32";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u32" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -9442,10 +10451,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -9462,44 +10476,50 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "u32";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u32" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "u32" ]
-                                      [
-                                        BITS;
-                                        M.cast
-                                          (Ty.path "u32")
-                                          (M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.cast
+                                              (Ty.path "u32")
+                                              (M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |)
+                                              |));
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "u32",
+                                                "MAX",
+                                                Ty.path "u32"
+                                              |)
                                             |)
-                                          |));
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "u32",
-                                            "MAX",
-                                            Ty.path "u32"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "u32" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u32";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u32" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -9514,38 +10534,50 @@ Module from.
                       Ty.path "u32";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u32" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "u32";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u32" ]
-                    ]
-                    [
-                      M.cast
-                        (Ty.path "u32")
-                        (M.read (|
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |)
-                        |))
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.cast
+                          (Ty.path "u32")
+                          (M.read (|
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "u32";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u32" ]
+                      ])
                 |)
               |)))
           |)))
@@ -9605,7 +10637,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -9705,17 +10741,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "i64";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i64" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.I64 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.I64 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i64";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i64" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -9746,10 +10785,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -9766,44 +10810,50 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "i64";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i64" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "i64" ]
-                                      [
-                                        BITS;
-                                        M.cast
-                                          (Ty.path "i64")
-                                          (M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.cast
+                                              (Ty.path "i64")
+                                              (M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |)
+                                              |));
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "i64",
+                                                "MAX",
+                                                Ty.path "i64"
+                                              |)
                                             |)
-                                          |));
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "i64",
-                                            "MAX",
-                                            Ty.path "i64"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "i64" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i64";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i64" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -9818,38 +10868,50 @@ Module from.
                       Ty.path "i64";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i64" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "i64";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i64" ]
-                    ]
-                    [
-                      M.cast
-                        (Ty.path "i64")
-                        (M.read (|
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |)
-                        |))
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.cast
+                          (Ty.path "i64")
+                          (M.read (|
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "i64";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i64" ]
+                      ])
                 |)
               |)))
           |)))
@@ -9909,7 +10971,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -10009,17 +11075,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "u64";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u64" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.U64 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.U64 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u64";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u64" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -10050,10 +11119,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -10070,43 +11144,49 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "u64";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u64" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "u64" ]
-                                      [
-                                        BITS;
-                                        M.read (|
-                                          M.use
-                                            (M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
-                                            |))
-                                        |);
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "u64",
-                                            "MAX",
-                                            Ty.path "u64"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.read (|
+                                              M.use
+                                                (M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |))
+                                            |);
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "u64",
+                                                "MAX",
+                                                Ty.path "u64"
+                                              |)
+                                            |)
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "u64" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u64";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u64" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -10121,37 +11201,49 @@ Module from.
                       Ty.path "u64";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u64" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "u64";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u64" ]
-                    ]
-                    [
-                      M.read (|
-                        M.use
-                          (M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |))
-                      |)
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.read (|
+                          M.use
+                            (M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |))
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "u64";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u64" ]
+                      ])
                 |)
               |)))
           |)))
@@ -10213,7 +11305,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -10313,17 +11409,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "isize";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "isize" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.Isize 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.Isize 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "isize";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "isize" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -10354,10 +11453,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -10374,44 +11478,50 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "isize";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "isize" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "isize" ]
-                                      [
-                                        BITS;
-                                        M.cast
-                                          (Ty.path "isize")
-                                          (M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.cast
+                                              (Ty.path "isize")
+                                              (M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |)
+                                              |));
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "isize",
+                                                "MAX",
+                                                Ty.path "isize"
+                                              |)
                                             |)
-                                          |));
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "isize",
-                                            "MAX",
-                                            Ty.path "isize"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "isize" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "isize";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "isize" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -10426,38 +11536,50 @@ Module from.
                       Ty.path "isize";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "isize" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "isize";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "isize" ]
-                    ]
-                    [
-                      M.cast
-                        (Ty.path "isize")
-                        (M.read (|
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |)
-                        |))
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.cast
+                          (Ty.path "isize")
+                          (M.read (|
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "isize";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "isize" ]
+                      ])
                 |)
               |)))
           |)))
@@ -10519,7 +11641,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -10619,17 +11745,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "usize";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "usize" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.Usize 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "usize";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -10660,10 +11789,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     M.read (|
@@ -10680,44 +11814,50 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "usize";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "usize" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "usize" ]
-                                      [
-                                        BITS;
-                                        M.cast
-                                          (Ty.path "usize")
-                                          (M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| value |) |),
-                                                "ruint::Uint",
-                                                "limbs"
-                                              |),
-                                              Value.Integer IntegerKind.Usize 0
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.cast
+                                              (Ty.path "usize")
+                                              (M.read (|
+                                                M.SubPointer.get_array_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| value |) |),
+                                                    "ruint::Uint",
+                                                    "limbs"
+                                                  |),
+                                                  Value.Integer IntegerKind.Usize 0
+                                                |)
+                                              |));
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "usize",
+                                                "MAX",
+                                                Ty.path "usize"
+                                              |)
                                             |)
-                                          |));
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "usize",
-                                            "MAX",
-                                            Ty.path "usize"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "usize" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "usize";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -10732,38 +11872,50 @@ Module from.
                       Ty.path "usize";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "usize" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "usize";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "usize" ]
-                    ]
-                    [
-                      M.cast
-                        (Ty.path "usize")
-                        (M.read (|
-                          M.SubPointer.get_array_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "as_limbs",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |)
-                                ]
-                              |)
-                            |),
-                            Value.Integer IntegerKind.Usize 0
-                          |)
-                        |))
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.cast
+                          (Ty.path "usize")
+                          (M.read (|
+                            M.SubPointer.get_array_field (|
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    "as_limbs",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| value |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                  ]
+                                |)
+                              |),
+                              Value.Integer IntegerKind.Usize 0
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "usize";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "usize" ]
+                      ])
                 |)
               |)))
           |)))
@@ -10825,7 +11977,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -10924,17 +12080,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "i128";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i128" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.I128 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.I128 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i128";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i128" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -10976,17 +12135,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "i128";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i128" ]
-                                  ]
-                                  [ M.read (| result |) ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ M.read (| result |) ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i128";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i128" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -11048,10 +12210,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     Value.Integer IntegerKind.Usize 127
@@ -11063,33 +12230,39 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "i128";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "i128" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "i128" ]
-                                      [
-                                        BITS;
-                                        M.read (| result |);
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "i128",
-                                            "MAX",
-                                            Ty.path "i128"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.read (| result |);
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "i128",
+                                                "MAX",
+                                                Ty.path "i128"
+                                              |)
+                                            |)
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "i128" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "i128";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "i128" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -11104,14 +12277,15 @@ Module from.
                       Ty.path "i128";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i128" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "i128";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i128" ]
-                    ]
-                    [ M.read (| result |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| result |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "i128";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "i128" ]
+                      ])
                 |)
               |)))
           |)))
@@ -11173,7 +12347,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -11272,17 +12450,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "u128";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u128" ]
-                                  ]
-                                  [ Value.Integer IntegerKind.U128 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ Value.Integer IntegerKind.U128 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u128";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u128" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -11324,17 +12505,20 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.path "u128";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u128" ]
-                                  ]
-                                  [ M.read (| result |) ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ M.read (| result |) ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u128";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u128" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -11396,10 +12580,15 @@ Module from.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| value |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| value |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |);
                                     Value.Integer IntegerKind.Usize 128
@@ -11411,33 +12600,39 @@ Module from.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.path "u128";
-                                    Ty.apply
-                                      (Ty.path "ruint::from::FromUintError")
-                                      []
-                                      [ Ty.path "u128" ]
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::from::FromUintError::Overflow"
-                                      []
-                                      [ Ty.path "u128" ]
-                                      [
-                                        BITS;
-                                        M.read (| result |);
-                                        M.read (|
-                                          get_associated_constant (|
-                                            Ty.path "u128",
-                                            "MAX",
-                                            Ty.path "u128"
-                                          |)
-                                        |)
-                                      ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::from::FromUintError::Overflow"
+                                          [
+                                            BITS;
+                                            M.read (| result |);
+                                            M.read (|
+                                              get_associated_constant (|
+                                                Ty.path "u128",
+                                                "MAX",
+                                                Ty.path "u128"
+                                              |)
+                                            |)
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "ruint::from::FromUintError")
+                                          []
+                                          [ Ty.path "u128" ])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u128";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u128" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -11452,14 +12647,15 @@ Module from.
                       Ty.path "u128";
                       Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u128" ]
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "u128";
-                      Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u128" ]
-                    ]
-                    [ M.read (| result |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| result |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "u128";
+                        Ty.apply (Ty.path "ruint::from::FromUintError") [] [ Ty.path "u128" ]
+                      ])
                 |)
               |)))
           |)))
@@ -11511,7 +12707,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -11562,7 +12762,14 @@ Module from.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                ]
               |)
             |),
             [
@@ -11580,7 +12787,11 @@ Module from.
                       M.call_closure (|
                         Ty.path "f32",
                         M.get_associated_function (| Ty.path "f32", "exp2", [], [] |),
-                        [ M.cast (Ty.path "f32") (M.read (| exponent |)) ]
+                        [
+                          M.value_with_ty
+                            (M.cast (Ty.path "f32") (M.read (| exponent |)))
+                            (Ty.path "f32")
+                        ]
                       |)
                     ]
                   |)))
@@ -11630,7 +12841,11 @@ Module from.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, value |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -11681,7 +12896,14 @@ Module from.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                ]
               |)
             |),
             [
@@ -11699,7 +12921,11 @@ Module from.
                       M.call_closure (|
                         Ty.path "f64",
                         M.get_associated_function (| Ty.path "f64", "exp2", [], [] |),
-                        [ M.cast (Ty.path "f64") (M.read (| exponent |)) ]
+                        [
+                          M.value_with_ty
+                            (M.cast (Ty.path "f64") (M.read (| exponent |)))
+                            (Ty.path "f64")
+                        ]
                       |)
                     ]
                   |)))

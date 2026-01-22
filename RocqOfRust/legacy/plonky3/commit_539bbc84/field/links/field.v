@@ -25,7 +25,7 @@ Module Powers.
   Global Instance IsLinkF (F : Set) `{Link F} : Link (t F) := {
     Φ := Ty.apply (Ty.path "p3_field::field::Powers") [] [Φ F];
     φ x :=
-      Value.StructRecord "p3_field::field::Powers" [] [Φ F] [
+      Value.StructRecord "p3_field::field::Powers" [
         ("base", φ x.(base));
         ("current", φ x.(current))
       ];

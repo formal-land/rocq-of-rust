@@ -76,24 +76,33 @@ Module ops.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Continue" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ C ] ])
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Continue" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ C ] ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)));
                 fun γ =>
@@ -118,24 +127,33 @@ Module ops.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Break" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ])
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Break" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)))
               ]
@@ -185,17 +203,32 @@ Module ops.
                         0
                       |) in
                     let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ C ], γ1_0 |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Continue"
-                      []
-                      [ B; C ]
-                      [
-                        M.call_closure (|
-                          C,
-                          M.get_trait_method (| "core::clone::Clone", C, [], [], "clone", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |)
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Continue"
+                        [
+                          M.call_closure (|
+                            C,
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              C,
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ C ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -206,17 +239,32 @@ Module ops.
                         0
                       |) in
                     let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ B ], γ1_0 |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Break"
-                      []
-                      [ B; C ]
-                      [
-                        M.call_closure (|
-                          B,
-                          M.get_trait_method (| "core::clone::Clone", B, [], [], "clone", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |)
-                      ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Break"
+                        [
+                          M.call_closure (|
+                            B,
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              B,
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ B ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -295,7 +343,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ] ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -305,7 +360,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ] ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -375,8 +437,12 @@ Module ops.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ C ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ C ] ])
                               ]
                             |)));
                         fun γ =>
@@ -411,8 +477,12 @@ Module ops.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ B ] ])
                               ]
                             |)));
                         fun γ =>
@@ -522,7 +592,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ] ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -537,11 +614,15 @@ Module ops.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -572,8 +653,12 @@ Module ops.
                             [ __H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ __H ])
                           ]
                         |)));
                     fun γ =>
@@ -598,8 +683,12 @@ Module ops.
                             [ __H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ __H ])
                           ]
                         |)))
                   ]
@@ -658,11 +747,11 @@ Module ops.
                   "Output",
                 output
               |) in
-            Value.StructTuple
-              "core::ops::control_flow::ControlFlow::Continue"
-              []
-              [ B; C ]
-              [ M.read (| output |) ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::ops::control_flow::ControlFlow::Continue"
+                [ M.read (| output |) ])
+              (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -706,17 +795,20 @@ Module ops.
                         0
                       |) in
                     let c := M.copy (| C, γ0_0 |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Continue"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [ B; Ty.path "core::convert::Infallible" ];
-                        C
-                      ]
-                      [ M.read (| c |) ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Continue"
+                        [ M.read (| c |) ])
+                      (Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ops::control_flow::ControlFlow")
+                            []
+                            [ B; Ty.path "core::convert::Infallible" ];
+                          C
+                        ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -726,23 +818,29 @@ Module ops.
                         0
                       |) in
                     let b := M.copy (| B, γ0_0 |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Break"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [ B; Ty.path "core::convert::Infallible" ];
-                        C
-                      ]
-                      [
-                        Value.StructTuple
-                          "core::ops::control_flow::ControlFlow::Break"
-                          []
-                          [ B; Ty.path "core::convert::Infallible" ]
-                          [ M.read (| b |) ]
-                      ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Break"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::ops::control_flow::ControlFlow::Break"
+                              [ M.read (| b |) ])
+                            (Ty.apply
+                              (Ty.path "core::ops::control_flow::ControlFlow")
+                              []
+                              [ B; Ty.path "core::convert::Infallible" ])
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ops::control_flow::ControlFlow")
+                            []
+                            [ B; Ty.path "core::convert::Infallible" ];
+                          C
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -806,11 +904,11 @@ Module ops.
                         0
                       |) in
                     let b := M.copy (| B, γ0_0 |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Break"
-                      []
-                      [ B; C ]
-                      [ M.read (| b |) ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Break"
+                        [ M.read (| b |) ])
+                      (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; C ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -979,7 +1077,9 @@ Module ops.
                   ltac:(M.monadic
                     (let _ :=
                       M.is_struct_tuple (| γ, "core::ops::control_flow::ControlFlow::Continue" |) in
-                    Value.StructTuple "core::option::Option::None" [] [ B ] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ B ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -989,7 +1089,9 @@ Module ops.
                         0
                       |) in
                     let x := M.copy (| B, γ0_0 |) in
-                    Value.StructTuple "core::option::Option::Some" [] [ B ] [ M.read (| x |) ]))
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::Some" [ M.read (| x |) ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ B ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1033,11 +1135,11 @@ Module ops.
                         0
                       |) in
                     let x := M.copy (| C, γ0_0 |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Continue"
-                      []
-                      [ T; C ]
-                      [ M.read (| x |) ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Continue"
+                        [ M.read (| x |) ])
+                      (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; C ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -1047,25 +1149,28 @@ Module ops.
                         0
                       |) in
                     let x := M.copy (| B, γ0_0 |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Break"
-                      []
-                      [ T; C ]
-                      [
-                        M.call_closure (|
-                          T,
-                          M.get_trait_method (|
-                            "core::ops::function::FnOnce",
-                            impl_FnOnce_B__arrow_T,
-                            [],
-                            [ Ty.tuple [ B ] ],
-                            "call_once",
-                            [],
-                            []
-                          |),
-                          [ M.read (| f |); Value.Tuple [ M.read (| x |) ] ]
-                        |)
-                      ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Break"
+                        [
+                          M.call_closure (|
+                            T,
+                            M.get_trait_method (|
+                              "core::ops::function::FnOnce",
+                              impl_FnOnce_B__arrow_T,
+                              [],
+                              [ Ty.tuple [ B ] ],
+                              "call_once",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty (M.read (| f |)) impl_FnOnce_B__arrow_T;
+                              M.value_with_ty (Value.Tuple [ M.read (| x |) ]) (Ty.tuple [ B ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; C ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1113,12 +1218,16 @@ Module ops.
                         0
                       |) in
                     let x := M.copy (| C, γ0_0 |) in
-                    Value.StructTuple "core::option::Option::Some" [] [ C ] [ M.read (| x |) ]));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::Some" [ M.read (| x |) ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ C ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let _ :=
                       M.is_struct_tuple (| γ, "core::ops::control_flow::ControlFlow::Break" |) in
-                    Value.StructTuple "core::option::Option::None" [] [ C ] []))
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ C ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1167,25 +1276,28 @@ Module ops.
                         0
                       |) in
                     let x := M.copy (| C, γ0_0 |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Continue"
-                      []
-                      [ B; T ]
-                      [
-                        M.call_closure (|
-                          T,
-                          M.get_trait_method (|
-                            "core::ops::function::FnOnce",
-                            impl_FnOnce_C__arrow_T,
-                            [],
-                            [ Ty.tuple [ C ] ],
-                            "call_once",
-                            [],
-                            []
-                          |),
-                          [ M.read (| f |); Value.Tuple [ M.read (| x |) ] ]
-                        |)
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Continue"
+                        [
+                          M.call_closure (|
+                            T,
+                            M.get_trait_method (|
+                              "core::ops::function::FnOnce",
+                              impl_FnOnce_C__arrow_T,
+                              [],
+                              [ Ty.tuple [ C ] ],
+                              "call_once",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty (M.read (| f |)) impl_FnOnce_C__arrow_T;
+                              M.value_with_ty (Value.Tuple [ M.read (| x |) ]) (Ty.tuple [ C ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; T ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -1195,11 +1307,11 @@ Module ops.
                         0
                       |) in
                     let x := M.copy (| B, γ0_0 |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Break"
-                      []
-                      [ B; T ]
-                      [ M.read (| x |) ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Break"
+                        [ M.read (| x |) ])
+                      (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ B; T ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1255,7 +1367,7 @@ Module ops.
                       Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output"
                     ],
                   M.get_trait_method (| "core::ops::try_trait::Try", R, [], [], "branch", [], [] |),
-                  [ M.read (| r |) ]
+                  [ M.value_with_ty (M.read (| r |)) R ]
                 |)
               |),
               [
@@ -1272,11 +1384,15 @@ Module ops.
                         Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output",
                         γ0_0
                       |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Continue"
-                      []
-                      [ R; Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ]
-                      [ M.read (| v |) ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Continue"
+                        [ M.read (| v |) ])
+                      (Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ R; Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output"
+                        ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -1290,26 +1406,45 @@ Module ops.
                         Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual",
                         γ0_0
                       |) in
-                    Value.StructTuple
-                      "core::ops::control_flow::ControlFlow::Break"
-                      []
-                      [ R; Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output" ]
-                      [
-                        M.call_closure (|
-                          R,
-                          M.get_trait_method (|
-                            "core::ops::try_trait::FromResidual",
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::control_flow::ControlFlow::Break"
+                        [
+                          M.call_closure (|
                             R,
-                            [],
-                            [ Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Residual"
-                            ],
-                            "from_residual",
-                            [],
-                            []
-                          |),
-                          [ M.read (| v |) ]
-                        |)
-                      ]))
+                            M.get_trait_method (|
+                              "core::ops::try_trait::FromResidual",
+                              R,
+                              [],
+                              [
+                                Ty.associated_in_trait
+                                  "core::ops::try_trait::Try"
+                                  []
+                                  []
+                                  R
+                                  "Residual"
+                              ],
+                              "from_residual",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| v |))
+                                (Ty.associated_in_trait
+                                  "core::ops::try_trait::Try"
+                                  []
+                                  []
+                                  R
+                                  "Residual")
+                            ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [ R; Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output"
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1370,7 +1505,11 @@ Module ops.
                         [],
                         []
                       |),
-                      [ M.read (| v |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| v |))
+                          (Ty.associated_in_trait "core::ops::try_trait::Try" [] [] R "Output")
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic

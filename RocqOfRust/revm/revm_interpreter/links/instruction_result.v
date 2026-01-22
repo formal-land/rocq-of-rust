@@ -53,87 +53,87 @@ Module InstructionResult.
     φ x :=
       match x with
       | Continue =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Continue" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Continue" []
       | Stop =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Stop" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Stop" []
       | Return =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Return" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Return" []
       | SelfDestruct =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SelfDestruct" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SelfDestruct" []
       | ReturnContract =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContract" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContract" []
       | Revert =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Revert" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Revert" []
       | CallTooDeep =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallTooDeep" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallTooDeep" []
       | OutOfFunds =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfFunds" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfFunds" []
       | CreateInitCodeStartingEF00 =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeStartingEF00" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeStartingEF00" []
       | InvalidEOFInitCode =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEOFInitCode" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEOFInitCode" []
       | InvalidExtDelegateCallTarget =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidExtDelegateCallTarget" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidExtDelegateCallTarget" []
       | CallOrCreate =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallOrCreate" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallOrCreate" []
       | OutOfGas =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfGas" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfGas" []
       | MemoryOOG =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryOOG" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryOOG" []
       | MemoryLimitOOG =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG" []
       | PrecompileOOG =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG" []
       | InvalidOperandOOG =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG" []
       | ReentrancySentryOOG =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG" []
       | OpcodeNotFound =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound" []
       | CallNotAllowedInsideStatic =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic" []
       | StateChangeDuringStaticCall =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall" []
       | InvalidFEOpcode =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode" []
       | InvalidJump =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidJump" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidJump" []
       | NotActivated =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NotActivated" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NotActivated" []
       | StackUnderflow =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackUnderflow" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackUnderflow" []
       | StackOverflow =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackOverflow" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackOverflow" []
       | OutOfOffset =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfOffset" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfOffset" []
       | CreateCollision =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateCollision" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateCollision" []
       | OverflowPayment =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OverflowPayment" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OverflowPayment" []
       | PrecompileError =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileError" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileError" []
       | NonceOverflow =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NonceOverflow" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NonceOverflow" []
       | CreateContractSizeLimit =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit" []
       | CreateContractStartingWithEF =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF" []
       | CreateInitCodeSizeLimit =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit" []
       | FatalExternalError =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::FatalExternalError" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::FatalExternalError" []
       | ReturnContractInNotInitEOF =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContractInNotInitEOF" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContractInNotInitEOF" []
       | EOFOpcodeDisabledInLegacy =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EOFOpcodeDisabledInLegacy" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EOFOpcodeDisabledInLegacy" []
       | SubRoutineStackOverflow =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow" []
       | EofAuxDataOverflow =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow" []
       | EofAuxDataTooSmall =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall" []
       | InvalidEXTCALLTarget =>
-          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget" [] [] []
+          Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget" []
       end
   }.
 
@@ -144,574 +144,574 @@ Module InstructionResult.
   }.
 
   Instance IsOfValueWith_Continue :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Continue" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Continue" []) :=
   {
     value := Continue;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Continue :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Continue" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Continue" []) :=
   {
     value := Continue;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Stop :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Stop" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Stop" []) :=
   {
     value := Stop;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Stop :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Stop" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Stop" []) :=
   {
     value := Stop;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Return :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Return" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Return" []) :=
   {
     value := Return;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Return :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Return" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Return" []) :=
   {
     value := Return;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_SelfDestruct :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SelfDestruct" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SelfDestruct" []) :=
   {
     value := SelfDestruct;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_SelfDestruct :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SelfDestruct" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SelfDestruct" []) :=
   {
     value := SelfDestruct;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ReturnContract :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContract" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContract" []) :=
   {
     value := ReturnContract;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ReturnContract :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContract" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContract" []) :=
   {
     value := ReturnContract;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Revert :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Revert" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Revert" []) :=
   {
     value := Revert;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Revert :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Revert" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::Revert" []) :=
   {
     value := Revert;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CallTooDeep :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallTooDeep" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallTooDeep" []) :=
   {
     value := CallTooDeep;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CallTooDeep :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallTooDeep" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallTooDeep" []) :=
   {
     value := CallTooDeep;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_OutOfFunds :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfFunds" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfFunds" []) :=
   {
     value := OutOfFunds;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_OutOfFunds :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfFunds" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfFunds" []) :=
   {
     value := OutOfFunds;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CreateInitCodeStartingEF00 :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeStartingEF00" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeStartingEF00" []) :=
   {
     value := CreateInitCodeStartingEF00;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CreateInitCodeStartingEF00 :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeStartingEF00" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeStartingEF00" []) :=
   {
     value := CreateInitCodeStartingEF00;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidEOFInitCode :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEOFInitCode" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEOFInitCode" []) :=
   {
     value := InvalidEOFInitCode;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidEOFInitCode :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEOFInitCode" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEOFInitCode" []) :=
   {
     value := InvalidEOFInitCode;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidExtDelegateCallTarget :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidExtDelegateCallTarget" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidExtDelegateCallTarget" []) :=
   {
     value := InvalidExtDelegateCallTarget;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidExtDelegateCallTarget :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidExtDelegateCallTarget" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidExtDelegateCallTarget" []) :=
   {
     value := InvalidExtDelegateCallTarget;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CallOrCreate :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallOrCreate" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallOrCreate" []) :=
   {
     value := CallOrCreate;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CallOrCreate :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallOrCreate" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallOrCreate" []) :=
   {
     value := CallOrCreate;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_OutOfGas :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfGas" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfGas" []) :=
   {
     value := OutOfGas;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_OutOfGas :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfGas" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfGas" []) :=
   {
     value := OutOfGas;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_MemoryOOG :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryOOG" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryOOG" []) :=
   {
     value := MemoryOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_MemoryOOG :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryOOG" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryOOG" []) :=
   {
     value := MemoryOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_MemoryLimitOOG :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG" []) :=
   {
     value := MemoryLimitOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_MemoryLimitOOG :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::MemoryLimitOOG" []) :=
   {
     value := MemoryLimitOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_PrecompileOOG :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG" []) :=
   {
     value := PrecompileOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_PrecompileOOG :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileOOG" []) :=
   {
     value := PrecompileOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidOperandOOG :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG" []) :=
   {
     value := InvalidOperandOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidOperandOOG :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidOperandOOG" []) :=
   {
     value := InvalidOperandOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ReentrancySentryOOG :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG" []) :=
   {
     value := ReentrancySentryOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ReentrancySentryOOG :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReentrancySentryOOG" []) :=
   {
     value := ReentrancySentryOOG;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_OpcodeNotFound :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound" []) :=
   {
     value := OpcodeNotFound;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_OpcodeNotFound :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OpcodeNotFound" []) :=
   {
     value := OpcodeNotFound;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CallNotAllowedInsideStatic :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic" []) :=
   {
     value := CallNotAllowedInsideStatic;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CallNotAllowedInsideStatic :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CallNotAllowedInsideStatic" []) :=
   {
     value := CallNotAllowedInsideStatic;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_StateChangeDuringStaticCall :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall" []) :=
   {
     value := StateChangeDuringStaticCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_StateChangeDuringStaticCall :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StateChangeDuringStaticCall" []) :=
   {
     value := StateChangeDuringStaticCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidFEOpcode :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode" []) :=
   {
     value := InvalidFEOpcode;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidFEOpcode :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidFEOpcode" []) :=
   {
     value := InvalidFEOpcode;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidJump :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidJump" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidJump" []) :=
   {
     value := InvalidJump;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidJump :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidJump" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidJump" []) :=
   {
     value := InvalidJump;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_NotActivated :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NotActivated" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NotActivated" []) :=
   {
     value := NotActivated;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_NotActivated :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NotActivated" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NotActivated" []) :=
   {
     value := NotActivated;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_StackUnderflow :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackUnderflow" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackUnderflow" []) :=
   {
     value := StackUnderflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_StackUnderflow :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackUnderflow" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackUnderflow" []) :=
   {
     value := StackUnderflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_StackOverflow :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackOverflow" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackOverflow" []) :=
   {
     value := StackOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_StackOverflow :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackOverflow" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::StackOverflow" []) :=
   {
     value := StackOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_OutOfOffset :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfOffset" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfOffset" []) :=
   {
     value := OutOfOffset;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_OutOfOffset :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfOffset" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OutOfOffset" []) :=
   {
     value := OutOfOffset;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CreateCollision :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateCollision" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateCollision" []) :=
   {
     value := CreateCollision;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CreateCollision :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateCollision" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateCollision" []) :=
   {
     value := CreateCollision;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_OverflowPayment :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OverflowPayment" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OverflowPayment" []) :=
   {
     value := OverflowPayment;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_OverflowPayment :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OverflowPayment" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::OverflowPayment" []) :=
   {
     value := OverflowPayment;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_PrecompileError :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileError" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileError" []) :=
   {
     value := PrecompileError;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_PrecompileError :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileError" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::PrecompileError" []) :=
   {
     value := PrecompileError;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_NonceOverflow :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NonceOverflow" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NonceOverflow" []) :=
   {
     value := NonceOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_NonceOverflow :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NonceOverflow" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::NonceOverflow" []) :=
   {
     value := NonceOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CreateContractSizeLimit :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit" []) :=
   {
     value := CreateContractSizeLimit;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CreateContractSizeLimit :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit" []) :=
   {
     value := CreateContractSizeLimit;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CreateContractStartingWithEF :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF" []) :=
   {
     value := CreateContractStartingWithEF;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CreateContractStartingWithEF :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF" []) :=
   {
     value := CreateContractStartingWithEF;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CreateInitCodeSizeLimit :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit" []) :=
   {
     value := CreateInitCodeSizeLimit;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CreateInitCodeSizeLimit :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::CreateInitCodeSizeLimit" []) :=
   {
     value := CreateInitCodeSizeLimit;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_FatalExternalError :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::FatalExternalError" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::FatalExternalError" []) :=
   {
     value := FatalExternalError;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_FatalExternalError :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::FatalExternalError" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::FatalExternalError" []) :=
   {
     value := FatalExternalError;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ReturnContractInNotInitEOF :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContractInNotInitEOF" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContractInNotInitEOF" []) :=
   {
     value := ReturnContractInNotInitEOF;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ReturnContractInNotInitEOF :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContractInNotInitEOF" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::ReturnContractInNotInitEOF" []) :=
   {
     value := ReturnContractInNotInitEOF;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_EOFOpcodeDisabledInLegacy :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EOFOpcodeDisabledInLegacy" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EOFOpcodeDisabledInLegacy" []) :=
   {
     value := EOFOpcodeDisabledInLegacy;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_EOFOpcodeDisabledInLegacy :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EOFOpcodeDisabledInLegacy" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EOFOpcodeDisabledInLegacy" []) :=
   {
     value := EOFOpcodeDisabledInLegacy;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_SubRoutineStackOverflow :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow" []) :=
   {
     value := SubRoutineStackOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_SubRoutineStackOverflow :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::SubRoutineStackOverflow" []) :=
   {
     value := SubRoutineStackOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_EofAuxDataOverflow :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow" []) :=
   {
     value := EofAuxDataOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_EofAuxDataOverflow :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataOverflow" []) :=
   {
     value := EofAuxDataOverflow;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_EofAuxDataTooSmall :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall" []) :=
   {
     value := EofAuxDataTooSmall;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_EofAuxDataTooSmall :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::EofAuxDataTooSmall" []) :=
   {
     value := EofAuxDataTooSmall;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidEXTCALLTarget :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget" []) :=
   {
     value := InvalidEXTCALLTarget;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidEXTCALLTarget :
-    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instruction_result::InstructionResult::InvalidEXTCALLTarget" []) :=
   {
     value := InvalidEXTCALLTarget;
     eq := eq_refl;

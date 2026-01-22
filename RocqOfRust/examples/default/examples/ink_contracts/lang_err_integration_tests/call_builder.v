@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_call_builder_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "call_builder::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "call_builder::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "call_builder::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -146,7 +146,11 @@ Module Impl_call_builder_Selector.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -171,7 +175,11 @@ Module Impl_core_default_Default_for_call_builder_CallBuilderTest.
   (* Default *)
   Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [] => ltac:(M.monadic (Value.StructTuple "call_builder::CallBuilderTest" [] [] []))
+    | [], [], [] =>
+      ltac:(M.monadic
+        (M.value_with_ty
+          (Value.StructTuple "call_builder::CallBuilderTest" [])
+          (Ty.path "call_builder::CallBuilderTest")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -260,7 +268,11 @@ Module Impl_call_builder_CallBuilderTest.
               M.call_closure (|
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic", [], [] |),
-                [ mk_str (| "not yet implemented" |) ]
+                [
+                  M.value_with_ty
+                    (mk_str (| "not yet implemented" |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |)
             |) in
           M.alloc (|
@@ -273,11 +285,12 @@ Module Impl_call_builder_CallBuilderTest.
                   ltac:(M.monadic
                     (let γ0_0 :=
                       M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "call_builder::LangError" ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "call_builder::LangError" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -285,11 +298,12 @@ Module Impl_call_builder_CallBuilderTest.
                     let e := M.copy (| Ty.path "call_builder::LangError", γ0_0 |) in
                     let _ :=
                       M.is_struct_tuple (| γ0_0, "call_builder::LangError::CouldNotReadInput" |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "call_builder::LangError" ]
-                      [ M.read (| e |) ]));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::Some" [ M.read (| e |) ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "call_builder::LangError" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -299,65 +313,89 @@ Module Impl_call_builder_CallBuilderTest.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 1;
+                                  Value.Integer IntegerKind.Usize 0
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array
+                                            [
+                                              mk_str (|
+                                                "not implemented: No other `LangError` variants exist at the moment."
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (|
-                                            "not implemented: No other `LangError` variants exist at the moment."
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 0 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 0 ]
+                                              [ Ty.path "core::fmt::rt::Argument" ],
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "none",
+                                              [],
+                                              []
+                                            |),
+                                            []
+                                          |)
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 0 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "none",
-                                          [],
-                                          []
-                                        |),
-                                        []
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)
                     |)))
@@ -456,7 +494,9 @@ Module Impl_call_builder_CallBuilderTest.
             selector
           |) in
         let init_value := M.alloc (| Ty.path "bool", init_value |) in
-        Value.StructTuple "core::option::Option::None" [] [ Ty.path "call_builder::LangError" ] []))
+        M.value_with_ty
+          (Value.StructTuple "core::option::Option::None" [])
+          (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "call_builder::LangError" ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -512,7 +552,9 @@ Module Impl_call_builder_CallBuilderTest.
             selector
           |) in
         let init_value := M.alloc (| Ty.path "bool", init_value |) in
-        Value.StructTuple "core::option::Option::None" [] [ Ty.tuple [] ] []))
+        M.value_with_ty
+          (Value.StructTuple "core::option::Option::None" [])
+          (Ty.apply (Ty.path "core::option::Option") [] [ Ty.tuple [] ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   

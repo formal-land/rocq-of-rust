@@ -29,7 +29,11 @@ Module journaled_state.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, code |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, code |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::bytecode::Bytecode" ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -44,10 +48,19 @@ Module journaled_state.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| address |);
-                  M.read (| code |);
-                  M.read (| hash |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                  M.value_with_ty
+                    (M.read (| address |))
+                    (Ty.path "alloy_primitives::bits::address::Address");
+                  M.value_with_ty (M.read (| code |)) (Ty.path "revm_bytecode::bytecode::Bytecode");
+                  M.value_with_ty
+                    (M.read (| hash |))
+                    (Ty.apply
+                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -155,46 +168,50 @@ Module journaled_state.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::journaled_state::TransferError::OutOfFunds"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfFunds" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::journaled_state::TransferError::OverflowPayment"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "OverflowPayment" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::journaled_state::TransferError::CreateCollision"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateCollision" |) |)
-                      |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::journaled_state::TransferError::OutOfFunds"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfFunds" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::journaled_state::TransferError::OverflowPayment"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "OverflowPayment" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::journaled_state::TransferError::CreateCollision"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateCollision" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -254,7 +271,14 @@ Module journaled_state.
                   [],
                   [ Ty.path "revm_context_interface::journaled_state::TransferError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::journaled_state::TransferError" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -264,7 +288,14 @@ Module journaled_state.
                   [],
                   [ Ty.path "revm_context_interface::journaled_state::TransferError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::journaled_state::TransferError" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -360,60 +391,72 @@ Module journaled_state.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "JournalCheckpoint" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "log_i" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::journaled_state::JournalCheckpoint",
-                          "log_i"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "JournalCheckpoint" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "log_i" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::journaled_state::JournalCheckpoint",
+                            "log_i"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "journal_i" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::journaled_state::JournalCheckpoint",
-                              "journal_i"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "journal_i" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::JournalCheckpoint",
+                                "journal_i"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -630,60 +673,64 @@ Module journaled_state.
                 ],
               self
             |) in
-          Value.mkStructRecord
-            "revm_context_interface::journaled_state::StateLoad"
-            []
-            [ T ]
-            [
-              ("data",
-                M.call_closure (|
-                  T,
-                  M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::StateLoad"
+              [
+                ("data",
+                  M.call_closure (|
+                    T,
+                    M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::journaled_state::StateLoad",
-                            "data"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::StateLoad",
+                                "data"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("is_cold",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ])
+                    ]
+                  |));
+                ("is_cold",
+                  M.call_closure (|
                     Ty.path "bool",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::journaled_state::StateLoad",
-                            "is_cold"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::StateLoad",
+                                "is_cold"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -730,60 +777,72 @@ Module journaled_state.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "StateLoad" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ T ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::journaled_state::StateLoad",
-                          "data"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "StateLoad" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ T ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::journaled_state::StateLoad",
+                            "data"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_cold" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::journaled_state::StateLoad",
-                              "is_cold"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_cold" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::StateLoad",
+                                "is_cold"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -809,32 +868,32 @@ Module journaled_state.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "revm_context_interface::journaled_state::StateLoad"
-            []
-            [ T ]
-            [
-              ("data",
-                M.call_closure (|
-                  T,
-                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                  []
-                |));
-              ("is_cold",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::default::Default",
-                    Ty.path "bool",
-                    [],
-                    [],
-                    "default",
-                    [],
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::StateLoad"
+              [
+                ("data",
+                  M.call_closure (|
+                    T,
+                    M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |));
+                ("is_cold",
+                  M.call_closure (|
+                    Ty.path "bool",
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |))
+              ])
+            (Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -895,22 +954,26 @@ Module journaled_state.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context_interface::journaled_state::StateLoad",
-                    "data"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "revm_context_interface::journaled_state::StateLoad",
-                    "data"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_context_interface::journaled_state::StateLoad",
+                      "data"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_context_interface::journaled_state::StateLoad",
+                      "data"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |),
             ltac:(M.monadic
@@ -1123,11 +1186,11 @@ Module journaled_state.
         ltac:(M.monadic
           (let data := M.alloc (| T, data |) in
           let is_cold := M.alloc (| Ty.path "bool", is_cold |) in
-          Value.mkStructRecord
-            "revm_context_interface::journaled_state::StateLoad"
-            []
-            [ T ]
-            [ ("data", M.read (| data |)); ("is_cold", M.read (| is_cold |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::StateLoad"
+              [ ("data", M.read (| data |)); ("is_cold", M.read (| is_cold |)) ])
+            (Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1165,38 +1228,44 @@ Module journaled_state.
               []
             |),
             [
-              M.call_closure (|
-                B,
-                M.get_trait_method (|
-                  "core::ops::function::FnOnce",
-                  F,
-                  [],
-                  [ Ty.tuple [ T ] ],
-                  "call_once",
-                  [],
-                  []
-                |),
-                [
-                  M.read (| f |);
-                  Value.Tuple
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "revm_context_interface::journaled_state::StateLoad",
-                          "data"
-                        |)
-                      |)
-                    ]
-                ]
-              |);
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context_interface::journaled_state::StateLoad",
-                  "is_cold"
-                |)
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  B,
+                  M.get_trait_method (|
+                    "core::ops::function::FnOnce",
+                    F,
+                    [],
+                    [ Ty.tuple [ T ] ],
+                    "call_once",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty (M.read (| f |)) F;
+                    M.value_with_ty
+                      (Value.Tuple
+                        [
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "revm_context_interface::journaled_state::StateLoad",
+                              "data"
+                            |)
+                          |)
+                        ])
+                      (Ty.tuple [ T ])
+                  ]
+                |))
+                B;
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    self,
+                    "revm_context_interface::journaled_state::StateLoad",
+                    "is_cold"
+                  |)
+                |))
+                (Ty.path "bool")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1241,74 +1310,86 @@ Module journaled_state.
                 [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ],
               self
             |) in
-          Value.mkStructRecord
-            "revm_context_interface::journaled_state::AccountLoad"
-            []
-            []
-            [
-              ("load",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.tuple [] ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::AccountLoad"
+              [
+                ("load",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
                       []
                       [ Ty.tuple [] ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                        []
+                        [ Ty.tuple [] ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::journaled_state::AccountLoad",
-                            "load"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::AccountLoad",
+                                "load"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("is_empty",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                              []
+                              [ Ty.tuple [] ]
+                          ])
+                    ]
+                  |));
+                ("is_empty",
+                  M.call_closure (|
                     Ty.path "bool",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::journaled_state::AccountLoad",
-                            "is_empty"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::AccountLoad",
+                                "is_empty"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                    ]
+                  |))
+              ])
+            (Ty.path "revm_context_interface::journaled_state::AccountLoad")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1351,68 +1432,80 @@ Module journaled_state.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AccountLoad" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "load" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                        []
-                        [ Ty.tuple [] ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::journaled_state::AccountLoad",
-                          "load"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AccountLoad" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "load" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                          []
+                          [ Ty.tuple [] ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::journaled_state::AccountLoad",
+                            "load"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_empty" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::journaled_state::AccountLoad",
-                              "is_empty"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_empty" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::AccountLoad",
+                                "is_empty"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1435,46 +1528,46 @@ Module journaled_state.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "revm_context_interface::journaled_state::AccountLoad"
-            []
-            []
-            [
-              ("load",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.tuple [] ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::AccountLoad"
+              [
+                ("load",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
                       []
                       [ Ty.tuple [] ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                        []
+                        [ Ty.tuple [] ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("is_empty",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("is_empty",
+                  M.call_closure (|
                     Ty.path "bool",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "revm_context_interface::journaled_state::AccountLoad")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1544,22 +1637,42 @@ Module journaled_state.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context_interface::journaled_state::AccountLoad",
-                    "load"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "revm_context_interface::journaled_state::AccountLoad",
-                    "load"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_context_interface::journaled_state::AccountLoad",
+                      "load"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                        []
+                        [ Ty.tuple [] ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_context_interface::journaled_state::AccountLoad",
+                      "load"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                        []
+                        [ Ty.tuple [] ]
+                    ])
               ]
             |),
             ltac:(M.monadic
@@ -1783,71 +1896,92 @@ Module journaled_state.
                 ],
               self
             |) in
-          Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
-            []
-            [ T ]
-            [
-              ("state_load",
-                M.call_closure (|
-                  Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::Eip7702CodeLoad"
+              [
+                ("state_load",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::journaled_state::StateLoad")
                       []
                       [ T ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ T ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                            "state_load"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                                "state_load"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("is_delegate_account_cold",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                              []
+                              [ T ]
+                          ])
+                    ]
+                  |));
+                ("is_delegate_account_cold",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                            "is_delegate_account_cold"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                                "is_delegate_account_cold"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ])
+                    ]
+                  |))
+              ])
+            (Ty.apply
+              (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+              []
+              [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1898,82 +2032,94 @@ Module journaled_state.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Eip7702CodeLoad" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "state_load" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                        []
-                        [ T ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                          "state_load"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Eip7702CodeLoad" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "state_load" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                          []
+                          [ T ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                            "state_load"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| mk_str (| "is_delegate_account_cold" |) |)
-              |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                              "is_delegate_account_cold"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| mk_str (| "is_delegate_account_cold" |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                                "is_delegate_account_cold"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1999,43 +2145,49 @@ Module journaled_state.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
-            []
-            [ T ]
-            [
-              ("state_load",
-                M.call_closure (|
-                  Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::Eip7702CodeLoad"
+              [
+                ("state_load",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::journaled_state::StateLoad")
                       []
                       [ T ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ T ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("is_delegate_account_cold",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("is_delegate_account_cold",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.apply
+              (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+              []
+              [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2113,22 +2265,42 @@ Module journaled_state.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                    "state_load"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                    "state_load"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                      "state_load"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ T ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                      "state_load"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ T ]
+                    ])
               ]
             |),
             ltac:(M.monadic
@@ -2144,22 +2316,32 @@ Module journaled_state.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                      "is_delegate_account_cold"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                      "is_delegate_account_cold"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                        "is_delegate_account_cold"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                        "is_delegate_account_cold"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ] ])
                 ]
               |)))
           |)))
@@ -2375,15 +2557,20 @@ Module journaled_state.
               Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
               state_load
             |) in
-          Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
-            []
-            [ T ]
-            [
-              ("state_load", M.read (| state_load |));
-              ("is_delegate_account_cold",
-                Value.StructTuple "core::option::Option::None" [] [ Ty.path "bool" ] [])
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::Eip7702CodeLoad"
+              [
+                ("state_load", M.read (| state_load |));
+                ("is_delegate_account_cold",
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ]))
+              ])
+            (Ty.apply
+              (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+              []
+              [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2413,28 +2600,39 @@ Module journaled_state.
         ltac:(M.monadic
           (let data := M.alloc (| T, data |) in
           let is_cold := M.alloc (| Ty.path "bool", is_cold |) in
-          Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
-            []
-            [ T ]
-            [
-              ("state_load",
-                M.call_closure (|
-                  Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [ T ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::Eip7702CodeLoad"
+              [
+                ("state_load",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::journaled_state::StateLoad")
                       []
                       [ T ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| data |); M.read (| is_cold |) ]
-                |));
-              ("is_delegate_account_cold",
-                Value.StructTuple "core::option::Option::None" [] [ Ty.path "bool" ] [])
-            ]))
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ T ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (M.read (| data |)) T;
+                      M.value_with_ty (M.read (| is_cold |)) (Ty.path "bool")
+                    ]
+                  |));
+                ("is_delegate_account_cold",
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ]))
+              ])
+            (Ty.apply
+              (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+              []
+              [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2501,7 +2699,19 @@ Module journaled_state.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, self |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                                []
+                                [ T ]
+                            ])
+                      ]
                     |)
                   |),
                   "revm_context_interface::journaled_state::StateLoad",
@@ -2530,37 +2740,43 @@ Module journaled_state.
                       "data"
                     |)
                   |);
-                  Value.mkStructRecord
-                    "revm_context_interface::journaled_state::Eip7702CodeLoad"
-                    []
-                    [ Ty.tuple [] ]
-                    [
-                      ("state_load",
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                            []
-                            [ Ty.tuple [] ],
-                          M.get_associated_function (|
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_context_interface::journaled_state::Eip7702CodeLoad"
+                      [
+                        ("state_load",
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "revm_context_interface::journaled_state::StateLoad")
                               []
                               [ Ty.tuple [] ],
-                            "new",
-                            [],
-                            []
-                          |),
-                          [ Value.Tuple []; M.read (| is_cold |) ]
-                        |));
-                      ("is_delegate_account_cold",
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            self,
-                            "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                            "is_delegate_account_cold"
-                          |)
-                        |))
-                    ]
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                []
+                                [ Ty.tuple [] ],
+                              "new",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty (Value.Tuple []) (Ty.tuple []);
+                              M.value_with_ty (M.read (| is_cold |)) (Ty.path "bool")
+                            ]
+                          |));
+                        ("is_delegate_account_cold",
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                              "is_delegate_account_cold"
+                            |)
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                      []
+                      [ Ty.tuple [] ])
                 ]
             |)
           |)))
@@ -2610,11 +2826,11 @@ Module journaled_state.
                   "revm_context_interface::journaled_state::Eip7702CodeLoad",
                   "is_delegate_account_cold"
                 |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "bool" ]
-                  [ M.read (| is_delegate_account_cold |) ]
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [ M.read (| is_delegate_account_cold |) ])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ])
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -2646,19 +2862,22 @@ Module journaled_state.
               state_load
             |) in
           let is_delegate_account_cold := M.alloc (| Ty.path "bool", is_delegate_account_cold |) in
-          Value.mkStructRecord
-            "revm_context_interface::journaled_state::Eip7702CodeLoad"
-            []
-            [ T ]
-            [
-              ("state_load", M.read (| state_load |));
-              ("is_delegate_account_cold",
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "bool" ]
-                  [ M.read (| is_delegate_account_cold |) ])
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::journaled_state::Eip7702CodeLoad"
+              [
+                ("state_load", M.read (| state_load |));
+                ("is_delegate_account_cold",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [ M.read (| is_delegate_account_cold |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "bool" ]))
+              ])
+            (Ty.apply
+              (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+              []
+              [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2747,10 +2966,12 @@ Module journaled_state.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ T ])
                     ]
                   |)
                 |)
@@ -2797,10 +3018,12 @@ Module journaled_state.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)
             |)
@@ -2882,27 +3105,44 @@ Module journaled_state.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&mut") [] [ T ],
-                            M.get_trait_method (|
-                              "core::convert::AsMut",
-                              Ty.apply
-                                (Ty.path "alloc::boxed::Box")
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&mut") [] [ T ],
+                              M.get_trait_method (|
+                                "core::convert::AsMut",
+                                Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ],
+                                [],
+                                [ T ],
+                                "as_mut",
+                                [],
                                 []
-                                [ T; Ty.path "alloc::alloc::Global" ],
-                              [],
-                              [ T ],
-                              "as_mut",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::boxed::Box")
+                                        []
+                                        [ T; Ty.path "alloc::alloc::Global" ]
+                                    ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ T ])
                     ]
                   |)
                 |)
@@ -2955,27 +3195,41 @@ Module journaled_state.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ T ],
-                        M.get_trait_method (|
-                          "core::convert::AsRef",
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::convert::AsRef",
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [ T ],
+                            "as_ref",
+                            [],
                             []
-                            [ T; Ty.path "alloc::alloc::Global" ],
-                          [],
-                          [ T ],
-                          "as_ref",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)
             |)

@@ -22,40 +22,40 @@ Module Impl_core_default_Default_where_core_default_Default_K_where_core_default
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "erc721::Mapping"
-          []
-          [ K; V ]
-          [
-            ("_key",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "erc721::Mapping"
+            [
+              ("_key",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("_value",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("_value",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.apply (Ty.path "erc721::Mapping") [] [ K; V ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -92,7 +92,11 @@ Module Impl_erc721_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -124,7 +128,11 @@ Module Impl_erc721_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -157,7 +165,11 @@ Module Impl_erc721_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -189,7 +201,11 @@ Module Impl_erc721_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -221,7 +237,11 @@ Module Impl_erc721_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -253,7 +273,11 @@ Module Impl_erc721_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -282,25 +306,25 @@ Module Impl_core_default_Default_for_erc721_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "erc721::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "erc721::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "erc721::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -429,7 +453,11 @@ Module Impl_core_convert_From_array_Usize_32_u8_for_erc721_AccountId.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -486,82 +514,72 @@ Module Impl_core_default_Default_for_erc721_Erc721.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "erc721::Erc721"
-          []
-          []
-          [
-            ("token_owner",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "erc721::Mapping")
-                  []
-                  [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "erc721::Erc721"
+            [
+              ("token_owner",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "erc721::Mapping")
                     []
                     [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "erc721::Mapping")
+                      []
+                      [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("token_approvals",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "erc721::Mapping")
-                  []
-                  [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("token_approvals",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "erc721::Mapping")
                     []
                     [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "erc721::Mapping")
+                      []
+                      [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("owned_tokens_count",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "erc721::Mapping")
-                  []
-                  [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("owned_tokens_count",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "erc721::Mapping")
                     []
                     [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "erc721::Mapping")
+                      []
+                      [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("operator_approvals",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "erc721::Mapping")
-                  []
-                  [
-                    Ty.tuple [ Ty.path "erc721::AccountId"; Ty.path "erc721::AccountId" ];
-                    Ty.tuple []
-                  ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("operator_approvals",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "erc721::Mapping")
                     []
@@ -569,15 +587,25 @@ Module Impl_core_default_Default_for_erc721_Erc721.
                       Ty.tuple [ Ty.path "erc721::AccountId"; Ty.path "erc721::AccountId" ];
                       Ty.tuple []
                     ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "erc721::Mapping")
+                      []
+                      [
+                        Ty.tuple [ Ty.path "erc721::AccountId"; Ty.path "erc721::AccountId" ];
+                        Ty.tuple []
+                      ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "erc721::Erc721")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -668,7 +696,11 @@ Module Impl_core_cmp_PartialEq_erc721_Error_for_erc721_Error.
                 [],
                 [ Ty.path "erc721::Error" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Error" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -678,7 +710,11 @@ Module Impl_core_cmp_PartialEq_erc721_Error_for_erc721_Error.
                 [],
                 [ Ty.path "erc721::Error" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Error" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -870,7 +906,11 @@ Module Impl_erc721_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -898,7 +938,11 @@ Module Impl_erc721_Erc721.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -979,30 +1023,46 @@ Module Impl_erc721_Erc721.
             []
           |),
           [
-            M.call_closure (|
-              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "erc721::Mapping")
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "erc721::Mapping")
+                    []
+                    [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
+                  "get",
+                  [],
                   []
-                  [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
-                "get",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "erc721::Erc721",
-                    "owned_tokens_count"
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| of |) |) |)
-              ]
-            |);
-            M.read (| M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 0 |)) |)
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "erc721::Erc721",
+                        "owned_tokens_count"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "erc721::Mapping")
+                          []
+                          [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| of |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ])
+                ]
+              |))
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ]);
+            M.value_with_ty
+              (M.read (| M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 0 |)) |))
+              (Ty.path "u32")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1039,15 +1099,25 @@ Module Impl_erc721_Erc721.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "erc721::Erc721",
-                    "token_approvals"
-                  |)
-                |);
-                M.read (| id |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "erc721::Erc721",
+                      "token_approvals"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "erc721::Mapping")
+                        []
+                        [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                    ]);
+                M.value_with_ty (M.read (| id |)) (Ty.path "u32")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1085,26 +1155,44 @@ Module Impl_erc721_Erc721.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "erc721::Erc721",
-                "operator_approvals"
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.tuple [ Ty.path "erc721::AccountId"; Ty.path "erc721::AccountId" ],
-                    Value.Tuple [ M.read (| owner |); M.read (| operator |) ]
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "erc721::Erc721",
+                  "operator_approvals"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "erc721::Mapping")
+                    []
+                    [
+                      Ty.tuple [ Ty.path "erc721::AccountId"; Ty.path "erc721::AccountId" ];
+                      Ty.tuple []
+                    ]
+                ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.tuple [ Ty.path "erc721::AccountId"; Ty.path "erc721::AccountId" ],
+                      Value.Tuple [ M.read (| owner |); M.read (| operator |) ]
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [ Ty.tuple [ Ty.path "erc721::AccountId"; Ty.path "erc721::AccountId" ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1135,15 +1223,27 @@ Module Impl_erc721_Erc721.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "erc721::Erc721",
-                "token_owner"
-              |)
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |) |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "erc721::Erc721",
+                  "token_owner"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "erc721::Mapping")
+                    []
+                    [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1182,7 +1282,12 @@ Module Impl_erc721_Erc721.
             M.call_closure (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "erc721::AccountId" ],
               M.get_associated_function (| Ty.path "erc721::Erc721", "owner_of", [], [] |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| id |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ]);
+                M.value_with_ty (M.read (| id |)) (Ty.path "u32")
+              ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -1199,42 +1304,65 @@ Module Impl_erc721_Erc721.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, from |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "erc721::AccountId" ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "erc721::AccountId" ]
-                        [
-                          M.call_closure (|
-                            Ty.path "erc721::AccountId",
-                            M.get_trait_method (|
-                              "core::convert::From",
-                              Ty.path "erc721::AccountId",
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 32 ]
-                                  [ Ty.path "u8" ]
-                              ],
-                              "from",
-                              [],
-                              []
-                            |),
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, from |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "erc721::AccountId" ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "erc721::AccountId" ],
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::option::Option::Some"
                             [
-                              lib.repeat (|
-                                Value.Integer IntegerKind.U8 0,
-                                Value.Integer IntegerKind.Usize 32
+                              M.call_closure (|
+                                Ty.path "erc721::AccountId",
+                                M.get_trait_method (|
+                                  "core::convert::From",
+                                  Ty.path "erc721::AccountId",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ]
+                                  ],
+                                  "from",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (lib.repeat (|
+                                      Value.Integer IntegerKind.U8 0,
+                                      Value.Integer IntegerKind.Usize 32
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ])
+                                ]
                               |)
-                            ]
-                          |)
-                        ]
-                    |)
-                  |)
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "erc721::AccountId" ])
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "erc721::AccountId" ]
+                      ])
                 ]
               |),
               ltac:(M.monadic
@@ -1260,8 +1388,28 @@ Module Impl_erc721_Erc721.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, from |);
-                        M.borrow (| Pointer.Kind.Ref, owner |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, from |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "erc721::AccountId" ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, owner |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "erc721::AccountId" ]
+                            ])
                       ]
                     |),
                     ltac:(M.monadic
@@ -1285,45 +1433,77 @@ Module Impl_erc721_Erc721.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, from |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [ Ty.path "erc721::AccountId" ],
-                              M.call_closure (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, from |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "erc721::AccountId" ]
+                              ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
                                 Ty.apply
                                   (Ty.path "core::option::Option")
                                   []
                                   [ Ty.path "erc721::AccountId" ],
-                                M.get_associated_function (|
+                                M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "erc721::Mapping")
+                                    (Ty.path "core::option::Option")
                                     []
-                                    [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
-                                  "get",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "erc721::Erc721",
-                                      "token_approvals"
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
-                                  |)
-                                ]
+                                    [ Ty.path "erc721::AccountId" ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "erc721::Mapping")
+                                      []
+                                      [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
+                                    "get",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "erc721::Erc721",
+                                          "token_approvals"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "erc721::Mapping")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                  ]
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "erc721::AccountId" ]
+                              ])
                         ]
                       |)))
                   |),
@@ -1337,45 +1517,65 @@ Module Impl_erc721_Erc721.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.call_closure (|
-                          Ty.path "erc721::AccountId",
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "core::option::Option")
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "erc721::AccountId",
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "erc721::AccountId" ],
+                              "expect",
+                              [],
                               []
-                              [ Ty.path "erc721::AccountId" ],
-                            "expect",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (| owner |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| mk_str (| "Error with AccountId" |) |)
-                            |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.path "erc721::AccountId",
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "core::option::Option")
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| owner |))
+                                (Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| mk_str (| "Error with AccountId" |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                            ]
+                          |))
+                          (Ty.path "erc721::AccountId");
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "erc721::AccountId",
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "erc721::AccountId" ],
+                              "expect",
+                              [],
                               []
-                              [ Ty.path "erc721::AccountId" ],
-                            "expect",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (| from |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| mk_str (| "Error with AccountId" |) |)
-                            |)
-                          ]
-                        |)
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| from |))
+                                (Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| mk_str (| "Error with AccountId" |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                            ]
+                          |))
+                          (Ty.path "erc721::AccountId")
                       ]
                     |)))
                 |)))
@@ -1410,15 +1610,27 @@ Module Impl_erc721_Erc721.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "erc721::Erc721",
-                "token_owner"
-              |)
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |) |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "erc721::Erc721",
+                  "token_owner"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "erc721::Mapping")
+                    []
+                    [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1443,8 +1655,15 @@ Module Impl_erc721_Erc721.
           Ty.path "u32",
           M.get_associated_function (| Ty.path "erc721::Erc721", "balance_of_or_zero", [], [] |),
           [
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |) |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1475,15 +1694,27 @@ Module Impl_erc721_Erc721.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "erc721::Erc721",
-                "token_approvals"
-              |)
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |) |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "erc721::Erc721",
+                  "token_approvals"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "erc721::Mapping")
+                    []
+                    [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1510,9 +1741,11 @@ Module Impl_erc721_Erc721.
           Ty.path "bool",
           M.get_associated_function (| Ty.path "erc721::Erc721", "approved_for_all", [], [] |),
           [
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-            M.read (| owner |);
-            M.read (| operator |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ]);
+            M.value_with_ty (M.read (| owner |)) (Ty.path "erc721::AccountId");
+            M.value_with_ty (M.read (| operator |)) (Ty.path "erc721::AccountId")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1561,17 +1794,23 @@ Module Impl_erc721_Erc721.
                   Ty.path "erc721::AccountId",
                   M.get_associated_function (| Ty.path "erc721::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1597,8 +1836,12 @@ Module Impl_erc721_Erc721.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, to |);
-                                  M.borrow (| Pointer.Kind.Ref, caller |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, to |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, caller |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ])
                                 ]
                               |)
                             |)) in
@@ -1606,11 +1849,18 @@ Module Impl_erc721_Erc721.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                [ Value.StructTuple "erc721::Error::NotAllowed" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "erc721::Error::NotAllowed" [])
+                                      (Ty.path "erc721::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "erc721::Error" ])
                             |)
                           |)
                         |)));
@@ -1622,32 +1872,40 @@ Module Impl_erc721_Erc721.
                   Ty.tuple [],
                   M.get_associated_function (| Ty.path "erc721::Env", "emit_event", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    Value.StructTuple
-                      "erc721::Event::ApprovalForAll"
-                      []
-                      []
-                      [
-                        Value.mkStructRecord
-                          "erc721::ApprovalForAll"
-                          []
-                          []
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "erc721::Event::ApprovalForAll"
                           [
-                            ("owner", M.read (| caller |));
-                            ("operator", M.read (| to |));
-                            ("approved", M.read (| approved |))
-                          ]
-                      ]
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "erc721::ApprovalForAll"
+                                [
+                                  ("owner", M.read (| caller |));
+                                  ("operator", M.read (| to |));
+                                  ("approved", M.read (| approved |))
+                                ])
+                              (Ty.path "erc721::ApprovalForAll")
+                          ])
+                        (Ty.path "erc721::Event"))
+                      (Ty.path "erc721::Event")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1677,16 +1935,36 @@ Module Impl_erc721_Erc721.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "erc721::Erc721",
-                                    "operator_approvals"
-                                  |)
-                                |);
-                                Value.Tuple [ M.read (| caller |); M.read (| to |) ];
-                                Value.Tuple []
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "erc721::Erc721",
+                                      "operator_approvals"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "erc721::Mapping")
+                                        []
+                                        [
+                                          Ty.tuple
+                                            [
+                                              Ty.path "erc721::AccountId";
+                                              Ty.path "erc721::AccountId"
+                                            ];
+                                          Ty.tuple []
+                                        ]
+                                    ]);
+                                M.value_with_ty
+                                  (Value.Tuple [ M.read (| caller |); M.read (| to |) ])
+                                  (Ty.tuple
+                                    [ Ty.path "erc721::AccountId"; Ty.path "erc721::AccountId" ]);
+                                M.value_with_ty (Value.Tuple []) (Ty.tuple [])
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1711,15 +1989,35 @@ Module Impl_erc721_Erc721.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "erc721::Erc721",
-                                    "operator_approvals"
-                                  |)
-                                |);
-                                Value.Tuple [ M.read (| caller |); M.read (| to |) ]
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "erc721::Erc721",
+                                      "operator_approvals"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "erc721::Mapping")
+                                        []
+                                        [
+                                          Ty.tuple
+                                            [
+                                              Ty.path "erc721::AccountId";
+                                              Ty.path "erc721::AccountId"
+                                            ];
+                                          Ty.tuple []
+                                        ]
+                                    ]);
+                                M.value_with_ty
+                                  (Value.Tuple [ M.read (| caller |); M.read (| to |) ])
+                                  (Ty.tuple
+                                    [ Ty.path "erc721::AccountId"; Ty.path "erc721::AccountId" ])
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1731,11 +2029,12 @@ Module Impl_erc721_Erc721.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc721::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc721::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc721::Error" ])
               |)
             |)))
         |)))
@@ -1803,23 +2102,33 @@ Module Impl_erc721_Erc721.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "erc721::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "erc721::Erc721",
+                              "approve_for_all",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc721::Erc721" ]);
+                              M.value_with_ty (M.read (| to |)) (Ty.path "erc721::AccountId");
+                              M.value_with_ty (M.read (| approved |)) (Ty.path "bool")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "erc721::Error" ],
-                          M.get_associated_function (|
-                            Ty.path "erc721::Erc721",
-                            "approve_for_all",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.read (| to |);
-                            M.read (| approved |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "erc721::Error" ])
                       ]
                     |)
                   |),
@@ -1866,7 +2175,15 @@ Module Impl_erc721_Erc721.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.path "core::convert::Infallible"; Ty.path "erc721::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1888,11 +2205,12 @@ Module Impl_erc721_Erc721.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc721::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc721::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc721::Error" ])
               |)
             |)))
         |)))
@@ -1950,17 +2268,23 @@ Module Impl_erc721_Erc721.
                   Ty.path "erc721::AccountId",
                   M.get_associated_function (| Ty.path "erc721::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ])
                   ]
                 |) in
               let~ owner :
@@ -1969,8 +2293,10 @@ Module Impl_erc721_Erc721.
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "erc721::AccountId" ],
                   M.get_associated_function (| Ty.path "erc721::Erc721", "owner_of", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| id |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ]);
+                    M.value_with_ty (M.read (| id |)) (Ty.path "u32")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -2009,21 +2335,44 @@ Module Impl_erc721_Erc721.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, owner |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "erc721::AccountId" ],
-                                            Value.StructTuple
-                                              "core::option::Option::Some"
-                                              []
-                                              [ Ty.path "erc721::AccountId" ]
-                                              [ M.read (| caller |) ]
-                                          |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, owner |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "erc721::AccountId" ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "erc721::AccountId" ],
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  [ M.read (| caller |) ])
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "erc721::AccountId" ])
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "erc721::AccountId" ]
+                                            ])
                                       ]
                                     |),
                                     ltac:(M.monadic
@@ -2036,30 +2385,48 @@ Module Impl_erc721_Erc721.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "erc721::AccountId",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.path "erc721::AccountId" ],
-                                              "expect",
-                                              [],
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
                                               []
-                                            |),
-                                            [
-                                              M.read (| owner |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| mk_str (| "Error with AccountId" |) |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.read (| caller |)
+                                              [ Ty.path "erc721::Erc721" ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "erc721::AccountId",
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "erc721::AccountId" ],
+                                                "expect",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| owner |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "erc721::AccountId" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      mk_str (| "Error with AccountId" |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
+                                            |))
+                                            (Ty.path "erc721::AccountId");
+                                          M.value_with_ty
+                                            (M.read (| caller |))
+                                            (Ty.path "erc721::AccountId")
                                         ]
                                       |)))
                                   |)
@@ -2070,11 +2437,18 @@ Module Impl_erc721_Erc721.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                [ Value.StructTuple "erc721::Error::NotAllowed" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "erc721::Error::NotAllowed" [])
+                                      (Ty.path "erc721::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "erc721::Error" ])
                             |)
                           |)
                         |)));
@@ -2104,36 +2478,45 @@ Module Impl_erc721_Erc721.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.path "erc721::AccountId",
-                                      M.call_closure (|
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
                                         Ty.path "erc721::AccountId",
-                                        M.get_trait_method (|
-                                          "core::convert::From",
+                                        M.call_closure (|
                                           Ty.path "erc721::AccountId",
-                                          [],
+                                          M.get_trait_method (|
+                                            "core::convert::From",
+                                            Ty.path "erc721::AccountId",
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 32 ]
+                                                [ Ty.path "u8" ]
+                                            ],
+                                            "from",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 32 ]
-                                              [ Ty.path "u8" ]
-                                          ],
-                                          "from",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          lib.repeat (|
-                                            Value.Integer IntegerKind.U8 0,
-                                            Value.Integer IntegerKind.Usize 32
-                                          |)
-                                        ]
+                                            M.value_with_ty
+                                              (lib.repeat (|
+                                                Value.Integer IntegerKind.U8 0,
+                                                Value.Integer IntegerKind.Usize 32
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 32 ]
+                                                [ Ty.path "u8" ])
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ])
                                 ]
                               |)
                             |)) in
@@ -2141,11 +2524,18 @@ Module Impl_erc721_Erc721.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                [ Value.StructTuple "erc721::Error::NotAllowed" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "erc721::Error::NotAllowed" [])
+                                      (Ty.path "erc721::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "erc721::Error" ])
                             |)
                           |)
                         |)));
@@ -2175,18 +2565,30 @@ Module Impl_erc721_Erc721.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "erc721::Erc721",
-                                      "token_approvals"
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "erc721::Erc721",
+                                        "token_approvals"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "erc721::Mapping")
+                                          []
+                                          [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
                                 ]
                               |)
                             |)) in
@@ -2194,11 +2596,18 @@ Module Impl_erc721_Erc721.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                [ Value.StructTuple "erc721::Error::CannotInsert" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "erc721::Error::CannotInsert" [])
+                                      (Ty.path "erc721::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "erc721::Error" ])
                             |)
                           |)
                         |)));
@@ -2218,16 +2627,28 @@ Module Impl_erc721_Erc721.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "erc721::Erc721",
-                                    "token_approvals"
-                                  |)
-                                |);
-                                M.read (| id |);
-                                M.read (| M.deref (| M.read (| to |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "erc721::Erc721",
+                                      "token_approvals"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "erc721::Mapping")
+                                        []
+                                        [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                                    ]);
+                                M.value_with_ty (M.read (| id |)) (Ty.path "u32");
+                                M.value_with_ty
+                                  (M.read (| M.deref (| M.read (| to |) |) |))
+                                  (Ty.path "erc721::AccountId")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2239,32 +2660,40 @@ Module Impl_erc721_Erc721.
                   Ty.tuple [],
                   M.get_associated_function (| Ty.path "erc721::Env", "emit_event", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    Value.StructTuple
-                      "erc721::Event::Approval"
-                      []
-                      []
-                      [
-                        Value.mkStructRecord
-                          "erc721::Approval"
-                          []
-                          []
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "erc721::Event::Approval"
                           [
-                            ("from", M.read (| caller |));
-                            ("to", M.read (| M.deref (| M.read (| to |) |) |));
-                            ("id", M.read (| id |))
-                          ]
-                      ]
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "erc721::Approval"
+                                [
+                                  ("from", M.read (| caller |));
+                                  ("to", M.read (| M.deref (| M.read (| to |) |) |));
+                                  ("id", M.read (| id |))
+                                ])
+                              (Ty.path "erc721::Approval")
+                          ])
+                        (Ty.path "erc721::Event"))
+                      (Ty.path "erc721::Event")
                   ]
                 |) in
               M.alloc (|
@@ -2272,11 +2701,12 @@ Module Impl_erc721_Erc721.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc721::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc721::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc721::Error" ])
               |)
             |)))
         |)))
@@ -2344,26 +2774,38 @@ Module Impl_erc721_Erc721.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "erc721::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "erc721::Erc721",
+                              "approve_for",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc721::Erc721" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, to |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty (M.read (| id |)) (Ty.path "u32")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "erc721::Error" ],
-                          M.get_associated_function (|
-                            Ty.path "erc721::Erc721",
-                            "approve_for",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, to |) |)
-                            |);
-                            M.read (| id |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "erc721::Error" ])
                       ]
                     |)
                   |),
@@ -2410,7 +2852,15 @@ Module Impl_erc721_Erc721.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.path "core::convert::Infallible"; Ty.path "erc721::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2432,11 +2882,12 @@ Module Impl_erc721_Erc721.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc721::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc721::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc721::Error" ])
               |)
             |)))
         |)))
@@ -2553,14 +3004,26 @@ Module Impl_erc721_Erc721.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| token_owner |) |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| token_owner |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "erc721::Mapping")
+                                                      []
+                                                      [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
                                             ]
                                           |)
                                         ]
@@ -2574,12 +3037,18 @@ Module Impl_erc721_Erc721.
                                 M.never_to_any (|
                                   M.read (|
                                     M.return_ (|
-                                      Value.StructTuple
-                                        "core::result::Result::Err"
-                                        []
-                                        [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                        [ Value.StructTuple "erc721::Error::TokenNotFound" [] [] []
-                                        ]
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::result::Result::Err"
+                                          [
+                                            M.value_with_ty
+                                              (Value.StructTuple "erc721::Error::TokenNotFound" [])
+                                              (Ty.path "erc721::Error")
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [ Ty.tuple []; Ty.path "erc721::Error" ])
                                     |)
                                   |)
                                 |)));
@@ -2625,97 +3094,142 @@ Module Impl_erc721_Erc721.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [ Ty.path "u32"; Ty.path "erc721::Error" ],
-                                  M.get_associated_function (|
-                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                                    "ok_or",
-                                    [],
-                                    [ Ty.path "erc721::Error" ]
-                                  |),
-                                  [
-                                    M.call_closure (|
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.path "u32"; Ty.path "erc721::Error" ],
+                                    M.get_associated_function (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.path "u32" ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "u32" ],
-                                        "map",
-                                        [],
-                                        [
-                                          Ty.path "u32";
-                                          Ty.function [ Ty.path "u32" ] (Ty.path "u32")
-                                        ]
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                      "ok_or",
+                                      [],
+                                      [ Ty.path "erc721::Error" ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
                                             [ Ty.path "u32" ],
                                           M.get_associated_function (|
                                             Ty.apply
-                                              (Ty.path "erc721::Mapping")
+                                              (Ty.path "core::option::Option")
                                               []
-                                              [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
-                                            "get",
+                                              [ Ty.path "u32" ],
+                                            "map",
                                             [],
-                                            []
+                                            [
+                                              Ty.path "u32";
+                                              Ty.function [ Ty.path "u32" ] (Ty.path "u32")
+                                            ]
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| owned_tokens_count |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| from |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "erc721::Mapping")
+                                                    []
+                                                    [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
+                                                  "get",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| owned_tokens_count |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "erc721::Mapping")
+                                                          []
+                                                          [
+                                                            Ty.path "erc721::AccountId";
+                                                            Ty.path "u32"
+                                                          ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| from |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "erc721::AccountId" ])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "u32" ]);
+                                            M.value_with_ty
+                                              (M.closure
+                                                (fun γ =>
+                                                  ltac:(M.monadic
+                                                    match γ with
+                                                    | [ α0 ] =>
+                                                      ltac:(M.monadic
+                                                        (M.match_operator (|
+                                                          Ty.path "u32",
+                                                          M.alloc (| Ty.path "u32", α0 |),
+                                                          [
+                                                            fun γ =>
+                                                              ltac:(M.monadic
+                                                                (let c :=
+                                                                  M.copy (| Ty.path "u32", γ |) in
+                                                                M.call_closure (|
+                                                                  Ty.path "u32",
+                                                                  BinOp.Wrap.sub,
+                                                                  [
+                                                                    M.read (| c |);
+                                                                    M.read (|
+                                                                      M.use
+                                                                        (M.alloc (|
+                                                                          Ty.path "u32",
+                                                                          Value.Integer
+                                                                            IntegerKind.U32
+                                                                            1
+                                                                        |))
+                                                                    |)
+                                                                  ]
+                                                                |)))
+                                                          ]
+                                                        |)))
+                                                    | _ => M.impossible "wrong number of arguments"
+                                                    end)))
+                                              (Ty.function [ Ty.path "u32" ] (Ty.path "u32"))
                                           ]
-                                        |);
-                                        M.closure
-                                          (fun γ =>
-                                            ltac:(M.monadic
-                                              match γ with
-                                              | [ α0 ] =>
-                                                ltac:(M.monadic
-                                                  (M.match_operator (|
-                                                    Ty.path "u32",
-                                                    M.alloc (| Ty.path "u32", α0 |),
-                                                    [
-                                                      fun γ =>
-                                                        ltac:(M.monadic
-                                                          (let c := M.copy (| Ty.path "u32", γ |) in
-                                                          M.call_closure (|
-                                                            Ty.path "u32",
-                                                            BinOp.Wrap.sub,
-                                                            [
-                                                              M.read (| c |);
-                                                              M.read (|
-                                                                M.use
-                                                                  (M.alloc (|
-                                                                    Ty.path "u32",
-                                                                    Value.Integer IntegerKind.U32 1
-                                                                  |))
-                                                              |)
-                                                            ]
-                                                          |)))
-                                                    ]
-                                                  |)))
-                                              | _ => M.impossible "wrong number of arguments"
-                                              end))
-                                      ]
-                                    |);
-                                    Value.StructTuple "erc721::Error::CannotFetchValue" [] [] []
-                                  ]
-                                |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "u32" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple "erc721::Error::CannotFetchValue" [])
+                                          (Ty.path "erc721::Error"))
+                                        (Ty.path "erc721::Error")
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.path "u32"; Ty.path "erc721::Error" ])
                               ]
                             |)
                           |),
@@ -2765,7 +3279,17 @@ Module Impl_erc721_Erc721.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| residual |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| residual |))
+                                            (Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.path "erc721::Error"
+                                              ])
+                                        ]
                                       |)
                                     |)
                                   |)
@@ -2795,12 +3319,24 @@ Module Impl_erc721_Erc721.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.read (| owned_tokens_count |) |)
-                            |);
-                            M.read (| M.deref (| M.read (| from |) |) |);
-                            M.read (| count |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.read (| owned_tokens_count |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "erc721::Mapping")
+                                    []
+                                    [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
+                                ]);
+                            M.value_with_ty
+                              (M.read (| M.deref (| M.read (| from |) |) |))
+                              (Ty.path "erc721::AccountId");
+                            M.value_with_ty (M.read (| count |)) (Ty.path "u32")
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -2816,8 +3352,21 @@ Module Impl_erc721_Erc721.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| token_owner |) |) |);
-                            M.read (| id |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.read (| token_owner |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "erc721::Mapping")
+                                    []
+                                    [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                                ]);
+                            M.value_with_ty (M.read (| id |)) (Ty.path "u32")
                           ]
                         |) in
                       M.alloc (|
@@ -2825,11 +3374,12 @@ Module Impl_erc721_Erc721.
                           (Ty.path "core::result::Result")
                           []
                           [ Ty.tuple []; Ty.path "erc721::Error" ],
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [ Ty.tuple []; Ty.path "erc721::Error" ]
-                          [ Value.Tuple [] ]
+                        M.value_with_ty
+                          (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "erc721::Error" ])
                       |)
                     |)))
               ]
@@ -2950,14 +3500,26 @@ Module Impl_erc721_Erc721.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| token_owner |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| token_owner |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "erc721::Mapping")
+                                                  []
+                                                  [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
                                         ]
                                       |)
                                     |)) in
@@ -2969,11 +3531,18 @@ Module Impl_erc721_Erc721.
                                 M.never_to_any (|
                                   M.read (|
                                     M.return_ (|
-                                      Value.StructTuple
-                                        "core::result::Result::Err"
-                                        []
-                                        [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                        [ Value.StructTuple "erc721::Error::TokenExists" [] [] [] ]
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::result::Result::Err"
+                                          [
+                                            M.value_with_ty
+                                              (Value.StructTuple "erc721::Error::TokenExists" [])
+                                              (Ty.path "erc721::Error")
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [ Ty.tuple []; Ty.path "erc721::Error" ])
                                     |)
                                   |)
                                 |)));
@@ -3003,39 +3572,54 @@ Module Impl_erc721_Erc721.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| to |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "erc721::AccountId",
-                                              M.call_closure (|
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| to |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "erc721::AccountId" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
                                                 Ty.path "erc721::AccountId",
-                                                M.get_trait_method (|
-                                                  "core::convert::From",
+                                                M.call_closure (|
                                                   Ty.path "erc721::AccountId",
-                                                  [],
+                                                  M.get_trait_method (|
+                                                    "core::convert::From",
+                                                    Ty.path "erc721::AccountId",
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                                        [ Ty.path "u8" ]
+                                                    ],
+                                                    "from",
+                                                    [],
+                                                    []
+                                                  |),
                                                   [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 32 ]
-                                                      [ Ty.path "u8" ]
-                                                  ],
-                                                  "from",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  lib.repeat (|
-                                                    Value.Integer IntegerKind.U8 0,
-                                                    Value.Integer IntegerKind.Usize 32
-                                                  |)
-                                                ]
+                                                    M.value_with_ty
+                                                      (lib.repeat (|
+                                                        Value.Integer IntegerKind.U8 0,
+                                                        Value.Integer IntegerKind.Usize 32
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                                        [ Ty.path "u8" ])
+                                                  ]
+                                                |)
                                               |)
-                                            |)
-                                          |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "erc721::AccountId" ])
                                         ]
                                       |)
                                     |)) in
@@ -3047,11 +3631,18 @@ Module Impl_erc721_Erc721.
                                 M.never_to_any (|
                                   M.read (|
                                     M.return_ (|
-                                      Value.StructTuple
-                                        "core::result::Result::Err"
-                                        []
-                                        [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                        [ Value.StructTuple "erc721::Error::NotAllowed" [] [] [] ]
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::result::Result::Err"
+                                          [
+                                            M.value_with_ty
+                                              (Value.StructTuple "erc721::Error::NotAllowed" [])
+                                              (Ty.path "erc721::Error")
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [ Ty.tuple []; Ty.path "erc721::Error" ])
                                     |)
                                   |)
                                 |)));
@@ -3068,68 +3659,98 @@ Module Impl_erc721_Erc721.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                                "map",
-                                [],
-                                [ Ty.path "u32"; Ty.function [ Ty.path "u32" ] (Ty.path "u32") ]
-                              |),
-                              [
-                                M.call_closure (|
+                                M.get_associated_function (|
                                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "erc721::Mapping")
-                                      []
-                                      [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
-                                    "get",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| owned_tokens_count |) |)
-                                    |);
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |)
-                                  ]
-                                |);
-                                M.closure
-                                  (fun γ =>
-                                    ltac:(M.monadic
-                                      match γ with
-                                      | [ α0 ] =>
-                                        ltac:(M.monadic
-                                          (M.match_operator (|
-                                            Ty.path "u32",
-                                            M.alloc (| Ty.path "u32", α0 |),
+                                  "map",
+                                  [],
+                                  [ Ty.path "u32"; Ty.function [ Ty.path "u32" ] (Ty.path "u32") ]
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "u32" ],
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "erc721::Mapping")
+                                          []
+                                          [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
+                                        "get",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| owned_tokens_count |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
                                             [
-                                              fun γ =>
-                                                ltac:(M.monadic
-                                                  (let c := M.copy (| Ty.path "u32", γ |) in
-                                                  M.call_closure (|
-                                                    Ty.path "u32",
-                                                    BinOp.Wrap.add,
-                                                    [
-                                                      M.read (| c |);
-                                                      M.read (|
-                                                        M.use
-                                                          (M.alloc (|
-                                                            Ty.path "u32",
-                                                            Value.Integer IntegerKind.U32 1
-                                                          |))
-                                                      |)
-                                                    ]
-                                                  |)))
-                                            ]
-                                          |)))
-                                      | _ => M.impossible "wrong number of arguments"
-                                      end))
-                              ]
-                            |);
-                            Value.Integer IntegerKind.U32 1
+                                              Ty.apply
+                                                (Ty.path "erc721::Mapping")
+                                                []
+                                                [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| to |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "erc721::AccountId" ])
+                                      ]
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "u32" ]);
+                                  M.value_with_ty
+                                    (M.closure
+                                      (fun γ =>
+                                        ltac:(M.monadic
+                                          match γ with
+                                          | [ α0 ] =>
+                                            ltac:(M.monadic
+                                              (M.match_operator (|
+                                                Ty.path "u32",
+                                                M.alloc (| Ty.path "u32", α0 |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let c := M.copy (| Ty.path "u32", γ |) in
+                                                      M.call_closure (|
+                                                        Ty.path "u32",
+                                                        BinOp.Wrap.add,
+                                                        [
+                                                          M.read (| c |);
+                                                          M.read (|
+                                                            M.use
+                                                              (M.alloc (|
+                                                                Ty.path "u32",
+                                                                Value.Integer IntegerKind.U32 1
+                                                              |))
+                                                          |)
+                                                        ]
+                                                      |)))
+                                                ]
+                                              |)))
+                                          | _ => M.impossible "wrong number of arguments"
+                                          end)))
+                                    (Ty.function [ Ty.path "u32" ] (Ty.path "u32"))
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ]);
+                            M.value_with_ty (Value.Integer IntegerKind.U32 1) (Ty.path "u32")
                           ]
                         |) in
                       let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
@@ -3145,12 +3766,24 @@ Module Impl_erc721_Erc721.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.read (| owned_tokens_count |) |)
-                            |);
-                            M.read (| M.deref (| M.read (| to |) |) |);
-                            M.read (| count |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.read (| owned_tokens_count |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "erc721::Mapping")
+                                    []
+                                    [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
+                                ]);
+                            M.value_with_ty
+                              (M.read (| M.deref (| M.read (| to |) |) |))
+                              (Ty.path "erc721::AccountId");
+                            M.value_with_ty (M.read (| count |)) (Ty.path "u32")
                           ]
                         |) in
                       let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
@@ -3166,12 +3799,24 @@ Module Impl_erc721_Erc721.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.read (| token_owner |) |)
-                            |);
-                            M.read (| id |);
-                            M.read (| M.deref (| M.read (| to |) |) |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.read (| token_owner |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "erc721::Mapping")
+                                    []
+                                    [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                                ]);
+                            M.value_with_ty (M.read (| id |)) (Ty.path "u32");
+                            M.value_with_ty
+                              (M.read (| M.deref (| M.read (| to |) |) |))
+                              (Ty.path "erc721::AccountId")
                           ]
                         |) in
                       M.alloc (|
@@ -3179,11 +3824,12 @@ Module Impl_erc721_Erc721.
                           (Ty.path "core::result::Result")
                           []
                           [ Ty.tuple []; Ty.path "erc721::Error" ],
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [ Ty.tuple []; Ty.path "erc721::Error" ]
-                          [ Value.Tuple [] ]
+                        M.value_with_ty
+                          (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "erc721::Error" ])
                       |)
                     |)))
               ]
@@ -3240,17 +3886,23 @@ Module Impl_erc721_Erc721.
                   Ty.path "erc721::AccountId",
                   M.get_associated_function (| Ty.path "erc721::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -3277,11 +3929,13 @@ Module Impl_erc721_Erc721.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      M.read (| id |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ]);
+                                      M.value_with_ty (M.read (| id |)) (Ty.path "u32")
                                     ]
                                   |)
                                 ]
@@ -3291,11 +3945,18 @@ Module Impl_erc721_Erc721.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                [ Value.StructTuple "erc721::Error::TokenNotFound" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "erc721::Error::TokenNotFound" [])
+                                      (Ty.path "erc721::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "erc721::Error" ])
                             |)
                           |)
                         |)));
@@ -3326,16 +3987,26 @@ Module Impl_erc721_Erc721.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::Some"
-                                        []
-                                        [ Ty.path "erc721::AccountId" ]
-                                        [ M.read (| caller |) ];
-                                      M.read (| id |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple
+                                            "core::option::Option::Some"
+                                            [ M.read (| caller |) ])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "erc721::AccountId" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "erc721::AccountId" ]);
+                                      M.value_with_ty (M.read (| id |)) (Ty.path "u32")
                                     ]
                                   |)
                                 ]
@@ -3345,11 +4016,18 @@ Module Impl_erc721_Erc721.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                [ Value.StructTuple "erc721::Error::NotApproved" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "erc721::Error::NotApproved" [])
+                                      (Ty.path "erc721::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "erc721::Error" ])
                             |)
                           |)
                         |)));
@@ -3366,8 +4044,10 @@ Module Impl_erc721_Erc721.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| id |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc721::Erc721" ]);
+                    M.value_with_ty (M.read (| id |)) (Ty.path "u32")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -3408,23 +4088,35 @@ Module Impl_erc721_Erc721.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "erc721::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "erc721::Erc721",
+                              "remove_token_from",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc721::Erc721" ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty (M.read (| id |)) (Ty.path "u32")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "erc721::Error" ],
-                          M.get_associated_function (|
-                            Ty.path "erc721::Erc721",
-                            "remove_token_from",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |);
-                            M.read (| id |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "erc721::Error" ])
                       ]
                     |)
                   |),
@@ -3471,7 +4163,15 @@ Module Impl_erc721_Erc721.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.path "core::convert::Infallible"; Ty.path "erc721::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -3526,23 +4226,35 @@ Module Impl_erc721_Erc721.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "erc721::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "erc721::Erc721",
+                              "add_token_to",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc721::Erc721" ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty (M.read (| id |)) (Ty.path "u32")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "erc721::Error" ],
-                          M.get_associated_function (|
-                            Ty.path "erc721::Erc721",
-                            "add_token_to",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |);
-                            M.read (| id |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "erc721::Error" ])
                       ]
                     |)
                   |),
@@ -3589,7 +4301,15 @@ Module Impl_erc721_Erc721.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.path "core::convert::Infallible"; Ty.path "erc721::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -3611,42 +4331,56 @@ Module Impl_erc721_Erc721.
                   Ty.tuple [],
                   M.get_associated_function (| Ty.path "erc721::Env", "emit_event", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    Value.StructTuple
-                      "erc721::Event::Transfer"
-                      []
-                      []
-                      [
-                        Value.mkStructRecord
-                          "erc721::Transfer"
-                          []
-                          []
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "erc721::Event::Transfer"
                           [
-                            ("from",
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [ Ty.path "erc721::AccountId" ]
-                                [ M.read (| M.deref (| M.read (| from |) |) |) ]);
-                            ("to",
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [ Ty.path "erc721::AccountId" ]
-                                [ M.read (| M.deref (| M.read (| to |) |) |) ]);
-                            ("id", M.read (| id |))
-                          ]
-                      ]
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "erc721::Transfer"
+                                [
+                                  ("from",
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::option::Option::Some"
+                                        [ M.read (| M.deref (| M.read (| from |) |) |) ])
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "erc721::AccountId" ]));
+                                  ("to",
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::option::Option::Some"
+                                        [ M.read (| M.deref (| M.read (| to |) |) |) ])
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "erc721::AccountId" ]));
+                                  ("id", M.read (| id |))
+                                ])
+                              (Ty.path "erc721::Transfer")
+                          ])
+                        (Ty.path "erc721::Event"))
+                      (Ty.path "erc721::Event")
                   ]
                 |) in
               M.alloc (|
@@ -3654,11 +4388,12 @@ Module Impl_erc721_Erc721.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc721::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc721::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc721::Error" ])
               |)
             |)))
         |)))
@@ -3694,17 +4429,23 @@ Module Impl_erc721_Erc721.
                   Ty.path "erc721::AccountId",
                   M.get_associated_function (| Ty.path "erc721::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -3745,30 +4486,44 @@ Module Impl_erc721_Erc721.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "erc721::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "erc721::Erc721",
+                              "transfer_token_from",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc721::Erc721" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, destination |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty (M.read (| id |)) (Ty.path "u32")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "erc721::Error" ],
-                          M.get_associated_function (|
-                            Ty.path "erc721::Erc721",
-                            "transfer_token_from",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, destination |) |)
-                            |);
-                            M.read (| id |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "erc721::Error" ])
                       ]
                     |)
                   |),
@@ -3815,7 +4570,15 @@ Module Impl_erc721_Erc721.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.path "core::convert::Infallible"; Ty.path "erc721::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -3837,11 +4600,12 @@ Module Impl_erc721_Erc721.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc721::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc721::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc721::Error" ])
               |)
             |)))
         |)))
@@ -3914,30 +4678,44 @@ Module Impl_erc721_Erc721.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "erc721::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "erc721::Erc721",
+                              "transfer_token_from",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc721::Erc721" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, from |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, to |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty (M.read (| id |)) (Ty.path "u32")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "erc721::Error" ],
-                          M.get_associated_function (|
-                            Ty.path "erc721::Erc721",
-                            "transfer_token_from",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, from |) |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, to |) |)
-                            |);
-                            M.read (| id |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "erc721::Error" ])
                       ]
                     |)
                   |),
@@ -3984,7 +4762,15 @@ Module Impl_erc721_Erc721.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.path "core::convert::Infallible"; Ty.path "erc721::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -4006,11 +4792,12 @@ Module Impl_erc721_Erc721.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc721::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc721::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc721::Error" ])
               |)
             |)))
         |)))
@@ -4050,17 +4837,23 @@ Module Impl_erc721_Erc721.
                   Ty.path "erc721::AccountId",
                   M.get_associated_function (| Ty.path "erc721::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -4101,26 +4894,38 @@ Module Impl_erc721_Erc721.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "erc721::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "erc721::Erc721",
+                              "add_token_to",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc721::Erc721" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::AccountId" ]);
+                              M.value_with_ty (M.read (| id |)) (Ty.path "u32")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "erc721::Error" ],
-                          M.get_associated_function (|
-                            Ty.path "erc721::Erc721",
-                            "add_token_to",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
-                            |);
-                            M.read (| id |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "erc721::Error" ])
                       ]
                     |)
                   |),
@@ -4167,7 +4972,15 @@ Module Impl_erc721_Erc721.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.path "core::convert::Infallible"; Ty.path "erc721::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -4189,66 +5002,85 @@ Module Impl_erc721_Erc721.
                   Ty.tuple [],
                   M.get_associated_function (| Ty.path "erc721::Env", "emit_event", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    Value.StructTuple
-                      "erc721::Event::Transfer"
-                      []
-                      []
-                      [
-                        Value.mkStructRecord
-                          "erc721::Transfer"
-                          []
-                          []
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "erc721::Event::Transfer"
                           [
-                            ("from",
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [ Ty.path "erc721::AccountId" ]
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "erc721::Transfer"
                                 [
-                                  M.call_closure (|
-                                    Ty.path "erc721::AccountId",
-                                    M.get_trait_method (|
-                                      "core::convert::From",
-                                      Ty.path "erc721::AccountId",
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 32 ]
-                                          [ Ty.path "u8" ]
-                                      ],
-                                      "from",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      lib.repeat (|
-                                        Value.Integer IntegerKind.U8 0,
-                                        Value.Integer IntegerKind.Usize 32
-                                      |)
-                                    ]
-                                  |)
-                                ]);
-                            ("to",
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [ Ty.path "erc721::AccountId" ]
-                                [ M.read (| caller |) ]);
-                            ("id", M.read (| id |))
-                          ]
-                      ]
+                                  ("from",
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::option::Option::Some"
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "erc721::AccountId",
+                                            M.get_trait_method (|
+                                              "core::convert::From",
+                                              Ty.path "erc721::AccountId",
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  [ Ty.path "u8" ]
+                                              ],
+                                              "from",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (lib.repeat (|
+                                                  Value.Integer IntegerKind.U8 0,
+                                                  Value.Integer IntegerKind.Usize 32
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  [ Ty.path "u8" ])
+                                            ]
+                                          |)
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "erc721::AccountId" ]));
+                                  ("to",
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::option::Option::Some"
+                                        [ M.read (| caller |) ])
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "erc721::AccountId" ]));
+                                  ("id", M.read (| id |))
+                                ])
+                              (Ty.path "erc721::Transfer")
+                          ])
+                        (Ty.path "erc721::Event"))
+                      (Ty.path "erc721::Event")
                   ]
                 |) in
               M.alloc (|
@@ -4256,11 +5088,12 @@ Module Impl_erc721_Erc721.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc721::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc721::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc721::Error" ])
               |)
             |)))
         |)))
@@ -4317,17 +5150,23 @@ Module Impl_erc721_Erc721.
                   Ty.path "erc721::AccountId",
                   M.get_associated_function (| Ty.path "erc721::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc721::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc721::Env",
-                          M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc721::Env",
+                            M.get_associated_function (| Ty.path "erc721::Erc721", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ])
                   ]
                 |) in
               M.alloc (|
@@ -4426,49 +5265,78 @@ Module Impl_erc721_Erc721.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [ Ty.path "erc721::AccountId"; Ty.path "erc721::Error" ],
-                                      M.get_associated_function (|
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::option::Option")
+                                          (Ty.path "core::result::Result")
                                           []
-                                          [ Ty.path "erc721::AccountId" ],
-                                        "ok_or",
-                                        [],
-                                        [ Ty.path "erc721::Error" ]
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                          [ Ty.path "erc721::AccountId"; Ty.path "erc721::Error" ],
+                                        M.get_associated_function (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
                                             [ Ty.path "erc721::AccountId" ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "erc721::Mapping")
+                                          "ok_or",
+                                          [],
+                                          [ Ty.path "erc721::Error" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "erc721::AccountId" ],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "erc721::Mapping")
+                                                  []
+                                                  [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
+                                                "get",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| token_owner |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "erc721::Mapping")
+                                                        []
+                                                        [ Ty.path "u32"; Ty.path "erc721::AccountId"
+                                                        ]
+                                                    ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, id |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                              ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
                                               []
-                                              [ Ty.path "u32"; Ty.path "erc721::AccountId" ],
-                                            "get",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| token_owner |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, id |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        Value.StructTuple "erc721::Error::TokenNotFound" [] [] []
-                                      ]
-                                    |)
+                                              [ Ty.path "erc721::AccountId" ]);
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.StructTuple "erc721::Error::TokenNotFound" [])
+                                              (Ty.path "erc721::Error"))
+                                            (Ty.path "erc721::Error")
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "erc721::AccountId"; Ty.path "erc721::Error" ])
                                   ]
                                 |)
                               |),
@@ -4520,7 +5388,17 @@ Module Impl_erc721_Erc721.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| residual |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| residual |))
+                                                (Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path "core::convert::Infallible";
+                                                    Ty.path "erc721::Error"
+                                                  ])
+                                            ]
                                           |)
                                         |)
                                       |)
@@ -4560,8 +5438,18 @@ Module Impl_erc721_Erc721.
                                               []
                                             |),
                                             [
-                                              M.borrow (| Pointer.Kind.Ref, owner |);
-                                              M.borrow (| Pointer.Kind.Ref, caller |)
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, owner |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "erc721::AccountId" ]);
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, caller |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "erc721::AccountId" ])
                                             ]
                                           |)
                                         |)) in
@@ -4573,11 +5461,18 @@ Module Impl_erc721_Erc721.
                                     M.never_to_any (|
                                       M.read (|
                                         M.return_ (|
-                                          Value.StructTuple
-                                            "core::result::Result::Err"
-                                            []
-                                            [ Ty.tuple []; Ty.path "erc721::Error" ]
-                                            [ Value.StructTuple "erc721::Error::NotOwner" [] [] [] ]
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "core::result::Result::Err"
+                                              [
+                                                M.value_with_ty
+                                                  (Value.StructTuple "erc721::Error::NotOwner" [])
+                                                  (Ty.path "erc721::Error")
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.tuple []; Ty.path "erc721::Error" ])
                                         |)
                                       |)
                                     |)));
@@ -4626,97 +5521,147 @@ Module Impl_erc721_Erc721.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [ Ty.path "u32"; Ty.path "erc721::Error" ],
-                                      M.get_associated_function (|
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::option::Option")
+                                          (Ty.path "core::result::Result")
                                           []
-                                          [ Ty.path "u32" ],
-                                        "ok_or",
-                                        [],
-                                        [ Ty.path "erc721::Error" ]
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                          [ Ty.path "u32"; Ty.path "erc721::Error" ],
+                                        M.get_associated_function (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
                                             [ Ty.path "u32" ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "u32" ],
-                                            "map",
-                                            [],
-                                            [
-                                              Ty.path "u32";
-                                              Ty.function [ Ty.path "u32" ] (Ty.path "u32")
-                                            ]
-                                          |),
-                                          [
-                                            M.call_closure (|
+                                          "ok_or",
+                                          [],
+                                          [ Ty.path "erc721::Error" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply
                                                 (Ty.path "core::option::Option")
                                                 []
                                                 [ Ty.path "u32" ],
                                               M.get_associated_function (|
                                                 Ty.apply
-                                                  (Ty.path "erc721::Mapping")
+                                                  (Ty.path "core::option::Option")
                                                   []
-                                                  [ Ty.path "erc721::AccountId"; Ty.path "u32" ],
-                                                "get",
+                                                  [ Ty.path "u32" ],
+                                                "map",
                                                 [],
-                                                []
+                                                [
+                                                  Ty.path "u32";
+                                                  Ty.function [ Ty.path "u32" ] (Ty.path "u32")
+                                                ]
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| owned_tokens_count |) |)
-                                                |);
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.Ref, caller |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "core::option::Option")
+                                                      []
+                                                      [ Ty.path "u32" ],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "erc721::Mapping")
+                                                        []
+                                                        [ Ty.path "erc721::AccountId"; Ty.path "u32"
+                                                        ],
+                                                      "get",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (| owned_tokens_count |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "erc721::Mapping")
+                                                              []
+                                                              [
+                                                                Ty.path "erc721::AccountId";
+                                                                Ty.path "u32"
+                                                              ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (| Pointer.Kind.Ref, caller |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "erc721::AccountId" ])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "u32" ]);
+                                                M.value_with_ty
+                                                  (M.closure
+                                                    (fun γ =>
+                                                      ltac:(M.monadic
+                                                        match γ with
+                                                        | [ α0 ] =>
+                                                          ltac:(M.monadic
+                                                            (M.match_operator (|
+                                                              Ty.path "u32",
+                                                              M.alloc (| Ty.path "u32", α0 |),
+                                                              [
+                                                                fun γ =>
+                                                                  ltac:(M.monadic
+                                                                    (let c :=
+                                                                      M.copy (|
+                                                                        Ty.path "u32",
+                                                                        γ
+                                                                      |) in
+                                                                    M.call_closure (|
+                                                                      Ty.path "u32",
+                                                                      BinOp.Wrap.sub,
+                                                                      [
+                                                                        M.read (| c |);
+                                                                        Value.Integer
+                                                                          IntegerKind.U32
+                                                                          1
+                                                                      ]
+                                                                    |)))
+                                                              ]
+                                                            |)))
+                                                        | _ =>
+                                                          M.impossible "wrong number of arguments"
+                                                        end)))
+                                                  (Ty.function [ Ty.path "u32" ] (Ty.path "u32"))
                                               ]
-                                            |);
-                                            M.closure
-                                              (fun γ =>
-                                                ltac:(M.monadic
-                                                  match γ with
-                                                  | [ α0 ] =>
-                                                    ltac:(M.monadic
-                                                      (M.match_operator (|
-                                                        Ty.path "u32",
-                                                        M.alloc (| Ty.path "u32", α0 |),
-                                                        [
-                                                          fun γ =>
-                                                            ltac:(M.monadic
-                                                              (let c :=
-                                                                M.copy (| Ty.path "u32", γ |) in
-                                                              M.call_closure (|
-                                                                Ty.path "u32",
-                                                                BinOp.Wrap.sub,
-                                                                [
-                                                                  M.read (| c |);
-                                                                  Value.Integer IntegerKind.U32 1
-                                                                ]
-                                                              |)))
-                                                        ]
-                                                      |)))
-                                                  | _ => M.impossible "wrong number of arguments"
-                                                  end))
-                                          ]
-                                        |);
-                                        Value.StructTuple "erc721::Error::CannotFetchValue" [] [] []
-                                      ]
-                                    |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "u32" ]);
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.StructTuple
+                                                "erc721::Error::CannotFetchValue"
+                                                [])
+                                              (Ty.path "erc721::Error"))
+                                            (Ty.path "erc721::Error")
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "u32"; Ty.path "erc721::Error" ])
                                   ]
                                 |)
                               |),
@@ -4768,7 +5713,17 @@ Module Impl_erc721_Erc721.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| residual |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| residual |))
+                                                (Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path "core::convert::Infallible";
+                                                    Ty.path "erc721::Error"
+                                                  ])
+                                            ]
                                           |)
                                         |)
                                       |)
@@ -4798,12 +5753,22 @@ Module Impl_erc721_Erc721.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (| M.read (| owned_tokens_count |) |)
-                                |);
-                                M.read (| caller |);
-                                M.read (| count |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| owned_tokens_count |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "erc721::Mapping")
+                                        []
+                                        [ Ty.path "erc721::AccountId"; Ty.path "u32" ]
+                                    ]);
+                                M.value_with_ty (M.read (| caller |)) (Ty.path "erc721::AccountId");
+                                M.value_with_ty (M.read (| count |)) (Ty.path "u32")
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -4819,11 +5784,21 @@ Module Impl_erc721_Erc721.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| token_owner |) |)
-                                |);
-                                M.read (| id |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| token_owner |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "erc721::Mapping")
+                                        []
+                                        [ Ty.path "u32"; Ty.path "erc721::AccountId" ]
+                                    ]);
+                                M.value_with_ty (M.read (| id |)) (Ty.path "u32")
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -4836,76 +5811,93 @@ Module Impl_erc721_Erc721.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.path "erc721::Env",
-                                    M.call_closure (|
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
                                       Ty.path "erc721::Env",
-                                      M.get_associated_function (|
-                                        Ty.path "erc721::Erc721",
-                                        "env",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
+                                      M.call_closure (|
+                                        Ty.path "erc721::Env",
+                                        M.get_associated_function (|
+                                          Ty.path "erc721::Erc721",
+                                          "env",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Erc721" ])
+                                        ]
+                                      |)
                                     |)
-                                  |)
-                                |);
-                                Value.StructTuple
-                                  "erc721::Event::Transfer"
-                                  []
-                                  []
-                                  [
-                                    Value.mkStructRecord
-                                      "erc721::Transfer"
-                                      []
-                                      []
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc721::Env" ]);
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "erc721::Event::Transfer"
                                       [
-                                        ("from",
-                                          Value.StructTuple
-                                            "core::option::Option::Some"
-                                            []
-                                            [ Ty.path "erc721::AccountId" ]
-                                            [ M.read (| caller |) ]);
-                                        ("to",
-                                          Value.StructTuple
-                                            "core::option::Option::Some"
-                                            []
-                                            [ Ty.path "erc721::AccountId" ]
+                                        M.value_with_ty
+                                          (Value.mkStructRecord
+                                            "erc721::Transfer"
                                             [
-                                              M.call_closure (|
-                                                Ty.path "erc721::AccountId",
-                                                M.get_trait_method (|
-                                                  "core::convert::From",
-                                                  Ty.path "erc721::AccountId",
-                                                  [],
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 32 ]
-                                                      [ Ty.path "u8" ]
-                                                  ],
-                                                  "from",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  lib.repeat (|
-                                                    Value.Integer IntegerKind.U8 0,
-                                                    Value.Integer IntegerKind.Usize 32
-                                                  |)
-                                                ]
-                                              |)
-                                            ]);
-                                        ("id", M.read (| id |))
-                                      ]
-                                  ]
+                                              ("from",
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::option::Option::Some"
+                                                    [ M.read (| caller |) ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "erc721::AccountId" ]));
+                                              ("to",
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::option::Option::Some"
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "erc721::AccountId",
+                                                        M.get_trait_method (|
+                                                          "core::convert::From",
+                                                          Ty.path "erc721::AccountId",
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 32 ]
+                                                              [ Ty.path "u8" ]
+                                                          ],
+                                                          "from",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (lib.repeat (|
+                                                              Value.Integer IntegerKind.U8 0,
+                                                              Value.Integer IntegerKind.Usize 32
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 32 ]
+                                                              [ Ty.path "u8" ])
+                                                        ]
+                                                      |)
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "erc721::AccountId" ]));
+                                              ("id", M.read (| id |))
+                                            ])
+                                          (Ty.path "erc721::Transfer")
+                                      ])
+                                    (Ty.path "erc721::Event"))
+                                  (Ty.path "erc721::Event")
                               ]
                             |) in
                           M.alloc (|
@@ -4913,11 +5905,12 @@ Module Impl_erc721_Erc721.
                               (Ty.path "core::result::Result")
                               []
                               [ Ty.tuple []; Ty.path "erc721::Error" ],
-                            Value.StructTuple
-                              "core::result::Result::Ok"
-                              []
-                              [ Ty.tuple []; Ty.path "erc721::Error" ]
-                              [ Value.Tuple [] ]
+                            M.value_with_ty
+                              (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "erc721::Error" ])
                           |)
                         |)))
                   ]

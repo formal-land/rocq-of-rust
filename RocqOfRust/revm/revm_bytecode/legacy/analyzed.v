@@ -32,96 +32,105 @@ Module legacy.
                   [ Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode" ],
                 self
               |) in
-            Value.mkStructRecord
-              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
-              []
-              []
-              [
-                ("bytecode",
-                  M.call_closure (|
-                    Ty.path "alloy_primitives::bytes_::Bytes",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
+                [
+                  ("bytecode",
+                    M.call_closure (|
                       Ty.path "alloy_primitives::bytes_::Bytes",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "alloy_primitives::bytes_::Bytes",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                              "bytecode"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                  "bytecode"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("original_len",
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                      ]
+                    |));
+                  ("original_len",
+                    M.call_closure (|
                       Ty.path "usize",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "usize",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                              "original_len"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                  "original_len"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("jump_table",
-                  M.call_closure (|
-                    Ty.path "revm_bytecode::legacy::jump_map::JumpTable",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                      ]
+                    |));
+                  ("jump_table",
+                    M.call_closure (|
                       Ty.path "revm_bytecode::legacy::jump_map::JumpTable",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "revm_bytecode::legacy::jump_map::JumpTable",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                              "jump_table"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                  "jump_table"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ])
+                      ]
+                    |))
+                ])
+              (Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -164,97 +173,113 @@ Module legacy.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| mk_str (| "LegacyAnalyzedBytecode" |) |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "bytecode" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                            "bytecode"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "LegacyAnalyzedBytecode" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "bytecode" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "bytecode"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "original_len" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                            "original_len"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "original_len" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "original_len"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "jump_table" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                "jump_table"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "jump_table" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                  "jump_table"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -319,22 +344,26 @@ Module legacy.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                        "bytecode"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                        "bytecode"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                          "bytecode"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                          "bytecode"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
                   ]
                 |),
                 ltac:(M.monadic
@@ -372,22 +401,32 @@ Module legacy.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                        "jump_table"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                        "jump_table"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                          "jump_table"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                          "jump_table"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ])
                   ]
                 |)))
             |)))
@@ -489,20 +528,24 @@ Module legacy.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                            "bytecode"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "bytecode"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -518,20 +561,24 @@ Module legacy.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                            "original_len"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "original_len"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -548,20 +595,27 @@ Module legacy.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                            "jump_table"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "jump_table"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -618,32 +672,36 @@ Module legacy.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                            "bytecode"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "bytecode"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| other |) |),
-                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                            "bytecode"
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| other |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "bytecode"
+                            |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
                   ]
                 |)
               |),
@@ -667,32 +725,36 @@ Module legacy.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                    "original_len"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                      "original_len"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| other |) |),
-                                    "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                    "original_len"
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| other |) |),
+                                      "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                      "original_len"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
                           ]
                         |)
                       |),
@@ -712,32 +774,42 @@ Module legacy.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                        "jump_table"
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                          "jump_table"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| other |) |),
-                                        "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                        "jump_table"
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| other |) |),
+                                          "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                          "jump_table"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ])
                               ]
                             |)));
                         fun γ =>
@@ -804,32 +876,36 @@ Module legacy.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                            "bytecode"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "bytecode"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| other |) |),
-                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                            "bytecode"
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| other |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "bytecode"
+                            |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
                   ]
                 |)
               |),
@@ -868,32 +944,36 @@ Module legacy.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                    "original_len"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                      "original_len"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| other |) |),
-                                    "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                    "original_len"
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| other |) |),
+                                      "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                      "original_len"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
                           ]
                         |)
                       |),
@@ -922,32 +1002,42 @@ Module legacy.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                        "jump_table"
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                          "jump_table"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| other |) |),
-                                        "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                        "jump_table"
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| other |) |),
+                                          "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                          "jump_table"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_bytecode::legacy::jump_map::JumpTable" ])
                               ]
                             |)));
                         fun γ =>
@@ -1005,175 +1095,134 @@ Module legacy.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
-              []
-              []
-              [
-                ("bytecode",
-                  M.call_closure (|
-                    Ty.path "alloy_primitives::bytes_::Bytes",
-                    M.get_associated_function (|
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
+                [
+                  ("bytecode",
+                    M.call_closure (|
                       Ty.path "alloy_primitives::bytes_::Bytes",
-                      "from_static",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "u8" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                      M.get_associated_function (|
+                        Ty.path "alloy_primitives::bytes_::Bytes",
+                        "from_static",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "u8" ],
-                                  Value.Array [ Value.Integer IntegerKind.U8 0 ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |));
-                ("original_len", Value.Integer IntegerKind.Usize 0);
-                ("jump_table",
-                  Value.StructTuple
-                    "revm_bytecode::legacy::jump_map::JumpTable"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::sync::Arc")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "bitvec::vec::BitVec")
-                              []
-                              [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ];
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "alloc::sync::Arc")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "bitvec::vec::BitVec")
+                                    [ Ty.path "u8" ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
                                 []
-                                [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ];
-                              Ty.path "alloc::alloc::Global"
-                            ],
-                          "new",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "bitvec::vec::BitVec")
-                              []
-                              [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "bitvec::vec::BitVec")
-                                []
-                                [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ],
-                              "from_bitslice",
-                              [],
-                              []
-                            |),
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
                             [
                               M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "bitvec::slice::BitSlice")
-                                              []
-                                              [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ]
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply
-                                            (Ty.path "bitvec::array::BitArray")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.path "u8" ];
-                                              Ty.path "bitvec::order::Lsb0"
-                                            ],
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeTo")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "u8" ],
+                                      Value.Array [ Value.Integer IntegerKind.U8 0 ]
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
+                    |));
+                  ("original_len", Value.Integer IntegerKind.Usize 0);
+                  ("jump_table",
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "revm_bytecode::legacy::jump_map::JumpTable"
+                        [
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "bitvec::vec::BitVec")
+                                  []
+                                  [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ];
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "bitvec::vec::BitVec")
+                                    []
+                                    [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ];
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              "new",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "bitvec::vec::BitVec")
+                                    []
+                                    [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "bitvec::vec::BitVec")
+                                      []
+                                      [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ],
+                                    "from_bitslice",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
                                           M.borrow (|
                                             Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "bitvec::array::BitArray")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.path "u8" ];
-                                                  Ty.path "bitvec::order::Lsb0"
-                                                ],
+                                            M.deref (|
                                               M.call_closure (|
                                                 Ty.apply
-                                                  (Ty.path "bitvec::array::BitArray")
+                                                  (Ty.path "&")
                                                   []
                                                   [
                                                     Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                                      [ Ty.path "u8" ];
-                                                    Ty.path "bitvec::order::Lsb0"
+                                                      (Ty.path "bitvec::slice::BitSlice")
+                                                      []
+                                                      [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0"
+                                                      ]
                                                   ],
-                                                M.get_associated_function (|
+                                                M.get_trait_method (|
+                                                  "core::ops::index::Index",
                                                   Ty.apply
                                                     (Ty.path "bitvec::array::BitArray")
                                                     []
@@ -1184,79 +1233,180 @@ Module legacy.
                                                         [ Ty.path "u8" ];
                                                       Ty.path "bitvec::order::Lsb0"
                                                     ],
-                                                  "new",
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ops::range::RangeTo")
+                                                      []
+                                                      [ Ty.path "usize" ]
+                                                  ],
+                                                  "index",
                                                   [],
                                                   []
                                                 |),
                                                 [
-                                                  Value.Array
-                                                    [
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.alloc (|
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "bitvec::array::BitArray")
+                                                          []
+                                                          [
                                                             Ty.apply
-                                                              (Ty.path "bitvec::mem::BitElement")
-                                                              []
-                                                              [ Ty.path "u8" ],
-                                                            M.call_closure (|
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                                              [ Ty.path "u8" ];
+                                                            Ty.path "bitvec::order::Lsb0"
+                                                          ],
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "bitvec::array::BitArray")
+                                                            []
+                                                            [
                                                               Ty.apply
-                                                                (Ty.path "bitvec::mem::BitElement")
-                                                                []
-                                                                [ Ty.path "u8" ],
-                                                              M.get_associated_function (|
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "bitvec::mem::BitElement")
-                                                                  []
-                                                                  [ Ty.path "u8" ],
-                                                                "new",
-                                                                [],
-                                                                []
-                                                              |),
+                                                                (Ty.path "array")
+                                                                [ Value.Integer IntegerKind.Usize 1
+                                                                ]
+                                                                [ Ty.path "u8" ];
+                                                              Ty.path "bitvec::order::Lsb0"
+                                                            ],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "bitvec::array::BitArray")
+                                                              []
                                                               [
-                                                                M.read (|
-                                                                  get_constant (|
-                                                                    "revm_bytecode::legacy::analyzed::default::ELEM",
-                                                                    Ty.path "u8"
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
+                                                                Ty.apply
+                                                                  (Ty.path "array")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ]
+                                                                  [ Ty.path "u8" ];
+                                                                Ty.path "bitvec::order::Lsb0"
+                                                              ],
+                                                            "new",
+                                                            [],
+                                                            []
                                                           |),
-                                                          "bitvec::mem::BitElement",
-                                                          "elem"
+                                                          [
+                                                            M.value_with_ty
+                                                              (Value.Array
+                                                                [
+                                                                  M.read (|
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.alloc (|
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "bitvec::mem::BitElement")
+                                                                          []
+                                                                          [ Ty.path "u8" ],
+                                                                        M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "bitvec::mem::BitElement")
+                                                                            []
+                                                                            [ Ty.path "u8" ],
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "bitvec::mem::BitElement")
+                                                                              []
+                                                                              [ Ty.path "u8" ],
+                                                                            "new",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.read (|
+                                                                                get_constant (|
+                                                                                  "revm_bytecode::legacy::analyzed::default::ELEM",
+                                                                                  Ty.path "u8"
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.path "u8")
+                                                                          ]
+                                                                        |)
+                                                                      |),
+                                                                      "bitvec::mem::BitElement",
+                                                                      "elem"
+                                                                    |)
+                                                                  |)
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "array")
+                                                                [ Value.Integer IntegerKind.Usize 1
+                                                                ]
+                                                                [ Ty.path "u8" ])
+                                                          ]
                                                         |)
                                                       |)
-                                                    ]
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "bitvec::array::BitArray")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                                              [ Ty.path "u8" ];
+                                                            Ty.path "bitvec::order::Lsb0"
+                                                          ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.mkStructRecord
+                                                        "core::ops::range::RangeTo"
+                                                        [
+                                                          ("end_",
+                                                            M.read (|
+                                                              get_constant (|
+                                                                "revm_bytecode::legacy::analyzed::default::BITS",
+                                                                Ty.path "usize"
+                                                              |)
+                                                            |))
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "core::ops::range::RangeTo")
+                                                        []
+                                                        [ Ty.path "usize" ]))
+                                                    (Ty.apply
+                                                      (Ty.path "core::ops::range::RangeTo")
+                                                      []
+                                                      [ Ty.path "usize" ])
                                                 ]
                                               |)
                                             |)
-                                          |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::RangeTo"
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "bitvec::slice::BitSlice")
                                             []
-                                            [ Ty.path "usize" ]
-                                            [
-                                              ("end_",
-                                                M.read (|
-                                                  get_constant (|
-                                                    "revm_bytecode::legacy::analyzed::default::BITS",
-                                                    Ty.path "usize"
-                                                  |)
-                                                |))
-                                            ]
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              |)
+                                            [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "bitvec::vec::BitVec")
+                                  []
+                                  [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ])
                             ]
                           |)
-                        ]
-                      |)
-                    ])
-              ]))
+                        ])
+                      (Ty.path "revm_bytecode::legacy::jump_map::JumpTable"))
+                ])
+              (Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1289,15 +1439,15 @@ Module legacy.
             let original_len := M.alloc (| Ty.path "usize", original_len |) in
             let jump_table :=
               M.alloc (| Ty.path "revm_bytecode::legacy::jump_map::JumpTable", jump_table |) in
-            Value.mkStructRecord
-              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
-              []
-              []
-              [
-                ("bytecode", M.read (| bytecode |));
-                ("original_len", M.read (| original_len |));
-                ("jump_table", M.read (| jump_table |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode"
+                [
+                  ("bytecode", M.read (| bytecode |));
+                  ("original_len", M.read (| original_len |));
+                  ("jump_table", M.read (| jump_table |))
+                ])
+              (Ty.path "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1401,28 +1551,32 @@ Module legacy.
                 [ Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ] ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                    "bytecode"
-                  |)
-                |);
-                Value.mkStructRecord
-                  "core::ops::range::RangeTo"
-                  []
-                  [ Ty.path "usize" ]
-                  [
-                    ("end_",
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                          "original_len"
-                        |)
-                      |))
-                  ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                      "bytecode"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::ops::range::RangeTo"
+                      [
+                        ("end_",
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                              "original_len"
+                            |)
+                          |))
+                      ])
+                    (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]))
+                  (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1468,69 +1622,86 @@ Module legacy.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.path "bytes::bytes::Bytes",
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.path "alloy_primitives::bytes_::Bytes",
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                            "bytecode"
-                                          |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.path "bytes::bytes::Bytes",
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "bytes::bytes::Bytes" ],
+                                          M.get_trait_method (|
+                                            "core::ops::deref::Deref",
+                                            Ty.path "alloy_primitives::bytes_::Bytes",
+                                            [],
+                                            [],
+                                            "deref",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                                  "bytecode"
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                          ]
                                         |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
-                              ]
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
+                                ]
+                              |)
                             |)
-                          |)
-                        |);
-                        Value.mkStructRecord
-                          "core::ops::range::RangeTo"
-                          []
-                          [ Ty.path "usize" ]
-                          [
-                            ("end_",
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
-                                  "original_len"
-                                |)
-                              |))
-                          ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::ops::range::RangeTo"
+                              [
+                                ("end_",
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "revm_bytecode::legacy::analyzed::LegacyAnalyzedBytecode",
+                                      "original_len"
+                                    |)
+                                  |))
+                              ])
+                            (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]))
+                          (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ])
                       ]
                     |)
                   |)

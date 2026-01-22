@@ -23,41 +23,52 @@ Module collections.
                 [ T; Ty.tuple []; Ty.function [ T ] (Ty.tuple [ T; Ty.tuple [] ]) ]
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| v |) |) |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.tuple [ T; Ty.tuple [] ],
-                            M.alloc (| T, α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let value := M.copy (| T, γ |) in
-                                  Value.Tuple
-                                    [
-                                      M.call_closure (|
-                                        T,
-                                        M.get_trait_method (|
-                                          "core::ops::function::FnOnce",
-                                          impl_FnOnce_T__arrow_T,
-                                          [],
-                                          [ Ty.tuple [ T ] ],
-                                          "call_once",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| change |); Value.Tuple [ M.read (| value |) ] ]
-                                      |);
-                                      Value.Tuple []
-                                    ]))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| v |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ T ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.tuple [ T; Ty.tuple [] ],
+                              M.alloc (| T, α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let value := M.copy (| T, γ |) in
+                                    Value.Tuple
+                                      [
+                                        M.call_closure (|
+                                          T,
+                                          M.get_trait_method (|
+                                            "core::ops::function::FnOnce",
+                                            impl_FnOnce_T__arrow_T,
+                                            [],
+                                            [ Ty.tuple [ T ] ],
+                                            "call_once",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| change |))
+                                              impl_FnOnce_T__arrow_T;
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| value |) ])
+                                              (Ty.tuple [ T ])
+                                          ]
+                                        |);
+                                        Value.Tuple []
+                                      ]))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function [ T ] (Ty.tuple [ T; Ty.tuple [] ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -94,12 +105,18 @@ Module collections.
             let change := M.alloc (| impl_FnOnce_T__arrow__T__R_, change |) in
             M.read (|
               let~ guard : Ty.path "alloc::collections::btree::mem::replace::PanicGuard" :=
-                Value.StructTuple "alloc::collections::btree::mem::replace::PanicGuard" [] [] [] in
+                M.value_with_ty
+                  (Value.StructTuple "alloc::collections::btree::mem::replace::PanicGuard" [])
+                  (Ty.path "alloc::collections::btree::mem::replace::PanicGuard") in
               let~ value : T :=
                 M.call_closure (|
                   T,
                   M.get_function (| "core::ptr::read", [], [ T ] |),
-                  [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| v |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| v |) |) |))
+                      (Ty.apply (Ty.path "*const") [] [ T ])
+                  ]
                 |) in
               M.alloc (|
                 R,
@@ -118,7 +135,10 @@ Module collections.
                         [],
                         []
                       |),
-                      [ M.read (| change |); Value.Tuple [ M.read (| value |) ] ]
+                      [
+                        M.value_with_ty (M.read (| change |)) impl_FnOnce_T__arrow__T__R_;
+                        M.value_with_ty (Value.Tuple [ M.read (| value |) ]) (Ty.tuple [ T ])
+                      ]
                     |)
                   |),
                   [
@@ -136,11 +156,13 @@ Module collections.
                                   Ty.tuple [],
                                   M.get_function (| "core::ptr::write", [], [ T ] |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutPointer,
-                                      M.deref (| M.read (| v |) |)
-                                    |);
-                                    M.read (| new_value |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutPointer,
+                                        M.deref (| M.read (| v |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                    M.value_with_ty (M.read (| new_value |)) T
                                   ]
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -153,7 +175,11 @@ Module collections.
                                 [],
                                 [ Ty.path "alloc::collections::btree::mem::replace::PanicGuard" ]
                               |),
-                              [ M.read (| guard |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| guard |))
+                                  (Ty.path "alloc::collections::btree::mem::replace::PanicGuard")
+                              ]
                             |) in
                           ret
                         |)))

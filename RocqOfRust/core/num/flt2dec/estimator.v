@@ -36,11 +36,13 @@ Module num.
                         Ty.path "u32",
                         M.get_associated_function (| Ty.path "u64", "leading_zeros", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "u64",
-                            BinOp.Wrap.sub,
-                            [ M.read (| mant |); Value.Integer IntegerKind.U64 1 ]
-                          |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.sub,
+                              [ M.read (| mant |); Value.Integer IntegerKind.U64 1 ]
+                            |))
+                            (Ty.path "u64")
                         ]
                       |))
                   ]

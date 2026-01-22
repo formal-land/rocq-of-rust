@@ -15,8 +15,8 @@ Module Result.
     Φ := Ty.apply (Ty.path "core::result::Result") [] [Φ T; Φ E];
     φ x :=
       match x with
-      | Ok x => Value.StructTuple "core::result::Result::Ok" [] [Φ T; Φ E] [φ x]
-      | Err x => Value.StructTuple "core::result::Result::Err" [] [Φ T; Φ E] [φ x]
+      | Ok x => Value.StructTuple "core::result::Result::Ok" [φ x]
+      | Err x => Value.StructTuple "core::result::Result::Err" [φ x]
       end;
   }.
 
@@ -30,9 +30,36 @@ Module Result.
   Defined.
   Smpl Add apply of_ty : of_ty.
 
+  Instance IsOfTy (T' E' : Ty.t) {H_T : OfTy.C T'} {H_E : OfTy.C E'} :
+    OfTy.C (Ty.apply (Ty.path "core::result::Result") [] [T'; E']) :=
+  {
+    OfTy.A := t H_T.(OfTy.A) H_E.(OfTy.A);
+    OfTy.eq := ltac:(destruct H_T, H_E; subst; reflexivity);
+  }.
+
+  Instance IsOfValueWith_Ok (T E : Set) `{Link T} `{Link E}
+      (x' : Value.t) {H_x : OfValueWith.C T x'} :
+    OfValueWith.C (t T E) (Value.StructTuple "core::result::Result::Ok" [x']) :=
+  {
+    OfValueWith.value := Ok H_x.(OfValueWith.value);
+    OfValueWith.eq := ltac:(destruct H_x; subst; reflexivity);
+  }.
+
+  Instance IsOfValueWith_Err (T E : Set) `{Link T} `{Link E}
+      (err' : Value.t) {H_err : OfValueWith.C E err'} :
+    OfValueWith.C (t T E) (Value.StructTuple "core::result::Result::Err" [err']) :=
+  {
+    OfValueWith.value := Err H_err.(OfValueWith.value);
+    OfValueWith.eq := ltac:(destruct H_err; subst; reflexivity);
+  }.
+  
+  (* Hint: ensure Result.IsOfTy has priority over other OfTy.C instances *)
+  (* This helps typeclass resolution solve the Result type before trying to solve OfValueWith.C *)
+  Global Hint Resolve Result.IsOfTy : typeclass_instances.
+
   Lemma of_value_with_Ok (T E : Set) `{Link T} `{Link E} (x : T) x' :
     x' = φ x ->
-    Value.StructTuple "core::result::Result::Ok" [] [Φ T; Φ E] [x'] =
+    Value.StructTuple "core::result::Result::Ok" [x'] =
     φ (Ok (T := T) (E := E) x).
   Proof.
     intros; subst; reflexivity.
@@ -41,7 +68,7 @@ Module Result.
 
   Lemma of_value_with_Err (T E : Set) `{Link T} `{Link E} (err : E) err' :
     err' = φ err ->
-    Value.StructTuple "core::result::Result::Err" [] [Φ T; Φ E] [err'] =
+    Value.StructTuple "core::result::Result::Err" [err'] =
     φ (Err (T := T) (E := E) err).
   Proof.
     intros; subst; reflexivity.
@@ -53,7 +80,7 @@ Module Result.
       (of_ty_E : OfTy.t E')
       (of_value_x : OfValue.t x'),
     T' = Φ (OfValue.get_Set of_value_x) ->
-    OfValue.t (Value.StructTuple "core::result::Result::Ok" [] [T'; E'] [x']).
+    OfValue.t (Value.StructTuple "core::result::Result::Ok" [x']).
   Proof.
     intros [E] [T ? x] **.
     eapply OfValue.Make with (A := t T E) (value := Ok x).
@@ -66,7 +93,7 @@ Module Result.
       (of_ty_T : OfTy.t T')
       (of_value_err : OfValue.t err'),
     E' = Φ (OfValue.get_Set of_value_err) ->
-    OfValue.t (Value.StructTuple "core::result::Result::Err" [] [T'; E'] [err']).
+    OfValue.t (Value.StructTuple "core::result::Result::Err" [err']).
   Proof.
     intros [T] [E ? err] **.
     eapply OfValue.Make with (A := t T E) (value := Err err).

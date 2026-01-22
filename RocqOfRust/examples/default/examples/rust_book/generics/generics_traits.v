@@ -64,9 +64,13 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.read (|
         let~ empty : Ty.path "generics_traits::Empty" :=
-          Value.StructTuple "generics_traits::Empty" [] [] [] in
+          M.value_with_ty
+            (Value.StructTuple "generics_traits::Empty" [])
+            (Ty.path "generics_traits::Empty") in
         let~ null : Ty.path "generics_traits::Null" :=
-          Value.StructTuple "generics_traits::Null" [] [] [] in
+          M.value_with_ty
+            (Value.StructTuple "generics_traits::Null" [])
+            (Ty.path "generics_traits::Null") in
         let~ _ : Ty.tuple [] :=
           M.call_closure (|
             Ty.tuple [],
@@ -79,7 +83,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ M.read (| empty |); M.read (| null |) ]
+            [
+              M.value_with_ty (M.read (| empty |)) (Ty.path "generics_traits::Empty");
+              M.value_with_ty (M.read (| null |)) (Ty.path "generics_traits::Null")
+            ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

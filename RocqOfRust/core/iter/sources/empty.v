@@ -13,11 +13,15 @@ Module iter.
         match ε, τ, α with
         | [], [ T ], [] =>
           ltac:(M.monadic
-            (Value.StructTuple
-              "core::iter::sources::empty::Empty"
-              []
-              [ T ]
-              [ Value.StructTuple "core::marker::PhantomData" [] [ Ty.function [] T ] [] ]))
+            (M.value_with_ty
+              (Value.StructTuple
+                "core::iter::sources::empty::Empty"
+                [
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.function [] T ])
+                ])
+              (Ty.apply (Ty.path "core::iter::sources::empty::Empty") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -70,25 +74,31 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.alloc (|
-                      Ty.path "core::fmt::builders::DebugStruct",
-                      M.call_closure (|
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.alloc (|
                         Ty.path "core::fmt::builders::DebugStruct",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Formatter",
-                          "debug_struct",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Empty" |) |) |)
-                        ]
+                        M.call_closure (|
+                          Ty.path "core::fmt::builders::DebugStruct",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Formatter",
+                            "debug_struct",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Empty" |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -129,7 +139,9 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::empty::Empty") [] [ T ] ],
                   self
                 |) in
-              Value.StructTuple "core::option::Option::None" [] [ T ] []))
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::None" [])
+                (Ty.apply (Ty.path "core::option::Option") [] [ T ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -154,11 +166,11 @@ Module iter.
               Value.Tuple
                 [
                   Value.Integer IntegerKind.Usize 0;
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "usize" ]
-                    [ Value.Integer IntegerKind.Usize 0 ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [ Value.Integer IntegerKind.Usize 0 ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                 ]))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -200,7 +212,9 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::empty::Empty") [] [ T ] ],
                   self
                 |) in
-              Value.StructTuple "core::option::Option::None" [] [ T ] []))
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::None" [])
+                (Ty.apply (Ty.path "core::option::Option") [] [ T ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -300,11 +314,15 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::empty::Empty") [] [ T ] ],
                   self
                 |) in
-              Value.StructTuple
-                "core::iter::sources::empty::Empty"
-                []
-                [ T ]
-                [ Value.StructTuple "core::marker::PhantomData" [] [ Ty.function [] T ] [] ]))
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::iter::sources::empty::Empty"
+                  [
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.function [] T ])
+                  ])
+                (Ty.apply (Ty.path "core::iter::sources::empty::Empty") [] [ T ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -332,11 +350,15 @@ Module iter.
           match ε, τ, α with
           | [], [], [] =>
             ltac:(M.monadic
-              (Value.StructTuple
-                "core::iter::sources::empty::Empty"
-                []
-                [ T ]
-                [ Value.StructTuple "core::marker::PhantomData" [] [ Ty.function [] T ] [] ]))
+              (M.value_with_ty
+                (Value.StructTuple
+                  "core::iter::sources::empty::Empty"
+                  [
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.function [] T ])
+                  ])
+                (Ty.apply (Ty.path "core::iter::sources::empty::Empty") [] [ T ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         

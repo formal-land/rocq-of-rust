@@ -162,121 +162,104 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.path "core::fmt::builders::DebugTuple" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::builders::DebugTuple",
-                                "field",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.alloc (|
-                                    Ty.path "core::fmt::builders::DebugTuple",
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::builders::DebugTuple",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::Formatter",
-                                        "debug_tuple",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| f |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| mk_str (| "Iter" |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
                                 M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "&")
+                                    (Ty.path "&mut")
                                     []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloc::collections::linked_list::LinkedList")
-                                          []
-                                          [ T; Ty.path "alloc::alloc::Global" ]
-                                      ])
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                    [ Ty.path "core::fmt::builders::DebugTuple" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::builders::DebugTuple",
+                                    "field",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::LinkedList")
-                                                    []
-                                                    [ T; Ty.path "alloc::alloc::Global" ]
-                                                ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply
-                                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.alloc (|
+                                          Ty.path "core::fmt::builders::DebugTuple",
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::builders::DebugTuple",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Formatter",
+                                              "debug_tuple",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| f |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
                                                   []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path
-                                                        "alloc::collections::linked_list::LinkedList")
-                                                      []
-                                                      [ T; Ty.path "alloc::alloc::Global" ]
-                                                  ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
+                                                  [ Ty.path "core::fmt::Formatter" ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (| mk_str (| "Iter" |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.Unsize
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path
+                                                  "alloc::collections::linked_list::LinkedList")
+                                                []
+                                                [ T; Ty.path "alloc::alloc::Global" ]
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path
-                                                        "core::mem::manually_drop::ManuallyDrop")
+                                                      (Ty.path "&")
                                                       []
                                                       [
                                                         Ty.apply
@@ -285,7 +268,8 @@ Module collections.
                                                           []
                                                           [ T; Ty.path "alloc::alloc::Global" ]
                                                       ],
-                                                    M.call_closure (|
+                                                    M.get_trait_method (|
+                                                      "core::ops::deref::Deref",
                                                       Ty.apply
                                                         (Ty.path
                                                           "core::mem::manually_drop::ManuallyDrop")
@@ -297,122 +281,232 @@ Module collections.
                                                             []
                                                             [ T; Ty.path "alloc::alloc::Global" ]
                                                         ],
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::manually_drop::ManuallyDrop")
+                                                      [],
+                                                      [],
+                                                      "deref",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::mem::manually_drop::ManuallyDrop")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::LinkedList")
+                                                                  []
+                                                                  [
+                                                                    T;
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ]
+                                                              ],
+                                                            M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::mem::manually_drop::ManuallyDrop")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloc::collections::linked_list::LinkedList")
+                                                                    []
+                                                                    [
+                                                                      T;
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ]
+                                                                ],
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::manually_drop::ManuallyDrop")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "alloc::collections::linked_list::LinkedList")
+                                                                      []
+                                                                      [
+                                                                        T;
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ]
+                                                                  ],
+                                                                "new",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.value_with_ty
+                                                                    (Value.mkStructRecord
+                                                                      "alloc::collections::linked_list::LinkedList"
+                                                                      [
+                                                                        ("head",
+                                                                          M.read (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              M.deref (|
+                                                                                M.read (| self |)
+                                                                              |),
+                                                                              "alloc::collections::linked_list::Iter",
+                                                                              "head"
+                                                                            |)
+                                                                          |));
+                                                                        ("tail",
+                                                                          M.read (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              M.deref (|
+                                                                                M.read (| self |)
+                                                                              |),
+                                                                              "alloc::collections::linked_list::Iter",
+                                                                              "tail"
+                                                                            |)
+                                                                          |));
+                                                                        ("len",
+                                                                          M.read (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              M.deref (|
+                                                                                M.read (| self |)
+                                                                              |),
+                                                                              "alloc::collections::linked_list::Iter",
+                                                                              "len"
+                                                                            |)
+                                                                          |));
+                                                                        ("alloc",
+                                                                          M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "alloc::alloc::Global"
+                                                                              [])
+                                                                            (Ty.path
+                                                                              "alloc::alloc::Global"));
+                                                                        ("marker",
+                                                                          M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "core::marker::PhantomData"
+                                                                              [])
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::marker::PhantomData")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "alloc::boxed::Box")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "alloc::collections::linked_list::Node")
+                                                                                      []
+                                                                                      [ T ];
+                                                                                    Ty.path
+                                                                                      "alloc::alloc::Global"
+                                                                                  ]
+                                                                              ]))
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "alloc::collections::linked_list::LinkedList")
+                                                                      []
+                                                                      [
+                                                                        T;
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ]))
+                                                                  (Ty.apply
+                                                                    (Ty.path
+                                                                      "alloc::collections::linked_list::LinkedList")
+                                                                    []
+                                                                    [
+                                                                      T;
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ])
+                                                              ]
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
                                                           []
                                                           [
                                                             Ty.apply
                                                               (Ty.path
-                                                                "alloc::collections::linked_list::LinkedList")
+                                                                "core::mem::manually_drop::ManuallyDrop")
                                                               []
-                                                              [ T; Ty.path "alloc::alloc::Global" ]
-                                                          ],
-                                                        "new",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        Value.mkStructRecord
-                                                          "alloc::collections::linked_list::LinkedList"
-                                                          []
-                                                          [ T; Ty.path "alloc::alloc::Global" ]
-                                                          [
-                                                            ("head",
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "alloc::collections::linked_list::Iter",
-                                                                  "head"
-                                                                |)
-                                                              |));
-                                                            ("tail",
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "alloc::collections::linked_list::Iter",
-                                                                  "tail"
-                                                                |)
-                                                              |));
-                                                            ("len",
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "alloc::collections::linked_list::Iter",
-                                                                  "len"
-                                                                |)
-                                                              |));
-                                                            ("alloc",
-                                                              Value.StructTuple
-                                                                "alloc::alloc::Global"
-                                                                []
-                                                                []
-                                                                []);
-                                                            ("marker",
-                                                              Value.StructTuple
-                                                                "core::marker::PhantomData"
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "alloc::boxed::Box")
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "alloc::collections::linked_list::Node")
-                                                                        []
-                                                                        [ T ];
-                                                                      Ty.path "alloc::alloc::Global"
-                                                                    ]
-                                                                ]
-                                                                [])
-                                                          ]
-                                                      ]
-                                                    |)
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::LinkedList")
+                                                                  []
+                                                                  [
+                                                                    T;
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ]
+                                                              ]
+                                                          ])
+                                                    ]
                                                   |)
                                                 |)
-                                              ]
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |)
-                                    |)
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                                   ]
                                 |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::Iter",
+                                        "len"
+                                      |)
+                                    |)
+                                  |)
+                                |)
                               ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::Iter",
-                                    "len"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -450,7 +544,9 @@ Module collections.
                   [ Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ] ],
                 self
               |) in
-            Value.StructTuple "alloc::collections::linked_list::Iter" [] [ T ] []))
+            M.value_with_ty
+              (Value.StructTuple "alloc::collections::linked_list::Iter" [])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -550,121 +646,104 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.path "core::fmt::builders::DebugTuple" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::builders::DebugTuple",
-                                "field",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.alloc (|
-                                    Ty.path "core::fmt::builders::DebugTuple",
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::builders::DebugTuple",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::Formatter",
-                                        "debug_tuple",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| f |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| mk_str (| "IterMut" |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
                                 M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "&")
+                                    (Ty.path "&mut")
                                     []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloc::collections::linked_list::LinkedList")
-                                          []
-                                          [ T; Ty.path "alloc::alloc::Global" ]
-                                      ])
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                    [ Ty.path "core::fmt::builders::DebugTuple" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::builders::DebugTuple",
+                                    "field",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::LinkedList")
-                                                    []
-                                                    [ T; Ty.path "alloc::alloc::Global" ]
-                                                ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply
-                                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.alloc (|
+                                          Ty.path "core::fmt::builders::DebugTuple",
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::builders::DebugTuple",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Formatter",
+                                              "debug_tuple",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| f |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
                                                   []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path
-                                                        "alloc::collections::linked_list::LinkedList")
-                                                      []
-                                                      [ T; Ty.path "alloc::alloc::Global" ]
-                                                  ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
+                                                  [ Ty.path "core::fmt::Formatter" ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (| mk_str (| "IterMut" |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.Unsize
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path
+                                                  "alloc::collections::linked_list::LinkedList")
+                                                []
+                                                [ T; Ty.path "alloc::alloc::Global" ]
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path
-                                                        "core::mem::manually_drop::ManuallyDrop")
+                                                      (Ty.path "&")
                                                       []
                                                       [
                                                         Ty.apply
@@ -673,7 +752,8 @@ Module collections.
                                                           []
                                                           [ T; Ty.path "alloc::alloc::Global" ]
                                                       ],
-                                                    M.call_closure (|
+                                                    M.get_trait_method (|
+                                                      "core::ops::deref::Deref",
                                                       Ty.apply
                                                         (Ty.path
                                                           "core::mem::manually_drop::ManuallyDrop")
@@ -685,122 +765,232 @@ Module collections.
                                                             []
                                                             [ T; Ty.path "alloc::alloc::Global" ]
                                                         ],
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::manually_drop::ManuallyDrop")
+                                                      [],
+                                                      [],
+                                                      "deref",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::mem::manually_drop::ManuallyDrop")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::LinkedList")
+                                                                  []
+                                                                  [
+                                                                    T;
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ]
+                                                              ],
+                                                            M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::mem::manually_drop::ManuallyDrop")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloc::collections::linked_list::LinkedList")
+                                                                    []
+                                                                    [
+                                                                      T;
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ]
+                                                                ],
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::manually_drop::ManuallyDrop")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "alloc::collections::linked_list::LinkedList")
+                                                                      []
+                                                                      [
+                                                                        T;
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ]
+                                                                  ],
+                                                                "new",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.value_with_ty
+                                                                    (Value.mkStructRecord
+                                                                      "alloc::collections::linked_list::LinkedList"
+                                                                      [
+                                                                        ("head",
+                                                                          M.read (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              M.deref (|
+                                                                                M.read (| self |)
+                                                                              |),
+                                                                              "alloc::collections::linked_list::IterMut",
+                                                                              "head"
+                                                                            |)
+                                                                          |));
+                                                                        ("tail",
+                                                                          M.read (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              M.deref (|
+                                                                                M.read (| self |)
+                                                                              |),
+                                                                              "alloc::collections::linked_list::IterMut",
+                                                                              "tail"
+                                                                            |)
+                                                                          |));
+                                                                        ("len",
+                                                                          M.read (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              M.deref (|
+                                                                                M.read (| self |)
+                                                                              |),
+                                                                              "alloc::collections::linked_list::IterMut",
+                                                                              "len"
+                                                                            |)
+                                                                          |));
+                                                                        ("alloc",
+                                                                          M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "alloc::alloc::Global"
+                                                                              [])
+                                                                            (Ty.path
+                                                                              "alloc::alloc::Global"));
+                                                                        ("marker",
+                                                                          M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "core::marker::PhantomData"
+                                                                              [])
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::marker::PhantomData")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "alloc::boxed::Box")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "alloc::collections::linked_list::Node")
+                                                                                      []
+                                                                                      [ T ];
+                                                                                    Ty.path
+                                                                                      "alloc::alloc::Global"
+                                                                                  ]
+                                                                              ]))
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "alloc::collections::linked_list::LinkedList")
+                                                                      []
+                                                                      [
+                                                                        T;
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ]))
+                                                                  (Ty.apply
+                                                                    (Ty.path
+                                                                      "alloc::collections::linked_list::LinkedList")
+                                                                    []
+                                                                    [
+                                                                      T;
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ])
+                                                              ]
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
                                                           []
                                                           [
                                                             Ty.apply
                                                               (Ty.path
-                                                                "alloc::collections::linked_list::LinkedList")
+                                                                "core::mem::manually_drop::ManuallyDrop")
                                                               []
-                                                              [ T; Ty.path "alloc::alloc::Global" ]
-                                                          ],
-                                                        "new",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        Value.mkStructRecord
-                                                          "alloc::collections::linked_list::LinkedList"
-                                                          []
-                                                          [ T; Ty.path "alloc::alloc::Global" ]
-                                                          [
-                                                            ("head",
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "alloc::collections::linked_list::IterMut",
-                                                                  "head"
-                                                                |)
-                                                              |));
-                                                            ("tail",
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "alloc::collections::linked_list::IterMut",
-                                                                  "tail"
-                                                                |)
-                                                              |));
-                                                            ("len",
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "alloc::collections::linked_list::IterMut",
-                                                                  "len"
-                                                                |)
-                                                              |));
-                                                            ("alloc",
-                                                              Value.StructTuple
-                                                                "alloc::alloc::Global"
-                                                                []
-                                                                []
-                                                                []);
-                                                            ("marker",
-                                                              Value.StructTuple
-                                                                "core::marker::PhantomData"
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "alloc::boxed::Box")
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "alloc::collections::linked_list::Node")
-                                                                        []
-                                                                        [ T ];
-                                                                      Ty.path "alloc::alloc::Global"
-                                                                    ]
-                                                                ]
-                                                                [])
-                                                          ]
-                                                      ]
-                                                    |)
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::LinkedList")
+                                                                  []
+                                                                  [
+                                                                    T;
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ]
+                                                              ]
+                                                          ])
+                                                    ]
                                                   |)
                                                 |)
-                                              ]
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |)
-                                    |)
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                                   ]
                                 |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::IterMut",
+                                        "len"
+                                      |)
+                                    |)
+                                  |)
+                                |)
                               ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::IterMut",
-                                    "len"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -844,40 +1034,53 @@ Module collections.
                   [ Ty.apply (Ty.path "alloc::collections::linked_list::IntoIter") [] [ T; A ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::IntoIter"
-              []
-              [ T; A ]
-              [
-                ("list",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::IntoIter"
+                [
+                  ("list",
+                    M.call_closure (|
                       Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "alloc::collections::linked_list::LinkedList")
+                          []
+                          [ T; A ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::linked_list::IntoIter",
-                              "list"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::IntoIter",
+                                  "list"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; A ]
+                            ])
+                      ]
+                    |))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::IntoIter") [] [ T; A ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -927,77 +1130,102 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.alloc (|
-                            Ty.path "core::fmt::builders::DebugTuple",
-                            M.call_closure (|
-                              Ty.path "core::fmt::builders::DebugTuple",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "debug_tuple",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "IntoIter" |) |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "alloc::collections::linked_list::LinkedList")
-                                  []
-                                  [ T; A ]
-                              ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::IntoIter",
-                                    "list"
-                                  |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
+                                Ty.path "core::fmt::builders::DebugTuple",
+                                M.call_closure (|
+                                  Ty.path "core::fmt::builders::DebugTuple",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Formatter",
+                                    "debug_tuple",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| f |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "IntoIter" |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
                                 |)
                               |)
-                            |)
-                          ]
-                        |)
-                      ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::LinkedList")
+                                      []
+                                      [ T; A ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::IntoIter",
+                                        "list"
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1028,35 +1256,37 @@ Module collections.
         | [], [], [ element ] =>
           ltac:(M.monadic
             (let element := M.alloc (| T, element |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::Node"
-              []
-              [ T ]
-              [
-                ("next",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::Node"
+                [
+                  ("next",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("prev",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("prev",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("element", M.read (| element |))
-              ]))
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("element", M.read (| element |))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1175,7 +1405,15 @@ Module collections.
                           [],
                           []
                         |),
-                        [ M.read (| node |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| node |))
+                            (Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ])
+                        ]
                       |)
                     |),
                     "alloc::collections::linked_list::Node",
@@ -1207,22 +1445,31 @@ Module collections.
                           [],
                           []
                         |),
-                        [ M.read (| node |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| node |))
+                            (Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ])
+                        ]
                       |)
                     |),
                     "alloc::collections::linked_list::Node",
                     "prev"
                   |),
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
-                        []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                      ])
                 |) in
               let~ node :
                   Ty.apply
@@ -1234,16 +1481,17 @@ Module collections.
                         []
                         [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
                     ] :=
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "core::ptr::non_null::NonNull")
-                      []
-                      [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                  ]
-                  [ M.read (| node |) ] in
+                M.value_with_ty
+                  (Value.StructTuple "core::option::Option::Some" [ M.read (| node |) ])
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
                   Ty.tuple [],
@@ -1308,7 +1556,19 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.read (| head |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| head |))
+                                    (Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -1440,79 +1700,82 @@ Module collections.
                 ]
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::collections::linked_list::LinkedList",
-                    "head"
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                                Ty.apply (Ty.path "&") [] [ A ]
-                              ],
-                            M.alloc (|
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloc::collections::linked_list::LinkedList",
+                      "head"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
                               Ty.apply
-                                (Ty.path "core::ptr::non_null::NonNull")
+                                (Ty.path "alloc::boxed::Box")
                                 []
                                 [
                                   Ty.apply
                                     (Ty.path "alloc::collections::linked_list::Node")
                                     []
-                                    [ T ]
+                                    [ T ];
+                                  Ty.apply (Ty.path "&") [] [ A ]
                                 ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let node :=
-                                    M.copy (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::Node")
-                                            []
-                                            [ T ]
-                                        ],
-                                      γ
-                                    |) in
-                                  M.read (|
-                                    let~ node :
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let node :=
+                                      M.copy (|
                                         Ty.apply
-                                          (Ty.path "alloc::boxed::Box")
+                                          (Ty.path "core::ptr::non_null::NonNull")
                                           []
                                           [
                                             Ty.apply
                                               (Ty.path "alloc::collections::linked_list::Node")
                                               []
-                                              [ T ];
-                                            Ty.apply (Ty.path "&") [] [ A ]
-                                          ] :=
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "alloc::boxed::Box")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "alloc::collections::linked_list::Node")
-                                              []
-                                              [ T ];
-                                            Ty.apply (Ty.path "&") [] [ A ]
+                                              [ T ]
                                           ],
-                                        M.get_associated_function (|
+                                        γ
+                                      |) in
+                                    M.read (|
+                                      let~ node :
+                                          Ty.apply
+                                            (Ty.path "alloc::boxed::Box")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                []
+                                                [ T ];
+                                              Ty.apply (Ty.path "&") [] [ A ]
+                                            ] :=
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
@@ -1523,112 +1786,35 @@ Module collections.
                                                 [ T ];
                                               Ty.apply (Ty.path "&") [] [ A ]
                                             ],
-                                          "from_raw_in",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
+                                          M.get_associated_function (|
                                             Ty.apply
-                                              (Ty.path "*mut")
+                                              (Ty.path "alloc::boxed::Box")
                                               []
                                               [
                                                 Ty.apply
                                                   (Ty.path "alloc::collections::linked_list::Node")
                                                   []
-                                                  [ T ]
+                                                  [ T ];
+                                                Ty.apply (Ty.path "&") [] [ A ]
                                               ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::ptr::non_null::NonNull")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              "as_ptr",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| node |) ]
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::linked_list::LinkedList",
-                                              "alloc"
-                                            |)
-                                          |)
-                                        ]
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::collections::linked_list::LinkedList",
-                                          "head"
-                                        |),
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| node |) |),
-                                            "alloc::collections::linked_list::Node",
-                                            "next"
-                                          |)
-                                        |)
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      M.match_operator (|
-                                        Ty.tuple [],
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::collections::linked_list::LinkedList",
-                                          "head"
-                                        |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let _ :=
-                                                M.is_struct_tuple (|
-                                                  γ,
-                                                  "core::option::Option::None"
-                                                |) in
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::linked_list::LinkedList",
-                                                  "tail"
-                                                |),
-                                                Value.StructTuple
-                                                  "core::option::Option::None"
+                                            "from_raw_in",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "*mut")
                                                   []
                                                   [
                                                     Ty.apply
-                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
                                                       []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "alloc::collections::linked_list::Node")
-                                                          []
-                                                          [ T ]
-                                                      ]
-                                                  ]
-                                                  []
-                                              |)));
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let γ0_0 :=
-                                                M.SubPointer.get_struct_tuple_field (|
-                                                  γ,
-                                                  "core::option::Option::Some",
-                                                  0
-                                                |) in
-                                              let head :=
-                                                M.copy (|
+                                                      [ T ]
+                                                  ],
+                                                M.get_associated_function (|
                                                   Ty.apply
                                                     (Ty.path "core::ptr::non_null::NonNull")
                                                     []
@@ -1639,23 +1825,92 @@ Module collections.
                                                         []
                                                         [ T ]
                                                     ],
-                                                  γ0_0
-                                                |) in
-                                              M.write (|
+                                                  "as_ptr",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| node |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "*mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
                                                 M.SubPointer.get_struct_record_field (|
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "*mut")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "alloc::collections::linked_list::Node")
-                                                            []
-                                                            [ T ]
-                                                        ],
-                                                      M.get_associated_function (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "alloc::collections::linked_list::LinkedList",
+                                                  "alloc"
+                                                |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ A ])
+                                          ]
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "head"
+                                          |),
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| node |) |),
+                                              "alloc::collections::linked_list::Node",
+                                              "next"
+                                            |)
+                                          |)
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.match_operator (|
+                                          Ty.tuple [],
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "head"
+                                          |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let _ :=
+                                                  M.is_struct_tuple (|
+                                                    γ,
+                                                    "core::option::Option::None"
+                                                  |) in
+                                                M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::LinkedList",
+                                                    "tail"
+                                                  |),
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::option::Option::None"
+                                                      [])
+                                                    (Ty.apply
+                                                      (Ty.path "core::option::Option")
+                                                      []
+                                                      [
                                                         Ty.apply
                                                           (Ty.path "core::ptr::non_null::NonNull")
                                                           []
@@ -1665,21 +1920,19 @@ Module collections.
                                                                 "alloc::collections::linked_list::Node")
                                                               []
                                                               [ T ]
-                                                          ],
-                                                        "as_ptr",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.read (| head |) ]
-                                                    |)
-                                                  |),
-                                                  "alloc::collections::linked_list::Node",
-                                                  "prev"
-                                                |),
-                                                Value.StructTuple
-                                                  "core::option::Option::None"
-                                                  []
-                                                  [
+                                                          ]
+                                                      ])
+                                                |)));
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::option::Option::Some",
+                                                    0
+                                                  |) in
+                                                let head :=
+                                                  M.copy (|
                                                     Ty.apply
                                                       (Ty.path "core::ptr::non_null::NonNull")
                                                       []
@@ -1689,33 +1942,115 @@ Module collections.
                                                             "alloc::collections::linked_list::Node")
                                                           []
                                                           [ T ]
-                                                      ]
-                                                  ]
-                                                  []
-                                              |)))
-                                        ]
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      let β :=
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::collections::linked_list::LinkedList",
-                                          "len"
+                                                      ],
+                                                    γ0_0
+                                                  |) in
+                                                M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (|
+                                                      M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "*mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Node")
+                                                              []
+                                                              [ T ]
+                                                          ],
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "core::ptr::non_null::NonNull")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "alloc::collections::linked_list::Node")
+                                                                []
+                                                                [ T ]
+                                                            ],
+                                                          "as_ptr",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| head |))
+                                                            (Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::Node")
+                                                                  []
+                                                                  [ T ]
+                                                              ])
+                                                        ]
+                                                      |)
+                                                    |),
+                                                    "alloc::collections::linked_list::Node",
+                                                    "prev"
+                                                  |),
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::option::Option::None"
+                                                      [])
+                                                    (Ty.apply
+                                                      (Ty.path "core::option::Option")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Node")
+                                                              []
+                                                              [ T ]
+                                                          ]
+                                                      ])
+                                                |)))
+                                          ]
                                         |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.sub,
-                                          [ M.read (| β |); Value.Integer IntegerKind.Usize 1 ]
-                                        |)
-                                      |) in
-                                    node
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                      let~ _ : Ty.tuple [] :=
+                                        let β :=
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "len"
+                                          |) in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.sub,
+                                            [ M.read (| β |); Value.Integer IntegerKind.Usize 1 ]
+                                          |)
+                                        |) in
+                                      node
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                        Ty.apply (Ty.path "&") [] [ A ]
+                      ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1792,22 +2127,31 @@ Module collections.
                           [],
                           []
                         |),
-                        [ M.read (| node |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| node |))
+                            (Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ])
+                        ]
                       |)
                     |),
                     "alloc::collections::linked_list::Node",
                     "next"
                   |),
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
-                        []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                      ])
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.write (|
@@ -1827,7 +2171,15 @@ Module collections.
                           [],
                           []
                         |),
-                        [ M.read (| node |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| node |))
+                            (Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ])
+                        ]
                       |)
                     |),
                     "alloc::collections::linked_list::Node",
@@ -1851,16 +2203,17 @@ Module collections.
                         []
                         [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
                     ] :=
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "core::ptr::non_null::NonNull")
-                      []
-                      [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                  ]
-                  [ M.read (| node |) ] in
+                M.value_with_ty
+                  (Value.StructTuple "core::option::Option::Some" [ M.read (| node |) ])
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
                   Ty.tuple [],
@@ -1925,7 +2278,19 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.read (| tail |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| tail |))
+                                    (Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -2057,79 +2422,82 @@ Module collections.
                 ]
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::collections::linked_list::LinkedList",
-                    "tail"
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                                Ty.apply (Ty.path "&") [] [ A ]
-                              ],
-                            M.alloc (|
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloc::collections::linked_list::LinkedList",
+                      "tail"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
                               Ty.apply
-                                (Ty.path "core::ptr::non_null::NonNull")
+                                (Ty.path "alloc::boxed::Box")
                                 []
                                 [
                                   Ty.apply
                                     (Ty.path "alloc::collections::linked_list::Node")
                                     []
-                                    [ T ]
+                                    [ T ];
+                                  Ty.apply (Ty.path "&") [] [ A ]
                                 ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let node :=
-                                    M.copy (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::Node")
-                                            []
-                                            [ T ]
-                                        ],
-                                      γ
-                                    |) in
-                                  M.read (|
-                                    let~ node :
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let node :=
+                                      M.copy (|
                                         Ty.apply
-                                          (Ty.path "alloc::boxed::Box")
+                                          (Ty.path "core::ptr::non_null::NonNull")
                                           []
                                           [
                                             Ty.apply
                                               (Ty.path "alloc::collections::linked_list::Node")
                                               []
-                                              [ T ];
-                                            Ty.apply (Ty.path "&") [] [ A ]
-                                          ] :=
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "alloc::boxed::Box")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "alloc::collections::linked_list::Node")
-                                              []
-                                              [ T ];
-                                            Ty.apply (Ty.path "&") [] [ A ]
+                                              [ T ]
                                           ],
-                                        M.get_associated_function (|
+                                        γ
+                                      |) in
+                                    M.read (|
+                                      let~ node :
+                                          Ty.apply
+                                            (Ty.path "alloc::boxed::Box")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                []
+                                                [ T ];
+                                              Ty.apply (Ty.path "&") [] [ A ]
+                                            ] :=
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
@@ -2140,112 +2508,35 @@ Module collections.
                                                 [ T ];
                                               Ty.apply (Ty.path "&") [] [ A ]
                                             ],
-                                          "from_raw_in",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
+                                          M.get_associated_function (|
                                             Ty.apply
-                                              (Ty.path "*mut")
+                                              (Ty.path "alloc::boxed::Box")
                                               []
                                               [
                                                 Ty.apply
                                                   (Ty.path "alloc::collections::linked_list::Node")
                                                   []
-                                                  [ T ]
+                                                  [ T ];
+                                                Ty.apply (Ty.path "&") [] [ A ]
                                               ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::ptr::non_null::NonNull")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              "as_ptr",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| node |) ]
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::linked_list::LinkedList",
-                                              "alloc"
-                                            |)
-                                          |)
-                                        ]
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::collections::linked_list::LinkedList",
-                                          "tail"
-                                        |),
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| node |) |),
-                                            "alloc::collections::linked_list::Node",
-                                            "prev"
-                                          |)
-                                        |)
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      M.match_operator (|
-                                        Ty.tuple [],
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::collections::linked_list::LinkedList",
-                                          "tail"
-                                        |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let _ :=
-                                                M.is_struct_tuple (|
-                                                  γ,
-                                                  "core::option::Option::None"
-                                                |) in
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::linked_list::LinkedList",
-                                                  "head"
-                                                |),
-                                                Value.StructTuple
-                                                  "core::option::Option::None"
+                                            "from_raw_in",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "*mut")
                                                   []
                                                   [
                                                     Ty.apply
-                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
                                                       []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "alloc::collections::linked_list::Node")
-                                                          []
-                                                          [ T ]
-                                                      ]
-                                                  ]
-                                                  []
-                                              |)));
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let γ0_0 :=
-                                                M.SubPointer.get_struct_tuple_field (|
-                                                  γ,
-                                                  "core::option::Option::Some",
-                                                  0
-                                                |) in
-                                              let tail :=
-                                                M.copy (|
+                                                      [ T ]
+                                                  ],
+                                                M.get_associated_function (|
                                                   Ty.apply
                                                     (Ty.path "core::ptr::non_null::NonNull")
                                                     []
@@ -2256,23 +2547,92 @@ Module collections.
                                                         []
                                                         [ T ]
                                                     ],
-                                                  γ0_0
-                                                |) in
-                                              M.write (|
+                                                  "as_ptr",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| node |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "*mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
                                                 M.SubPointer.get_struct_record_field (|
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "*mut")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "alloc::collections::linked_list::Node")
-                                                            []
-                                                            [ T ]
-                                                        ],
-                                                      M.get_associated_function (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "alloc::collections::linked_list::LinkedList",
+                                                  "alloc"
+                                                |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ A ])
+                                          ]
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "tail"
+                                          |),
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| node |) |),
+                                              "alloc::collections::linked_list::Node",
+                                              "prev"
+                                            |)
+                                          |)
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.match_operator (|
+                                          Ty.tuple [],
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "tail"
+                                          |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let _ :=
+                                                  M.is_struct_tuple (|
+                                                    γ,
+                                                    "core::option::Option::None"
+                                                  |) in
+                                                M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::LinkedList",
+                                                    "head"
+                                                  |),
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::option::Option::None"
+                                                      [])
+                                                    (Ty.apply
+                                                      (Ty.path "core::option::Option")
+                                                      []
+                                                      [
                                                         Ty.apply
                                                           (Ty.path "core::ptr::non_null::NonNull")
                                                           []
@@ -2282,21 +2642,19 @@ Module collections.
                                                                 "alloc::collections::linked_list::Node")
                                                               []
                                                               [ T ]
-                                                          ],
-                                                        "as_ptr",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.read (| tail |) ]
-                                                    |)
-                                                  |),
-                                                  "alloc::collections::linked_list::Node",
-                                                  "next"
-                                                |),
-                                                Value.StructTuple
-                                                  "core::option::Option::None"
-                                                  []
-                                                  [
+                                                          ]
+                                                      ])
+                                                |)));
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::option::Option::Some",
+                                                    0
+                                                  |) in
+                                                let tail :=
+                                                  M.copy (|
                                                     Ty.apply
                                                       (Ty.path "core::ptr::non_null::NonNull")
                                                       []
@@ -2306,33 +2664,115 @@ Module collections.
                                                             "alloc::collections::linked_list::Node")
                                                           []
                                                           [ T ]
-                                                      ]
-                                                  ]
-                                                  []
-                                              |)))
-                                        ]
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      let β :=
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::collections::linked_list::LinkedList",
-                                          "len"
+                                                      ],
+                                                    γ0_0
+                                                  |) in
+                                                M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (|
+                                                      M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "*mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Node")
+                                                              []
+                                                              [ T ]
+                                                          ],
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "core::ptr::non_null::NonNull")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "alloc::collections::linked_list::Node")
+                                                                []
+                                                                [ T ]
+                                                            ],
+                                                          "as_ptr",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| tail |))
+                                                            (Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::Node")
+                                                                  []
+                                                                  [ T ]
+                                                              ])
+                                                        ]
+                                                      |)
+                                                    |),
+                                                    "alloc::collections::linked_list::Node",
+                                                    "next"
+                                                  |),
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::option::Option::None"
+                                                      [])
+                                                    (Ty.apply
+                                                      (Ty.path "core::option::Option")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Node")
+                                                              []
+                                                              [ T ]
+                                                          ]
+                                                      ])
+                                                |)))
+                                          ]
                                         |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.sub,
-                                          [ M.read (| β |); Value.Integer IntegerKind.Usize 1 ]
-                                        |)
-                                      |) in
-                                    node
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                      let~ _ : Ty.tuple [] :=
+                                        let β :=
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "len"
+                                          |) in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.sub,
+                                            [ M.read (| β |); Value.Integer IntegerKind.Usize 1 ]
+                                          |)
+                                        |) in
+                                      node
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                        Ty.apply (Ty.path "&") [] [ A ]
+                      ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2413,7 +2853,24 @@ Module collections.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.MutRef, node |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, node |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ])
+                      ]
                     |)
                   |)
                 |) in
@@ -2470,7 +2927,19 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.read (| prev |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| prev |))
+                                    (Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -2556,7 +3025,19 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.read (| next |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| next |))
+                                    (Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -2760,27 +3241,47 @@ Module collections.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.MutRef, existing_prev |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, existing_prev |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ])
+                                    ]
                                   |)
                                 |),
                                 "alloc::collections::linked_list::Node",
                                 "next"
                               |),
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ]
-                                [ M.read (| splice_start |) ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::option::Option::Some"
+                                  [ M.read (| splice_start |) ])
+                                (Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ])
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -2794,21 +3295,24 @@ Module collections.
                                 "alloc::collections::linked_list::LinkedList",
                                 "head"
                               |),
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ]
-                                [ M.read (| splice_start |) ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::option::Option::Some"
+                                  [ M.read (| splice_start |) ])
+                                (Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ])
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)))
@@ -2864,27 +3368,47 @@ Module collections.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.MutRef, existing_next |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, existing_next |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ])
+                                    ]
                                   |)
                                 |),
                                 "alloc::collections::linked_list::Node",
                                 "prev"
                               |),
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ]
-                                [ M.read (| splice_end |) ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::option::Option::Some"
+                                  [ M.read (| splice_end |) ])
+                                (Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ])
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -2898,21 +3422,24 @@ Module collections.
                                 "alloc::collections::linked_list::LinkedList",
                                 "tail"
                               |),
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ]
-                                [ M.read (| splice_end |) ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::option::Option::Some"
+                                  [ M.read (| splice_end |) ])
+                                (Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ])
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)))
@@ -2944,7 +3471,24 @@ Module collections.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, splice_start |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, splice_start |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ])
+                            ]
                           |)
                         |),
                         "alloc::collections::linked_list::Node",
@@ -2976,7 +3520,24 @@ Module collections.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, splice_end |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, splice_end |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ])
+                            ]
                           |)
                         |),
                         "alloc::collections::linked_list::Node",
@@ -3079,14 +3640,34 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "alloc::collections::linked_list::LinkedList",
-                        "head"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "alloc::collections::linked_list::LinkedList",
+                          "head"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                        ])
                   ]
                 |) in
               let~ tail :
@@ -3124,14 +3705,34 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "alloc::collections::linked_list::LinkedList",
-                        "tail"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "alloc::collections::linked_list::LinkedList",
+                          "tail"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                        ])
                   ]
                 |) in
               let~ len : Ty.path "usize" :=
@@ -3139,20 +3740,22 @@ Module collections.
                   Ty.path "usize",
                   M.get_function (| "core::mem::replace", [], [ Ty.path "usize" ] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            self,
-                            "alloc::collections::linked_list::LinkedList",
-                            "len"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "alloc::collections::linked_list::LinkedList",
+                              "len"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    Value.Integer IntegerKind.Usize 0
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ]);
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -3251,7 +3854,24 @@ Module collections.
                                 [],
                                 []
                               |),
-                              [ M.read (| tail |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| tail |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ])
+                              ]
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -3281,69 +3901,73 @@ Module collections.
                                     Ty.path "usize"
                                   ]
                               ],
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [
-                                Ty.tuple
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::ptr::non_null::NonNull")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloc::collections::linked_list::Node")
-                                          []
-                                          [ T ]
-                                      ];
-                                    Ty.apply
-                                      (Ty.path "core::ptr::non_null::NonNull")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloc::collections::linked_list::Node")
-                                          []
-                                          [ T ]
-                                      ];
-                                    Ty.path "usize"
-                                  ]
-                              ]
-                              [
-                                Value.Tuple
-                                  [ M.read (| head |); M.read (| tail |); M.read (| len |) ]
-                              ]
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  Value.Tuple
+                                    [ M.read (| head |); M.read (| tail |); M.read (| len |) ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.tuple
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ];
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ];
+                                      Ty.path "usize"
+                                    ]
+                                ])
                           |)
                         |)));
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::option::Option::None"
-                          []
-                          [
-                            Ty.tuple
-                              [
-                                Ty.apply
-                                  (Ty.path "core::ptr::non_null::NonNull")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::Node")
-                                      []
-                                      [ T ]
-                                  ];
-                                Ty.apply
-                                  (Ty.path "core::ptr::non_null::NonNull")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::Node")
-                                      []
-                                      [ T ]
-                                  ];
-                                Ty.path "usize"
-                              ]
-                          ]
-                          []))
+                        (M.value_with_ty
+                          (Value.StructTuple "core::option::Option::None" [])
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ];
+                                  Ty.path "usize"
+                                ]
+                            ])))
                   ]
                 |)
               |)
@@ -3494,21 +4118,69 @@ Module collections.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ],
+                                            M.get_associated_function (|
                                               Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                (Ty.path "core::ptr::non_null::NonNull")
                                                 []
-                                                [ T ]
-                                            ],
-                                          M.get_associated_function (|
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              "as_mut",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.MutRef, split_node |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |),
+                                        "alloc::collections::linked_list::Node",
+                                        "prev"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "core::ptr::non_null::NonNull")
                                               []
@@ -3517,18 +4189,9 @@ Module collections.
                                                   (Ty.path "alloc::collections::linked_list::Node")
                                                   []
                                                   [ T ]
-                                              ],
-                                            "as_mut",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.MutRef, split_node |) ]
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::Node",
-                                      "prev"
-                                    |)
-                                  |)
+                                              ]
+                                          ]
+                                      ])
                                 ]
                               |)
                             |) in
@@ -3592,28 +4255,47 @@ Module collections.
                                                   [],
                                                   []
                                                 |),
-                                                [ M.borrow (| Pointer.Kind.MutRef, tail |) ]
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, tail |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Node")
+                                                              []
+                                                              [ T ]
+                                                          ]
+                                                      ])
+                                                ]
                                               |)
                                             |),
                                             "alloc::collections::linked_list::Node",
                                             "next"
                                           |),
-                                          Value.StructTuple
-                                            "core::option::Option::None"
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::ptr::non_null::NonNull")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ]
-                                            ]
-                                            []
+                                          M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
+                                                      []
+                                                      [ T ]
+                                                  ]
+                                              ])
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |) in
@@ -3636,21 +4318,22 @@ Module collections.
                                   let~ _ : Ty.tuple [] :=
                                     M.write (|
                                       first_part_head,
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ]
-                                        ]
-                                        []
+                                      M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ])
                                     |) in
                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                 |)))
@@ -3661,55 +4344,61 @@ Module collections.
                             (Ty.path "alloc::collections::linked_list::LinkedList")
                             []
                             [ T; A ] :=
-                        Value.mkStructRecord
-                          "alloc::collections::linked_list::LinkedList"
-                          []
-                          [ T; A ]
-                          [
-                            ("head", M.read (| first_part_head |));
-                            ("tail", M.read (| first_part_tail |));
-                            ("len", M.read (| at_ |));
-                            ("alloc",
-                              M.call_closure (|
-                                A,
-                                M.get_trait_method (|
-                                  "core::clone::Clone",
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "alloc::collections::linked_list::LinkedList"
+                            [
+                              ("head", M.read (| first_part_head |));
+                              ("tail", M.read (| first_part_tail |));
+                              ("len", M.read (| at_ |));
+                              ("alloc",
+                                M.call_closure (|
                                   A,
-                                  [],
-                                  [],
-                                  "clone",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::LinkedList",
-                                      "alloc"
-                                    |)
-                                  |)
-                                ]
-                              |));
-                            ("marker",
-                              Value.StructTuple
-                                "core::marker::PhantomData"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
+                                  M.get_trait_method (|
+                                    "core::clone::Clone",
+                                    A,
+                                    [],
+                                    [],
+                                    "clone",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::LinkedList",
+                                          "alloc"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ A ])
+                                  ]
+                                |));
+                              ("marker",
+                                M.value_with_ty
+                                  (Value.StructTuple "core::marker::PhantomData" [])
+                                  (Ty.apply
+                                    (Ty.path "core::marker::PhantomData")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        (Ty.path "alloc::boxed::Box")
                                         []
-                                        [ T ];
-                                      A
-                                    ]
-                                ]
-                                [])
-                          ] in
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ];
+                                          A
+                                        ]
+                                    ]))
+                            ])
+                          (Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]) in
                       let~ _ : Ty.tuple [] :=
                         M.write (|
                           M.SubPointer.get_struct_record_field (|
@@ -3717,21 +4406,24 @@ Module collections.
                             "alloc::collections::linked_list::LinkedList",
                             "head"
                           |),
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::ptr::non_null::NonNull")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::collections::linked_list::Node")
-                                    []
-                                    [ T ]
-                                ]
-                            ]
-                            [ M.read (| split_node |) ]
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [ M.read (| split_node |) ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ]
+                              ])
                         |) in
                       let~ _ : Ty.tuple [] :=
                         M.write (|
@@ -3772,46 +4464,65 @@ Module collections.
                         ]
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
                             []
-                            [ T; A ],
-                          M.get_associated_function (|
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; A ]
+                            ]);
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::collections::linked_list::LinkedList")
                               []
                               [ T; A ],
-                            "new_in",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              A,
-                              M.get_trait_method (|
-                                "core::clone::Clone",
-                                A,
-                                [],
-                                [],
-                                "clone",
-                                [],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
                                 []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::LinkedList",
-                                    "alloc"
-                                  |)
-                                |)
-                              ]
-                            |)
-                          ]
-                        |)
+                                [ T; A ],
+                              "new_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  A,
+                                  M.get_trait_method (|
+                                    "core::clone::Clone",
+                                    A,
+                                    [],
+                                    [],
+                                    "clone",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::LinkedList",
+                                          "alloc"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ A ])
+                                  ]
+                                |))
+                                A
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ])
                       ]
                     |)))
               ]
@@ -3963,21 +4674,69 @@ Module collections.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ],
+                                            M.get_associated_function (|
                                               Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                (Ty.path "core::ptr::non_null::NonNull")
                                                 []
-                                                [ T ]
-                                            ],
-                                          M.get_associated_function (|
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              "as_mut",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.MutRef, split_node |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |),
+                                        "alloc::collections::linked_list::Node",
+                                        "next"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "core::ptr::non_null::NonNull")
                                               []
@@ -3986,18 +4745,9 @@ Module collections.
                                                   (Ty.path "alloc::collections::linked_list::Node")
                                                   []
                                                   [ T ]
-                                              ],
-                                            "as_mut",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.MutRef, split_node |) ]
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::Node",
-                                      "next"
-                                    |)
-                                  |)
+                                              ]
+                                          ]
+                                      ])
                                 ]
                               |)
                             |) in
@@ -4061,28 +4811,47 @@ Module collections.
                                                   [],
                                                   []
                                                 |),
-                                                [ M.borrow (| Pointer.Kind.MutRef, head |) ]
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, head |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Node")
+                                                              []
+                                                              [ T ]
+                                                          ]
+                                                      ])
+                                                ]
                                               |)
                                             |),
                                             "alloc::collections::linked_list::Node",
                                             "prev"
                                           |),
-                                          Value.StructTuple
-                                            "core::option::Option::None"
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::ptr::non_null::NonNull")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ]
-                                            ]
-                                            []
+                                          M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
+                                                      []
+                                                      [ T ]
+                                                  ]
+                                              ])
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |) in
@@ -4105,21 +4874,22 @@ Module collections.
                                   let~ _ : Ty.tuple [] :=
                                     M.write (|
                                       second_part_tail,
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ]
-                                        ]
-                                        []
+                                      M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ])
                                     |) in
                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                 |)))
@@ -4130,69 +4900,75 @@ Module collections.
                             (Ty.path "alloc::collections::linked_list::LinkedList")
                             []
                             [ T; A ] :=
-                        Value.mkStructRecord
-                          "alloc::collections::linked_list::LinkedList"
-                          []
-                          [ T; A ]
-                          [
-                            ("head", M.read (| second_part_head |));
-                            ("tail", M.read (| second_part_tail |));
-                            ("len",
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::LinkedList",
-                                      "len"
-                                    |)
-                                  |);
-                                  M.read (| at_ |)
-                                ]
-                              |));
-                            ("alloc",
-                              M.call_closure (|
-                                A,
-                                M.get_trait_method (|
-                                  "core::clone::Clone",
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "alloc::collections::linked_list::LinkedList"
+                            [
+                              ("head", M.read (| second_part_head |));
+                              ("tail", M.read (| second_part_tail |));
+                              ("len",
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  BinOp.Wrap.sub,
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::LinkedList",
+                                        "len"
+                                      |)
+                                    |);
+                                    M.read (| at_ |)
+                                  ]
+                                |));
+                              ("alloc",
+                                M.call_closure (|
                                   A,
-                                  [],
-                                  [],
-                                  "clone",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::LinkedList",
-                                      "alloc"
-                                    |)
-                                  |)
-                                ]
-                              |));
-                            ("marker",
-                              Value.StructTuple
-                                "core::marker::PhantomData"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
+                                  M.get_trait_method (|
+                                    "core::clone::Clone",
+                                    A,
+                                    [],
+                                    [],
+                                    "clone",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::LinkedList",
+                                          "alloc"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ A ])
+                                  ]
+                                |));
+                              ("marker",
+                                M.value_with_ty
+                                  (Value.StructTuple "core::marker::PhantomData" [])
+                                  (Ty.apply
+                                    (Ty.path "core::marker::PhantomData")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        (Ty.path "alloc::boxed::Box")
                                         []
-                                        [ T ];
-                                      A
-                                    ]
-                                ]
-                                [])
-                          ] in
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ];
+                                          A
+                                        ]
+                                    ]))
+                            ])
+                          (Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]) in
                       let~ _ : Ty.tuple [] :=
                         M.write (|
                           M.SubPointer.get_struct_record_field (|
@@ -4200,21 +4976,24 @@ Module collections.
                             "alloc::collections::linked_list::LinkedList",
                             "tail"
                           |),
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::ptr::non_null::NonNull")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::collections::linked_list::Node")
-                                    []
-                                    [ T ]
-                                ]
-                            ]
-                            [ M.read (| split_node |) ]
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [ M.read (| split_node |) ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ]
+                              ])
                         |) in
                       let~ _ : Ty.tuple [] :=
                         M.write (|
@@ -4242,46 +5021,65 @@ Module collections.
                         ]
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
                             []
-                            [ T; A ],
-                          M.get_associated_function (|
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; A ]
+                            ]);
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::collections::linked_list::LinkedList")
                               []
                               [ T; A ],
-                            "new_in",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
-                              A,
-                              M.get_trait_method (|
-                                "core::clone::Clone",
-                                A,
-                                [],
-                                [],
-                                "clone",
-                                [],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
                                 []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::LinkedList",
-                                    "alloc"
-                                  |)
-                                |)
-                              ]
-                            |)
-                          ]
-                        |)
+                                [ T; A ],
+                              "new_in",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  A,
+                                  M.get_trait_method (|
+                                    "core::clone::Clone",
+                                    A,
+                                    [],
+                                    [],
+                                    "clone",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::LinkedList",
+                                          "alloc"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ A ])
+                                  ]
+                                |))
+                                A
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ])
                       ]
                     |)))
               ]
@@ -4305,47 +5103,51 @@ Module collections.
         | [], [], [ alloc ] =>
           ltac:(M.monadic
             (let alloc := M.alloc (| A, alloc |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::LinkedList"
-              []
-              [ T; A ]
-              [
-                ("head",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::LinkedList"
+                [
+                  ("head",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("tail",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("tail",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("len", Value.Integer IntegerKind.Usize 0);
-                ("alloc", M.read (| alloc |));
-                ("marker",
-                  Value.StructTuple
-                    "core::marker::PhantomData"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloc::boxed::Box")
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("len", Value.Integer IntegerKind.Usize 0);
+                  ("alloc", M.read (| alloc |));
+                  ("marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply
+                        (Ty.path "core::marker::PhantomData")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]; A ]
-                    ]
-                    [])
-              ]))
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]; A
+                            ]
+                        ]))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4373,47 +5175,48 @@ Module collections.
                   [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::Iter"
-              []
-              [ T ]
-              [
-                ("head",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "head"
-                    |)
-                  |));
-                ("tail",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "tail"
-                    |)
-                  |));
-                ("len",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "len"
-                    |)
-                  |));
-                ("marker",
-                  Value.StructTuple
-                    "core::marker::PhantomData"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::Iter"
+                [
+                  ("head",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "head"
+                      |)
+                    |));
+                  ("tail",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "tail"
+                      |)
+                    |));
+                  ("len",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "len"
+                      |)
+                    |));
+                  ("marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply
+                        (Ty.path "core::marker::PhantomData")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    [])
-              ]))
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4441,47 +5244,48 @@ Module collections.
                   [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::IterMut"
-              []
-              [ T ]
-              [
-                ("head",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "head"
-                    |)
-                  |));
-                ("tail",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "tail"
-                    |)
-                  |));
-                ("len",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "len"
-                    |)
-                  |));
-                ("marker",
-                  Value.StructTuple
-                    "core::marker::PhantomData"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::IterMut"
+                [
+                  ("head",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "head"
+                      |)
+                    |));
+                  ("tail",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "tail"
+                      |)
+                    |));
+                  ("len",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "len"
+                      |)
+                    |));
+                  ("marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply
+                        (Ty.path "core::marker::PhantomData")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    [])
-              ]))
+                        [
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::IterMut") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4514,22 +5318,22 @@ Module collections.
                   [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::Cursor"
-              []
-              [ T; A ]
-              [
-                ("index", Value.Integer IntegerKind.Usize 0);
-                ("current",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "head"
-                    |)
-                  |));
-                ("list", M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::Cursor"
+                [
+                  ("index", Value.Integer IntegerKind.Usize 0);
+                  ("current",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "head"
+                      |)
+                    |));
+                  ("list", M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::Cursor") [] [ T; A ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4562,22 +5366,22 @@ Module collections.
                   [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::CursorMut"
-              []
-              [ T; A ]
-              [
-                ("index", Value.Integer IntegerKind.Usize 0);
-                ("current",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "head"
-                    |)
-                  |));
-                ("list", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::CursorMut"
+                [
+                  ("index", Value.Integer IntegerKind.Usize 0);
+                  ("current",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "head"
+                      |)
+                    |));
+                  ("list", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::CursorMut") [] [ T; A ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4610,48 +5414,52 @@ Module collections.
                   [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::Cursor"
-              []
-              [ T; A ]
-              [
-                ("index",
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                      "unwrap_or",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::Cursor"
+                [
+                  ("index",
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
                         Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                        M.get_associated_function (| Ty.path "usize", "checked_sub", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::linked_list::LinkedList",
-                              "len"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.Usize 1
-                        ]
-                      |);
-                      Value.Integer IntegerKind.Usize 0
-                    ]
-                  |));
-                ("current",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "tail"
-                    |)
-                  |));
-                ("list", M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
-              ]))
+                        "unwrap_or",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                            M.get_associated_function (| Ty.path "usize", "checked_sub", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::linked_list::LinkedList",
+                                    "len"
+                                  |)
+                                |))
+                                (Ty.path "usize");
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
+                      ]
+                    |));
+                  ("current",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "tail"
+                      |)
+                    |));
+                  ("list", M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::Cursor") [] [ T; A ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4684,48 +5492,52 @@ Module collections.
                   [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::CursorMut"
-              []
-              [ T; A ]
-              [
-                ("index",
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                      "unwrap_or",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::CursorMut"
+                [
+                  ("index",
+                    M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
                         Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                        M.get_associated_function (| Ty.path "usize", "checked_sub", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::linked_list::LinkedList",
-                              "len"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.Usize 1
-                        ]
-                      |);
-                      Value.Integer IntegerKind.Usize 0
-                    ]
-                  |));
-                ("current",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::LinkedList",
-                      "tail"
-                    |)
-                  |));
-                ("list", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
-              ]))
+                        "unwrap_or",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                            M.get_associated_function (| Ty.path "usize", "checked_sub", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::linked_list::LinkedList",
+                                    "len"
+                                  |)
+                                |))
+                                (Ty.path "usize");
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
+                      ]
+                    |));
+                  ("current",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::LinkedList",
+                        "tail"
+                      |)
+                    |));
+                  ("list", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::CursorMut") [] [ T; A ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4770,14 +5582,29 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::collections::linked_list::LinkedList",
-                    "head"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloc::collections::linked_list::LinkedList",
+                      "head"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4864,150 +5691,201 @@ Module collections.
                     ]
                   |),
                   [
-                    Value.mkStructRecord
-                      "alloc::collections::linked_list::LinkedList"
-                      []
-                      [ T; Ty.apply (Ty.path "&") [] [ A ] ]
-                      [
-                        ("head",
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "alloc::collections::linked_list::LinkedList"
+                          [
+                            ("head",
+                              M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  (Ty.path "core::option::Option")
                                   []
                                   [
                                     Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      (Ty.path "core::ptr::non_null::NonNull")
                                       []
-                                      [ T ]
-                                  ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ],
+                                M.get_associated_function (|
                                   Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    (Ty.path "core::option::Option")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        (Ty.path "core::ptr::non_null::NonNull")
                                         []
-                                        [ T ]
-                                    ]
-                                ],
-                              "take",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::linked_list::LinkedList",
-                                  "head"
-                                |)
-                              |)
-                            ]
-                          |));
-                        ("tail",
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::ptr::non_null::NonNull")
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ],
+                                  "take",
+                                  [],
                                   []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::Node")
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::LinkedList",
+                                        "head"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
                                       []
-                                      [ T ]
-                                  ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ],
-                              "take",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::linked_list::LinkedList",
-                                  "tail"
-                                |)
-                              |)
-                            ]
-                          |));
-                        ("len",
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_function (| "core::mem::take", [], [ Ty.path "usize" ] |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::LinkedList",
-                                      "len"
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |));
-                        ("alloc",
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::linked_list::LinkedList",
-                              "alloc"
-                            |)
-                          |));
-                        ("marker",
-                          Value.StructTuple
-                            "core::marker::PhantomData"
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::boxed::Box")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::collections::linked_list::Node")
-                                    []
-                                    [ T ];
-                                  Ty.apply (Ty.path "&") [] [ A ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ]
+                                      ])
                                 ]
-                            ]
-                            [])
-                      ]
+                              |));
+                            ("tail",
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ],
+                                  "take",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::LinkedList",
+                                        "tail"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ]
+                                      ])
+                                ]
+                              |));
+                            ("len",
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::take", [], [ Ty.path "usize" ] |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "len"
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ])
+                                ]
+                              |));
+                            ("alloc",
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::LinkedList",
+                                  "alloc"
+                                |)
+                              |));
+                            ("marker",
+                              M.value_with_ty
+                                (Value.StructTuple "core::marker::PhantomData" [])
+                                (Ty.apply
+                                  (Ty.path "core::marker::PhantomData")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ];
+                                        Ty.apply (Ty.path "&") [] [ A ]
+                                      ]
+                                  ]))
+                          ])
+                        (Ty.apply
+                          (Ty.path "alloc::collections::linked_list::LinkedList")
+                          []
+                          [ T; Ty.apply (Ty.path "&") [] [ A ] ]))
+                      (Ty.apply
+                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                        []
+                        [ T; Ty.apply (Ty.path "&") [] [ A ] ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5055,58 +5933,87 @@ Module collections.
                 [ Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "bool") ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.alloc (|
-                    Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.alloc (|
                       Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::collections::linked_list::LinkedList")
+                      M.call_closure (|
+                        Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ],
+                          "iter",
+                          [],
                           []
-                          [ T; A ],
-                        "iter",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.path "bool",
-                            M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let e := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_trait_method (|
-                                      "core::cmp::PartialEq",
-                                      Ty.apply (Ty.path "&") [] [ T ],
-                                      [],
-                                      [ Ty.apply (Ty.path "&") [] [ T ] ],
-                                      "eq",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (| Pointer.Kind.Ref, e |);
-                                      M.borrow (| Pointer.Kind.Ref, x |)
-                                    ]
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ] ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "bool",
+                              M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let e := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_trait_method (|
+                                        "core::cmp::PartialEq",
+                                        Ty.apply (Ty.path "&") [] [ T ],
+                                        [],
+                                        [ Ty.apply (Ty.path "&") [] [ T ] ],
+                                        "eq",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, e |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ T ] ]);
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, x |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ T ] ])
+                                      ]
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "bool"))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5173,8 +6080,69 @@ Module collections.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ]
+                          ]
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ],
+                      "as_ref",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::linked_list::LinkedList",
+                            "head"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::option::Option")
                     []
                     [
@@ -5187,93 +6155,42 @@ Module collections.
                             []
                             [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
                         ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::option::Option")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::ptr::non_null::NonNull")
-                          []
-                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                      ],
-                    "as_ref",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::LinkedList",
-                        "head"
-                      |)
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply (Ty.path "&") [] [ T ],
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let node :=
-                                    M.copy (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ]
-                                        ],
-                                      γ
-                                    |) in
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          M.get_associated_function (|
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let node :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "core::ptr::non_null::NonNull")
                                               []
@@ -5282,27 +6199,84 @@ Module collections.
                                                   (Ty.path "alloc::collections::linked_list::Node")
                                                   []
                                                   [ T ]
+                                              ]
+                                          ],
+                                        γ
+                                      |) in
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
                                               ],
-                                            "as_ref",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| node |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::Node",
-                                      "element"
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              "as_ref",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| node |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |),
+                                        "alloc::collections::linked_list::Node",
+                                        "element"
+                                      |)
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                    ]
+                    (Ty.apply (Ty.path "&") [] [ T ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5369,8 +6343,69 @@ Module collections.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ]
+                          ]
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ],
+                      "as_mut",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::linked_list::LinkedList",
+                            "head"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::option::Option")
                     []
                     [
@@ -5383,93 +6418,42 @@ Module collections.
                             []
                             [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
                         ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::option::Option")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::ptr::non_null::NonNull")
-                          []
-                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                      ],
-                    "as_mut",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::LinkedList",
-                        "head"
-                      |)
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply (Ty.path "&mut") [] [ T ],
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let node :=
-                                    M.copy (|
-                                      Ty.apply
-                                        (Ty.path "&mut")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ]
-                                        ],
-                                      γ
-                                    |) in
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          M.get_associated_function (|
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply (Ty.path "&mut") [] [ T ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let node :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "core::ptr::non_null::NonNull")
                                               []
@@ -5478,27 +6462,84 @@ Module collections.
                                                   (Ty.path "alloc::collections::linked_list::Node")
                                                   []
                                                   [ T ]
+                                              ]
+                                          ],
+                                        γ
+                                      |) in
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
                                               ],
-                                            "as_mut",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| node |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::Node",
-                                      "element"
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              "as_mut",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| node |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |),
+                                        "alloc::collections::linked_list::Node",
+                                        "element"
+                                      |)
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                    ]
+                    (Ty.apply (Ty.path "&mut") [] [ T ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5565,8 +6606,69 @@ Module collections.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ]
+                          ]
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ],
+                      "as_ref",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::linked_list::LinkedList",
+                            "tail"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::option::Option")
                     []
                     [
@@ -5579,93 +6681,42 @@ Module collections.
                             []
                             [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
                         ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::option::Option")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::ptr::non_null::NonNull")
-                          []
-                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                      ],
-                    "as_ref",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::LinkedList",
-                        "tail"
-                      |)
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply (Ty.path "&") [] [ T ],
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let node :=
-                                    M.copy (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ]
-                                        ],
-                                      γ
-                                    |) in
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          M.get_associated_function (|
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let node :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "core::ptr::non_null::NonNull")
                                               []
@@ -5674,27 +6725,84 @@ Module collections.
                                                   (Ty.path "alloc::collections::linked_list::Node")
                                                   []
                                                   [ T ]
+                                              ]
+                                          ],
+                                        γ
+                                      |) in
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
                                               ],
-                                            "as_ref",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| node |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::Node",
-                                      "element"
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              "as_ref",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| node |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |),
+                                        "alloc::collections::linked_list::Node",
+                                        "element"
+                                      |)
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                    ]
+                    (Ty.apply (Ty.path "&") [] [ T ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5761,8 +6869,69 @@ Module collections.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ]
+                          ]
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ],
+                      "as_mut",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::linked_list::LinkedList",
+                            "tail"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ]
+                              ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::option::Option")
                     []
                     [
@@ -5775,93 +6944,42 @@ Module collections.
                             []
                             [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
                         ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::option::Option")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::ptr::non_null::NonNull")
-                          []
-                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                      ],
-                    "as_mut",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::LinkedList",
-                        "tail"
-                      |)
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply (Ty.path "&mut") [] [ T ],
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let node :=
-                                    M.copy (|
-                                      Ty.apply
-                                        (Ty.path "&mut")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ]
-                                        ],
-                                      γ
-                                    |) in
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          M.get_associated_function (|
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply (Ty.path "&mut") [] [ T ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let node :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "core::ptr::non_null::NonNull")
                                               []
@@ -5870,27 +6988,84 @@ Module collections.
                                                   (Ty.path "alloc::collections::linked_list::Node")
                                                   []
                                                   [ T ]
+                                              ]
+                                          ],
+                                        γ
+                                      |) in
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
                                               ],
-                                            "as_mut",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| node |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::Node",
-                                      "element"
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              "as_mut",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| node |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |),
+                                        "alloc::collections::linked_list::Node",
+                                        "element"
+                                      |)
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                    ]
+                    (Ty.apply (Ty.path "&mut") [] [ T ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5961,24 +7136,28 @@ Module collections.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ M.read (| elt |) ]
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::LinkedList",
-                        "alloc"
-                      |)
-                    |)
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.value_with_ty (M.read (| elt |)) T ]
+                      |))
+                      (Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::LinkedList",
+                          "alloc"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ A ])
                   ]
                 |) in
               let~ node_ptr :
@@ -6009,25 +7188,40 @@ Module collections.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [
+                              Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                              Ty.apply (Ty.path "&") [] [ A ]
+                            ],
+                          "leak",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| node |))
+                            (Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                                Ty.apply (Ty.path "&") [] [ A ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "&mut")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                            Ty.apply (Ty.path "&") [] [ A ]
-                          ],
-                        "leak",
-                        [],
-                        []
-                      |),
-                      [ M.read (| node |) ]
-                    |)
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -6040,8 +7234,23 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| node_ptr |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| node_ptr |))
+                      (Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6106,8 +7315,41 @@ Module collections.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                            Ty.apply (Ty.path "&") [] [ A ]
+                          ]
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
+                      "pop_front_node",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; A ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::option::Option")
                     []
                     [
@@ -6118,21 +7360,25 @@ Module collections.
                           Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
                           Ty.apply (Ty.path "&") [] [ A ]
                         ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
-                    "pop_front_node",
+                    ]);
+                M.value_with_ty
+                  (M.get_associated_function (|
+                    Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
+                    "into_element",
                     [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-                |);
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                  "into_element",
-                  [],
-                  [ Ty.apply (Ty.path "&") [] [ A ] ]
-                |)
+                    [ Ty.apply (Ty.path "&") [] [ A ] ]
+                  |))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                          Ty.apply (Ty.path "&") [] [ A ]
+                        ]
+                    ]
+                    T)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6198,24 +7444,28 @@ Module collections.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ M.read (| elt |) ]
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::LinkedList",
-                        "alloc"
-                      |)
-                    |)
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.value_with_ty (M.read (| elt |)) T ]
+                      |))
+                      (Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::LinkedList",
+                          "alloc"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ A ])
                   ]
                 |) in
               let~ node_ptr :
@@ -6246,25 +7496,40 @@ Module collections.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [
+                              Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                              Ty.apply (Ty.path "&") [] [ A ]
+                            ],
+                          "leak",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| node |))
+                            (Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                                Ty.apply (Ty.path "&") [] [ A ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "&mut")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                            Ty.apply (Ty.path "&") [] [ A ]
-                          ],
-                        "leak",
-                        [],
-                        []
-                      |),
-                      [ M.read (| node |) ]
-                    |)
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -6277,8 +7542,23 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| node_ptr |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| node_ptr |))
+                      (Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6343,8 +7623,41 @@ Module collections.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                            Ty.apply (Ty.path "&") [] [ A ]
+                          ]
+                      ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
+                      "pop_back_node",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; A ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::option::Option")
                     []
                     [
@@ -6355,21 +7668,25 @@ Module collections.
                           Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
                           Ty.apply (Ty.path "&") [] [ A ]
                         ]
-                    ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
-                    "pop_back_node",
+                    ]);
+                M.value_with_ty
+                  (M.get_associated_function (|
+                    Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
+                    "into_element",
                     [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-                |);
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ],
-                  "into_element",
-                  [],
-                  [ Ty.apply (Ty.path "&") [] [ A ] ]
-                |)
+                    [ Ty.apply (Ty.path "&") [] [ A ] ]
+                  |))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                          Ty.apply (Ty.path "&") [] [ A ]
+                        ]
+                    ]
+                    T)
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6446,7 +7763,19 @@ Module collections.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; A ]
+                            ])
+                      ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.match_operator (|
@@ -6478,37 +7807,49 @@ Module collections.
                                 Ty.path "never",
                                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                 [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::Arguments",
-                                    M.get_associated_function (|
+                                  M.value_with_ty
+                                    (M.call_closure (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::Arguments",
+                                        "new_const",
+                                        [ Value.Integer IntegerKind.Usize 1 ],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
                                             Pointer.Kind.Ref,
-                                            M.alloc (|
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                  Value.Array
+                                                    [
+                                                      mk_str (|
+                                                        "Cannot split off at a nonexistent index"
+                                                      |)
+                                                    ]
+                                                |)
+                                              |)
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "array")
                                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array
-                                                [
-                                                  mk_str (|
-                                                    "Cannot split off at a nonexistent index"
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                            ])
+                                      ]
+                                    |))
+                                    (Ty.path "core::fmt::Arguments")
                                 ]
                               |)
                             |)));
@@ -6553,49 +7894,70 @@ Module collections.
                                       ]
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "alloc::collections::linked_list::LinkedList")
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
                                           []
-                                          [ T; A ],
-                                        M.get_associated_function (|
+                                          [
+                                            Ty.apply
+                                              (Ty.path
+                                                "alloc::collections::linked_list::LinkedList")
+                                              []
+                                              [ T; A ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::collections::linked_list::LinkedList")
                                             []
                                             [ T; A ],
-                                          "new_in",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
-                                            A,
-                                            M.get_trait_method (|
-                                              "core::clone::Clone",
-                                              A,
-                                              [],
-                                              [],
-                                              "clone",
-                                              [],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path
+                                                "alloc::collections::linked_list::LinkedList")
                                               []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::linked_list::LinkedList",
-                                                  "alloc"
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
+                                              [ T; A ],
+                                            "new_in",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                A,
+                                                M.get_trait_method (|
+                                                  "core::clone::Clone",
+                                                  A,
+                                                  [],
+                                                  [],
+                                                  "clone",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "alloc::collections::linked_list::LinkedList",
+                                                        "alloc"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ A ])
+                                                ]
+                                              |))
+                                              A
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::LinkedList")
+                                          []
+                                          [ T; A ])
                                     ]
                                   |)
                                 |)
@@ -6644,28 +8006,32 @@ Module collections.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                A,
-                                                M.get_trait_method (|
-                                                  "core::clone::Clone",
+                                              M.value_with_ty
+                                                (M.call_closure (|
                                                   A,
-                                                  [],
-                                                  [],
-                                                  "clone",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::linked_list::LinkedList",
-                                                      "alloc"
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
+                                                  M.get_trait_method (|
+                                                    "core::clone::Clone",
+                                                    A,
+                                                    [],
+                                                    [],
+                                                    "clone",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "alloc::collections::linked_list::LinkedList",
+                                                          "alloc"
+                                                        |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&") [] [ A ])
+                                                  ]
+                                                |))
+                                                A
                                             ]
                                           |)
                                         |)
@@ -6755,10 +8121,20 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| self |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                                            []
+                                            [ T; A ]
+                                        ])
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -6791,22 +8167,30 @@ Module collections.
                                               []
                                             |),
                                             [
-                                              Value.mkStructRecord
-                                                "core::ops::range::Range"
-                                                []
-                                                [ Ty.path "usize" ]
-                                                [
-                                                  ("start", Value.Integer IntegerKind.Usize 0);
-                                                  ("end_",
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.read (| at_ |);
-                                                        Value.Integer IntegerKind.Usize 1
-                                                      ]
-                                                    |))
-                                                ]
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.mkStructRecord
+                                                    "core::ops::range::Range"
+                                                    [
+                                                      ("start", Value.Integer IntegerKind.Usize 0);
+                                                      ("end_",
+                                                        M.call_closure (|
+                                                          Ty.path "usize",
+                                                          BinOp.Wrap.sub,
+                                                          [
+                                                            M.read (| at_ |);
+                                                            Value.Integer IntegerKind.Usize 1
+                                                          ]
+                                                        |))
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::ops::range::Range")
+                                                    []
+                                                    [ Ty.path "usize" ]))
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::Range")
+                                                  []
+                                                  [ Ty.path "usize" ])
                                             ]
                                           |)
                                         |),
@@ -6849,15 +8233,26 @@ Module collections.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    iter
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      iter
+                                                                    |)
                                                                   |)
-                                                                |)
-                                                              |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::ops::range::Range")
+                                                                      []
+                                                                      [ Ty.path "usize" ]
+                                                                  ])
                                                             ]
                                                           |)
                                                         |),
@@ -6917,10 +8312,21 @@ Module collections.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        iter
-                                                                      |)
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.MutRef,
+                                                                          iter
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "alloc::collections::linked_list::IterMut")
+                                                                              []
+                                                                              [ T ]
+                                                                          ])
                                                                     ]
                                                                   |) in
                                                                 M.alloc (|
@@ -6966,10 +8372,20 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| self |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                                            []
+                                            [ T; A ]
+                                        ])
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -7002,36 +8418,44 @@ Module collections.
                                               []
                                             |),
                                             [
-                                              Value.mkStructRecord
-                                                "core::ops::range::Range"
-                                                []
-                                                [ Ty.path "usize" ]
-                                                [
-                                                  ("start", Value.Integer IntegerKind.Usize 0);
-                                                  ("end_",
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.sub,
-                                                      [
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.mkStructRecord
+                                                    "core::ops::range::Range"
+                                                    [
+                                                      ("start", Value.Integer IntegerKind.Usize 0);
+                                                      ("end_",
                                                         M.call_closure (|
                                                           Ty.path "usize",
                                                           BinOp.Wrap.sub,
                                                           [
-                                                            M.read (| len |);
-                                                            Value.Integer IntegerKind.Usize 1
+                                                            M.call_closure (|
+                                                              Ty.path "usize",
+                                                              BinOp.Wrap.sub,
+                                                              [
+                                                                M.read (| len |);
+                                                                Value.Integer IntegerKind.Usize 1
+                                                              ]
+                                                            |);
+                                                            M.call_closure (|
+                                                              Ty.path "usize",
+                                                              BinOp.Wrap.sub,
+                                                              [
+                                                                M.read (| at_ |);
+                                                                Value.Integer IntegerKind.Usize 1
+                                                              ]
+                                                            |)
                                                           ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.sub,
-                                                          [
-                                                            M.read (| at_ |);
-                                                            Value.Integer IntegerKind.Usize 1
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |))
-                                                ]
+                                                        |))
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::ops::range::Range")
+                                                    []
+                                                    [ Ty.path "usize" ]))
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::Range")
+                                                  []
+                                                  [ Ty.path "usize" ])
                                             ]
                                           |)
                                         |),
@@ -7074,15 +8498,26 @@ Module collections.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    iter
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      iter
+                                                                    |)
                                                                   |)
-                                                                |)
-                                                              |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::ops::range::Range")
+                                                                      []
+                                                                      [ Ty.path "usize" ]
+                                                                  ])
                                                             ]
                                                           |)
                                                         |),
@@ -7142,10 +8577,21 @@ Module collections.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        iter
-                                                                      |)
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.MutRef,
+                                                                          iter
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "alloc::collections::linked_list::IterMut")
+                                                                              []
+                                                                              [ T ]
+                                                                          ])
                                                                     ]
                                                                   |) in
                                                                 M.alloc (|
@@ -7184,9 +8630,34 @@ Module collections.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                        M.read (| split_node |);
-                        M.read (| at_ |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; A ]
+                            ]);
+                        M.value_with_ty
+                          (M.read (| split_node |))
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]);
+                        M.value_with_ty (M.read (| at_ |)) (Ty.path "usize")
                       ]
                     |)
                   |)
@@ -7248,7 +8719,19 @@ Module collections.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -7279,37 +8762,49 @@ Module collections.
                             Ty.path "never",
                             M.get_function (| "core::panicking::panic_fmt", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Arguments",
+                                    "new_const",
+                                    [ Value.Integer IntegerKind.Usize 1 ],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.alloc (|
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 1 ]
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                              Value.Array
+                                                [
+                                                  mk_str (|
+                                                    "Cannot remove at an index outside of the list bounds"
+                                                  |)
+                                                ]
+                                            |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
                                           Ty.apply
                                             (Ty.path "array")
                                             [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [
-                                              mk_str (|
-                                                "Cannot remove at an index outside of the list bounds"
-                                              |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.path "core::fmt::Arguments")
                             ]
                           |)
                         |)));
@@ -7368,7 +8863,21 @@ Module collections.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                                        []
+                                        [ T; A ]
+                                    ])
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -7401,14 +8910,22 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          Value.mkStructRecord
-                                            "core::ops::range::Range"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [
-                                              ("start", Value.Integer IntegerKind.Usize 0);
-                                              ("end_", M.read (| at_ |))
-                                            ]
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.mkStructRecord
+                                                "core::ops::range::Range"
+                                                [
+                                                  ("start", Value.Integer IntegerKind.Usize 0);
+                                                  ("end_", M.read (| at_ |))
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ]))
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::Range")
+                                              []
+                                              [ Ty.path "usize" ])
                                         ]
                                       |)
                                     |),
@@ -7451,15 +8968,26 @@ Module collections.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                iter
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  iter
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::ops::range::Range")
+                                                                  []
+                                                                  [ Ty.path "usize" ]
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -7497,10 +9025,21 @@ Module collections.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    cursor
-                                                                  |)
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      cursor
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloc::collections::linked_list::CursorMut")
+                                                                          []
+                                                                          [ T; A ]
+                                                                      ])
                                                                 ]
                                                               |) in
                                                             M.alloc (|
@@ -7528,19 +9067,33 @@ Module collections.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::CursorMut")
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::CursorMut")
+                                        []
+                                        [ T; A ],
+                                      "remove_current",
+                                      [],
                                       []
-                                      [ T; A ],
-                                    "remove_current",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, cursor |) ]
-                                |)
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, cursor |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::CursorMut")
+                                              []
+                                              [ T; A ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                               ]
                             |)
                           |)
@@ -7567,7 +9120,21 @@ Module collections.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                                        []
+                                        [ T; A ]
+                                    ])
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -7600,14 +9167,22 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          Value.mkStructRecord
-                                            "core::ops::range::Range"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [
-                                              ("start", Value.Integer IntegerKind.Usize 0);
-                                              ("end_", M.read (| offset_from_end |))
-                                            ]
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.mkStructRecord
+                                                "core::ops::range::Range"
+                                                [
+                                                  ("start", Value.Integer IntegerKind.Usize 0);
+                                                  ("end_", M.read (| offset_from_end |))
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ]))
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::Range")
+                                              []
+                                              [ Ty.path "usize" ])
                                         ]
                                       |)
                                     |),
@@ -7650,15 +9225,26 @@ Module collections.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                iter
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  iter
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::ops::range::Range")
+                                                                  []
+                                                                  [ Ty.path "usize" ]
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -7696,10 +9282,21 @@ Module collections.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    cursor
-                                                                  |)
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      cursor
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloc::collections::linked_list::CursorMut")
+                                                                          []
+                                                                          [ T; A ]
+                                                                      ])
                                                                 ]
                                                               |) in
                                                             M.alloc (|
@@ -7727,19 +9324,33 @@ Module collections.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::CursorMut")
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::CursorMut")
+                                        []
+                                        [ T; A ],
+                                      "remove_current",
+                                      [],
                                       []
-                                      [ T; A ],
-                                    "remove_current",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, cursor |) ]
-                                |)
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, cursor |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::CursorMut")
+                                              []
+                                              [ T; A ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                               ]
                             |)
                           |)
@@ -7790,47 +9401,63 @@ Module collections.
                     [ Ty.function [ Ty.apply (Ty.path "&mut") [] [ T ] ] (Ty.path "bool") ]
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.path "bool",
-                                M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let elem :=
-                                        M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        M.get_trait_method (|
-                                          "core::ops::function::FnMut",
-                                          F,
-                                          [],
-                                          [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                          "call_mut",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (| Pointer.Kind.MutRef, f |);
-                                          Value.Tuple
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| elem |) |)
-                                              |)
-                                            ]
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.path "bool",
+                                  M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let elem :=
+                                          M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          M.get_trait_method (|
+                                            "core::ops::function::FnMut",
+                                            F,
+                                            [],
+                                            [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                            "call_mut",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| elem |) |)
+                                                  |)
+                                                ])
+                                              (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function [ Ty.apply (Ty.path "&mut") [] [ T ] ] (Ty.path "bool"))
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7889,7 +9516,19 @@ Module collections.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ])
+                  ]
                 |) in
               M.loop (|
                 Ty.tuple [],
@@ -7922,7 +9561,19 @@ Module collections.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, cursor |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, cursor |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::CursorMut")
+                                            []
+                                            [ T; A ]
+                                        ])
+                                  ]
                                 |)
                               |) in
                             let γ0_0 :=
@@ -7959,14 +9610,19 @@ Module collections.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| node |) |)
-                                                      |)
-                                                    ]
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                  M.value_with_ty
+                                                    (Value.Tuple
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.deref (| M.read (| node |) |)
+                                                        |)
+                                                      ])
+                                                    (Ty.tuple
+                                                      [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                                                 ]
                                               |)
                                             ]
@@ -7988,20 +9644,35 @@ Module collections.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "alloc::collections::linked_list::CursorMut")
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::CursorMut")
+                                                    []
+                                                    [ T; A ],
+                                                  "remove_current",
+                                                  [],
                                                   []
-                                                  [ T; A ],
-                                                "remove_current",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.borrow (| Pointer.Kind.MutRef, cursor |) ]
-                                            |)
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, cursor |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::CursorMut")
+                                                          []
+                                                          [ T; A ]
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                                           ]
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8021,7 +9692,20 @@ Module collections.
                                             [],
                                             []
                                           |),
-                                          [ M.borrow (| Pointer.Kind.MutRef, cursor |) ]
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, cursor |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::CursorMut")
+                                                    []
+                                                    [ T; A ]
+                                                ])
+                                          ]
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)))
@@ -8109,17 +9793,17 @@ Module collections.
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "alloc::collections::linked_list::ExtractIf") [] [ T; F; A ],
-                Value.mkStructRecord
-                  "alloc::collections::linked_list::ExtractIf"
-                  []
-                  [ T; F; A ]
-                  [
-                    ("list", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |));
-                    ("it", M.read (| it |));
-                    ("pred", M.read (| filter |));
-                    ("idx", Value.Integer IntegerKind.Usize 0);
-                    ("old_len", M.read (| old_len |))
-                  ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "alloc::collections::linked_list::ExtractIf"
+                    [
+                      ("list", M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |));
+                      ("it", M.read (| it |));
+                      ("pred", M.read (| filter |));
+                      ("idx", Value.Integer IntegerKind.Usize 0);
+                      ("old_len", M.read (| old_len |))
+                    ])
+                  (Ty.apply (Ty.path "alloc::collections::linked_list::ExtractIf") [] [ T; F; A ])
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8195,50 +9879,59 @@ Module collections.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "alloc::collections::linked_list::LinkedList"
-              []
-              [ T; Ty.path "alloc::alloc::Global" ]
-              [
-                ("head",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
-                        []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("tail",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
-                        []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("len", Value.Integer IntegerKind.Usize 0);
-                ("alloc", Value.StructTuple "alloc::alloc::Global" [] [] []);
-                ("marker",
-                  Value.StructTuple
-                    "core::marker::PhantomData"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloc::boxed::Box")
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::LinkedList"
+                [
+                  ("head",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
                         []
                         [
-                          Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                          Ty.path "alloc::alloc::Global"
-                        ]
-                    ]
-                    [])
-              ]))
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("tail",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("len", Value.Integer IntegerKind.Usize 0);
+                  ("alloc",
+                    M.value_with_ty
+                      (Value.StructTuple "alloc::alloc::Global" [])
+                      (Ty.path "alloc::alloc::Global"));
+                  ("marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply
+                        (Ty.path "core::marker::PhantomData")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [
+                              Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
+                              Ty.path "alloc::alloc::Global"
+                            ]
+                        ]))
+                ])
+              (Ty.apply
+                (Ty.path "alloc::collections::linked_list::LinkedList")
+                []
+                [ T; Ty.path "alloc::alloc::Global" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -8323,8 +10016,28 @@ Module collections.
                         ]
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| other |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ]
+                            ])
                       ]
                     |)));
                 fun γ =>
@@ -8398,14 +10111,35 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| other |) |),
-                                        "alloc::collections::linked_list::LinkedList",
-                                        "head"
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| other |) |),
+                                          "alloc::collections::linked_list::LinkedList",
+                                          "head"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ]
+                                            ]
+                                        ])
                                   ]
                                 |)
                               |) in
@@ -8458,27 +10192,48 @@ Module collections.
                                               [],
                                               []
                                             |),
-                                            [ M.borrow (| Pointer.Kind.MutRef, tail |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.MutRef, tail |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
                                           |)
                                         |),
                                         "alloc::collections::linked_list::Node",
                                         "next"
                                       |),
-                                      Value.StructTuple
-                                        "core::option::Option::Some"
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ]
-                                        ]
-                                        [ M.read (| other_head |) ]
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::option::Option::Some"
+                                          [ M.read (| other_head |) ])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ])
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     M.write (|
@@ -8509,27 +10264,48 @@ Module collections.
                                               [],
                                               []
                                             |),
-                                            [ M.borrow (| Pointer.Kind.MutRef, other_head |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.MutRef, other_head |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
                                           |)
                                         |),
                                         "alloc::collections::linked_list::Node",
                                         "prev"
                                       |),
-                                      Value.StructTuple
-                                        "core::option::Option::Some"
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ]
-                                        ]
-                                        [ M.read (| tail |) ]
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::option::Option::Some"
+                                          [ M.read (| tail |) ])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ])
                                     |) in
                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                 |) in
@@ -8575,14 +10351,35 @@ Module collections.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| other |) |),
-                                          "alloc::collections::linked_list::LinkedList",
-                                          "tail"
-                                        |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| other |) |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "tail"
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
+                                                      []
+                                                      [ T ]
+                                                  ]
+                                              ]
+                                          ])
                                     ]
                                   |)
                                 |) in
@@ -8608,20 +10405,24 @@ Module collections.
                                           [ Ty.path "usize" ]
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| other |) |),
-                                                  "alloc::collections::linked_list::LinkedList",
-                                                  "len"
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| other |) |),
+                                                    "alloc::collections::linked_list::LinkedList",
+                                                    "len"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.Integer IntegerKind.Usize 0
+                                            |))
+                                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ]);
+                                          M.value_with_ty
+                                            (Value.Integer IntegerKind.Usize 0)
+                                            (Ty.path "usize")
                                         ]
                                       |)
                                     ]
@@ -8686,11 +10487,14 @@ Module collections.
                     (Ty.path "alloc::collections::linked_list::drop::DropGuard")
                     []
                     [ T; A ] :=
-                Value.StructTuple
-                  "alloc::collections::linked_list::drop::DropGuard"
-                  []
-                  [ T; A ]
-                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ] in
+                M.value_with_ty
+                  (Value.StructTuple
+                    "alloc::collections::linked_list::drop::DropGuard"
+                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ])
+                  (Ty.apply
+                    (Ty.path "alloc::collections::linked_list::drop::DropGuard")
+                    []
+                    [ T; A ]) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   M.loop (|
@@ -8732,26 +10536,10 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "alloc::boxed::Box")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "alloc::collections::linked_list::Node")
-                                                        []
-                                                        [ T ];
-                                                      Ty.apply (Ty.path "&") [] [ A ]
-                                                    ]
-                                                ],
-                                              M.call_closure (|
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
                                                 Ty.apply
                                                   (Ty.path "core::option::Option")
                                                   []
@@ -8768,33 +10556,82 @@ Module collections.
                                                         Ty.apply (Ty.path "&") [] [ A ]
                                                       ]
                                                   ],
-                                                M.get_associated_function (|
+                                                M.call_closure (|
                                                   Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::LinkedList")
+                                                    (Ty.path "core::option::Option")
                                                     []
-                                                    [ T; A ],
-                                                  "pop_front_node",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (|
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_tuple_field (|
-                                                          guard,
-                                                          "alloc::collections::linked_list::drop::DropGuard",
-                                                          0
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::boxed::Box")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloc::collections::linked_list::Node")
+                                                            []
+                                                            [ T ];
+                                                          Ty.apply (Ty.path "&") [] [ A ]
+                                                        ]
+                                                    ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::LinkedList")
+                                                      []
+                                                      [ T; A ],
+                                                    "pop_front_node",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (|
+                                                          M.read (|
+                                                            M.SubPointer.get_struct_tuple_field (|
+                                                              guard,
+                                                              "alloc::collections::linked_list::drop::DropGuard",
+                                                              0
+                                                            |)
+                                                          |)
                                                         |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloc::collections::linked_list::LinkedList")
+                                                            []
+                                                            [ T; A ]
+                                                        ])
+                                                  ]
+                                                |)
                                               |)
-                                            |)
-                                          |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::boxed::Box")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ];
+                                                        Ty.apply (Ty.path "&") [] [ A ]
+                                                      ]
+                                                  ]
+                                              ])
                                         ]
                                       |)
                                     |)) in
@@ -8831,7 +10668,14 @@ Module collections.
                         [ T; A ]
                     ]
                   |),
-                  [ M.read (| guard |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| guard |))
+                      (Ty.apply
+                        (Ty.path "alloc::collections::linked_list::drop::DropGuard")
+                        []
+                        [ T; A ])
+                  ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8909,11 +10753,12 @@ Module collections.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ T ] ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ T ] ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -8952,54 +10797,56 @@ Module collections.
                         ]
                       |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::Iter",
-                            "head"
-                          |)
-                        |);
-                        M.closure
-                          (fun γ =>
-                            ltac:(M.monadic
-                              match γ with
-                              | [ α0 ] =>
-                                ltac:(M.monadic
-                                  (M.match_operator (|
-                                    Ty.apply (Ty.path "&") [] [ T ],
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::Node")
-                                            []
-                                            [ T ]
-                                        ],
-                                      α0
-                                    |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let node :=
-                                            M.copy (|
-                                              Ty.apply
-                                                (Ty.path "core::ptr::non_null::NonNull")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              γ
-                                            |) in
-                                          M.read (|
-                                            let~ node :
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::Iter",
+                              "head"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]);
+                        M.value_with_ty
+                          (M.closure
+                            (fun γ =>
+                              ltac:(M.monadic
+                                match γ with
+                                | [ α0 ] =>
+                                  ltac:(M.monadic
+                                    (M.match_operator (|
+                                      Ty.apply (Ty.path "&") [] [ T ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ],
+                                        α0
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let node :=
+                                              M.copy (|
                                                 Ty.apply
-                                                  (Ty.path "&")
+                                                  (Ty.path "core::ptr::non_null::NonNull")
                                                   []
                                                   [
                                                     Ty.apply
@@ -9007,24 +10854,27 @@ Module collections.
                                                         "alloc::collections::linked_list::Node")
                                                       []
                                                       [ T ]
-                                                  ] :=
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "*mut")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "alloc::collections::linked_list::Node")
-                                                          []
-                                                          [ T ]
-                                                      ],
-                                                    M.get_associated_function (|
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.read (|
+                                              let~ node :
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
                                                       Ty.apply
-                                                        (Ty.path "core::ptr::non_null::NonNull")
+                                                        (Ty.path
+                                                          "alloc::collections::linked_list::Node")
+                                                        []
+                                                        [ T ]
+                                                    ] :=
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "*mut")
                                                         []
                                                         [
                                                           Ty.apply
@@ -9033,63 +10883,100 @@ Module collections.
                                                             []
                                                             [ T ]
                                                         ],
-                                                      "as_ptr",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| node |) ]
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Node")
+                                                              []
+                                                              [ T ]
+                                                          ],
+                                                        "as_ptr",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| node |))
+                                                          (Ty.apply
+                                                            (Ty.path "core::ptr::non_null::NonNull")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "alloc::collections::linked_list::Node")
+                                                                []
+                                                                [ T ]
+                                                            ])
+                                                      ]
+                                                    |)
                                                   |)
-                                                |)
-                                              |) in
-                                            let~ _ : Ty.tuple [] :=
-                                              let β :=
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::linked_list::Iter",
-                                                  "len"
                                                 |) in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.sub,
-                                                  [
-                                                    M.read (| β |);
-                                                    Value.Integer IntegerKind.Usize 1
-                                                  ]
-                                                |)
-                                              |) in
-                                            let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::linked_list::Iter",
-                                                  "head"
-                                                |),
-                                                M.read (|
+                                              let~ _ : Ty.tuple [] :=
+                                                let β :=
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::Iter",
+                                                    "len"
+                                                  |) in
+                                                M.write (|
+                                                  β,
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [
+                                                      M.read (| β |);
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ]
+                                                  |)
+                                                |) in
+                                              let~ _ : Ty.tuple [] :=
+                                                M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::Iter",
+                                                    "head"
+                                                  |),
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| node |) |),
+                                                      "alloc::collections::linked_list::Node",
+                                                      "next"
+                                                    |)
+                                                  |)
+                                                |) in
+                                              M.alloc (|
+                                                Ty.apply (Ty.path "&") [] [ T ],
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
                                                   M.SubPointer.get_struct_record_field (|
                                                     M.deref (| M.read (| node |) |),
                                                     "alloc::collections::linked_list::Node",
-                                                    "next"
+                                                    "element"
                                                   |)
                                                 |)
-                                              |) in
-                                            M.alloc (|
-                                              Ty.apply (Ty.path "&") [] [ T ],
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| node |) |),
-                                                  "alloc::collections::linked_list::Node",
-                                                  "element"
-                                                |)
                                               |)
-                                            |)
-                                          |)))
-                                    ]
-                                  |)))
-                              | _ => M.impossible "wrong number of arguments"
-                              end))
+                                            |)))
+                                      ]
+                                    |)))
+                                | _ => M.impossible "wrong number of arguments"
+                                end)))
+                          (Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                            (Ty.apply (Ty.path "&") [] [ T ]))
                       ]
                     |)))
               ]
@@ -9124,19 +11011,19 @@ Module collections.
                     "len"
                   |)
                 |);
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "usize" ]
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::Iter",
-                        "len"
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::Iter",
+                          "len"
+                        |)
                       |)
-                    |)
-                  ]
+                    ])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -9167,7 +11054,14 @@ Module collections.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, self |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ] ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -9246,11 +11140,12 @@ Module collections.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ T ] ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ T ] ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -9289,54 +11184,56 @@ Module collections.
                         ]
                       |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::Iter",
-                            "tail"
-                          |)
-                        |);
-                        M.closure
-                          (fun γ =>
-                            ltac:(M.monadic
-                              match γ with
-                              | [ α0 ] =>
-                                ltac:(M.monadic
-                                  (M.match_operator (|
-                                    Ty.apply (Ty.path "&") [] [ T ],
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::Node")
-                                            []
-                                            [ T ]
-                                        ],
-                                      α0
-                                    |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let node :=
-                                            M.copy (|
-                                              Ty.apply
-                                                (Ty.path "core::ptr::non_null::NonNull")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              γ
-                                            |) in
-                                          M.read (|
-                                            let~ node :
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::Iter",
+                              "tail"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]);
+                        M.value_with_ty
+                          (M.closure
+                            (fun γ =>
+                              ltac:(M.monadic
+                                match γ with
+                                | [ α0 ] =>
+                                  ltac:(M.monadic
+                                    (M.match_operator (|
+                                      Ty.apply (Ty.path "&") [] [ T ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ],
+                                        α0
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let node :=
+                                              M.copy (|
                                                 Ty.apply
-                                                  (Ty.path "&")
+                                                  (Ty.path "core::ptr::non_null::NonNull")
                                                   []
                                                   [
                                                     Ty.apply
@@ -9344,24 +11241,27 @@ Module collections.
                                                         "alloc::collections::linked_list::Node")
                                                       []
                                                       [ T ]
-                                                  ] :=
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "*mut")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "alloc::collections::linked_list::Node")
-                                                          []
-                                                          [ T ]
-                                                      ],
-                                                    M.get_associated_function (|
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.read (|
+                                              let~ node :
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
                                                       Ty.apply
-                                                        (Ty.path "core::ptr::non_null::NonNull")
+                                                        (Ty.path
+                                                          "alloc::collections::linked_list::Node")
+                                                        []
+                                                        [ T ]
+                                                    ] :=
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "*mut")
                                                         []
                                                         [
                                                           Ty.apply
@@ -9370,63 +11270,100 @@ Module collections.
                                                             []
                                                             [ T ]
                                                         ],
-                                                      "as_ptr",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| node |) ]
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Node")
+                                                              []
+                                                              [ T ]
+                                                          ],
+                                                        "as_ptr",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| node |))
+                                                          (Ty.apply
+                                                            (Ty.path "core::ptr::non_null::NonNull")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "alloc::collections::linked_list::Node")
+                                                                []
+                                                                [ T ]
+                                                            ])
+                                                      ]
+                                                    |)
                                                   |)
-                                                |)
-                                              |) in
-                                            let~ _ : Ty.tuple [] :=
-                                              let β :=
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::linked_list::Iter",
-                                                  "len"
                                                 |) in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.sub,
-                                                  [
-                                                    M.read (| β |);
-                                                    Value.Integer IntegerKind.Usize 1
-                                                  ]
-                                                |)
-                                              |) in
-                                            let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::linked_list::Iter",
-                                                  "tail"
-                                                |),
-                                                M.read (|
+                                              let~ _ : Ty.tuple [] :=
+                                                let β :=
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::Iter",
+                                                    "len"
+                                                  |) in
+                                                M.write (|
+                                                  β,
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [
+                                                      M.read (| β |);
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ]
+                                                  |)
+                                                |) in
+                                              let~ _ : Ty.tuple [] :=
+                                                M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::Iter",
+                                                    "tail"
+                                                  |),
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| node |) |),
+                                                      "alloc::collections::linked_list::Node",
+                                                      "prev"
+                                                    |)
+                                                  |)
+                                                |) in
+                                              M.alloc (|
+                                                Ty.apply (Ty.path "&") [] [ T ],
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
                                                   M.SubPointer.get_struct_record_field (|
                                                     M.deref (| M.read (| node |) |),
                                                     "alloc::collections::linked_list::Node",
-                                                    "prev"
+                                                    "element"
                                                   |)
                                                 |)
-                                              |) in
-                                            M.alloc (|
-                                              Ty.apply (Ty.path "&") [] [ T ],
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| node |) |),
-                                                  "alloc::collections::linked_list::Node",
-                                                  "element"
-                                                |)
                                               |)
-                                            |)
-                                          |)))
-                                    ]
-                                  |)))
-                              | _ => M.impossible "wrong number of arguments"
-                              end))
+                                            |)))
+                                      ]
+                                    |)))
+                                | _ => M.impossible "wrong number of arguments"
+                                end)))
+                          (Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                            (Ty.apply (Ty.path "&") [] [ T ]))
                       ]
                     |)))
               ]
@@ -9486,47 +11423,37 @@ Module collections.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "alloc::collections::linked_list::Iter"
-              []
-              [ T ]
-              [
-                ("head",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::Iter"
+                [
+                  ("head",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("tail",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("tail",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("len", Value.Integer IntegerKind.Usize 0);
-                ("marker",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::marker::PhantomData")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                      ],
-                    M.get_trait_method (|
-                      "core::default::Default",
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("len", Value.Integer IntegerKind.Usize 0);
+                  ("marker",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::marker::PhantomData")
                         []
@@ -9536,15 +11463,28 @@ Module collections.
                             []
                             [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
                         ],
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.apply
+                          (Ty.path "core::marker::PhantomData")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ]
+                          ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |))
-              ]))
+                    |))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -9619,11 +11559,12 @@ Module collections.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ T ] ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -9662,82 +11603,87 @@ Module collections.
                         ]
                       |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::IterMut",
-                            "head"
-                          |)
-                        |);
-                        M.closure
-                          (fun γ =>
-                            ltac:(M.monadic
-                              match γ with
-                              | [ α0 ] =>
-                                ltac:(M.monadic
-                                  (M.match_operator (|
-                                    Ty.apply (Ty.path "&mut") [] [ T ],
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::Node")
-                                            []
-                                            [ T ]
-                                        ],
-                                      α0
-                                    |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let node :=
-                                            M.copy (|
-                                              Ty.apply
-                                                (Ty.path "core::ptr::non_null::NonNull")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              γ
-                                            |) in
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (|
-                                              M.read (|
-                                                let~ node :
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::IterMut",
+                              "head"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]);
+                        M.value_with_ty
+                          (M.closure
+                            (fun γ =>
+                              ltac:(M.monadic
+                                match γ with
+                                | [ α0 ] =>
+                                  ltac:(M.monadic
+                                    (M.match_operator (|
+                                      Ty.apply (Ty.path "&mut") [] [ T ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ],
+                                        α0
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let node :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
                                                     Ty.apply
-                                                      (Ty.path "&mut")
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
                                                       []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "alloc::collections::linked_list::Node")
-                                                          []
-                                                          [ T ]
-                                                      ] :=
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path
-                                                                "alloc::collections::linked_list::Node")
-                                                              []
-                                                              [ T ]
-                                                          ],
-                                                        M.get_associated_function (|
+                                                      [ T ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (|
+                                                M.read (|
+                                                  let~ node :
+                                                      Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
                                                           Ty.apply
-                                                            (Ty.path "core::ptr::non_null::NonNull")
+                                                            (Ty.path
+                                                              "alloc::collections::linked_list::Node")
+                                                            []
+                                                            [ T ]
+                                                        ] :=
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "*mut")
                                                             []
                                                             [
                                                               Ty.apply
@@ -9746,65 +11692,104 @@ Module collections.
                                                                 []
                                                                 [ T ]
                                                             ],
-                                                          "as_ptr",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.read (| node |) ]
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::Node")
+                                                                  []
+                                                                  [ T ]
+                                                              ],
+                                                            "as_ptr",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| node |))
+                                                              (Ty.apply
+                                                                (Ty.path
+                                                                  "core::ptr::non_null::NonNull")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloc::collections::linked_list::Node")
+                                                                    []
+                                                                    [ T ]
+                                                                ])
+                                                          ]
+                                                        |)
                                                       |)
-                                                    |)
-                                                  |) in
-                                                let~ _ : Ty.tuple [] :=
-                                                  let β :=
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::linked_list::IterMut",
-                                                      "len"
                                                     |) in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.read (| β |);
-                                                        Value.Integer IntegerKind.Usize 1
-                                                      ]
-                                                    |)
-                                                  |) in
-                                                let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::linked_list::IterMut",
-                                                      "head"
-                                                    |),
-                                                    M.read (|
+                                                  let~ _ : Ty.tuple [] :=
+                                                    let β :=
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "alloc::collections::linked_list::IterMut",
+                                                        "len"
+                                                      |) in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.sub,
+                                                        [
+                                                          M.read (| β |);
+                                                          Value.Integer IntegerKind.Usize 1
+                                                        ]
+                                                      |)
+                                                    |) in
+                                                  let~ _ : Ty.tuple [] :=
+                                                    M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "alloc::collections::linked_list::IterMut",
+                                                        "head"
+                                                      |),
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| node |) |),
+                                                          "alloc::collections::linked_list::Node",
+                                                          "next"
+                                                        |)
+                                                      |)
+                                                    |) in
+                                                  M.alloc (|
+                                                    Ty.apply (Ty.path "&mut") [] [ T ],
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
                                                       M.SubPointer.get_struct_record_field (|
                                                         M.deref (| M.read (| node |) |),
                                                         "alloc::collections::linked_list::Node",
-                                                        "next"
+                                                        "element"
                                                       |)
-                                                    |)
-                                                  |) in
-                                                M.alloc (|
-                                                  Ty.apply (Ty.path "&mut") [] [ T ],
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| node |) |),
-                                                      "alloc::collections::linked_list::Node",
-                                                      "element"
                                                     |)
                                                   |)
                                                 |)
                                               |)
-                                            |)
-                                          |)))
-                                    ]
-                                  |)))
-                              | _ => M.impossible "wrong number of arguments"
-                              end))
+                                            |)))
+                                      ]
+                                    |)))
+                                | _ => M.impossible "wrong number of arguments"
+                                end)))
+                          (Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                            (Ty.apply (Ty.path "&mut") [] [ T ]))
                       ]
                     |)))
               ]
@@ -9839,19 +11824,19 @@ Module collections.
                     "len"
                   |)
                 |);
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "usize" ]
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::IterMut",
-                        "len"
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::IterMut",
+                          "len"
+                        |)
                       |)
-                    |)
-                  ]
+                    ])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -9882,7 +11867,14 @@ Module collections.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, self |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::IterMut") [] [ T ] ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -9961,11 +11953,12 @@ Module collections.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ T ] ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -10004,82 +11997,87 @@ Module collections.
                         ]
                       |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::IterMut",
-                            "tail"
-                          |)
-                        |);
-                        M.closure
-                          (fun γ =>
-                            ltac:(M.monadic
-                              match γ with
-                              | [ α0 ] =>
-                                ltac:(M.monadic
-                                  (M.match_operator (|
-                                    Ty.apply (Ty.path "&mut") [] [ T ],
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::Node")
-                                            []
-                                            [ T ]
-                                        ],
-                                      α0
-                                    |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let node :=
-                                            M.copy (|
-                                              Ty.apply
-                                                (Ty.path "core::ptr::non_null::NonNull")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              γ
-                                            |) in
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (|
-                                              M.read (|
-                                                let~ node :
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::IterMut",
+                              "tail"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]);
+                        M.value_with_ty
+                          (M.closure
+                            (fun γ =>
+                              ltac:(M.monadic
+                                match γ with
+                                | [ α0 ] =>
+                                  ltac:(M.monadic
+                                    (M.match_operator (|
+                                      Ty.apply (Ty.path "&mut") [] [ T ],
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ],
+                                        α0
+                                      |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let node :=
+                                              M.copy (|
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
                                                     Ty.apply
-                                                      (Ty.path "&mut")
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
                                                       []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "alloc::collections::linked_list::Node")
-                                                          []
-                                                          [ T ]
-                                                      ] :=
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path
-                                                                "alloc::collections::linked_list::Node")
-                                                              []
-                                                              [ T ]
-                                                          ],
-                                                        M.get_associated_function (|
+                                                      [ T ]
+                                                  ],
+                                                γ
+                                              |) in
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (|
+                                                M.read (|
+                                                  let~ node :
+                                                      Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
                                                           Ty.apply
-                                                            (Ty.path "core::ptr::non_null::NonNull")
+                                                            (Ty.path
+                                                              "alloc::collections::linked_list::Node")
+                                                            []
+                                                            [ T ]
+                                                        ] :=
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "*mut")
                                                             []
                                                             [
                                                               Ty.apply
@@ -10088,65 +12086,104 @@ Module collections.
                                                                 []
                                                                 [ T ]
                                                             ],
-                                                          "as_ptr",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.read (| node |) ]
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::Node")
+                                                                  []
+                                                                  [ T ]
+                                                              ],
+                                                            "as_ptr",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| node |))
+                                                              (Ty.apply
+                                                                (Ty.path
+                                                                  "core::ptr::non_null::NonNull")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloc::collections::linked_list::Node")
+                                                                    []
+                                                                    [ T ]
+                                                                ])
+                                                          ]
+                                                        |)
                                                       |)
-                                                    |)
-                                                  |) in
-                                                let~ _ : Ty.tuple [] :=
-                                                  let β :=
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::linked_list::IterMut",
-                                                      "len"
                                                     |) in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.read (| β |);
-                                                        Value.Integer IntegerKind.Usize 1
-                                                      ]
-                                                    |)
-                                                  |) in
-                                                let~ _ : Ty.tuple [] :=
-                                                  M.write (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::linked_list::IterMut",
-                                                      "tail"
-                                                    |),
-                                                    M.read (|
+                                                  let~ _ : Ty.tuple [] :=
+                                                    let β :=
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "alloc::collections::linked_list::IterMut",
+                                                        "len"
+                                                      |) in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.sub,
+                                                        [
+                                                          M.read (| β |);
+                                                          Value.Integer IntegerKind.Usize 1
+                                                        ]
+                                                      |)
+                                                    |) in
+                                                  let~ _ : Ty.tuple [] :=
+                                                    M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "alloc::collections::linked_list::IterMut",
+                                                        "tail"
+                                                      |),
+                                                      M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| node |) |),
+                                                          "alloc::collections::linked_list::Node",
+                                                          "prev"
+                                                        |)
+                                                      |)
+                                                    |) in
+                                                  M.alloc (|
+                                                    Ty.apply (Ty.path "&mut") [] [ T ],
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
                                                       M.SubPointer.get_struct_record_field (|
                                                         M.deref (| M.read (| node |) |),
                                                         "alloc::collections::linked_list::Node",
-                                                        "prev"
+                                                        "element"
                                                       |)
-                                                    |)
-                                                  |) in
-                                                M.alloc (|
-                                                  Ty.apply (Ty.path "&mut") [] [ T ],
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| node |) |),
-                                                      "alloc::collections::linked_list::Node",
-                                                      "element"
                                                     |)
                                                   |)
                                                 |)
                                               |)
-                                            |)
-                                          |)))
-                                    ]
-                                  |)))
-                              | _ => M.impossible "wrong number of arguments"
-                              end))
+                                            |)))
+                                      ]
+                                    |)))
+                                | _ => M.impossible "wrong number of arguments"
+                                end)))
+                          (Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                            (Ty.apply (Ty.path "&mut") [] [ T ]))
                       ]
                     |)))
               ]
@@ -10206,47 +12243,37 @@ Module collections.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "alloc::collections::linked_list::IterMut"
-              []
-              [ T ]
-              [
-                ("head",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::IterMut"
+                [
+                  ("head",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("tail",
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::ptr::non_null::NonNull")
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("tail",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                    ]
-                    []);
-                ("len", Value.Integer IntegerKind.Usize 0);
-                ("marker",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::marker::PhantomData")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                      ],
-                    M.get_trait_method (|
-                      "core::default::Default",
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]));
+                  ("len", Value.Integer IntegerKind.Usize 0);
+                  ("marker",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::marker::PhantomData")
                         []
@@ -10256,15 +12283,28 @@ Module collections.
                             []
                             [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
                         ],
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.apply
+                          (Ty.path "core::marker::PhantomData")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ]
+                          ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |))
-              ]))
+                    |))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::IterMut") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10379,15 +12419,15 @@ Module collections.
                           ],
                         γ0_2
                       |) in
-                    Value.mkStructRecord
-                      "alloc::collections::linked_list::Cursor"
-                      []
-                      [ T; A ]
-                      [
-                        ("index", M.read (| index |));
-                        ("current", M.read (| current |));
-                        ("list", M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| list |) |) |))
-                      ]))
+                    M.value_with_ty
+                      (Value.mkStructRecord
+                        "alloc::collections::linked_list::Cursor"
+                        [
+                          ("index", M.read (| index |));
+                          ("current", M.read (| current |));
+                          ("list", M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| list |) |) |))
+                        ])
+                      (Ty.apply (Ty.path "alloc::collections::linked_list::Cursor") [] [ T; A ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10439,158 +12479,202 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.path "core::fmt::builders::DebugTuple" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::builders::DebugTuple",
-                                "field",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.alloc (|
-                                    Ty.path "core::fmt::builders::DebugTuple",
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::builders::DebugTuple",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::Formatter",
-                                        "debug_tuple",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| f |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| mk_str (| "Cursor" |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
                                 M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "&")
+                                    (Ty.path "&mut")
                                     []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
+                                    [ Ty.path "core::fmt::builders::DebugTuple" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::builders::DebugTuple",
+                                    "field",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.alloc (|
+                                          Ty.path "core::fmt::builders::DebugTuple",
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::builders::DebugTuple",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Formatter",
+                                              "debug_tuple",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| f |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.path "core::fmt::Formatter" ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| mk_str (| "Cursor" |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply
                                           (Ty.path "&")
                                           []
-                                          [
-                                            Ty.apply
-                                              (Ty.path
-                                                "alloc::collections::linked_list::LinkedList")
-                                              []
-                                              [ T; A ]
-                                          ]
-                                      ])
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                  [
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.Unsize
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::LinkedList")
+                                                    []
+                                                    [ T; A ]
+                                                ]
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "alloc::collections::linked_list::Cursor",
+                                                  "list"
+                                                |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "alloc::collections::linked_list::Cursor",
-                                            "list"
-                                          |)
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "usize" ],
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Cursor")
+                                              []
+                                              [ T; A ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Cursor")
+                                                    []
+                                                    [ T; A ]
+                                                ])
+                                          ]
                                         |)
                                       |)
                                     |)
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [ Ty.path "usize" ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [ Ty.path "usize" ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "alloc::collections::linked_list::Cursor")
-                                          []
-                                          [ T; A ],
-                                        "index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10668,158 +12752,202 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.path "core::fmt::builders::DebugTuple" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::builders::DebugTuple",
-                                "field",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.alloc (|
-                                    Ty.path "core::fmt::builders::DebugTuple",
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::builders::DebugTuple",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::Formatter",
-                                        "debug_tuple",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| f |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| mk_str (| "CursorMut" |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
                                 M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "&")
+                                    (Ty.path "&mut")
                                     []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path
-                                                "alloc::collections::linked_list::LinkedList")
-                                              []
-                                              [ T; A ]
-                                          ]
-                                      ])
-                                    (Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                    [ Ty.path "core::fmt::builders::DebugTuple" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::builders::DebugTuple",
+                                    "field",
+                                    [],
+                                    []
+                                  |),
                                   [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.alloc (|
+                                          Ty.path "core::fmt::builders::DebugTuple",
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::builders::DebugTuple",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Formatter",
+                                              "debug_tuple",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| f |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.path "core::fmt::Formatter" ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| mk_str (| "CursorMut" |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.Unsize
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::LinkedList")
+                                                    []
+                                                    [ T; A ]
+                                                ]
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "alloc::collections::linked_list::CursorMut",
+                                                  "list"
+                                                |)
+                                              |)
+                                            |)
+                                          |)
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
                                     M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "alloc::collections::linked_list::CursorMut",
-                                            "list"
-                                          |)
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "usize" ],
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::CursorMut")
+                                              []
+                                              [ T; A ],
+                                            "index",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::CursorMut")
+                                                    []
+                                                    [ T; A ]
+                                                ])
+                                          ]
                                         |)
                                       |)
                                     |)
-                                  ]
-                                |)
-                              ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [ Ty.path "usize" ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [ Ty.path "usize" ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "alloc::collections::linked_list::CursorMut")
-                                          []
-                                          [ T; A ],
-                                        "index",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10929,13 +13057,28 @@ Module collections.
                             []
                           |),
                           [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::linked_list::Cursor",
-                                "current"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::Cursor",
+                                  "current"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ]
+                                ])
                           ]
                         |)
                       |),
@@ -10981,7 +13124,14 @@ Module collections.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| residual |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| residual |))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ])
+                                    ]
                                   |)
                                 |)
                               |)
@@ -11014,19 +13164,19 @@ Module collections.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [ Ty.path "usize" ]
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::linked_list::Cursor",
-                                "index"
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            [
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::Cursor",
+                                  "index"
+                                |)
                               |)
-                            |)
-                          ]))
+                            ])
+                          (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])))
                   ]
                 |)))
             |)))
@@ -11106,14 +13256,34 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::Cursor",
-                        "current"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::Cursor",
+                          "current"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                        ])
                   ]
                 |)
               |),
@@ -11207,7 +13377,24 @@ Module collections.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, current |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, current |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                []
+                                                [ T ]
+                                            ]
+                                        ])
+                                  ]
                                 |)
                               |),
                               "alloc::collections::linked_list::Node",
@@ -11309,14 +13496,34 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::Cursor",
-                        "current"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::Cursor",
+                          "current"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                        ])
                   ]
                 |)
               |),
@@ -11364,45 +13571,62 @@ Module collections.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                                M.get_associated_function (|
-                                  Ty.path "usize",
-                                  "checked_sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                  M.get_associated_function (|
                                     Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::LinkedList")
-                                        []
-                                        [ T; A ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::linked_list::Cursor",
-                                              "list"
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 0
+                                    "checked_sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                                            []
+                                            [ T; A ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::Cursor",
+                                                    "list"
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::linked_list::LinkedList")
+                                                  []
+                                                  [ T; A ]
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize");
+                                    M.value_with_ty
+                                      (Value.Integer IntegerKind.Usize 1)
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
                             ]
                           |)
                         |) in
@@ -11459,7 +13683,24 @@ Module collections.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, current |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, current |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                []
+                                                [ T ]
+                                            ]
+                                        ])
+                                  ]
                                 |)
                               |),
                               "alloc::collections::linked_list::Node",
@@ -11483,68 +13724,87 @@ Module collections.
                               [ Ty.function [] (Ty.path "usize") ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                                M.get_associated_function (|
-                                  Ty.path "usize",
-                                  "checked_sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::Cursor",
-                                      "index"
-                                    |)
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |);
-                              M.closure
-                                (fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ α0 ] =>
-                                      ltac:(M.monadic
-                                        (M.match_operator (|
-                                          Ty.path "usize",
-                                          M.alloc (| Ty.tuple [], α0 |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path
-                                                        "alloc::collections::linked_list::LinkedList")
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                  M.get_associated_function (|
+                                    Ty.path "usize",
+                                    "checked_sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::Cursor",
+                                          "index"
+                                        |)
+                                      |))
+                                      (Ty.path "usize");
+                                    M.value_with_ty
+                                      (Value.Integer IntegerKind.Usize 1)
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                              M.value_with_ty
+                                (M.closure
+                                  (fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ α0 ] =>
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.path "usize",
+                                            M.alloc (| Ty.tuple [], α0 |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::linked_list::LinkedList")
+                                                        []
+                                                        [ T; A ],
+                                                      "len",
+                                                      [],
                                                       []
-                                                      [ T; A ],
-                                                    "len",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "alloc::collections::linked_list::Cursor",
-                                                            "list"
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "alloc::collections::linked_list::Cursor",
+                                                                "list"
+                                                              |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)))
-                                          ]
-                                        |)))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end))
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::LinkedList")
+                                                              []
+                                                              [ T; A ]
+                                                          ])
+                                                    ]
+                                                  |)))
+                                            ]
+                                          |)))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)))
+                                (Ty.function [] (Ty.path "usize"))
                             ]
                           |)
                         |) in
@@ -11606,66 +13866,67 @@ Module collections.
                 ]
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::collections::linked_list::Cursor",
-                    "current"
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply (Ty.path "&") [] [ T ],
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "core::ptr::non_null::NonNull")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::collections::linked_list::Node")
-                                    []
-                                    [ T ]
-                                ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let current :=
-                                    M.copy (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::Node")
-                                            []
-                                            [ T ]
-                                        ],
-                                      γ
-                                    |) in
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "*mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          M.get_associated_function (|
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloc::collections::linked_list::Cursor",
+                      "current"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let current :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
                                             Ty.apply
-                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ],
+                                        γ
+                                      |) in
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "*mut")
                                               []
                                               [
                                                 Ty.apply
@@ -11673,21 +13934,53 @@ Module collections.
                                                   []
                                                   [ T ]
                                               ],
-                                            "as_ptr",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| current |) ]
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::Node",
-                                      "element"
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              "as_ptr",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| current |))
+                                                (Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
+                                                      []
+                                                      [ T ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |),
+                                        "alloc::collections::linked_list::Node",
+                                        "element"
+                                      |)
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]
+                    (Ty.apply (Ty.path "&") [] [ T ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11812,7 +14105,24 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, current |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, current |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -11850,61 +14160,61 @@ Module collections.
                     ]
                   |),
                   [
-                    M.read (| next |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply (Ty.path "&") [] [ T ],
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ],
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let next :=
-                                        M.copy (|
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          γ
-                                        |) in
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "*mut")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              M.get_associated_function (|
+                    M.value_with_ty
+                      (M.read (| next |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.apply (Ty.path "&") [] [ T ],
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ],
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let next :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
                                                 Ty.apply
-                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ],
+                                            γ
+                                          |) in
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "*mut")
                                                   []
                                                   [
                                                     Ty.apply
@@ -11913,21 +14223,53 @@ Module collections.
                                                       []
                                                       [ T ]
                                                   ],
-                                                "as_ptr",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| next |) ]
-                                            |)
-                                          |),
-                                          "alloc::collections::linked_list::Node",
-                                          "element"
-                                        |)
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::ptr::non_null::NonNull")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::linked_list::Node")
+                                                        []
+                                                        [ T ]
+                                                    ],
+                                                  "as_ptr",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| next |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ])
+                                                ]
+                                              |)
+                                            |),
+                                            "alloc::collections::linked_list::Node",
+                                            "element"
+                                          |)
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                        (Ty.apply (Ty.path "&") [] [ T ]))
                   ]
                 |)
               |)
@@ -12054,7 +14396,24 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, current |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, current |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -12092,61 +14451,61 @@ Module collections.
                     ]
                   |),
                   [
-                    M.read (| prev |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply (Ty.path "&") [] [ T ],
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ],
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let prev :=
-                                        M.copy (|
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          γ
-                                        |) in
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "*mut")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              M.get_associated_function (|
+                    M.value_with_ty
+                      (M.read (| prev |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.apply (Ty.path "&") [] [ T ],
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ],
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let prev :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
                                                 Ty.apply
-                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ],
+                                            γ
+                                          |) in
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "*mut")
                                                   []
                                                   [
                                                     Ty.apply
@@ -12155,21 +14514,53 @@ Module collections.
                                                       []
                                                       [ T ]
                                                   ],
-                                                "as_ptr",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| prev |) ]
-                                            |)
-                                          |),
-                                          "alloc::collections::linked_list::Node",
-                                          "element"
-                                        |)
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::ptr::non_null::NonNull")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::linked_list::Node")
+                                                        []
+                                                        [ T ]
+                                                    ],
+                                                  "as_ptr",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| prev |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ])
+                                                ]
+                                              |)
+                                            |),
+                                            "alloc::collections::linked_list::Node",
+                                            "element"
+                                          |)
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                        (Ty.apply (Ty.path "&") [] [ T ]))
                   ]
                 |)
               |)
@@ -12210,18 +14601,24 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::Cursor",
-                        "list"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::Cursor",
+                          "list"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12260,18 +14657,24 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::Cursor",
-                        "list"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::Cursor",
+                          "list"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12412,13 +14815,28 @@ Module collections.
                             []
                           |),
                           [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::linked_list::CursorMut",
-                                "current"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::CursorMut",
+                                  "current"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ]
+                                ])
                           ]
                         |)
                       |),
@@ -12464,7 +14882,14 @@ Module collections.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| residual |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| residual |))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ])
+                                    ]
                                   |)
                                 |)
                               |)
@@ -12497,19 +14922,19 @@ Module collections.
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [ Ty.path "usize" ]
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::linked_list::CursorMut",
-                                "index"
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            [
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::CursorMut",
+                                  "index"
+                                |)
                               |)
-                            |)
-                          ]))
+                            ])
+                          (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])))
                   ]
                 |)))
             |)))
@@ -12589,14 +15014,34 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "current"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "current"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                        ])
                   ]
                 |)
               |),
@@ -12690,7 +15135,24 @@ Module collections.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, current |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, current |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                []
+                                                [ T ]
+                                            ]
+                                        ])
+                                  ]
                                 |)
                               |),
                               "alloc::collections::linked_list::Node",
@@ -12792,14 +15254,34 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "current"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "current"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ]
+                            ]
+                        ])
                   ]
                 |)
               |),
@@ -12847,45 +15329,62 @@ Module collections.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                                M.get_associated_function (|
-                                  Ty.path "usize",
-                                  "checked_sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                  M.get_associated_function (|
                                     Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::LinkedList")
-                                        []
-                                        [ T; A ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::linked_list::CursorMut",
-                                              "list"
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 0
+                                    "checked_sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                                            []
+                                            [ T; A ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::CursorMut",
+                                                    "list"
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::linked_list::LinkedList")
+                                                  []
+                                                  [ T; A ]
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize");
+                                    M.value_with_ty
+                                      (Value.Integer IntegerKind.Usize 1)
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
                             ]
                           |)
                         |) in
@@ -12942,7 +15441,24 @@ Module collections.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, current |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, current |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::linked_list::Node")
+                                                []
+                                                [ T ]
+                                            ]
+                                        ])
+                                  ]
                                 |)
                               |),
                               "alloc::collections::linked_list::Node",
@@ -12966,68 +15482,87 @@ Module collections.
                               [ Ty.function [] (Ty.path "usize") ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                                M.get_associated_function (|
-                                  Ty.path "usize",
-                                  "checked_sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::CursorMut",
-                                      "index"
-                                    |)
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |);
-                              M.closure
-                                (fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ α0 ] =>
-                                      ltac:(M.monadic
-                                        (M.match_operator (|
-                                          Ty.path "usize",
-                                          M.alloc (| Ty.tuple [], α0 |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path
-                                                        "alloc::collections::linked_list::LinkedList")
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                  M.get_associated_function (|
+                                    Ty.path "usize",
+                                    "checked_sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::CursorMut",
+                                          "index"
+                                        |)
+                                      |))
+                                      (Ty.path "usize");
+                                    M.value_with_ty
+                                      (Value.Integer IntegerKind.Usize 1)
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                              M.value_with_ty
+                                (M.closure
+                                  (fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ α0 ] =>
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.path "usize",
+                                            M.alloc (| Ty.tuple [], α0 |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::linked_list::LinkedList")
+                                                        []
+                                                        [ T; A ],
+                                                      "len",
+                                                      [],
                                                       []
-                                                      [ T; A ],
-                                                    "len",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.read (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "alloc::collections::linked_list::CursorMut",
-                                                            "list"
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "alloc::collections::linked_list::CursorMut",
+                                                                "list"
+                                                              |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)))
-                                          ]
-                                        |)))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end))
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::LinkedList")
+                                                              []
+                                                              [ T; A ]
+                                                          ])
+                                                    ]
+                                                  |)))
+                                            ]
+                                          |)))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)))
+                                (Ty.function [] (Ty.path "usize"))
                             ]
                           |)
                         |) in
@@ -13089,66 +15624,67 @@ Module collections.
                 ]
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::collections::linked_list::CursorMut",
-                    "current"
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply (Ty.path "&mut") [] [ T ],
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "core::ptr::non_null::NonNull")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::collections::linked_list::Node")
-                                    []
-                                    [ T ]
-                                ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let current :=
-                                    M.copy (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::Node")
-                                            []
-                                            [ T ]
-                                        ],
-                                      γ
-                                    |) in
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "*mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          M.get_associated_function (|
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloc::collections::linked_list::CursorMut",
+                      "current"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply (Ty.path "&mut") [] [ T ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let current :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
                                             Ty.apply
-                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ],
+                                        γ
+                                      |) in
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "*mut")
                                               []
                                               [
                                                 Ty.apply
@@ -13156,21 +15692,53 @@ Module collections.
                                                   []
                                                   [ T ]
                                               ],
-                                            "as_ptr",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.read (| current |) ]
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::Node",
-                                      "element"
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::Node")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              "as_ptr",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| current |))
+                                                (Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::linked_list::Node")
+                                                      []
+                                                      [ T ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |),
+                                        "alloc::collections::linked_list::Node",
+                                        "element"
+                                      |)
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                    ]
+                    (Ty.apply (Ty.path "&mut") [] [ T ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13295,7 +15863,24 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, current |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, current |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -13336,61 +15921,61 @@ Module collections.
                     ]
                   |),
                   [
-                    M.read (| next |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply (Ty.path "&mut") [] [ T ],
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ],
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let next :=
-                                        M.copy (|
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          γ
-                                        |) in
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "*mut")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              M.get_associated_function (|
+                    M.value_with_ty
+                      (M.read (| next |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.apply (Ty.path "&mut") [] [ T ],
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ],
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let next :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
                                                 Ty.apply
-                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ],
+                                            γ
+                                          |) in
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "*mut")
                                                   []
                                                   [
                                                     Ty.apply
@@ -13399,21 +15984,53 @@ Module collections.
                                                       []
                                                       [ T ]
                                                   ],
-                                                "as_ptr",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| next |) ]
-                                            |)
-                                          |),
-                                          "alloc::collections::linked_list::Node",
-                                          "element"
-                                        |)
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::ptr::non_null::NonNull")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::linked_list::Node")
+                                                        []
+                                                        [ T ]
+                                                    ],
+                                                  "as_ptr",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| next |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ])
+                                                ]
+                                              |)
+                                            |),
+                                            "alloc::collections::linked_list::Node",
+                                            "element"
+                                          |)
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                        (Ty.apply (Ty.path "&mut") [] [ T ]))
                   ]
                 |)
               |)
@@ -13540,7 +16157,24 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, current |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, current |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -13581,61 +16215,61 @@ Module collections.
                     ]
                   |),
                   [
-                    M.read (| prev |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply (Ty.path "&mut") [] [ T ],
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ],
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let prev :=
-                                        M.copy (|
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ],
-                                          γ
-                                        |) in
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "*mut")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloc::collections::linked_list::Node")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              M.get_associated_function (|
+                    M.value_with_ty
+                      (M.read (| prev |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.apply (Ty.path "&mut") [] [ T ],
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ],
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let prev :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
                                                 Ty.apply
-                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ],
+                                            γ
+                                          |) in
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "*mut")
                                                   []
                                                   [
                                                     Ty.apply
@@ -13644,21 +16278,53 @@ Module collections.
                                                       []
                                                       [ T ]
                                                   ],
-                                                "as_ptr",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| prev |) ]
-                                            |)
-                                          |),
-                                          "alloc::collections::linked_list::Node",
-                                          "element"
-                                        |)
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::ptr::non_null::NonNull")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::linked_list::Node")
+                                                        []
+                                                        [ T ]
+                                                    ],
+                                                  "as_ptr",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| prev |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ])
+                                                ]
+                                              |)
+                                            |),
+                                            "alloc::collections::linked_list::Node",
+                                            "element"
+                                          |)
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]
+                        (Ty.apply (Ty.path "&mut") [] [ T ]))
                   ]
                 |)
               |)
@@ -13690,41 +16356,41 @@ Module collections.
                   [ Ty.apply (Ty.path "alloc::collections::linked_list::CursorMut") [] [ T; A ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::Cursor"
-              []
-              [ T; A ]
-              [
-                ("list",
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::linked_list::CursorMut",
-                          "list"
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::Cursor"
+                [
+                  ("list",
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::linked_list::CursorMut",
+                            "list"
+                          |)
                         |)
                       |)
-                    |)
-                  |));
-                ("current",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::CursorMut",
-                      "current"
-                    |)
-                  |));
-                ("index",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::collections::linked_list::CursorMut",
-                      "index"
-                    |)
-                  |))
-              ]))
+                    |));
+                  ("current",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::CursorMut",
+                        "current"
+                      |)
+                    |));
+                  ("index",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::collections::linked_list::CursorMut",
+                        "index"
+                      |)
+                    |))
+                ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::Cursor") [] [ T; A ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -13836,28 +16502,17 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "alloc::boxed::Box")
+                              (Ty.path "&mut")
                               []
-                              [
-                                Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                                Ty.apply (Ty.path "&") [] [ A ]
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
                               ],
-                            "leak",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
+                            M.get_associated_function (|
                               Ty.apply
                                 (Ty.path "alloc::boxed::Box")
                                 []
@@ -13868,8 +16523,81 @@ Module collections.
                                     [ T ];
                                   Ty.apply (Ty.path "&") [] [ A ]
                                 ],
-                              M.get_associated_function (|
-                                Ty.apply
+                              "leak",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ];
+                                      Ty.apply (Ty.path "&") [] [ A ]
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ];
+                                        Ty.apply (Ty.path "&") [] [ A ]
+                                      ],
+                                    "new_in",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ],
+                                          "new",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.value_with_ty (M.read (| item |)) T ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::collections::linked_list::CursorMut",
+                                                "list"
+                                              |)
+                                            |)
+                                          |),
+                                          "alloc::collections::linked_list::LinkedList",
+                                          "alloc"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ A ])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "alloc::boxed::Box")
                                   []
                                   [
@@ -13878,50 +16606,15 @@ Module collections.
                                       []
                                       [ T ];
                                     Ty.apply (Ty.path "&") [] [ A ]
-                                  ],
-                                "new_in",
-                                [],
-                                []
-                              |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "alloc::collections::linked_list::Node")
-                                    []
-                                    [ T ],
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::Node")
-                                      []
-                                      [ T ],
-                                    "new",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| item |) ]
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (|
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::collections::linked_list::CursorMut",
-                                          "list"
-                                        |)
-                                      |)
-                                    |),
-                                    "alloc::collections::linked_list::LinkedList",
-                                    "alloc"
-                                  |)
-                                |)
-                              ]
-                            |)
-                          ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ])
                   ]
                 |) in
               let~ node_next :
@@ -14012,7 +16705,24 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, node |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, node |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -14031,29 +16741,69 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::CursorMut",
-                            "list"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::CursorMut",
+                              "list"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "current"
-                      |)
-                    |);
-                    M.read (| node_next |);
-                    M.read (| spliced_node |);
-                    M.read (| spliced_node |);
-                    Value.Integer IntegerKind.Usize 1
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "current"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| node_next |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| spliced_node |))
+                      (Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]);
+                    M.value_with_ty
+                      (M.read (| spliced_node |))
+                      (Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]);
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -14090,14 +16840,34 @@ Module collections.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::CursorMut",
-                                      "current"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::CursorMut",
+                                        "current"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ]
+                                      ])
                                 ]
                               |)
                             |)) in
@@ -14203,28 +16973,17 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "alloc::boxed::Box")
+                              (Ty.path "&mut")
                               []
-                              [
-                                Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ];
-                                Ty.apply (Ty.path "&") [] [ A ]
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
                               ],
-                            "leak",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
+                            M.get_associated_function (|
                               Ty.apply
                                 (Ty.path "alloc::boxed::Box")
                                 []
@@ -14235,8 +16994,81 @@ Module collections.
                                     [ T ];
                                   Ty.apply (Ty.path "&") [] [ A ]
                                 ],
-                              M.get_associated_function (|
-                                Ty.apply
+                              "leak",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ];
+                                      Ty.apply (Ty.path "&") [] [ A ]
+                                    ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ];
+                                        Ty.apply (Ty.path "&") [] [ A ]
+                                      ],
+                                    "new_in",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ],
+                                          "new",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.value_with_ty (M.read (| item |)) T ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::collections::linked_list::CursorMut",
+                                                "list"
+                                              |)
+                                            |)
+                                          |),
+                                          "alloc::collections::linked_list::LinkedList",
+                                          "alloc"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ A ])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "alloc::boxed::Box")
                                   []
                                   [
@@ -14245,50 +17077,15 @@ Module collections.
                                       []
                                       [ T ];
                                     Ty.apply (Ty.path "&") [] [ A ]
-                                  ],
-                                "new_in",
-                                [],
-                                []
-                              |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "alloc::collections::linked_list::Node")
-                                    []
-                                    [ T ],
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::Node")
-                                      []
-                                      [ T ],
-                                    "new",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| item |) ]
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (|
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::collections::linked_list::CursorMut",
-                                          "list"
-                                        |)
-                                      |)
-                                    |),
-                                    "alloc::collections::linked_list::LinkedList",
-                                    "alloc"
-                                  |)
-                                |)
-                              ]
-                            |)
-                          ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ])
                   ]
                 |) in
               let~ node_prev :
@@ -14379,7 +17176,24 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, node |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, node |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ])
+                                ]
                               |)
                             |),
                             "alloc::collections::linked_list::Node",
@@ -14398,29 +17212,69 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::CursorMut",
-                            "list"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::CursorMut",
+                              "list"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.read (| node_prev |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "current"
-                      |)
-                    |);
-                    M.read (| spliced_node |);
-                    M.read (| spliced_node |);
-                    Value.Integer IntegerKind.Usize 1
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| node_prev |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "current"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| spliced_node |))
+                      (Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]);
+                    M.value_with_ty
+                      (M.read (| spliced_node |))
+                      (Ty.apply
+                        (Ty.path "core::ptr::non_null::NonNull")
+                        []
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]);
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -14548,13 +17402,28 @@ Module collections.
                             []
                           |),
                           [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::linked_list::CursorMut",
-                                "current"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::CursorMut",
+                                  "current"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ]
+                                ])
                           ]
                         |)
                       |),
@@ -14594,7 +17463,14 @@ Module collections.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| residual |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| residual |))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ])
+                                    ]
                                   |)
                                 |)
                               |)
@@ -14657,7 +17533,24 @@ Module collections.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, unlinked_node |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, unlinked_node |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ])
+                              ]
                             |)
                           |),
                           "alloc::collections::linked_list::Node",
@@ -14678,19 +17571,34 @@ Module collections.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::linked_list::CursorMut",
-                                "list"
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::CursorMut",
+                                  "list"
+                                |)
                               |)
                             |)
-                          |)
-                        |);
-                        M.read (| unlinked_node |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; A ]
+                            ]);
+                        M.value_with_ty
+                          (M.read (| unlinked_node |))
+                          (Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ])
                       ]
                     |) in
                   let~ unlinked_node :
@@ -14722,56 +17630,81 @@ Module collections.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "*mut")
-                            []
-                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::ptr::non_null::NonNull")
+                              (Ty.path "*mut")
                               []
                               [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
                               ],
-                            "as_ptr",
-                            [],
-                            []
-                          |),
-                          [ M.read (| unlinked_node |) ]
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (|
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::linked_list::CursorMut",
-                                  "list"
-                                |)
-                              |)
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::Node")
+                                    []
+                                    [ T ]
+                                ],
+                              "as_ptr",
+                              [],
+                              []
                             |),
-                            "alloc::collections::linked_list::LinkedList",
-                            "alloc"
-                          |)
-                        |)
+                            [
+                              M.value_with_ty
+                                (M.read (| unlinked_node |))
+                                (Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::Node")
+                                      []
+                                      [ T ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "*mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::linked_list::CursorMut",
+                                    "list"
+                                  |)
+                                |)
+                              |),
+                              "alloc::collections::linked_list::LinkedList",
+                              "alloc"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ A ])
                       ]
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ T ]
-                      [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| unlinked_node |) |),
-                            "alloc::collections::linked_list::Node",
-                            "element"
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| unlinked_node |) |),
+                              "alloc::collections::linked_list::Node",
+                              "element"
+                            |)
                           |)
-                        |)
-                      ]
+                        ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                   |)
                 |)))
             |)))
@@ -14898,13 +17831,28 @@ Module collections.
                             []
                           |),
                           [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::linked_list::CursorMut",
-                                "current"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::CursorMut",
+                                  "current"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ]
+                                ])
                           ]
                         |)
                       |),
@@ -14960,7 +17908,14 @@ Module collections.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| residual |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| residual |))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ])
+                                    ]
                                   |)
                                 |)
                               |)
@@ -15023,7 +17978,24 @@ Module collections.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, unlinked_node |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, unlinked_node |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ])
+                              ]
                             |)
                           |),
                           "alloc::collections::linked_list::Node",
@@ -15044,19 +18016,34 @@ Module collections.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::linked_list::CursorMut",
-                                "list"
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::linked_list::CursorMut",
+                                  "list"
+                                |)
                               |)
                             |)
-                          |)
-                        |);
-                        M.read (| unlinked_node |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; A ]
+                            ]);
+                        M.value_with_ty
+                          (M.read (| unlinked_node |))
+                          (Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ])
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -15083,22 +18070,41 @@ Module collections.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, unlinked_node |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, unlinked_node |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ])
+                            ]
                           |)
                         |),
                         "alloc::collections::linked_list::Node",
                         "prev"
                       |),
-                      Value.StructTuple
-                        "core::option::Option::None"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::ptr::non_null::NonNull")
-                            []
-                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                        ]
-                        []
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ]
+                          ])
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.write (|
@@ -15124,22 +18130,41 @@ Module collections.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, unlinked_node |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, unlinked_node |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Node")
+                                          []
+                                          [ T ]
+                                      ]
+                                  ])
+                            ]
                           |)
                         |),
                         "alloc::collections::linked_list::Node",
                         "next"
                       |),
-                      Value.StructTuple
-                        "core::option::Option::None"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::ptr::non_null::NonNull")
-                            []
-                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
-                        ]
-                        []
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
+                              ]
+                          ])
                     |) in
                   M.alloc (|
                     Ty.apply
@@ -15147,100 +18172,119 @@ Module collections.
                       []
                       [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
                       ],
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
-                      ]
-                      [
-                        Value.mkStructRecord
-                          "alloc::collections::linked_list::LinkedList"
-                          []
-                          [ T; A ]
-                          [
-                            ("head",
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.mkStructRecord
+                              "alloc::collections::linked_list::LinkedList"
+                              [
+                                ("head",
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::option::Option::Some"
+                                      [ M.read (| unlinked_node |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ]));
+                                ("tail",
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::option::Option::Some"
+                                      [ M.read (| unlinked_node |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ]));
+                                ("len", Value.Integer IntegerKind.Usize 1);
+                                ("alloc",
+                                  M.call_closure (|
+                                    A,
+                                    M.get_trait_method (|
+                                      "core::clone::Clone",
+                                      A,
+                                      [],
+                                      [],
+                                      "clone",
+                                      [],
+                                      []
+                                    |),
                                     [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ]
-                                [ M.read (| unlinked_node |) ]);
-                            ("tail",
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ]
-                                    ]
-                                ]
-                                [ M.read (| unlinked_node |) ]);
-                            ("len", Value.Integer IntegerKind.Usize 1);
-                            ("alloc",
-                              M.call_closure (|
-                                A,
-                                M.get_trait_method (|
-                                  "core::clone::Clone",
-                                  A,
-                                  [],
-                                  [],
-                                  "clone",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.read (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
                                           M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "alloc::collections::linked_list::CursorMut",
-                                            "list"
+                                            M.deref (|
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "alloc::collections::linked_list::CursorMut",
+                                                  "list"
+                                                |)
+                                              |)
+                                            |),
+                                            "alloc::collections::linked_list::LinkedList",
+                                            "alloc"
                                           |)
-                                        |)
-                                      |),
-                                      "alloc::collections::linked_list::LinkedList",
-                                      "alloc"
-                                    |)
-                                  |)
-                                ]
-                              |));
-                            ("marker",
-                              Value.StructTuple
-                                "core::marker::PhantomData"
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::Node")
-                                        []
-                                        [ T ];
-                                      A
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ A ])
                                     ]
-                                ]
-                                [])
-                          ]
-                      ]
+                                  |));
+                                ("marker",
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::marker::PhantomData" [])
+                                    (Ty.apply
+                                      (Ty.path "core::marker::PhantomData")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Node")
+                                              []
+                                              [ T ];
+                                            A
+                                          ]
+                                      ]))
+                              ])
+                            (Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; A ])
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ])
                   |)
                 |)))
             |)))
@@ -15412,26 +18456,46 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::CursorMut",
-                            "list"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::CursorMut",
+                              "list"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "current"
-                      |)
-                    |);
-                    M.read (| split_off_idx |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "current"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty (M.read (| split_off_idx |)) (Ty.path "usize")
                   ]
                 |)
               |)
@@ -15502,26 +18566,46 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::CursorMut",
-                            "list"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::CursorMut",
+                              "list"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "current"
-                      |)
-                    |);
-                    M.read (| split_off_idx |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "current"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ]
+                        ]);
+                    M.value_with_ty (M.read (| split_off_idx |)) (Ty.path "usize")
                   ]
                 |)
               |)
@@ -15574,19 +18658,29 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::CursorMut",
-                            "list"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::CursorMut",
+                              "list"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.read (| elt |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty (M.read (| elt |)) T
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -15653,19 +18747,29 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::CursorMut",
-                            "list"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::CursorMut",
+                              "list"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.read (| elt |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty (M.read (| elt |)) T
                   ]
                 |) in
               M.alloc (|
@@ -15692,36 +18796,57 @@ Module collections.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                      M.call_closure (|
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
                                         Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
                                           [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                        M.get_associated_function (|
+                                        M.call_closure (|
                                           Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::CursorMut")
+                                            (Ty.path "core::option::Option")
                                             []
-                                            [ T; A ],
-                                          "current",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
+                                            [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::CursorMut")
+                                              []
+                                              [ T; A ],
+                                            "current",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::CursorMut")
+                                                    []
+                                                    [ T; A ]
+                                                ])
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.apply (Ty.path "&mut") [] [ T ] ]
+                                      ])
                                 ]
                               |)
                             |)) in
@@ -15814,23 +18939,35 @@ Module collections.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::CursorMut",
-                                      "list"
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::CursorMut",
+                                        "list"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::LinkedList")
+                                      []
+                                      [ T; A ]
+                                  ])
                             ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple "core::option::Option::None" [] [ T ] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ T ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.read (|
@@ -15887,30 +19024,72 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (|
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "alloc::collections::linked_list::CursorMut",
-                                                    "list"
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (|
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "alloc::collections::linked_list::CursorMut",
+                                                      "list"
+                                                    |)
                                                   |)
-                                                |)
-                                              |),
-                                              "alloc::collections::linked_list::LinkedList",
-                                              "head"
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::linked_list::CursorMut",
-                                              "current"
-                                            |)
-                                          |)
+                                                |),
+                                                "alloc::collections::linked_list::LinkedList",
+                                                "head"
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::collections::linked_list::CursorMut",
+                                                "current"
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ]
+                                              ])
                                         ]
                                       |)
                                     |)) in
@@ -15933,10 +19112,21 @@ Module collections.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path
+                                                  "alloc::collections::linked_list::CursorMut")
+                                                []
+                                                [ T; A ]
+                                            ])
                                       ]
                                     |) in
                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -15977,18 +19167,28 @@ Module collections.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::CursorMut",
-                                    "list"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "alloc::collections::linked_list::CursorMut",
+                                      "list"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::LinkedList")
+                                    []
+                                    [ T; A ]
+                                ])
                           ]
                         |)
                       |)
@@ -16056,23 +19256,35 @@ Module collections.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::linked_list::CursorMut",
-                                      "list"
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::CursorMut",
+                                        "list"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::LinkedList")
+                                      []
+                                      [ T; A ]
+                                  ])
                             ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple "core::option::Option::None" [] [ T ] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ T ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.read (|
@@ -16129,30 +19341,72 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (|
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "alloc::collections::linked_list::CursorMut",
-                                                    "list"
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (|
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "alloc::collections::linked_list::CursorMut",
+                                                      "list"
+                                                    |)
                                                   |)
-                                                |)
-                                              |),
-                                              "alloc::collections::linked_list::LinkedList",
-                                              "tail"
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::linked_list::CursorMut",
-                                              "current"
-                                            |)
-                                          |)
+                                                |),
+                                                "alloc::collections::linked_list::LinkedList",
+                                                "tail"
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::collections::linked_list::CursorMut",
+                                                "current"
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ]
+                                              ])
                                         ]
                                       |)
                                     |)) in
@@ -16169,21 +19423,22 @@ Module collections.
                                         "alloc::collections::linked_list::CursorMut",
                                         "current"
                                       |),
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::ptr::non_null::NonNull")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::collections::linked_list::Node")
-                                                []
-                                                [ T ]
-                                            ]
-                                        ]
-                                        []
+                                      M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Node")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ])
                                     |) in
                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                 |)));
@@ -16222,14 +19477,36 @@ Module collections.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::linked_list::CursorMut",
-                                                      "current"
-                                                    |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "alloc::collections::linked_list::CursorMut",
+                                                        "current"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::Node")
+                                                                  []
+                                                                  [ T ]
+                                                              ]
+                                                          ]
+                                                      ])
                                                 ]
                                               |)
                                             |)) in
@@ -16290,18 +19567,28 @@ Module collections.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::CursorMut",
-                                    "list"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "alloc::collections::linked_list::CursorMut",
+                                      "list"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::LinkedList")
+                                    []
+                                    [ T; A ]
+                                ])
                           ]
                         |)
                       |)
@@ -16344,18 +19631,24 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "list"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "list"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16394,18 +19687,24 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "list"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "list"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16444,18 +19743,24 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "list"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "list"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16494,18 +19799,24 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::collections::linked_list::CursorMut",
-                        "list"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::collections::linked_list::CursorMut",
+                          "list"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16670,7 +19981,14 @@ Module collections.
                             [],
                             []
                           |),
-                          [ M.read (| list |) ]
+                          [
+                            M.value_with_ty
+                              (M.read (| list |))
+                              (Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ])
+                          ]
                         |)
                       |),
                       [
@@ -16845,7 +20163,25 @@ Module collections.
                                               [],
                                               []
                                             |),
-                                            [ M.borrow (| Pointer.Kind.Ref, node |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, node |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
                                           |)
                                         |),
                                         "alloc::collections::linked_list::Node",
@@ -16867,29 +20203,89 @@ Module collections.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "alloc::collections::linked_list::CursorMut",
-                                        "list"
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::CursorMut",
+                                          "list"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |);
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::CursorMut",
-                                    "current"
-                                  |)
-                                |);
-                                M.read (| node_next |);
-                                M.read (| splice_head |);
-                                M.read (| splice_tail |);
-                                M.read (| splice_len |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                                        []
+                                        [ T; Ty.path "alloc::alloc::Global" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "alloc::collections::linked_list::CursorMut",
+                                      "current"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (| node_next |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (| splice_head |))
+                                  (Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (| splice_tail |))
+                                  (Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ]);
+                                M.value_with_ty (M.read (| splice_len |)) (Ty.path "usize")
                               ]
                             |) in
                           M.alloc (|
@@ -16927,14 +20323,35 @@ Module collections.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::collections::linked_list::CursorMut",
-                                                  "current"
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::linked_list::CursorMut",
+                                                    "current"
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::option::Option")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Node")
+                                                              []
+                                                              [ T ]
+                                                          ]
+                                                      ]
+                                                  ])
                                             ]
                                           |)
                                         |)) in
@@ -17128,7 +20545,14 @@ Module collections.
                             [],
                             []
                           |),
-                          [ M.read (| list |) ]
+                          [
+                            M.value_with_ty
+                              (M.read (| list |))
+                              (Ty.apply
+                                (Ty.path "alloc::collections::linked_list::LinkedList")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ])
+                          ]
                         |)
                       |),
                       [
@@ -17303,7 +20727,25 @@ Module collections.
                                               [],
                                               []
                                             |),
-                                            [ M.borrow (| Pointer.Kind.Ref, node |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, node |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::Node")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
+                                            ]
                                           |)
                                         |),
                                         "alloc::collections::linked_list::Node",
@@ -17325,29 +20767,89 @@ Module collections.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "alloc::collections::linked_list::CursorMut",
-                                        "list"
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::linked_list::CursorMut",
+                                          "list"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |);
-                                M.read (| node_prev |);
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::CursorMut",
-                                    "current"
-                                  |)
-                                |);
-                                M.read (| splice_head |);
-                                M.read (| splice_tail |);
-                                M.read (| splice_len |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                                        []
+                                        [ T; Ty.path "alloc::alloc::Global" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (| node_prev |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "alloc::collections::linked_list::CursorMut",
+                                      "current"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Node")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (| splice_head |))
+                                  (Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (| splice_tail |))
+                                  (Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Node")
+                                        []
+                                        [ T ]
+                                    ]);
+                                M.value_with_ty (M.read (| splice_len |)) (Ty.path "usize")
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -17524,7 +21026,25 @@ Module collections.
                                                     [],
                                                     []
                                                   |),
-                                                  [ M.borrow (| Pointer.Kind.Ref, node |) ]
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, node |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "core::ptr::non_null::NonNull")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "alloc::collections::linked_list::Node")
+                                                                []
+                                                                [ T ]
+                                                            ]
+                                                        ])
+                                                  ]
                                                 |)
                                               |),
                                               "alloc::collections::linked_list::Node",
@@ -17574,38 +21094,29 @@ Module collections.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "alloc::collections::linked_list::ExtractIf",
-                                                              "pred"
-                                                            |)
-                                                          |);
-                                                          Value.Tuple
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.call_closure (|
-                                                                          Ty.apply
-                                                                            (Ty.path "&mut")
-                                                                            []
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "alloc::collections::linked_list::Node")
-                                                                                []
-                                                                                [ T ]
-                                                                            ],
-                                                                          M.get_associated_function (|
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "alloc::collections::linked_list::ExtractIf",
+                                                                "pred"
+                                                              |)
+                                                            |))
+                                                            (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                          M.value_with_ty
+                                                            (Value.Tuple
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.call_closure (|
                                                                             Ty.apply
-                                                                              (Ty.path
-                                                                                "core::ptr::non_null::NonNull")
+                                                                              (Ty.path "&mut")
                                                                               []
                                                                               [
                                                                                 Ty.apply
@@ -17614,25 +21125,57 @@ Module collections.
                                                                                   []
                                                                                   [ T ]
                                                                               ],
-                                                                            "as_mut",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              node
-                                                                            |)
-                                                                          ]
-                                                                        |)
-                                                                      |),
-                                                                      "alloc::collections::linked_list::Node",
-                                                                      "element"
+                                                                            M.get_associated_function (|
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::ptr::non_null::NonNull")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "alloc::collections::linked_list::Node")
+                                                                                    []
+                                                                                    [ T ]
+                                                                                ],
+                                                                              "as_mut",
+                                                                              [],
+                                                                              []
+                                                                            |),
+                                                                            [
+                                                                              M.value_with_ty
+                                                                                (M.borrow (|
+                                                                                  Pointer.Kind.MutRef,
+                                                                                  node
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path "&mut")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::ptr::non_null::NonNull")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::linked_list::Node")
+                                                                                          []
+                                                                                          [ T ]
+                                                                                      ]
+                                                                                  ])
+                                                                            ]
+                                                                          |)
+                                                                        |),
+                                                                        "alloc::collections::linked_list::Node",
+                                                                        "element"
+                                                                      |)
                                                                     |)
                                                                   |)
                                                                 |)
-                                                              |)
-                                                            ]
+                                                              ])
+                                                            (Ty.tuple
+                                                              [ Ty.apply (Ty.path "&mut") [] [ T ]
+                                                              ])
                                                         ]
                                                       |)
                                                     |)) in
@@ -17657,46 +21200,53 @@ Module collections.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "alloc::collections::linked_list::ExtractIf",
-                                                                  "list"
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.read (|
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (| M.read (| self |) |),
+                                                                    "alloc::collections::linked_list::ExtractIf",
+                                                                    "list"
+                                                                  |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          |);
-                                                          M.read (| node |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::LinkedList")
+                                                                  []
+                                                                  [ T; A ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.read (| node |))
+                                                            (Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloc::collections::linked_list::Node")
+                                                                  []
+                                                                  [ T ]
+                                                              ])
                                                         ]
                                                       |) in
                                                     M.return_ (|
-                                                      Value.StructTuple
-                                                        "core::option::Option::Some"
-                                                        []
-                                                        [ T ]
-                                                        [
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (|
-                                                                M.call_closure (|
-                                                                  Ty.apply
-                                                                    (Ty.path "alloc::boxed::Box")
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "alloc::collections::linked_list::Node")
-                                                                        []
-                                                                        [ T ];
-                                                                      Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [ A ]
-                                                                    ],
-                                                                  M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (Value.StructTuple
+                                                          "core::option::Option::Some"
+                                                          [
+                                                            M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (|
+                                                                  M.call_closure (|
                                                                     Ty.apply
                                                                       (Ty.path "alloc::boxed::Box")
                                                                       []
@@ -17711,26 +21261,73 @@ Module collections.
                                                                           []
                                                                           [ A ]
                                                                       ],
-                                                                    "from_raw_in",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.call_closure (|
+                                                                    M.get_associated_function (|
                                                                       Ty.apply
-                                                                        (Ty.path "*mut")
+                                                                        (Ty.path
+                                                                          "alloc::boxed::Box")
                                                                         []
                                                                         [
                                                                           Ty.apply
                                                                             (Ty.path
                                                                               "alloc::collections::linked_list::Node")
                                                                             []
-                                                                            [ T ]
+                                                                            [ T ];
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ A ]
                                                                         ],
-                                                                      M.get_associated_function (|
-                                                                        Ty.apply
-                                                                          (Ty.path
-                                                                            "core::ptr::non_null::NonNull")
+                                                                      "from_raw_in",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path "*mut")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "alloc::collections::linked_list::Node")
+                                                                                []
+                                                                                [ T ]
+                                                                            ],
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "core::ptr::non_null::NonNull")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "alloc::collections::linked_list::Node")
+                                                                                  []
+                                                                                  [ T ]
+                                                                              ],
+                                                                            "as_ptr",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.read (| node |))
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::ptr::non_null::NonNull")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "alloc::collections::linked_list::Node")
+                                                                                    []
+                                                                                    [ T ]
+                                                                                ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "*mut")
                                                                           []
                                                                           [
                                                                             Ty.apply
@@ -17738,39 +21335,44 @@ Module collections.
                                                                                 "alloc::collections::linked_list::Node")
                                                                               []
                                                                               [ T ]
-                                                                          ],
-                                                                        "as_ptr",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [ M.read (| node |) ]
-                                                                    |);
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.SubPointer.get_struct_record_field (|
-                                                                        M.deref (|
-                                                                          M.read (|
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              M.deref (|
-                                                                                M.read (| self |)
-                                                                              |),
-                                                                              "alloc::collections::linked_list::ExtractIf",
-                                                                              "list"
-                                                                            |)
+                                                                          ]);
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.SubPointer.get_struct_record_field (|
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      self
+                                                                                    |)
+                                                                                  |),
+                                                                                  "alloc::collections::linked_list::ExtractIf",
+                                                                                  "list"
+                                                                                |)
+                                                                              |)
+                                                                            |),
+                                                                            "alloc::collections::linked_list::LinkedList",
+                                                                            "alloc"
                                                                           |)
-                                                                        |),
-                                                                        "alloc::collections::linked_list::LinkedList",
-                                                                        "alloc"
-                                                                      |)
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |),
-                                                              "alloc::collections::linked_list::Node",
-                                                              "element"
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [ A ])
+                                                                    ]
+                                                                  |)
+                                                                |),
+                                                                "alloc::collections::linked_list::Node",
+                                                                "element"
+                                                              |)
                                                             |)
-                                                          |)
-                                                        ]
+                                                          ])
+                                                        (Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [ T ])
                                                     |)
                                                   |)
                                                 |)));
@@ -17795,7 +21397,9 @@ Module collections.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                    Value.StructTuple "core::option::Option::None" [] [ T ] []
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                   |)
                 |)))
             |)))
@@ -17829,32 +21433,32 @@ Module collections.
             Value.Tuple
               [
                 Value.Integer IntegerKind.Usize 0;
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "usize" ]
-                  [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.sub,
-                      [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::ExtractIf",
-                            "old_len"
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [
+                      M.call_closure (|
+                        Ty.path "usize",
+                        BinOp.Wrap.sub,
+                        [
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::ExtractIf",
+                              "old_len"
+                            |)
+                          |);
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::linked_list::ExtractIf",
+                              "idx"
+                            |)
                           |)
-                        |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::ExtractIf",
-                            "idx"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
+                        ]
+                      |)
+                    ])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -17918,82 +21522,107 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.alloc (|
-                            Ty.path "core::fmt::builders::DebugTuple",
-                            M.call_closure (|
-                              Ty.path "core::fmt::builders::DebugTuple",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "debug_tuple",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "ExtractIf" |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
+                                Ty.path "core::fmt::builders::DebugTuple",
+                                M.call_closure (|
+                                  Ty.path "core::fmt::builders::DebugTuple",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Formatter",
+                                    "debug_tuple",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| f |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "ExtractIf" |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
                                 |)
-                              ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
+                              |)
+                            |))
                             (Ty.apply
-                              (Ty.path "&")
+                              (Ty.path "&mut")
                               []
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
+                              [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
                                   []
                                   [
                                     Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::LinkedList")
+                                      (Ty.path "&mut")
                                       []
-                                      [ T; Ty.path "alloc::alloc::Global" ]
-                                  ]
-                              ])
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::LinkedList")
+                                          []
+                                          [ T; Ty.path "alloc::alloc::Global" ]
+                                      ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::linked_list::ExtractIf",
+                                        "list"
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              ]
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::collections::linked_list::ExtractIf",
-                                    "list"
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18043,14 +21672,20 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::collections::linked_list::IntoIter",
-                    "list"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloc::collections::linked_list::IntoIter",
+                      "list"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18087,23 +21722,23 @@ Module collections.
                     "len"
                   |)
                 |);
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "usize" ]
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [
+                      M.read (|
                         M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::linked_list::IntoIter",
-                          "list"
-                        |),
-                        "alloc::collections::linked_list::LinkedList",
-                        "len"
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::linked_list::IntoIter",
+                            "list"
+                          |),
+                          "alloc::collections::linked_list::LinkedList",
+                          "len"
+                        |)
                       |)
-                    |)
-                  ]
+                    ])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -18154,14 +21789,20 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::collections::linked_list::IntoIter",
-                    "list"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloc::collections::linked_list::IntoIter",
+                      "list"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18240,22 +21881,27 @@ Module collections.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::collections::linked_list::LinkedList")
-                    []
-                    [ T; Ty.path "alloc::alloc::Global" ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::collections::linked_list::LinkedList")
                       []
                       [ T; Ty.path "alloc::alloc::Global" ],
-                    "new",
-                    [],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                        []
+                        [ T; Ty.path "alloc::alloc::Global" ],
+                      "new",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "alloc::collections::linked_list::LinkedList")
+                    []
+                    [ T; Ty.path "alloc::alloc::Global" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18328,7 +21974,20 @@ Module collections.
                     [],
                     [ I ]
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, list |); M.read (| iter |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, list |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ]
+                        ]);
+                    M.value_with_ty (M.read (| iter |)) I
+                  ]
                 |) in
               list
             |)))
@@ -18371,11 +22030,11 @@ Module collections.
                 Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloc::collections::linked_list::IntoIter"
-              []
-              [ T; A ]
-              [ ("list", M.read (| self |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloc::collections::linked_list::IntoIter"
+                [ ("list", M.read (| self |)) ])
+              (Ty.apply (Ty.path "alloc::collections::linked_list::IntoIter") [] [ T; A ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -18434,7 +22093,15 @@ Module collections.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -18494,7 +22161,15 @@ Module collections.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -18551,8 +22226,18 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| iter |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty (M.read (| iter |)) I
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18595,8 +22280,18 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| elem |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty (M.read (| elem |)) T
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18692,85 +22387,130 @@ Module collections.
                     ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.associated_in_trait
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.associated_in_trait
+                          "core::iter::traits::collect::IntoIterator"
+                          []
+                          []
+                          I
+                          "IntoIter",
+                        M.get_trait_method (|
+                          "core::iter::traits::collect::IntoIterator",
+                          I,
+                          [],
+                          [],
+                          "into_iter",
+                          [],
+                          []
+                        |),
+                        [ M.value_with_ty (M.read (| iter |)) I ]
+                      |))
+                      (Ty.associated_in_trait
                         "core::iter::traits::collect::IntoIterator"
                         []
                         []
                         I
-                        "IntoIter",
-                      M.get_trait_method (|
-                        "core::iter::traits::collect::IntoIterator",
-                        I,
-                        [],
-                        [],
-                        "into_iter",
-                        [],
-                        []
-                      |),
-                      [ M.read (| iter |) ]
-                    |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.tuple [],
-                                M.alloc (|
-                                  Ty.associated_in_trait
-                                    "core::iter::traits::collect::IntoIterator"
-                                    []
-                                    []
-                                    I
-                                    "Item",
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let elt :=
-                                        M.copy (|
-                                          Ty.associated_in_trait
-                                            "core::iter::traits::collect::IntoIterator"
+                        "IntoIter");
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.tuple [],
+                                  M.alloc (|
+                                    Ty.associated_in_trait
+                                      "core::iter::traits::collect::IntoIterator"
+                                      []
+                                      []
+                                      I
+                                      "Item",
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let elt :=
+                                          M.copy (|
+                                            Ty.associated_in_trait
+                                              "core::iter::traits::collect::IntoIterator"
+                                              []
+                                              []
+                                              I
+                                              "Item",
+                                            γ
+                                          |) in
+                                        M.call_closure (|
+                                          Ty.tuple [],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path
+                                                "alloc::collections::linked_list::LinkedList")
+                                              []
+                                              [
+                                                Ty.associated_in_trait
+                                                  "core::iter::traits::collect::IntoIterator"
+                                                  []
+                                                  []
+                                                  I
+                                                  "Item";
+                                                A
+                                              ],
+                                            "push_back",
+                                            [],
                                             []
-                                            []
-                                            I
-                                            "Item",
-                                          γ
-                                        |) in
-                                      M.call_closure (|
-                                        Ty.tuple [],
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::linked_list::LinkedList")
-                                            []
-                                            [
-                                              Ty.associated_in_trait
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::linked_list::LinkedList")
+                                                    []
+                                                    [
+                                                      Ty.associated_in_trait
+                                                        "core::iter::traits::collect::IntoIterator"
+                                                        []
+                                                        []
+                                                        I
+                                                        "Item";
+                                                      A
+                                                    ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.read (| elt |))
+                                              (Ty.associated_in_trait
                                                 "core::iter::traits::collect::IntoIterator"
                                                 []
                                                 []
                                                 I
-                                                "Item";
-                                              A
-                                            ],
-                                          "push_back",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |);
-                                          M.read (| elt |)
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                                "Item")
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [
+                          Ty.associated_in_trait
+                            "core::iter::traits::collect::IntoIterator"
+                            []
+                            []
+                            I
+                            "Item"
+                        ]
+                        (Ty.tuple []))
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18852,8 +22592,28 @@ Module collections.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| other |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::LinkedList")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| other |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::LinkedList")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18928,9 +22688,73 @@ Module collections.
                     ]
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::cloned::Cloned")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "core::iter::traits::collect::IntoIterator"
+                              []
+                              []
+                              I
+                              "IntoIter"
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          Ty.associated_in_trait
+                            "core::iter::traits::collect::IntoIterator"
+                            []
+                            []
+                            I
+                            "IntoIter",
+                          [],
+                          [],
+                          "cloned",
+                          [],
+                          [ T ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.associated_in_trait
+                                "core::iter::traits::collect::IntoIterator"
+                                []
+                                []
+                                I
+                                "IntoIter",
+                              M.get_trait_method (|
+                                "core::iter::traits::collect::IntoIterator",
+                                I,
+                                [],
+                                [],
+                                "into_iter",
+                                [],
+                                []
+                              |),
+                              [ M.value_with_ty (M.read (| iter |)) I ]
+                            |))
+                            (Ty.associated_in_trait
+                              "core::iter::traits::collect::IntoIterator"
+                              []
+                              []
+                              I
+                              "IntoIter")
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::iter::adapters::cloned::Cloned")
                         []
                         [
@@ -18940,42 +22764,7 @@ Module collections.
                             []
                             I
                             "IntoIter"
-                        ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
-                        Ty.associated_in_trait
-                          "core::iter::traits::collect::IntoIterator"
-                          []
-                          []
-                          I
-                          "IntoIter",
-                        [],
-                        [],
-                        "cloned",
-                        [],
-                        [ T ]
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.associated_in_trait
-                            "core::iter::traits::collect::IntoIterator"
-                            []
-                            []
-                            I
-                            "IntoIter",
-                          M.get_trait_method (|
-                            "core::iter::traits::collect::IntoIterator",
-                            I,
-                            [],
-                            [],
-                            "into_iter",
-                            [],
-                            []
-                          |),
-                          [ M.read (| iter |) ]
-                        |)
-                      ]
-                    |)
+                        ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19034,8 +22823,18 @@ Module collections.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.read (| elem |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::linked_list::LinkedList")
+                                    []
+                                    [ T; A ]
+                                ]);
+                            M.value_with_ty (M.read (| elem |)) T
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19102,7 +22901,19 @@ Module collections.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; A ]
+                          ])
+                    ]
                   |);
                   M.call_closure (|
                     Ty.path "usize",
@@ -19112,7 +22923,19 @@ Module collections.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; A ]
+                          ])
+                    ]
                   |)
                 ]
               |),
@@ -19139,20 +22962,44 @@ Module collections.
                     ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::collections::linked_list::LinkedList")
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ],
+                          "iter",
+                          [],
                           []
-                          [ T; A ],
-                        "iter",
-                        [],
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ]);
+                    M.value_with_ty
+                      (M.read (| other |))
+                      (Ty.apply
+                        (Ty.path "&")
                         []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |);
-                    M.read (| other |)
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ])
                   ]
                 |)))
             |)))
@@ -19198,7 +23045,19 @@ Module collections.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; A ]
+                          ])
+                    ]
                   |);
                   M.call_closure (|
                     Ty.path "usize",
@@ -19208,7 +23067,19 @@ Module collections.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; A ]
+                          ])
+                    ]
                   |)
                 ]
               |),
@@ -19235,20 +23106,44 @@ Module collections.
                     ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::collections::linked_list::LinkedList")
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ],
+                          "iter",
+                          [],
                           []
-                          [ T; A ],
-                        "iter",
-                        [],
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ]);
+                    M.value_with_ty
+                      (M.read (| other |))
+                      (Ty.apply
+                        (Ty.path "&")
                         []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |);
-                    M.read (| other |)
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ])
                   ]
                 |)))
             |)))
@@ -19333,17 +23228,37 @@ Module collections.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
-                    "iter",
-                    [],
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
+                      "iter",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; A ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ]);
+                M.value_with_ty
+                  (M.read (| other |))
+                  (Ty.apply
+                    (Ty.path "&")
                     []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |);
-                M.read (| other |)
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19407,17 +23322,37 @@ Module collections.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
-                    "iter",
-                    [],
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ],
+                      "iter",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::linked_list::LinkedList")
+                              []
+                              [ T; A ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ]);
+                M.value_with_ty
+                  (M.read (| other |))
+                  (Ty.apply
+                    (Ty.path "&")
                     []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |);
-                M.read (| other |)
+                    [ Ty.apply (Ty.path "alloc::collections::linked_list::LinkedList") [] [ T; A ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19469,20 +23404,24 @@ Module collections.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      A,
-                      M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::linked_list::LinkedList",
-                            "alloc"
-                          |)
-                        |)
-                      ]
-                    |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        A,
+                        M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::linked_list::LinkedList",
+                                "alloc"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ A ])
+                        ]
+                      |))
+                      A
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -19503,37 +23442,66 @@ Module collections.
                     ]
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, list |);
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, list |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::cloned::Cloned")
+                          []
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ] ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
+                          [],
+                          [],
+                          "cloned",
+                          [],
+                          [ T ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ],
+                                "iter",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                                        []
+                                        [ T; A ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::iter::adapters::cloned::Cloned")
                         []
-                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ] ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
-                        Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
-                        [],
-                        [],
-                        "cloned",
-                        [],
-                        [ T ]
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "alloc::collections::linked_list::LinkedList")
-                              []
-                              [ T; A ],
-                            "iter",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      ]
-                    |)
+                        [ Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ] ])
                   ]
                 |) in
               list
@@ -19592,7 +23560,19 @@ Module collections.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ]
+                        ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -19621,10 +23601,21 @@ Module collections.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path
+                                                "alloc::collections::linked_list::LinkedList")
+                                              []
+                                              [ T; A ]
+                                          ])
                                     ]
                                   |);
                                   M.call_closure (|
@@ -19639,10 +23630,21 @@ Module collections.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| source |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| source |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path
+                                                "alloc::collections::linked_list::LinkedList")
+                                              []
+                                              [ T; A ]
+                                          ])
                                     ]
                                   |)
                                 ]
@@ -19670,25 +23672,51 @@ Module collections.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::LinkedList")
-                                      []
-                                      [ T; A ],
-                                    "len",
-                                    [],
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
                                     []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| source |) |)
-                                    |)
-                                  ]
-                                |)
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                                        []
+                                        [ T; A ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                                        []
+                                        [ T; A ],
+                                      "len",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| source |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path
+                                                "alloc::collections::linked_list::LinkedList")
+                                              []
+                                              [ T; A ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "usize")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19768,8 +23796,100 @@ Module collections.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::zip::Zip")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::IterMut")
+                                        []
+                                        [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Iter")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::iter::traits::iterator::Iterator",
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::linked_list::IterMut")
+                                      []
+                                      [ T ],
+                                    [],
+                                    [],
+                                    "zip",
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Iter")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::IterMut")
+                                          []
+                                          [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                                            []
+                                            [ T; A ],
+                                          "iter_mut",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::linked_list::LinkedList")
+                                                  []
+                                                  [ T; A ]
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::IterMut")
+                                        []
+                                        [ T ]);
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, source_iter |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::collections::linked_list::Iter")
+                                            []
+                                            [ T ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "core::iter::adapters::zip::Zip")
                                   []
                                   [
@@ -19786,54 +23906,7 @@ Module collections.
                                           []
                                           [ T ]
                                       ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::iter::traits::iterator::Iterator",
-                                  Ty.apply
-                                    (Ty.path "alloc::collections::linked_list::IterMut")
-                                    []
-                                    [ T ],
-                                  [],
-                                  [],
-                                  "zip",
-                                  [],
-                                  [
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloc::collections::linked_list::Iter")
-                                          []
-                                          [ T ]
-                                      ]
-                                  ]
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::IterMut")
-                                      []
-                                      [ T ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "alloc::collections::linked_list::LinkedList")
-                                        []
-                                        [ T; A ],
-                                      "iter_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.borrow (| Pointer.Kind.MutRef, source_iter |)
-                                ]
-                              |)
+                                  ])
                             ]
                           |)
                         |),
@@ -19918,12 +23991,38 @@ Module collections.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::iter::adapters::zip::Zip")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::linked_list::IterMut")
+                                                          []
+                                                          [ T ];
+                                                        Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::linked_list::Iter")
+                                                              []
+                                                              [ T ]
+                                                          ]
+                                                      ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -19972,14 +24071,18 @@ Module collections.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| elem |) |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| source_elem |) |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.deref (| M.read (| elem |) |)
+                                                        |))
+                                                        (Ty.apply (Ty.path "&mut") [] [ T ]);
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| source_elem |) |)
+                                                        |))
+                                                        (Ty.apply (Ty.path "&") [] [ T ])
                                                     ]
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20023,7 +24126,19 @@ Module collections.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, source_iter |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, source_iter |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::linked_list::Iter")
+                                              []
+                                              [ T ]
+                                          ])
+                                    ]
                                   |)
                                 ]
                               |)
@@ -20056,9 +24171,53 @@ Module collections.
                                 ]
                               |),
                               [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::LinkedList")
+                                        []
+                                        [ T; A ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::iter::adapters::cloned::Cloned")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Iter")
+                                          []
+                                          [ T ]
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::iter::traits::iterator::Iterator",
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::linked_list::Iter")
+                                        []
+                                        [ T ],
+                                      [],
+                                      [],
+                                      "cloned",
+                                      [],
+                                      [ T ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| source_iter |))
+                                        (Ty.apply
+                                          (Ty.path "alloc::collections::linked_list::Iter")
+                                          []
+                                          [ T ])
+                                    ]
+                                  |))
+                                  (Ty.apply
                                     (Ty.path "core::iter::adapters::cloned::Cloned")
                                     []
                                     [
@@ -20066,21 +24225,7 @@ Module collections.
                                         (Ty.path "alloc::collections::linked_list::Iter")
                                         []
                                         [ T ]
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::iter::traits::iterator::Iterator",
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::linked_list::Iter")
-                                      []
-                                      [ T ],
-                                    [],
-                                    [],
-                                    "cloned",
-                                    [],
-                                    [ T ]
-                                  |),
-                                  [ M.read (| source_iter |) ]
-                                |)
+                                    ])
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20143,50 +24288,77 @@ Module collections.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugList" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugList",
-                        "entries",
-                        [],
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugList" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugList",
+                          "entries",
+                          [],
+                          [
+                            Ty.apply (Ty.path "&") [] [ T ];
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ]
+                              ]
+                          ]
+                        |),
                         [
-                          Ty.apply (Ty.path "&") [] [ T ];
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::collections::linked_list::LinkedList")
-                                []
-                                [ T; A ]
-                            ]
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
+                                Ty.path "core::fmt::builders::DebugList",
+                                M.call_closure (|
+                                  Ty.path "core::fmt::builders::DebugList",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Formatter",
+                                    "debug_list",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| f |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugList" ]);
+                          M.value_with_ty
+                            (M.read (| self |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ]
+                              ])
                         ]
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.alloc (|
-                            Ty.path "core::fmt::builders::DebugList",
-                            M.call_closure (|
-                              Ty.path "core::fmt::builders::DebugList",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "debug_list",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |) ]
-                            |)
-                          |)
-                        |);
-                        M.read (| self |)
-                      ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugList" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -20242,20 +24414,36 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::collections::linked_list::LinkedList")
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::collections::linked_list::LinkedList")
+                            []
+                            [ T; A ],
+                          "len",
+                          [],
                           []
-                          [ T; A ],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ]
+                              ])
+                        ]
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               M.use
@@ -20284,7 +24472,19 @@ Module collections.
                           [],
                           []
                         |),
-                        [ M.read (| self |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| self |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::linked_list::LinkedList")
+                                  []
+                                  [ T; A ]
+                              ])
+                        ]
                       |)
                     |),
                     [
@@ -20323,10 +24523,20 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::collections::linked_list::Iter")
+                                                  []
+                                                  [ T ]
+                                              ])
                                         ]
                                       |)
                                     |),
@@ -20363,14 +24573,18 @@ Module collections.
                                                   [ H ]
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| elt |) |)
-                                                  |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| state |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| elt |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ T ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| state |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ H ])
                                                 ]
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20438,7 +24652,7 @@ Module collections.
                 [],
                 [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
               |),
-              [ M.read (| arr |) ]
+              [ M.value_with_ty (M.read (| arr |)) (Ty.apply (Ty.path "array") [ N ] [ T ]) ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.

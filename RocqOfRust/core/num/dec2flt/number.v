@@ -136,106 +136,126 @@ Module num.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Number" |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "exponent" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::dec2flt::number::Number",
-                              "exponent"
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Number" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "exponent" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::dec2flt::number::Number",
+                                "exponent"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "mantissa" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::dec2flt::number::Number",
-                              "mantissa"
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "mantissa" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::dec2flt::number::Number",
+                                "mantissa"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "negative" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::dec2flt::number::Number",
-                              "negative"
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "negative" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::dec2flt::number::Number",
+                                "negative"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "many_digits" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::num::dec2flt::number::Number",
-                                  "many_digits"
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "many_digits" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::num::dec2flt::number::Number",
+                                    "many_digits"
+                                  |)
                                 |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |)
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -258,68 +278,68 @@ Module num.
           match ε, τ, α with
           | [], [], [] =>
             ltac:(M.monadic
-              (Value.mkStructRecord
-                "core::num::dec2flt::number::Number"
-                []
-                []
-                [
-                  ("exponent",
-                    M.call_closure (|
-                      Ty.path "i64",
-                      M.get_trait_method (|
-                        "core::default::Default",
+              (M.value_with_ty
+                (Value.mkStructRecord
+                  "core::num::dec2flt::number::Number"
+                  [
+                    ("exponent",
+                      M.call_closure (|
                         Ty.path "i64",
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          Ty.path "i64",
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |));
-                  ("mantissa",
-                    M.call_closure (|
-                      Ty.path "u64",
-                      M.get_trait_method (|
-                        "core::default::Default",
+                      |));
+                    ("mantissa",
+                      M.call_closure (|
                         Ty.path "u64",
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          Ty.path "u64",
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |));
-                  ("negative",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      M.get_trait_method (|
-                        "core::default::Default",
+                      |));
+                    ("negative",
+                      M.call_closure (|
                         Ty.path "bool",
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          Ty.path "bool",
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |));
-                  ("many_digits",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      M.get_trait_method (|
-                        "core::default::Default",
+                      |));
+                    ("many_digits",
+                      M.call_closure (|
                         Ty.path "bool",
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          Ty.path "bool",
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |))
-                ]))
+                      |))
+                  ])
+                (Ty.path "core::num::dec2flt::number::Number")))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -701,10 +721,15 @@ Module num.
                                         [ F ]
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::num::dec2flt::number::Number" ])
                                       ]
                                     |)
                                   |)) in
@@ -761,13 +786,15 @@ Module num.
                                                   []
                                                 |),
                                                 [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "core::num::dec2flt::number::Number",
-                                                      "mantissa"
-                                                    |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::num::dec2flt::number::Number",
+                                                        "mantissa"
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64")
                                                 ]
                                               |) in
                                             M.alloc (|
@@ -814,38 +841,42 @@ Module num.
                                                           []
                                                         |),
                                                         [
-                                                          M.read (| value |);
-                                                          M.call_closure (|
-                                                            F,
-                                                            M.get_trait_method (|
-                                                              "core::num::dec2flt::float::RawFloat",
+                                                          M.value_with_ty (M.read (| value |)) F;
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
                                                               F,
-                                                              [],
-                                                              [],
-                                                              "pow10_fast_path",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.cast
-                                                                (Ty.path "usize")
-                                                                (M.call_closure (|
-                                                                  Ty.path "i64",
-                                                                  UnOp.neg,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.SubPointer.get_struct_record_field (|
-                                                                        M.deref (|
-                                                                          M.read (| self |)
-                                                                        |),
-                                                                        "core::num::dec2flt::number::Number",
-                                                                        "exponent"
-                                                                      |)
-                                                                    |)
-                                                                  ]
-                                                                |))
-                                                            ]
-                                                          |)
+                                                              M.get_trait_method (|
+                                                                "core::num::dec2flt::float::RawFloat",
+                                                                F,
+                                                                [],
+                                                                [],
+                                                                "pow10_fast_path",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.cast
+                                                                    (Ty.path "usize")
+                                                                    (M.call_closure (|
+                                                                      Ty.path "i64",
+                                                                      UnOp.neg,
+                                                                      [
+                                                                        M.read (|
+                                                                          M.SubPointer.get_struct_record_field (|
+                                                                            M.deref (|
+                                                                              M.read (| self |)
+                                                                            |),
+                                                                            "core::num::dec2flt::number::Number",
+                                                                            "exponent"
+                                                                          |)
+                                                                        |)
+                                                                      ]
+                                                                    |)))
+                                                                  (Ty.path "usize")
+                                                              ]
+                                                            |))
+                                                            F
                                                         ]
                                                       |)));
                                                   fun γ =>
@@ -862,30 +893,36 @@ Module num.
                                                           []
                                                         |),
                                                         [
-                                                          M.read (| value |);
-                                                          M.call_closure (|
-                                                            F,
-                                                            M.get_trait_method (|
-                                                              "core::num::dec2flt::float::RawFloat",
+                                                          M.value_with_ty (M.read (| value |)) F;
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
                                                               F,
-                                                              [],
-                                                              [],
-                                                              "pow10_fast_path",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.cast
-                                                                (Ty.path "usize")
-                                                                (M.read (|
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    M.deref (| M.read (| self |) |),
-                                                                    "core::num::dec2flt::number::Number",
-                                                                    "exponent"
-                                                                  |)
-                                                                |))
-                                                            ]
-                                                          |)
+                                                              M.get_trait_method (|
+                                                                "core::num::dec2flt::float::RawFloat",
+                                                                F,
+                                                                [],
+                                                                [],
+                                                                "pow10_fast_path",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.cast
+                                                                    (Ty.path "usize")
+                                                                    (M.read (|
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |),
+                                                                        "core::num::dec2flt::number::Number",
+                                                                        "exponent"
+                                                                      |)
+                                                                    |)))
+                                                                  (Ty.path "usize")
+                                                              ]
+                                                            |))
+                                                            F
                                                         ]
                                                       |)))
                                                 ]
@@ -954,45 +991,54 @@ Module num.
                                                       []
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "u64" ],
+                                                          M.get_associated_function (|
+                                                            Ty.path "u64",
+                                                            "checked_mul",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "core::num::dec2flt::number::Number",
+                                                                  "mantissa"
+                                                                |)
+                                                              |))
+                                                              (Ty.path "u64");
+                                                            M.value_with_ty
+                                                              (M.read (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  get_constant (|
+                                                                    "core::num::dec2flt::number::INT_POW10",
+                                                                    Ty.apply
+                                                                      (Ty.path "array")
+                                                                      [
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          16
+                                                                      ]
+                                                                      [ Ty.path "u64" ]
+                                                                  |),
+                                                                  M.cast
+                                                                    (Ty.path "usize")
+                                                                    (M.read (| shift |))
+                                                                |)
+                                                              |))
+                                                              (Ty.path "u64")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
                                                           (Ty.path "core::option::Option")
                                                           []
-                                                          [ Ty.path "u64" ],
-                                                        M.get_associated_function (|
-                                                          Ty.path "u64",
-                                                          "checked_mul",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "core::num::dec2flt::number::Number",
-                                                              "mantissa"
-                                                            |)
-                                                          |);
-                                                          M.read (|
-                                                            M.SubPointer.get_array_field (|
-                                                              get_constant (|
-                                                                "core::num::dec2flt::number::INT_POW10",
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [
-                                                                    Value.Integer
-                                                                      IntegerKind.Usize
-                                                                      16
-                                                                  ]
-                                                                  [ Ty.path "u64" ]
-                                                              |),
-                                                              M.cast
-                                                                (Ty.path "usize")
-                                                                (M.read (| shift |))
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                          [ Ty.path "u64" ])
                                                     ]
                                                   |)
                                                 |),
@@ -1041,7 +1087,17 @@ Module num.
                                                                 [],
                                                                 []
                                                               |),
-                                                              [ M.read (| residual |) ]
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.read (| residual |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "core::option::Option")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "core::convert::Infallible"
+                                                                    ])
+                                                              ]
                                                             |)
                                                           |)
                                                         |)
@@ -1091,11 +1147,14 @@ Module num.
                                                       M.never_to_any (|
                                                         M.read (|
                                                           M.return_ (|
-                                                            Value.StructTuple
-                                                              "core::option::Option::None"
-                                                              []
-                                                              [ F ]
-                                                              []
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::option::Option::None"
+                                                                [])
+                                                              (Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [ F ])
                                                           |)
                                                         |)
                                                       |)));
@@ -1116,41 +1175,51 @@ Module num.
                                                   []
                                                 |),
                                                 [
-                                                  M.call_closure (|
-                                                    F,
-                                                    M.get_trait_method (|
-                                                      "core::num::dec2flt::float::RawFloat",
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
                                                       F,
-                                                      [],
-                                                      [],
-                                                      "from_u64",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| mantissa |) ]
-                                                  |);
-                                                  M.call_closure (|
-                                                    F,
-                                                    M.get_trait_method (|
-                                                      "core::num::dec2flt::float::RawFloat",
+                                                      M.get_trait_method (|
+                                                        "core::num::dec2flt::float::RawFloat",
+                                                        F,
+                                                        [],
+                                                        [],
+                                                        "from_u64",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| mantissa |))
+                                                          (Ty.path "u64")
+                                                      ]
+                                                    |))
+                                                    F;
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
                                                       F,
-                                                      [],
-                                                      [],
-                                                      "pow10_fast_path",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.cast
-                                                        (Ty.path "usize")
-                                                        (M.read (|
-                                                          get_constant (|
-                                                            "core::num::dec2flt::float::RawFloat::MAX_EXPONENT_FAST_PATH",
-                                                            Ty.path "i64"
-                                                          |)
-                                                        |))
-                                                    ]
-                                                  |)
+                                                      M.get_trait_method (|
+                                                        "core::num::dec2flt::float::RawFloat",
+                                                        F,
+                                                        [],
+                                                        [],
+                                                        "pow10_fast_path",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.cast
+                                                            (Ty.path "usize")
+                                                            (M.read (|
+                                                              get_constant (|
+                                                                "core::num::dec2flt::float::RawFloat::MAX_EXPONENT_FAST_PATH",
+                                                                Ty.path "i64"
+                                                              |)
+                                                            |)))
+                                                          (Ty.path "usize")
+                                                      ]
+                                                    |))
+                                                    F
                                                 ]
                                               |)
                                             |)
@@ -1191,7 +1260,7 @@ Module num.
                                                     [],
                                                     []
                                                   |),
-                                                  [ M.read (| value |) ]
+                                                  [ M.value_with_ty (M.read (| value |)) F ]
                                                 |)
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1201,16 +1270,18 @@ Module num.
                                   |) in
                                 M.alloc (|
                                   Ty.apply (Ty.path "core::option::Option") [] [ F ],
-                                  Value.StructTuple
-                                    "core::option::Option::Some"
-                                    []
-                                    [ F ]
-                                    [ M.read (| value |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::option::Option::Some"
+                                      [ M.read (| value |) ])
+                                    (Ty.apply (Ty.path "core::option::Option") [] [ F ])
                                 |)
                               |)));
                           fun γ =>
                             ltac:(M.monadic
-                              (Value.StructTuple "core::option::Option::None" [] [ F ] []))
+                              (M.value_with_ty
+                                (Value.StructTuple "core::option::Option::None" [])
+                                (Ty.apply (Ty.path "core::option::Option") [] [ F ])))
                         ]
                       |)
                     |)

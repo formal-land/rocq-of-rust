@@ -30,7 +30,7 @@ Module char.
                   []
                   [ Ty.path "char"; Ty.path "core::char::convert::CharTryFromError" ],
                 M.get_function (| "core::char::convert::char_try_from_u32", [], [] |),
-                [ M.read (| i |) ]
+                [ M.value_with_ty (M.read (| i |)) (Ty.path "u32") ]
               |)
             |),
             [
@@ -39,16 +39,16 @@ Module char.
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
                   let c := M.copy (| Ty.path "char", γ0_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "char" ]
-                    [ M.read (| c |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| c |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
-                  Value.StructTuple "core::option::Option::None" [] [ Ty.path "char" ] []))
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -105,7 +105,7 @@ Module char.
                               [],
                               []
                             |),
-                            [ M.read (| i |) ]
+                            [ M.value_with_ty (M.read (| i |)) (Ty.path "u32") ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                       |)));
@@ -121,7 +121,7 @@ Module char.
                   [],
                   [ Ty.path "u32"; Ty.path "char" ]
                 |),
-                [ M.read (| i |) ]
+                [ M.value_with_ty (M.read (| i |)) (Ty.path "u32") ]
               |)
             |)
           |)))
@@ -251,57 +251,68 @@ Module char.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.path "u8"; Ty.path "core::num::error::TryFromIntError" ],
+                    M.get_trait_method (|
+                      "core::convert::TryFrom",
+                      Ty.path "u8",
+                      [],
+                      [ Ty.path "u32" ],
+                      "try_from",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "u32",
+                          M.get_trait_method (|
+                            "core::convert::From",
+                            Ty.path "u32",
+                            [],
+                            [ Ty.path "char" ],
+                            "from",
+                            [],
+                            []
+                          |),
+                          [ M.value_with_ty (M.read (| c |)) (Ty.path "char") ]
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::result::Result")
                     []
-                    [ Ty.path "u8"; Ty.path "core::num::error::TryFromIntError" ],
-                  M.get_trait_method (|
-                    "core::convert::TryFrom",
-                    Ty.path "u8",
-                    [],
-                    [ Ty.path "u32" ],
-                    "try_from",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.path "u32",
-                      M.get_trait_method (|
-                        "core::convert::From",
-                        Ty.path "u32",
-                        [],
-                        [ Ty.path "char" ],
-                        "from",
-                        [],
-                        []
-                      |),
-                      [ M.read (| c |) ]
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.path "core::char::TryFromCharError",
-                            M.alloc (| Ty.path "core::num::error::TryFromIntError", α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (Value.StructTuple
-                                    "core::char::TryFromCharError"
-                                    []
-                                    []
-                                    [ Value.Tuple [] ]))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                    [ Ty.path "u8"; Ty.path "core::num::error::TryFromIntError" ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "core::char::TryFromCharError",
+                              M.alloc (| Ty.path "core::num::error::TryFromIntError", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::char::TryFromCharError"
+                                        [ Value.Tuple [] ])
+                                      (Ty.path "core::char::TryFromCharError")))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [ Ty.path "core::num::error::TryFromIntError" ]
+                    (Ty.path "core::char::TryFromCharError"))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -353,57 +364,68 @@ Module char.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.path "u16"; Ty.path "core::num::error::TryFromIntError" ],
+                    M.get_trait_method (|
+                      "core::convert::TryFrom",
+                      Ty.path "u16",
+                      [],
+                      [ Ty.path "u32" ],
+                      "try_from",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "u32",
+                          M.get_trait_method (|
+                            "core::convert::From",
+                            Ty.path "u32",
+                            [],
+                            [ Ty.path "char" ],
+                            "from",
+                            [],
+                            []
+                          |),
+                          [ M.value_with_ty (M.read (| c |)) (Ty.path "char") ]
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::result::Result")
                     []
-                    [ Ty.path "u16"; Ty.path "core::num::error::TryFromIntError" ],
-                  M.get_trait_method (|
-                    "core::convert::TryFrom",
-                    Ty.path "u16",
-                    [],
-                    [ Ty.path "u32" ],
-                    "try_from",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.path "u32",
-                      M.get_trait_method (|
-                        "core::convert::From",
-                        Ty.path "u32",
-                        [],
-                        [ Ty.path "char" ],
-                        "from",
-                        [],
-                        []
-                      |),
-                      [ M.read (| c |) ]
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.path "core::char::TryFromCharError",
-                            M.alloc (| Ty.path "core::num::error::TryFromIntError", α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (Value.StructTuple
-                                    "core::char::TryFromCharError"
-                                    []
-                                    []
-                                    [ Value.Tuple [] ]))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                    [ Ty.path "u16"; Ty.path "core::num::error::TryFromIntError" ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.path "core::char::TryFromCharError",
+                              M.alloc (| Ty.path "core::num::error::TryFromIntError", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::char::TryFromCharError"
+                                        [ Value.Tuple [] ])
+                                      (Ty.path "core::char::TryFromCharError")))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [ Ty.path "core::num::error::TryFromIntError" ]
+                    (Ty.path "core::char::TryFromCharError"))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -466,40 +488,45 @@ Module char.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::char::convert::ParseCharError" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::char::convert::ParseCharError"
-              []
-              []
-              [
-                ("kind",
-                  M.call_closure (|
-                    Ty.path "core::char::convert::CharErrorKind",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::char::convert::ParseCharError"
+                [
+                  ("kind",
+                    M.call_closure (|
                       Ty.path "core::char::convert::CharErrorKind",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "core::char::convert::CharErrorKind",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::convert::ParseCharError",
-                              "kind"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::char::convert::ParseCharError",
+                                  "kind"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "core::char::convert::CharErrorKind" ])
+                      ]
+                    |))
+                ])
+              (Ty.path "core::char::convert::ParseCharError")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -539,44 +566,52 @@ Module char.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ParseCharError" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "kind" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::char::convert::CharErrorKind" ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "core::char::convert::CharErrorKind" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::char::convert::ParseCharError",
-                                "kind"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ParseCharError" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "kind" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::char::convert::CharErrorKind" ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::char::convert::CharErrorKind" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::char::convert::ParseCharError",
+                                  "kind"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -633,22 +668,26 @@ Module char.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::char::convert::ParseCharError",
-                    "kind"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::char::convert::ParseCharError",
-                    "kind"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::char::convert::ParseCharError",
+                      "kind"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::convert::CharErrorKind" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::char::convert::ParseCharError",
+                      "kind"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::convert::CharErrorKind" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -782,31 +821,41 @@ Module char.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.match_operator (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                  self,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::char::convert::CharErrorKind::EmptyString"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EmptyString" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::char::convert::CharErrorKind::TooManyChars"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TooManyChars" |) |) |)))
-                  ]
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.match_operator (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    self,
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::char::convert::CharErrorKind::EmptyString"
+                            |) in
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "EmptyString" |) |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::char::convert::CharErrorKind::TooManyChars"
+                            |) in
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "TooManyChars" |) |)
+                          |)))
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -860,7 +909,11 @@ Module char.
                     [],
                     [ Ty.path "core::char::convert::CharErrorKind" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::convert::CharErrorKind" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -870,7 +923,11 @@ Module char.
                     [],
                     [ Ty.path "core::char::convert::CharErrorKind" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::convert::CharErrorKind" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -1015,25 +1072,36 @@ Module char.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                      M.get_trait_method (|
-                        "core::error::Error",
-                        Ty.path "core::char::convert::ParseCharError",
-                        [],
-                        [],
-                        "description",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                        M.get_trait_method (|
+                          "core::error::Error",
+                          Ty.path "core::char::convert::ParseCharError",
+                          [],
+                          [],
+                          "description",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "core::char::convert::ParseCharError" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1074,7 +1142,11 @@ Module char.
                 M.call_closure (|
                   Ty.path "core::str::iter::Chars",
                   M.get_associated_function (| Ty.path "str", "chars", [], [] |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply
@@ -1105,7 +1177,11 @@ Module char.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.MutRef, chars |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, chars |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::str::iter::Chars" ])
+                          ]
                         |);
                         M.call_closure (|
                           Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
@@ -1118,7 +1194,11 @@ Module char.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.MutRef, chars |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, chars |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::str::iter::Chars" ])
+                          ]
                         |)
                       ]
                   |),
@@ -1128,24 +1208,27 @@ Module char.
                         (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                         let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                         let _ := M.is_struct_tuple (| γ0_0, "core::option::Option::None" |) in
-                        Value.StructTuple
-                          "core::result::Result::Err"
-                          []
-                          [ Ty.path "char"; Ty.path "core::char::convert::ParseCharError" ]
-                          [
-                            Value.mkStructRecord
-                              "core::char::convert::ParseCharError"
-                              []
-                              []
-                              [
-                                ("kind",
-                                  Value.StructTuple
-                                    "core::char::convert::CharErrorKind::EmptyString"
-                                    []
-                                    []
-                                    [])
-                              ]
-                          ]));
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Err"
+                            [
+                              M.value_with_ty
+                                (Value.mkStructRecord
+                                  "core::char::convert::ParseCharError"
+                                  [
+                                    ("kind",
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::char::convert::CharErrorKind::EmptyString"
+                                          [])
+                                        (Ty.path "core::char::convert::CharErrorKind"))
+                                  ])
+                                (Ty.path "core::char::convert::ParseCharError")
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "char"; Ty.path "core::char::convert::ParseCharError" ])));
                     fun γ =>
                       ltac:(M.monadic
                         (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -1158,31 +1241,35 @@ Module char.
                           |) in
                         let c := M.copy (| Ty.path "char", γ1_0 |) in
                         let _ := M.is_struct_tuple (| γ0_1, "core::option::Option::None" |) in
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [ Ty.path "char"; Ty.path "core::char::convert::ParseCharError" ]
-                          [ M.read (| c |) ]));
+                        M.value_with_ty
+                          (Value.StructTuple "core::result::Result::Ok" [ M.read (| c |) ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "char"; Ty.path "core::char::convert::ParseCharError" ])));
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::result::Result::Err"
-                          []
-                          [ Ty.path "char"; Ty.path "core::char::convert::ParseCharError" ]
-                          [
-                            Value.mkStructRecord
-                              "core::char::convert::ParseCharError"
-                              []
-                              []
-                              [
-                                ("kind",
-                                  Value.StructTuple
-                                    "core::char::convert::CharErrorKind::TooManyChars"
-                                    []
-                                    []
-                                    [])
-                              ]
-                          ]))
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Err"
+                            [
+                              M.value_with_ty
+                                (Value.mkStructRecord
+                                  "core::char::convert::ParseCharError"
+                                  [
+                                    ("kind",
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::char::convert::CharErrorKind::TooManyChars"
+                                          [])
+                                        (Ty.path "core::char::convert::CharErrorKind"))
+                                  ])
+                                (Ty.path "core::char::convert::ParseCharError")
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "char"; Ty.path "core::char::convert::ParseCharError" ])))
                   ]
                 |)
               |)
@@ -1249,12 +1336,14 @@ Module char.
                               Ty.path "u32",
                               M.get_associated_function (| Ty.path "u32", "wrapping_sub", [], [] |),
                               [
-                                M.call_closure (|
-                                  Ty.path "u32",
-                                  BinOp.Wrap.bit_xor,
-                                  [ M.read (| i |); Value.Integer IntegerKind.U32 55296 ]
-                                |);
-                                Value.Integer IntegerKind.U32 2048
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "u32",
+                                    BinOp.Wrap.bit_xor,
+                                    [ M.read (| i |); Value.Integer IntegerKind.U32 55296 ]
+                                  |))
+                                  (Ty.path "u32");
+                                M.value_with_ty (Value.Integer IntegerKind.U32 2048) (Ty.path "u32")
                               ]
                             |);
                             M.call_closure (|
@@ -1269,34 +1358,40 @@ Module char.
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [ Ty.path "char"; Ty.path "core::char::convert::CharTryFromError" ]
-                    [
-                      Value.StructTuple
-                        "core::char::convert::CharTryFromError"
-                        []
-                        []
-                        [ Value.Tuple [] ]
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::char::convert::CharTryFromError"
+                            [ Value.Tuple [] ])
+                          (Ty.path "core::char::convert::CharTryFromError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.path "char"; Ty.path "core::char::convert::CharTryFromError" ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.path "char"; Ty.path "core::char::convert::CharTryFromError" ]
-                    [
-                      M.call_closure (|
-                        Ty.path "char",
-                        M.get_function (|
-                          "core::intrinsics::transmute",
-                          [],
-                          [ Ty.path "u32"; Ty.path "char" ]
-                        |),
-                        [ M.read (| i |) ]
-                      |)
-                    ]))
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.call_closure (|
+                          Ty.path "char",
+                          M.get_function (|
+                            "core::intrinsics::transmute",
+                            [],
+                            [ Ty.path "u32"; Ty.path "char" ]
+                          |),
+                          [ M.value_with_ty (M.read (| i |)) (Ty.path "u32") ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.path "char"; Ty.path "core::char::convert::CharTryFromError" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1329,7 +1424,7 @@ Module char.
                 []
                 [ Ty.path "char"; Ty.path "core::char::convert::CharTryFromError" ],
               M.get_function (| "core::char::convert::char_try_from_u32", [], [] |),
-              [ M.read (| i |) ]
+              [ M.value_with_ty (M.read (| i |)) (Ty.path "u32") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -1421,36 +1516,42 @@ Module char.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CharTryFromError" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::char::convert::CharTryFromError",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CharTryFromError" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::char::convert::CharTryFromError",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1507,22 +1608,26 @@ Module char.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::char::convert::CharTryFromError",
-                    0
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::char::convert::CharTryFromError",
-                    0
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::char::convert::CharTryFromError",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::char::convert::CharTryFromError",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1598,11 +1703,15 @@ Module char.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| mk_str (| "converted integer out of range for `char`" |) |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "converted integer out of range for `char`" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1660,37 +1769,49 @@ Module char.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "from_digit: radix is too high (maximum 36)"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "from_digit: radix is too high (maximum 36)"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -1741,48 +1862,57 @@ Module char.
                                       M.read (| γ |),
                                       Value.Bool true
                                     |) in
-                                  Value.StructTuple
-                                    "core::option::Option::Some"
-                                    []
-                                    [ Ty.path "char" ]
-                                    [
-                                      M.cast
-                                        (Ty.path "char")
-                                        (M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.add,
-                                          [ M.read (| UnsupportedLiteral |); M.read (| num |) ]
-                                        |))
-                                    ]));
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::option::Option::Some"
+                                      [
+                                        M.cast
+                                          (Ty.path "char")
+                                          (M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.add,
+                                            [ M.read (| UnsupportedLiteral |); M.read (| num |) ]
+                                          |))
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "char" ])));
                               fun γ =>
                                 ltac:(M.monadic
-                                  (Value.StructTuple
-                                    "core::option::Option::Some"
-                                    []
-                                    [ Ty.path "char" ]
-                                    [
-                                      M.cast
-                                        (Ty.path "char")
-                                        (M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.sub,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "u8",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| UnsupportedLiteral |); M.read (| num |) ]
-                                            |);
-                                            Value.Integer IntegerKind.U8 10
-                                          ]
-                                        |))
-                                    ]))
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::option::Option::Some"
+                                      [
+                                        M.cast
+                                          (Ty.path "char")
+                                          (M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.sub,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "u8",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| UnsupportedLiteral |); M.read (| num |)
+                                                ]
+                                              |);
+                                              Value.Integer IntegerKind.U8 10
+                                            ]
+                                          |))
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "char" ])))
                             ]
                           |)
                         |)
                       |)));
                   fun γ =>
                     ltac:(M.monadic
-                      (Value.StructTuple "core::option::Option::None" [] [ Ty.path "char" ] []))
+                      (M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ])))
                 ]
               |)
             |)

@@ -37,32 +37,34 @@ Module pin.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ],
               self
             |) in
-          Value.mkStructRecord
-            "core::pin::Pin"
-            []
-            [ Ptr ]
-            [
-              ("__pointer",
-                M.call_closure (|
-                  Ptr,
-                  M.get_trait_method (| "core::clone::Clone", Ptr, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::pin::Pin"
+              [
+                ("__pointer",
+                  M.call_closure (|
+                    Ptr,
+                    M.get_trait_method (| "core::clone::Clone", Ptr, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::pin::Pin",
-                            "__pointer"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::pin::Pin",
+                                "__pointer"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ptr ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -111,48 +113,72 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Q ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -190,48 +216,72 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Q ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -301,48 +351,72 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Q ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -380,48 +454,72 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Q ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -459,48 +557,72 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Q ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -538,48 +660,72 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Q ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -617,48 +763,72 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Q ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Q ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Q "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -716,48 +886,72 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -806,28 +1000,42 @@ Module pin.
                   [ H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ H ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -869,7 +1077,7 @@ Module pin.
               [],
               []
             |),
-            [ M.read (| pointer |) ]
+            [ M.value_with_ty (M.read (| pointer |)) Ptr ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -918,7 +1126,9 @@ Module pin.
       | [], [], [ pointer ] =>
         ltac:(M.monadic
           (let pointer := M.alloc (| Ptr, pointer |) in
-          Value.mkStructRecord "core::pin::Pin" [] [ Ptr ] [ ("__pointer", M.read (| pointer |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord "core::pin::Pin" [ ("__pointer", M.read (| pointer |)) ])
+            (Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -969,41 +1179,48 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ptr,
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::pin::Pin",
-                              "__pointer"
-                            |)
-                          |)
-                        ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ptr,
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::pin::Pin",
+                                  "__pointer"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ptr ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1055,41 +1272,48 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
-                        M.get_trait_method (|
-                          "core::ops::deref::DerefMut",
-                          Ptr,
-                          [],
-                          [],
-                          "deref_mut",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::pin::Pin",
-                              "__pointer"
-                            |)
-                          |)
-                        ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ],
+                          M.get_trait_method (|
+                            "core::ops::deref::DerefMut",
+                            Ptr,
+                            [],
+                            [],
+                            "deref_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::pin::Pin",
+                                  "__pointer"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ptr ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1165,29 +1389,46 @@ Module pin.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ],
-                    M.get_associated_function (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
                       Ty.apply
-                        (Ty.path "core::pin::Pin")
+                        (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "&mut")
+                        [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::pin::Pin")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ]
+                          ],
+                        "get_unchecked_mut",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| self |))
+                          (Ty.apply
+                            (Ty.path "core::pin::Pin")
                             []
-                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ]
-                        ],
-                      "get_unchecked_mut",
-                      [],
-                      []
-                    |),
-                    [ M.read (| self |) ]
+                            [
+                              Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ]
+                            ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1241,14 +1482,16 @@ Module pin.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::pin::Pin",
-                          "__pointer"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::pin::Pin",
+                            "__pointer"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ptr ])
                     ]
                   |)
                 |),
@@ -1348,9 +1591,11 @@ Module pin.
                   []
                 |),
                 [
-                  M.read (| func |);
-                  Value.Tuple
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| pointer |) |) |) ]
+                  M.value_with_ty (M.read (| func |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| pointer |) |) |) ])
+                    (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                 ]
               |) in
             M.alloc (|
@@ -1363,7 +1608,11 @@ Module pin.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| new_pointer |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| new_pointer |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ U ])
+                ]
               |)
             |)
           |)))
@@ -1423,7 +1672,11 @@ Module pin.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| r |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| r |) |) |))
+                (Ty.apply (Ty.path "&") [] [ T ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1454,21 +1707,25 @@ Module pin.
               Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ T ] ],
               self
             |) in
-          Value.mkStructRecord
-            "core::pin::Pin"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              ("__pointer",
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (| self, "core::pin::Pin", "__pointer" |)
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::pin::Pin"
+              [
+                ("__pointer",
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::pin::Pin",
+                          "__pointer"
+                        |)
+                      |)
                     |)
-                  |)
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1604,7 +1861,14 @@ Module pin.
                       [],
                       []
                     |),
-                    [ M.read (| self |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply
+                          (Ty.path "core::pin::Pin")
+                          []
+                          [ Ty.apply (Ty.path "&mut") [] [ T ] ])
+                    ]
                   |)
                 |)
               |) in
@@ -1621,9 +1885,11 @@ Module pin.
                   []
                 |),
                 [
-                  M.read (| func |);
-                  Value.Tuple
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| pointer |) |) |) ]
+                  M.value_with_ty (M.read (| func |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| pointer |) |) |) ])
+                    (Ty.tuple [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                 ]
               |) in
             M.alloc (|
@@ -1636,7 +1902,11 @@ Module pin.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| new_pointer |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| new_pointer |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ U ])
+                ]
               |)
             |)
           |)))
@@ -1669,7 +1939,11 @@ Module pin.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| r |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| r |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ T ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1728,8 +2002,33 @@ Module pin.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::pin::Pin")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]
+                        ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                        "as_ref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                      ]
+                    |))
+                    (Ty.apply
                       (Ty.path "core::pin::Pin")
                       []
                       [
@@ -1737,15 +2036,7 @@ Module pin.
                           (Ty.path "&")
                           []
                           [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target" ]
-                      ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                      "as_ref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                      ])
                 ]
               |)
             |)
@@ -1808,8 +2099,40 @@ Module pin.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::pin::Pin")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ops::deref::Deref"
+                                    []
+                                    []
+                                    Ptr
+                                    "Target"
+                                ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
+                            "as_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ] ])
+                          ]
+                        |))
+                        (Ty.apply
                           (Ty.path "core::pin::Pin")
                           []
                           [
@@ -1818,15 +2141,7 @@ Module pin.
                               []
                               [ Ty.associated_in_trait "core::ops::deref::Deref" [] [] Ptr "Target"
                               ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::pin::Pin") [] [ Ptr ],
-                          "as_mut",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-                      |)
+                          ])
                     ]
                   |)
                 |)
@@ -1899,20 +2214,24 @@ Module pin.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_trait_method (| "core::fmt::Debug", Ptr, [], [], "fmt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::pin::Pin",
-                      "__pointer"
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::pin::Pin",
+                        "__pointer"
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ptr ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1955,20 +2274,24 @@ Module pin.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_trait_method (| "core::fmt::Display", Ptr, [], [], "fmt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::pin::Pin",
-                      "__pointer"
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::pin::Pin",
+                        "__pointer"
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ptr ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2011,20 +2334,24 @@ Module pin.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_trait_method (| "core::fmt::Pointer", Ptr, [], [], "fmt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::pin::Pin",
-                      "__pointer"
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::pin::Pin",
+                        "__pointer"
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ptr ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

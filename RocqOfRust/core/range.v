@@ -24,52 +24,56 @@ Module range.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::range::Range") [] [ Idx ] ],
               self
             |) in
-          Value.mkStructRecord
-            "core::range::Range"
-            []
-            [ Idx ]
-            [
-              ("start",
-                M.call_closure (|
-                  Idx,
-                  M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::range::Range"
+              [
+                ("start",
+                  M.call_closure (|
+                    Idx,
+                    M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::range::Range",
-                            "start"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::range::Range",
+                                "start"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("end_",
-                M.call_closure (|
-                  Idx,
-                  M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Idx ])
+                    ]
+                  |));
+                ("end_",
+                  M.call_closure (|
+                    Idx,
+                    M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::range::Range",
-                            "end"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::range::Range",
+                                "end"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Idx ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::range::Range") [] [ Idx ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -105,24 +109,40 @@ Module range.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "core::range::Range"
-            []
-            [ Idx ]
-            [
-              ("start",
-                M.call_closure (|
-                  Idx,
-                  M.get_trait_method (| "core::default::Default", Idx, [], [], "default", [], [] |),
-                  []
-                |));
-              ("end_",
-                M.call_closure (|
-                  Idx,
-                  M.get_trait_method (| "core::default::Default", Idx, [], [], "default", [], [] |),
-                  []
-                |))
-            ]))
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "core::range::Range"
+              [
+                ("start",
+                  M.call_closure (|
+                    Idx,
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Idx,
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |));
+                ("end_",
+                  M.call_closure (|
+                    Idx,
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Idx,
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
+                    []
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::range::Range") [] [ Idx ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -173,22 +193,26 @@ Module range.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", Idx, [], [ Idx ], "eq", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::range::Range",
-                    "start"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::range::Range",
-                    "start"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::range::Range",
+                      "start"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Idx ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::range::Range",
+                      "start"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Idx ])
               ]
             |),
             ltac:(M.monadic
@@ -196,22 +220,26 @@ Module range.
                 Ty.path "bool",
                 M.get_trait_method (| "core::cmp::PartialEq", Idx, [], [ Idx ], "eq", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::Range",
-                      "end"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "core::range::Range",
-                      "end"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::Range",
+                        "end"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "core::range::Range",
+                        "end"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ])
                 ]
               |)))
           |)))
@@ -287,20 +315,24 @@ Module range.
                 Ty.tuple [],
                 M.get_trait_method (| "core::hash::Hash", Idx, [], [], "hash", [], [ __H ] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::range::Range",
-                          "start"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::range::Range",
+                            "start"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -309,20 +341,24 @@ Module range.
                 Ty.tuple [],
                 M.get_trait_method (| "core::hash::Hash", Idx, [], [], "hash", [], [ __H ] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::range::Range",
-                          "end"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::range::Range",
+                            "end"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -408,168 +444,44 @@ Module range.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_trait_method (| "core::fmt::Debug", Idx, [], [], "fmt", [], [] |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::range::Range",
-                                  "start"
-                                |)
-                              |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Break",
-                              0
-                            |) in
-                          let residual :=
-                            M.copy (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply
                                 (Ty.path "core::result::Result")
                                 []
-                                [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ],
-                              γ0_0
-                            |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                  M.get_trait_method (|
-                                    "core::ops::try_trait::FromResidual",
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [
-                                          Ty.path "core::convert::Infallible";
-                                          Ty.path "core::fmt::Error"
-                                        ]
-                                    ],
-                                    "from_residual",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| residual |) ]
-                                |)
-                              |)
-                            |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Continue",
-                              0
-                            |) in
-                          let val := M.copy (| Ty.tuple [], γ0_0 |) in
-                          M.read (| val |)))
-                    ]
-                  |) in
-                let~ _ : Ty.tuple [] :=
-                  M.match_operator (|
-                    Ty.tuple [],
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::ops::control_flow::ControlFlow")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
-                          Ty.tuple []
-                        ],
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
-                            Ty.tuple []
-                          ],
-                        M.get_trait_method (|
-                          "core::ops::try_trait::Try",
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                          [],
-                          [],
-                          "branch",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::Formatter",
-                              "write_fmt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_trait_method (|
+                                "core::fmt::Debug",
+                                Idx,
+                                [],
+                                [],
+                                "fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| ".." |) ]
-                                        |)
-                                      |)
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::range::Range",
+                                      "start"
                                     |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Idx ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| fmt |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -618,7 +530,17 @@ Module range.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -673,24 +595,69 @@ Module range.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Formatter",
+                                "write_fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| fmt |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array [ mk_str (| ".." |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_trait_method (| "core::fmt::Debug", Idx, [], [], "fmt", [], [] |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::range::Range",
-                                  "end"
-                                |)
-                              |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -739,7 +706,168 @@ Module range.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val := M.copy (| Ty.tuple [], γ0_0 |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
+                          Ty.tuple []
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
+                            Ty.tuple []
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_trait_method (|
+                                "core::fmt::Debug",
+                                Idx,
+                                [],
+                                [],
+                                "fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::range::Range",
+                                      "end"
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Idx ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| fmt |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -761,11 +889,12 @@ Module range.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                 |)
               |)))
           |)))
@@ -812,19 +941,28 @@ Module range.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::range::Range") [] [ Idx ],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "core::range::Range") [] [ Idx ],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply (Ty.path "core::range::Range") [] [ Idx ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::range::Range") [] [ Idx ] ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::range::Range") [] [ Idx ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -867,8 +1005,12 @@ Module range.
               [ U ]
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| item |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::range::Range") [] [ Idx ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| item |) |) |))
+                (Ty.apply (Ty.path "&") [] [ U ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -903,22 +1045,26 @@ Module range.
                 Ty.path "bool",
                 M.get_trait_method (| "core::cmp::PartialOrd", Idx, [], [ Idx ], "lt", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::Range",
-                      "start"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::Range",
-                      "end"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::Range",
+                        "start"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::Range",
+                        "end"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ])
                 ]
               |)
             ]
@@ -952,25 +1098,25 @@ Module range.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::range::Range") [] [ T ] ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Included"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::Range",
-                      "start"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Included"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::Range",
+                        "start"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -989,25 +1135,25 @@ Module range.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::range::Range") [] [ T ] ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Excluded"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::Range",
-                      "end"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Excluded"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::Range",
+                        "end"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1047,24 +1193,24 @@ Module range.
                 [ Ty.apply (Ty.path "core::range::Range") [] [ Ty.apply (Ty.path "&") [] [ T ] ] ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Included"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::Range",
-                      "start"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Included"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::Range",
+                        "start"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1086,24 +1232,24 @@ Module range.
                 [ Ty.apply (Ty.path "core::range::Range") [] [ Ty.apply (Ty.path "&") [] [ T ] ] ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Excluded"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::Range",
-                      "end"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Excluded"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::Range",
+                        "end"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1135,20 +1281,20 @@ Module range.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| Ty.apply (Ty.path "core::range::Range") [] [ T ], value |) in
-          Value.mkStructRecord
-            "core::ops::range::Range"
-            []
-            [ T ]
-            [
-              ("start",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (| value, "core::range::Range", "start" |)
-                |));
-              ("end_",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (| value, "core::range::Range", "end" |)
-                |))
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::ops::range::Range"
+              [
+                ("start",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (| value, "core::range::Range", "start" |)
+                  |));
+                ("end_",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (| value, "core::range::Range", "end" |)
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Range") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1177,24 +1323,28 @@ Module range.
         ltac:(M.monadic
           (let value :=
             M.alloc (| Ty.apply (Ty.path "core::ops::range::Range") [] [ T ], value |) in
-          Value.mkStructRecord
-            "core::range::Range"
-            []
-            [ T ]
-            [
-              ("start",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    value,
-                    "core::ops::range::Range",
-                    "start"
-                  |)
-                |));
-              ("end_",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (| value, "core::ops::range::Range", "end" |)
-                |))
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::range::Range"
+              [
+                ("start",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      value,
+                      "core::ops::range::Range",
+                      "start"
+                    |)
+                  |));
+                ("end_",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      value,
+                      "core::ops::range::Range",
+                      "end"
+                    |)
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::range::Range") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1234,52 +1384,56 @@ Module range.
                 [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ] ],
               self
             |) in
-          Value.mkStructRecord
-            "core::range::RangeInclusive"
-            []
-            [ Idx ]
-            [
-              ("start",
-                M.call_closure (|
-                  Idx,
-                  M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::range::RangeInclusive"
+              [
+                ("start",
+                  M.call_closure (|
+                    Idx,
+                    M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::range::RangeInclusive",
-                            "start"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::range::RangeInclusive",
+                                "start"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("end_",
-                M.call_closure (|
-                  Idx,
-                  M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Idx ])
+                    ]
+                  |));
+                ("end_",
+                  M.call_closure (|
+                    Idx,
+                    M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::range::RangeInclusive",
-                            "end"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::range::RangeInclusive",
+                                "end"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Idx ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1352,22 +1506,26 @@ Module range.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", Idx, [], [ Idx ], "eq", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::range::RangeInclusive",
-                    "start"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::range::RangeInclusive",
-                    "start"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::range::RangeInclusive",
+                      "start"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Idx ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::range::RangeInclusive",
+                      "start"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Idx ])
               ]
             |),
             ltac:(M.monadic
@@ -1375,22 +1533,26 @@ Module range.
                 Ty.path "bool",
                 M.get_trait_method (| "core::cmp::PartialEq", Idx, [], [ Idx ], "eq", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeInclusive",
-                      "end"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "core::range::RangeInclusive",
-                      "end"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeInclusive",
+                        "end"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "core::range::RangeInclusive",
+                        "end"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ])
                 ]
               |)))
           |)))
@@ -1475,20 +1637,24 @@ Module range.
                 Ty.tuple [],
                 M.get_trait_method (| "core::hash::Hash", Idx, [], [], "hash", [], [ __H ] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::range::RangeInclusive",
-                          "start"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::range::RangeInclusive",
+                            "start"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -1497,20 +1663,24 @@ Module range.
                 Ty.tuple [],
                 M.get_trait_method (| "core::hash::Hash", Idx, [], [], "hash", [], [ __H ] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::range::RangeInclusive",
-                          "end"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::range::RangeInclusive",
+                            "end"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -1600,168 +1770,44 @@ Module range.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_trait_method (| "core::fmt::Debug", Idx, [], [], "fmt", [], [] |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::range::RangeInclusive",
-                                  "start"
-                                |)
-                              |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Break",
-                              0
-                            |) in
-                          let residual :=
-                            M.copy (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply
                                 (Ty.path "core::result::Result")
                                 []
-                                [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ],
-                              γ0_0
-                            |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                  M.get_trait_method (|
-                                    "core::ops::try_trait::FromResidual",
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [
-                                          Ty.path "core::convert::Infallible";
-                                          Ty.path "core::fmt::Error"
-                                        ]
-                                    ],
-                                    "from_residual",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| residual |) ]
-                                |)
-                              |)
-                            |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Continue",
-                              0
-                            |) in
-                          let val := M.copy (| Ty.tuple [], γ0_0 |) in
-                          M.read (| val |)))
-                    ]
-                  |) in
-                let~ _ : Ty.tuple [] :=
-                  M.match_operator (|
-                    Ty.tuple [],
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::ops::control_flow::ControlFlow")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
-                          Ty.tuple []
-                        ],
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
-                            Ty.tuple []
-                          ],
-                        M.get_trait_method (|
-                          "core::ops::try_trait::Try",
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                          [],
-                          [],
-                          "branch",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::Formatter",
-                              "write_fmt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_trait_method (|
+                                "core::fmt::Debug",
+                                Idx,
+                                [],
+                                [],
+                                "fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| "..=" |) ]
-                                        |)
-                                      |)
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::range::RangeInclusive",
+                                      "start"
                                     |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Idx ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| fmt |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -1810,7 +1856,17 @@ Module range.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -1865,24 +1921,69 @@ Module range.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Formatter",
+                                "write_fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| fmt |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array [ mk_str (| "..=" |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_trait_method (| "core::fmt::Debug", Idx, [], [], "fmt", [], [] |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::range::RangeInclusive",
-                                  "end"
-                                |)
-                              |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -1931,7 +2032,168 @@ Module range.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
+                                |)
+                              |)
+                            |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Continue",
+                              0
+                            |) in
+                          let val := M.copy (| Ty.tuple [], γ0_0 |) in
+                          M.read (| val |)))
+                    ]
+                  |) in
+                let~ _ : Ty.tuple [] :=
+                  M.match_operator (|
+                    Ty.tuple [],
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "core::ops::control_flow::ControlFlow")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
+                          Ty.tuple []
+                        ],
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::ops::control_flow::ControlFlow")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ];
+                            Ty.tuple []
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::try_trait::Try",
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                          [],
+                          [],
+                          "branch",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_trait_method (|
+                                "core::fmt::Debug",
+                                Idx,
+                                [],
+                                [],
+                                "fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::range::RangeInclusive",
+                                      "end"
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Idx ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| fmt |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
+                        ]
+                      |)
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ,
+                              "core::ops::control_flow::ControlFlow::Break",
+                              0
+                            |) in
+                          let residual :=
+                            M.copy (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "core::convert::Infallible"; Ty.path "core::fmt::Error" ],
+                              γ0_0
+                            |) in
+                          M.never_to_any (|
+                            M.read (|
+                              M.return_ (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::FromResidual",
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ]
+                                    ],
+                                    "from_residual",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -1953,11 +2215,12 @@ Module range.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                 |)
               |)))
           |)))
@@ -2013,8 +2276,15 @@ Module range.
               [ U ]
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| item |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| item |) |) |))
+                (Ty.apply (Ty.path "&") [] [ U ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2052,22 +2322,26 @@ Module range.
                 Ty.path "bool",
                 M.get_trait_method (| "core::cmp::PartialOrd", Idx, [], [ Idx ], "le", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeInclusive",
-                      "start"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeInclusive",
-                      "end"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeInclusive",
+                        "start"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeInclusive",
+                        "end"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Idx ])
                 ]
               |)
             ]
@@ -2110,19 +2384,28 @@ Module range.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ] ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Idx ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2154,35 +2437,35 @@ Module range.
               Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ],
               self
             |) in
-          Value.mkStructRecord
-            "core::range::Range"
-            []
-            [ Ty.path "usize" ]
-            [
-              ("start",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::range::RangeInclusive",
-                    "start"
-                  |)
-                |));
-              ("end_",
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.add,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::range::RangeInclusive",
-                        "end"
-                      |)
-                    |);
-                    Value.Integer IntegerKind.Usize 1
-                  ]
-                |))
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::range::Range"
+              [
+                ("start",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::range::RangeInclusive",
+                      "start"
+                    |)
+                  |));
+                ("end_",
+                  M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.add,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::range::RangeInclusive",
+                          "end"
+                        |)
+                      |);
+                      Value.Integer IntegerKind.Usize 1
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2213,25 +2496,25 @@ Module range.
                 [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ T ] ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Included"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeInclusive",
-                      "start"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Included"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeInclusive",
+                        "start"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2253,25 +2536,25 @@ Module range.
                 [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ T ] ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Included"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeInclusive",
-                      "end"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Included"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeInclusive",
+                        "end"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2316,24 +2599,24 @@ Module range.
                 ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Included"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeInclusive",
-                      "start"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Included"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeInclusive",
+                        "start"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2360,24 +2643,24 @@ Module range.
                 ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Included"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeInclusive",
-                      "end"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Included"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeInclusive",
+                        "end"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2420,20 +2703,24 @@ Module range.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  value,
-                  "core::range::RangeInclusive",
-                  "start"
-                |)
-              |);
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  value,
-                  "core::range::RangeInclusive",
-                  "end"
-                |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    value,
+                    "core::range::RangeInclusive",
+                    "start"
+                  |)
+                |))
+                T;
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    value,
+                    "core::range::RangeInclusive",
+                    "end"
+                  |)
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2508,37 +2795,49 @@ Module range.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "attempted to convert from an exhausted `legacy::RangeInclusive` (unspecified behavior)"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "attempted to convert from an exhausted `legacy::RangeInclusive` (unspecified behavior)"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -2559,7 +2858,11 @@ Module range.
                       [],
                       []
                     |),
-                    [ M.read (| value |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| value |))
+                        (Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ T ])
+                    ]
                   |)
                 |),
                 [
@@ -2569,11 +2872,11 @@ Module range.
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                       let start := M.copy (| T, γ0_0 |) in
                       let end_ := M.copy (| T, γ0_1 |) in
-                      Value.mkStructRecord
-                        "core::range::RangeInclusive"
-                        []
-                        [ T ]
-                        [ ("start", M.read (| start |)); ("end_", M.read (| end_ |)) ]))
+                      M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::range::RangeInclusive"
+                          [ ("start", M.read (| start |)); ("end_", M.read (| end_ |)) ])
+                        (Ty.apply (Ty.path "core::range::RangeInclusive") [] [ T ])))
                 ]
               |)
             |)
@@ -2614,32 +2917,34 @@ Module range.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ] ],
               self
             |) in
-          Value.mkStructRecord
-            "core::range::RangeFrom"
-            []
-            [ Idx ]
-            [
-              ("start",
-                M.call_closure (|
-                  Idx,
-                  M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::range::RangeFrom"
+              [
+                ("start",
+                  M.call_closure (|
+                    Idx,
+                    M.get_trait_method (| "core::clone::Clone", Idx, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::range::RangeFrom",
-                            "start"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::range::RangeFrom",
+                                "start"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Idx ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2702,22 +3007,26 @@ Module range.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialEq", Idx, [], [ Idx ], "eq", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::range::RangeFrom",
-                  "start"
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::range::RangeFrom",
-                  "start"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::range::RangeFrom",
+                    "start"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Idx ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::range::RangeFrom",
+                    "start"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Idx ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2790,20 +3099,24 @@ Module range.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hash", Idx, [], [], "hash", [], [ __H ] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeFrom",
-                      "start"
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeFrom",
+                        "start"
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Idx ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ __H ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2886,24 +3199,44 @@ Module range.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_trait_method (|
+                                "core::fmt::Debug",
+                                Idx,
+                                [],
+                                [],
+                                "fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::range::RangeFrom",
+                                      "start"
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Idx ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| fmt |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_trait_method (| "core::fmt::Debug", Idx, [], [], "fmt", [], [] |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::range::RangeFrom",
-                                  "start"
-                                |)
-                              |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -2952,7 +3285,17 @@ Module range.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -3007,47 +3350,69 @@ Module range.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Formatter",
+                                "write_fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| fmt |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array [ mk_str (| ".." |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::Formatter",
-                              "write_fmt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| ".." |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -3096,7 +3461,17 @@ Module range.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -3118,11 +3493,12 @@ Module range.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                 |)
               |)))
           |)))
@@ -3169,19 +3545,28 @@ Module range.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ] ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3224,8 +3609,15 @@ Module range.
               [ U ]
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| item |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::range::RangeFrom") [] [ Idx ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| item |) |) |))
+                (Ty.apply (Ty.path "&") [] [ U ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3257,25 +3649,25 @@ Module range.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::range::RangeFrom") [] [ T ] ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Included"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeFrom",
-                      "start"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Included"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeFrom",
+                        "start"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3294,11 +3686,9 @@ Module range.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::range::RangeFrom") [] [ T ] ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Unbounded"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            []))
+          M.value_with_ty
+            (Value.StructTuple "core::ops::range::Bound::Unbounded" [])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3339,24 +3729,24 @@ Module range.
                 ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Included"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::range::RangeFrom",
-                      "start"
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ops::range::Bound::Included"
+              [
+                M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::range::RangeFrom",
+                        "start"
+                      |)
                     |)
                   |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3379,11 +3769,9 @@ Module range.
                 ],
               self
             |) in
-          Value.StructTuple
-            "core::ops::range::Bound::Unbounded"
-            []
-            [ Ty.apply (Ty.path "&") [] [ T ] ]
-            []))
+          M.value_with_ty
+            (Value.StructTuple "core::ops::range::Bound::Unbounded" [])
+            (Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.apply (Ty.path "&") [] [ T ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3415,20 +3803,20 @@ Module range.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| Ty.apply (Ty.path "core::range::RangeFrom") [] [ T ], value |) in
-          Value.mkStructRecord
-            "core::ops::range::RangeFrom"
-            []
-            [ T ]
-            [
-              ("start",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    value,
-                    "core::range::RangeFrom",
-                    "start"
-                  |)
-                |))
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::ops::range::RangeFrom"
+              [
+                ("start",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      value,
+                      "core::range::RangeFrom",
+                      "start"
+                    |)
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3457,20 +3845,20 @@ Module range.
         ltac:(M.monadic
           (let value :=
             M.alloc (| Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ T ], value |) in
-          Value.mkStructRecord
-            "core::range::RangeFrom"
-            []
-            [ T ]
-            [
-              ("start",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    value,
-                    "core::ops::range::RangeFrom",
-                    "start"
-                  |)
-                |))
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::range::RangeFrom"
+              [
+                ("start",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      value,
+                      "core::ops::range::RangeFrom",
+                      "start"
+                    |)
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::range::RangeFrom") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

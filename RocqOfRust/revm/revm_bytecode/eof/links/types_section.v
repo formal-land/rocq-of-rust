@@ -14,7 +14,7 @@ Module TypesSection.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_bytecode::eof::types_section::TypesSection";
     φ x :=
-      Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [] [] [
+      Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [
         ("inputs", φ x.(inputs));
         ("max_stack_size", φ x.(max_stack_size));
         ("outputs", φ x.(outputs))
@@ -32,7 +32,7 @@ Module TypesSection.
       (max_stack_size' : Value.t) {H_max_stack_size : OfValueWith.C (u16) max_stack_size'}
       (outputs' : Value.t) {H_outputs : OfValueWith.C (u8) outputs'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [
       ("inputs", inputs');
       ("max_stack_size", max_stack_size');
       ("outputs", outputs')
@@ -51,7 +51,7 @@ Module TypesSection.
       (max_stack_size' : Value.t) {H_max_stack_size : OfValueWith.C (u16) max_stack_size'}
       (outputs' : Value.t) {H_outputs : OfValueWith.C (u8) outputs'}
       :
-    OfValue.C (Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [] [] [
+    OfValue.C (Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [
       ("inputs", inputs');
       ("max_stack_size", max_stack_size');
       ("outputs", outputs')

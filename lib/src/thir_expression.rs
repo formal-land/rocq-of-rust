@@ -571,7 +571,15 @@ pub(crate) fn compile_expr<'a>(
         thir::ExprKind::Call { fun, args, .. } => {
             let args = args
                 .iter()
-                .map(|arg| compile_expr(env, generics, thir, arg).read())
+                .map(|arg| {
+                    let arg_expr = thir.exprs.get(*arg).unwrap();
+                    let arg_ty = compile_type(env, &arg_expr.span, generics, &arg_expr.ty);
+                    let compiled_arg = compile_expr(env, generics, thir, arg).read();
+                    Rc::new(Expr::ValueWithTy {
+                        expr: compiled_arg,
+                        ty: arg_ty,
+                    })
+                })
                 .collect();
             let func = compile_expr(env, generics, thir, fun);
             let func = func.read();
@@ -906,14 +914,6 @@ pub(crate) fn compile_expr<'a>(
             }
         }
         thir::ExprKind::Adt(adt_expr) => {
-            let (arg_consts, arg_tys) = match ty.as_ref() {
-                RocqType::Application {
-                    func: _,
-                    consts,
-                    tys,
-                } => (consts.clone(), tys.clone()),
-                _ => (vec![], vec![]),
-            };
             let AdtExpr {
                 adt_def,
                 variant_index,
@@ -946,9 +946,8 @@ pub(crate) fn compile_expr<'a>(
             if fields.is_empty() {
                 return Rc::new(Expr::StructTuple {
                     path,
-                    arg_consts,
-                    arg_tys,
                     fields: vec![],
+                    ty: ty.clone(),
                 })
                 .alloc(ty);
             }
@@ -957,18 +956,16 @@ pub(crate) fn compile_expr<'a>(
                 let fields = fields.into_iter().map(|(_, pattern)| pattern).collect();
                 Rc::new(Expr::StructTuple {
                     path,
-                    arg_consts,
-                    arg_tys,
                     fields,
+                    ty: ty.clone(),
                 })
                 .alloc(ty)
             } else {
                 Rc::new(Expr::StructStruct {
                     path,
-                    arg_consts,
-                    arg_tys,
                     fields,
                     base,
+                    ty: ty.clone(),
                 })
                 .alloc(ty)
             }
@@ -1197,31 +1194,7 @@ pub(crate) fn compile_expr<'a>(
                         }
                         DefKind::Struct | DefKind::Variant => {
                             let path = compile_def_id(env, *def_id);
-                            let generic_consts = generic_args
-                                .iter()
-                                .filter_map(|generic_arg| {
-                                    generic_arg
-                                        .as_const()
-                                        .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
-                                })
-                                .collect::<Vec<_>>();
-                            let generic_tys = generic_args
-                                .iter()
-                                .filter_map(|generic_arg| {
-                                    generic_arg
-                                        .as_type()
-                                        .as_ref()
-                                        .map(|ty| compile_type(env, &expr.span, generics, ty))
-                                })
-                                .collect::<Vec<_>>();
-
-                            Rc::new(Expr::ConstructorAsClosure {
-                                path,
-                                generic_consts,
-                                generic_tys,
-                            })
-                            .alloc(ty)
+                            Rc::new(Expr::ConstructorAsClosure { path }).alloc(ty)
                         }
                         DefKind::AssocFn => {
                             let parent_symbol = env.tcx.def_key(parent).get_opt_name().unwrap();

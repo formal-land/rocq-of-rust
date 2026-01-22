@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_conditional_compilation_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "conditional_compilation::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "conditional_compilation::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "conditional_compilation::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -200,7 +200,11 @@ Module Impl_conditional_compilation_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -229,7 +233,11 @@ Module Impl_conditional_compilation_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -265,7 +273,11 @@ Module Impl_conditional_compilation_ConditionalCompilation.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -317,26 +329,26 @@ Module Impl_conditional_compilation_ConditionalCompilation.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "conditional_compilation::ConditionalCompilation"
-          []
-          []
-          [
-            ("value",
-              M.call_closure (|
-                Ty.path "bool",
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "conditional_compilation::ConditionalCompilation"
+            [
+              ("value",
+                M.call_closure (|
                   Ty.path "bool",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "conditional_compilation::ConditionalCompilation")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -354,11 +366,11 @@ Module Impl_conditional_compilation_ConditionalCompilation.
     | [], [], [ value ] =>
       ltac:(M.monadic
         (let value := M.alloc (| Ty.path "bool", value |) in
-        Value.mkStructRecord
-          "conditional_compilation::ConditionalCompilation"
-          []
-          []
-          [ ("value", M.read (| value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "conditional_compilation::ConditionalCompilation"
+            [ ("value", M.read (| value |)) ])
+          (Ty.path "conditional_compilation::ConditionalCompilation")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -376,11 +388,11 @@ Module Impl_conditional_compilation_ConditionalCompilation.
     | [], [], [ value ] =>
       ltac:(M.monadic
         (let value := M.alloc (| Ty.path "bool", value |) in
-        Value.mkStructRecord
-          "conditional_compilation::ConditionalCompilation"
-          []
-          []
-          [ ("value", M.read (| value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "conditional_compilation::ConditionalCompilation"
+            [ ("value", M.read (| value |)) ])
+          (Ty.path "conditional_compilation::ConditionalCompilation")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -398,11 +410,11 @@ Module Impl_conditional_compilation_ConditionalCompilation.
     | [], [], [ value ] =>
       ltac:(M.monadic
         (let value := M.alloc (| Ty.path "bool", value |) in
-        Value.mkStructRecord
-          "conditional_compilation::ConditionalCompilation"
-          []
-          []
-          [ ("value", M.read (| value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "conditional_compilation::ConditionalCompilation"
+            [ ("value", M.read (| value |)) ])
+          (Ty.path "conditional_compilation::ConditionalCompilation")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -465,22 +477,24 @@ Module Impl_conditional_compilation_ConditionalCompilation.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "conditional_compilation::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "conditional_compilation::Env",
-                      M.get_associated_function (|
-                        Ty.path "conditional_compilation::ConditionalCompilation",
-                        "init_env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "conditional_compilation::Env",
+                        M.get_associated_function (|
+                          Ty.path "conditional_compilation::ConditionalCompilation",
+                          "init_env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "conditional_compilation::Env" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -493,43 +507,47 @@ Module Impl_conditional_compilation_ConditionalCompilation.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "conditional_compilation::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "conditional_compilation::Env",
-                      M.get_associated_function (|
-                        Ty.path "conditional_compilation::ConditionalCompilation",
-                        "init_env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "conditional_compilation::Env",
+                        M.get_associated_function (|
+                          Ty.path "conditional_compilation::ConditionalCompilation",
+                          "init_env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "conditional_compilation::Event::Changes"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "conditional_compilation::Changes"
-                      []
-                      []
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "conditional_compilation::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "conditional_compilation::Event::Changes"
                       [
-                        ("new_value",
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "conditional_compilation::ConditionalCompilation",
-                              "value"
-                            |)
-                          |));
-                        ("by_", M.read (| caller |))
-                      ]
-                  ]
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "conditional_compilation::Changes"
+                            [
+                              ("new_value",
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "conditional_compilation::ConditionalCompilation",
+                                    "value"
+                                  |)
+                                |));
+                              ("by_", M.read (| caller |))
+                            ])
+                          (Ty.path "conditional_compilation::Changes")
+                      ])
+                    (Ty.path "conditional_compilation::Event"))
+                  (Ty.path "conditional_compilation::Event")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -577,22 +595,24 @@ Module Impl_conditional_compilation_ConditionalCompilation.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "conditional_compilation::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "conditional_compilation::Env",
-                      M.get_associated_function (|
-                        Ty.path "conditional_compilation::ConditionalCompilation",
-                        "init_env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "conditional_compilation::Env",
+                        M.get_associated_function (|
+                          Ty.path "conditional_compilation::ConditionalCompilation",
+                          "init_env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "conditional_compilation::Env" ])
               ]
             |) in
           let~ block_number : Ty.path "u32" :=
@@ -605,22 +625,24 @@ Module Impl_conditional_compilation_ConditionalCompilation.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "conditional_compilation::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "conditional_compilation::Env",
-                      M.get_associated_function (|
-                        Ty.path "conditional_compilation::ConditionalCompilation",
-                        "init_env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "conditional_compilation::Env",
+                        M.get_associated_function (|
+                          Ty.path "conditional_compilation::ConditionalCompilation",
+                          "init_env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "conditional_compilation::Env" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -654,44 +676,48 @@ Module Impl_conditional_compilation_ConditionalCompilation.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "conditional_compilation::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "conditional_compilation::Env",
-                      M.get_associated_function (|
-                        Ty.path "conditional_compilation::ConditionalCompilation",
-                        "init_env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "conditional_compilation::Env",
+                        M.get_associated_function (|
+                          Ty.path "conditional_compilation::ConditionalCompilation",
+                          "init_env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "conditional_compilation::Event::ChangesDated"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "conditional_compilation::ChangesDated"
-                      []
-                      []
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "conditional_compilation::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "conditional_compilation::Event::ChangesDated"
                       [
-                        ("new_value",
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "conditional_compilation::ConditionalCompilation",
-                              "value"
-                            |)
-                          |));
-                        ("by_", M.read (| caller |));
-                        ("when", M.read (| block_number |))
-                      ]
-                  ]
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "conditional_compilation::ChangesDated"
+                            [
+                              ("new_value",
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "conditional_compilation::ConditionalCompilation",
+                                    "value"
+                                  |)
+                                |));
+                              ("by_", M.read (| caller |));
+                              ("when", M.read (| block_number |))
+                            ])
+                          (Ty.path "conditional_compilation::ChangesDated")
+                      ])
+                    (Ty.path "conditional_compilation::Event"))
+                  (Ty.path "conditional_compilation::Event")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -810,22 +836,24 @@ Module Impl_conditional_compilation_Flip_for_conditional_compilation_Conditional
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "conditional_compilation::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "conditional_compilation::Env",
-                      M.get_associated_function (|
-                        Ty.path "conditional_compilation::ConditionalCompilation",
-                        "init_env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "conditional_compilation::Env",
+                        M.get_associated_function (|
+                          Ty.path "conditional_compilation::ConditionalCompilation",
+                          "init_env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "conditional_compilation::Env" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -838,33 +866,37 @@ Module Impl_conditional_compilation_Flip_for_conditional_compilation_Conditional
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "conditional_compilation::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "conditional_compilation::Env",
-                      M.get_associated_function (|
-                        Ty.path "conditional_compilation::ConditionalCompilation",
-                        "init_env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "conditional_compilation::Env",
+                        M.get_associated_function (|
+                          Ty.path "conditional_compilation::ConditionalCompilation",
+                          "init_env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "conditional_compilation::Event::Changes"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "conditional_compilation::Changes"
-                      []
-                      []
-                      [ ("new_value", M.read (| value |)); ("by_", M.read (| caller |)) ]
-                  ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "conditional_compilation::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "conditional_compilation::Event::Changes"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "conditional_compilation::Changes"
+                            [ ("new_value", M.read (| value |)); ("by_", M.read (| caller |)) ])
+                          (Ty.path "conditional_compilation::Changes")
+                      ])
+                    (Ty.path "conditional_compilation::Event"))
+                  (Ty.path "conditional_compilation::Event")
               ]
             |) in
           let~ _ : Ty.tuple [] :=

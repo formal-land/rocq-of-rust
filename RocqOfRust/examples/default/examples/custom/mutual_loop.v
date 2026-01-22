@@ -19,7 +19,11 @@ Module Impl_mutual_loop_LoopA.
   *)
   Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [] => ltac:(M.monadic (Value.StructTuple "mutual_loop::LoopA" [] [] []))
+    | [], [], [] =>
+      ltac:(M.monadic
+        (M.value_with_ty
+          (Value.StructTuple "mutual_loop::LoopA" [])
+          (Ty.path "mutual_loop::LoopA")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -83,18 +87,18 @@ Module Impl_mutual_loop_LoopB.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "mutual_loop::LoopB::Item"
-          []
-          []
-          [
-            ("ident",
-              M.call_closure (|
-                Ty.path "mutual_loop::LoopA",
-                M.get_associated_function (| Ty.path "mutual_loop::LoopA", "new", [], [] |),
-                []
-              |))
-          ]))
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "mutual_loop::LoopB::Item"
+            [
+              ("ident",
+                M.call_closure (|
+                  Ty.path "mutual_loop::LoopA",
+                  M.get_associated_function (| Ty.path "mutual_loop::LoopA", "new", [], [] |),
+                  []
+                |))
+            ])
+          (Ty.path "mutual_loop::LoopB")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -126,7 +130,11 @@ Definition start_loop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
           M.call_closure (|
             Ty.path "mutual_loop::LoopB",
             M.get_associated_function (| Ty.path "mutual_loop::LoopA", "start_loop", [], [] |),
-            [ M.borrow (| Pointer.Kind.Ref, la |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, la |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "mutual_loop::LoopA" ])
+            ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

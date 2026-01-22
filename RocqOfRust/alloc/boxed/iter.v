@@ -40,10 +40,12 @@ Module boxed.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ I ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -78,10 +80,12 @@ Module boxed.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ I ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -118,11 +122,13 @@ Module boxed.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| n |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ I ]);
+                M.value_with_ty (M.read (| n |)) (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -153,7 +159,11 @@ Module boxed.
                 [],
                 []
               |),
-              [ M.read (| self |) ]
+              [
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "alloc::boxed::Box") [] [ I; A ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -248,13 +258,56 @@ Module boxed.
                 ]
               |),
               [
-                M.read (| self |);
-                Value.StructTuple
-                  "core::option::Option::None"
-                  []
-                  [ Ty.associated_in_trait "core::iter::traits::iterator::Iterator" [] [] I "Item" ]
-                  [];
-                M.get_associated_function (| Self, "some.last", [], [] |)
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "alloc::boxed::Box") [] [ I; A ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "core::iter::traits::iterator::Iterator"
+                          []
+                          []
+                          I
+                          "Item"
+                      ]))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.associated_in_trait "core::iter::traits::iterator::Iterator" [] [] I "Item"
+                    ]);
+                M.value_with_ty
+                  (M.get_associated_function (| Self, "some.last", [], [] |))
+                  (Ty.function
+                    [
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.associated_in_trait
+                            "core::iter::traits::iterator::Iterator"
+                            []
+                            []
+                            I
+                            "Item"
+                        ];
+                      Ty.associated_in_trait "core::iter::traits::iterator::Iterator" [] [] I "Item"
+                    ]
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "core::iter::traits::iterator::Iterator"
+                          []
+                          []
+                          I
+                          "Item"
+                      ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -299,7 +352,7 @@ Module boxed.
                 [],
                 []
               |),
-              [ M.read (| M.deref (| M.read (| self |) |) |) ]
+              [ M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) I ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -347,10 +400,12 @@ Module boxed.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ I ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -387,11 +442,13 @@ Module boxed.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| n |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ I ]);
+                M.value_with_ty (M.read (| n |)) (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -441,10 +498,12 @@ Module boxed.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ I ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -477,10 +536,12 @@ Module boxed.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ I ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -581,61 +642,89 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.read (|
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
                           M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
+                            M.read (|
+                              M.deref (|
+                                M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
+                                    (Ty.path "&mut")
                                     []
-                                    [ S; Ty.path "alloc::alloc::Global" ]
-                                ],
-                              M.get_trait_method (|
-                                "core::ops::deref::DerefMut",
-                                Ty.apply
-                                  (Ty.path "core::pin::Pin")
-                                  []
-                                  [
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::boxed::Box")
+                                        []
+                                        [ S; Ty.path "alloc::alloc::Global" ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::DerefMut",
                                     Ty.apply
-                                      (Ty.path "&mut")
+                                      (Ty.path "core::pin::Pin")
                                       []
                                       [
                                         Ty.apply
-                                          (Ty.path "alloc::boxed::Box")
+                                          (Ty.path "&mut")
                                           []
-                                          [ S; Ty.path "alloc::alloc::Global" ]
-                                      ]
-                                  ],
-                                [],
-                                [],
-                                "deref_mut",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [ S; Ty.path "alloc::alloc::Global" ]
+                                          ]
+                                      ],
+                                    [],
+                                    [],
+                                    "deref_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::pin::Pin")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::boxed::Box")
+                                                    []
+                                                    [ S; Ty.path "alloc::alloc::Global" ]
+                                                ]
+                                            ]
+                                        ])
+                                  ]
+                                |)
+                              |)
                             |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ S ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -674,10 +763,12 @@ Module boxed.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ S ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -787,16 +878,25 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ I; A ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "slice") [] [ I ],
-                    "into_vec",
-                    [],
-                    [ A ]
-                  |),
-                  [ M.read (| self |) ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "alloc::vec::Vec") [] [ I; A ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "slice") [] [ I ],
+                      "into_vec",
+                      [],
+                      [ A ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ I ]; A ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "alloc::vec::Vec") [] [ I; A ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -858,10 +958,12 @@ Module boxed.
               Ty.apply (Ty.path "core::slice::iter::Iter") [] [ I ],
               M.get_associated_function (| Ty.apply (Ty.path "slice") [] [ I ], "iter", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ I ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -928,10 +1030,12 @@ Module boxed.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ I ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -982,44 +1086,57 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ I; Ty.path "alloc::alloc::Global" ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.associated_in_trait
-                      "core::iter::traits::collect::IntoIterator"
-                      []
-                      []
-                      T
-                      "IntoIter",
-                    [],
-                    [],
-                    "collect",
-                    [],
-                    [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ I; Ty.path "alloc::alloc::Global" ]
-                    ]
-                  |),
-                  [
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "alloc::vec::Vec") [] [ I; Ty.path "alloc::alloc::Global" ],
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
                       Ty.associated_in_trait
                         "core::iter::traits::collect::IntoIterator"
                         []
                         []
                         T
                         "IntoIter",
-                      M.get_trait_method (|
-                        "core::iter::traits::collect::IntoIterator",
-                        T,
-                        [],
-                        [],
-                        "into_iter",
-                        [],
-                        []
-                      |),
-                      [ M.read (| iter |) ]
-                    |)
-                  ]
-                |)
+                      [],
+                      [],
+                      "collect",
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ I; Ty.path "alloc::alloc::Global" ]
+                      ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.associated_in_trait
+                            "core::iter::traits::collect::IntoIterator"
+                            []
+                            []
+                            T
+                            "IntoIter",
+                          M.get_trait_method (|
+                            "core::iter::traits::collect::IntoIterator",
+                            T,
+                            [],
+                            [],
+                            "into_iter",
+                            [],
+                            []
+                          |),
+                          [ M.value_with_ty (M.read (| iter |)) T ]
+                        |))
+                        (Ty.associated_in_trait
+                          "core::iter::traits::collect::IntoIterator"
+                          []
+                          []
+                          T
+                          "IntoIter")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "alloc::vec::Vec") [] [ I; Ty.path "alloc::alloc::Global" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1061,19 +1178,21 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "alloc::string::String",
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::FromIterator",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "alloc::string::String",
-                    [],
-                    [ Ty.path "char" ],
-                    "from_iter",
-                    [],
-                    [ T ]
-                  |),
-                  [ M.read (| iter |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::FromIterator",
+                      Ty.path "alloc::string::String",
+                      [],
+                      [ Ty.path "char" ],
+                      "from_iter",
+                      [],
+                      [ T ]
+                    |),
+                    [ M.value_with_ty (M.read (| iter |)) T ]
+                  |))
+                  (Ty.path "alloc::string::String")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1114,19 +1233,21 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "alloc::string::String",
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::FromIterator",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "alloc::string::String",
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "char" ] ],
-                    "from_iter",
-                    [],
-                    [ T ]
-                  |),
-                  [ M.read (| iter |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::FromIterator",
+                      Ty.path "alloc::string::String",
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "char" ] ],
+                      "from_iter",
+                      [],
+                      [ T ]
+                    |),
+                    [ M.value_with_ty (M.read (| iter |)) T ]
+                  |))
+                  (Ty.path "alloc::string::String")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1167,19 +1288,21 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "alloc::string::String",
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::FromIterator",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "alloc::string::String",
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                    "from_iter",
-                    [],
-                    [ T ]
-                  |),
-                  [ M.read (| iter |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::FromIterator",
+                      Ty.path "alloc::string::String",
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                      "from_iter",
+                      [],
+                      [ T ]
+                    |),
+                    [ M.value_with_ty (M.read (| iter |)) T ]
+                  |))
+                  (Ty.path "alloc::string::String")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1220,19 +1343,21 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "alloc::string::String",
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::FromIterator",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "alloc::string::String",
-                    [],
-                    [ Ty.path "alloc::string::String" ],
-                    "from_iter",
-                    [],
-                    [ T ]
-                  |),
-                  [ M.read (| iter |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::FromIterator",
+                      Ty.path "alloc::string::String",
+                      [],
+                      [ Ty.path "alloc::string::String" ],
+                      "from_iter",
+                      [],
+                      [ T ]
+                    |),
+                    [ M.value_with_ty (M.read (| iter |)) T ]
+                  |))
+                  (Ty.path "alloc::string::String")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1274,19 +1399,21 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "alloc::string::String",
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::FromIterator",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "alloc::string::String",
-                    [],
-                    [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ Ty.path "str"; A ] ],
-                    "from_iter",
-                    [],
-                    [ T ]
-                  |),
-                  [ M.read (| iter |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::FromIterator",
+                      Ty.path "alloc::string::String",
+                      [],
+                      [ Ty.apply (Ty.path "alloc::boxed::Box") [] [ Ty.path "str"; A ] ],
+                      "from_iter",
+                      [],
+                      [ T ]
+                    |),
+                    [ M.value_with_ty (M.read (| iter |)) T ]
+                  |))
+                  (Ty.path "alloc::string::String")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1329,19 +1456,21 @@ Module boxed.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "alloc::string::String",
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::FromIterator",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "alloc::string::String",
-                    [],
-                    [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
-                    "from_iter",
-                    [],
-                    [ T ]
-                  |),
-                  [ M.read (| iter |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::FromIterator",
+                      Ty.path "alloc::string::String",
+                      [],
+                      [ Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.path "str" ] ],
+                      "from_iter",
+                      [],
+                      [ T ]
+                    |),
+                    [ M.value_with_ty (M.read (| iter |)) T ]
+                  |))
+                  (Ty.path "alloc::string::String")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

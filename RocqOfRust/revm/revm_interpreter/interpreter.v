@@ -580,30 +580,15 @@ Module interpreter.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Interpreter" |) |) |);
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 9 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ])
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Interpreter" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&")
                         []
                         [
@@ -611,10 +596,50 @@ Module interpreter.
                             (Ty.path "slice")
                             []
                             [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ]),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| names |) |) |) ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| values |) |) |)
+                        ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 9 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| names |) |) |) ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| values |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                          ]
+                      ])
                 ]
               |)
             |)
@@ -650,354 +675,462 @@ Module interpreter.
                 [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ] ],
               self
             |) in
-          Value.mkStructRecord
-            "revm_interpreter::interpreter::Interpreter"
-            []
-            [ WIRE ]
-            [
-              ("bytecode",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "Bytecode",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::interpreter::Interpreter"
+              [
+                ("bytecode",
+                  M.call_closure (|
                     Ty.associated_in_trait
                       "revm_interpreter::interpreter_types::InterpreterTypes"
                       []
                       []
                       WIRE
                       "Bytecode",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        WIRE
+                        "Bytecode",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "bytecode"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::Interpreter",
+                                "bytecode"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("stack",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "Stack",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              WIRE
+                              "Bytecode"
+                          ])
+                    ]
+                  |));
+                ("stack",
+                  M.call_closure (|
                     Ty.associated_in_trait
                       "revm_interpreter::interpreter_types::InterpreterTypes"
                       []
                       []
                       WIRE
                       "Stack",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        WIRE
+                        "Stack",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "stack"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::Interpreter",
+                                "stack"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("return_data",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "ReturnData",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              WIRE
+                              "Stack"
+                          ])
+                    ]
+                  |));
+                ("return_data",
+                  M.call_closure (|
                     Ty.associated_in_trait
                       "revm_interpreter::interpreter_types::InterpreterTypes"
                       []
                       []
                       WIRE
                       "ReturnData",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        WIRE
+                        "ReturnData",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "return_data"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::Interpreter",
+                                "return_data"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("memory",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "Memory",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              WIRE
+                              "ReturnData"
+                          ])
+                    ]
+                  |));
+                ("memory",
+                  M.call_closure (|
                     Ty.associated_in_trait
                       "revm_interpreter::interpreter_types::InterpreterTypes"
                       []
                       []
                       WIRE
                       "Memory",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        WIRE
+                        "Memory",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "memory"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::Interpreter",
+                                "memory"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("input",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "Input",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              WIRE
+                              "Memory"
+                          ])
+                    ]
+                  |));
+                ("input",
+                  M.call_closure (|
                     Ty.associated_in_trait
                       "revm_interpreter::interpreter_types::InterpreterTypes"
                       []
                       []
                       WIRE
                       "Input",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        WIRE
+                        "Input",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "input"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::Interpreter",
+                                "input"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("sub_routine",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "SubRoutineStack",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              WIRE
+                              "Input"
+                          ])
+                    ]
+                  |));
+                ("sub_routine",
+                  M.call_closure (|
                     Ty.associated_in_trait
                       "revm_interpreter::interpreter_types::InterpreterTypes"
                       []
                       []
                       WIRE
                       "SubRoutineStack",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        WIRE
+                        "SubRoutineStack",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "sub_routine"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::Interpreter",
+                                "sub_routine"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("control",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "Control",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              WIRE
+                              "SubRoutineStack"
+                          ])
+                    ]
+                  |));
+                ("control",
+                  M.call_closure (|
                     Ty.associated_in_trait
                       "revm_interpreter::interpreter_types::InterpreterTypes"
                       []
                       []
                       WIRE
                       "Control",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        WIRE
+                        "Control",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "control"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::Interpreter",
+                                "control"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("runtime_flag",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "RuntimeFlag",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              WIRE
+                              "Control"
+                          ])
+                    ]
+                  |));
+                ("runtime_flag",
+                  M.call_closure (|
                     Ty.associated_in_trait
                       "revm_interpreter::interpreter_types::InterpreterTypes"
                       []
                       []
                       WIRE
                       "RuntimeFlag",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        WIRE
+                        "RuntimeFlag",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "runtime_flag"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::Interpreter",
+                                "runtime_flag"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("extend",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                    []
-                    []
-                    WIRE
-                    "Extend",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              WIRE
+                              "RuntimeFlag"
+                          ])
+                    ]
+                  |));
+                ("extend",
+                  M.call_closure (|
                     Ty.associated_in_trait
                       "revm_interpreter::interpreter_types::InterpreterTypes"
                       []
                       []
                       WIRE
                       "Extend",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.associated_in_trait
+                        "revm_interpreter::interpreter_types::InterpreterTypes"
+                        []
+                        []
+                        WIRE
+                        "Extend",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::Interpreter",
-                            "extend"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::Interpreter",
+                                "extend"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              WIRE
+                              "Extend"
+                          ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ WIRE ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1071,117 +1204,135 @@ Module interpreter.
           M.read (|
             let~ runtime_flag :
                 Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags" :=
-              Value.mkStructRecord
-                "revm_interpreter::interpreter::runtime_flags::RuntimeFlags"
-                []
-                []
-                [
-                  ("spec_id", M.read (| spec_id |));
-                  ("is_static", M.read (| is_static |));
-                  ("is_eof",
-                    M.call_closure (|
-                      Ty.path "bool",
-                      M.get_associated_function (|
-                        Ty.path "revm_bytecode::bytecode::Bytecode",
-                        "is_eof",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, bytecode |) ]
-                    |));
-                  ("is_eof_init", M.read (| is_eof_init |))
-                ] in
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "revm_interpreter::interpreter::runtime_flags::RuntimeFlags"
+                  [
+                    ("spec_id", M.read (| spec_id |));
+                    ("is_static", M.read (| is_static |));
+                    ("is_eof",
+                      M.call_closure (|
+                        Ty.path "bool",
+                        M.get_associated_function (|
+                          Ty.path "revm_bytecode::bytecode::Bytecode",
+                          "is_eof",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, bytecode |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_bytecode::bytecode::Bytecode" ])
+                        ]
+                      |));
+                    ("is_eof_init", M.read (| is_eof_init |))
+                  ])
+                (Ty.path "revm_interpreter::interpreter::runtime_flags::RuntimeFlags") in
             M.alloc (|
               Ty.apply
                 (Ty.path "revm_interpreter::interpreter::Interpreter")
                 []
                 [ Ty.apply (Ty.path "revm_interpreter::interpreter::EthInterpreter") [] [ EXT; MG ]
                 ],
-              Value.mkStructRecord
-                "revm_interpreter::interpreter::Interpreter"
-                []
-                [ Ty.apply (Ty.path "revm_interpreter::interpreter::EthInterpreter") [] [ EXT; MG ]
-                ]
-                [
-                  ("bytecode",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                      M.get_associated_function (|
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "revm_interpreter::interpreter::Interpreter"
+                  [
+                    ("bytecode",
+                      M.call_closure (|
                         Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ M.read (| bytecode |) ]
-                    |));
-                  ("stack",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::stack::Stack",
-                      M.get_associated_function (|
+                        M.get_associated_function (|
+                          Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| bytecode |))
+                            (Ty.path "revm_bytecode::bytecode::Bytecode")
+                        ]
+                      |));
+                    ("stack",
+                      M.call_closure (|
                         Ty.path "revm_interpreter::interpreter::stack::Stack",
-                        "new",
-                        [],
+                        M.get_associated_function (|
+                          Ty.path "revm_interpreter::interpreter::stack::Stack",
+                          "new",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |));
-                  ("return_data",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                      M.get_trait_method (|
-                        "core::default::Default",
+                      |));
+                    ("return_data",
+                      M.call_closure (|
                         Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |));
-                  ("memory", M.read (| memory |));
-                  ("input", M.read (| inputs |));
-                  ("sub_routine",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::subroutine_stack::SubRoutineImpl",
-                      M.get_trait_method (|
-                        "core::default::Default",
+                      |));
+                    ("memory", M.read (| memory |));
+                    ("input", M.read (| inputs |));
+                    ("sub_routine",
+                      M.call_closure (|
                         Ty.path "revm_interpreter::interpreter::subroutine_stack::SubRoutineImpl",
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          Ty.path "revm_interpreter::interpreter::subroutine_stack::SubRoutineImpl",
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |));
-                  ("control",
-                    M.call_closure (|
-                      Ty.path "revm_interpreter::interpreter::loop_control::LoopControl",
-                      M.get_associated_function (|
+                      |));
+                    ("control",
+                      M.call_closure (|
                         Ty.path "revm_interpreter::interpreter::loop_control::LoopControl",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ M.read (| gas_limit |) ]
-                    |));
-                  ("runtime_flag", M.read (| runtime_flag |));
-                  ("extend",
-                    M.call_closure (|
-                      EXT,
-                      M.get_trait_method (|
-                        "core::default::Default",
+                        M.get_associated_function (|
+                          Ty.path "revm_interpreter::interpreter::loop_control::LoopControl",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.value_with_ty (M.read (| gas_limit |)) (Ty.path "u64") ]
+                      |));
+                    ("runtime_flag", M.read (| runtime_flag |));
+                    ("extend",
+                      M.call_closure (|
                         EXT,
-                        [],
-                        [],
-                        "default",
-                        [],
+                        M.get_trait_method (|
+                          "core::default::Default",
+                          EXT,
+                          [],
+                          [],
+                          "default",
+                          [],
+                          []
+                        |),
                         []
-                      |),
+                      |))
+                  ])
+                (Ty.apply
+                  (Ty.path "revm_interpreter::interpreter::Interpreter")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "revm_interpreter::interpreter::EthInterpreter")
                       []
-                    |))
-                ]
+                      [ EXT; MG ]
+                  ])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1340,40 +1491,12 @@ Module interpreter.
                 ],
               self
             |) in
-          Value.mkStructRecord
-            "revm_interpreter::interpreter::EthInstructionProvider"
-            []
-            [ WIRE; HOST ]
-            [
-              ("instruction_table",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::rc::Rc")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 256 ]
-                        [
-                          Ty.function
-                            [
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                    []
-                                    [ WIRE ]
-                                ];
-                              Ty.apply (Ty.path "&mut") [] [ HOST ]
-                            ]
-                            (Ty.tuple [])
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::interpreter::EthInstructionProvider"
+              [
+                ("instruction_table",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::rc::Rc")
                       []
@@ -1399,24 +1522,86 @@ Module interpreter.
                           ];
                         Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_interpreter::interpreter::EthInstructionProvider",
-                        "instruction_table"
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "alloc::rc::Rc")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 256 ]
+                            [
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                        []
+                                        [ WIRE ]
+                                    ];
+                                  Ty.apply (Ty.path "&mut") [] [ HOST ]
+                                ]
+                                (Ty.tuple [])
+                            ];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::EthInstructionProvider",
+                            "instruction_table"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 256 ]
+                                  [
+                                    Ty.function
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                              []
+                                              [ WIRE ]
+                                          ];
+                                        Ty.apply (Ty.path "&mut") [] [ HOST ]
+                                      ]
+                                      (Ty.tuple [])
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ])
+                    ]
+                  |))
+              ])
+            (Ty.apply
+              (Ty.path "revm_interpreter::interpreter::EthInstructionProvider")
+              []
+              [ WIRE; HOST ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1470,39 +1655,12 @@ Module interpreter.
                 ],
               _context
             |) in
-          Value.mkStructRecord
-            "revm_interpreter::interpreter::EthInstructionProvider"
-            []
-            [ WIRE; HOST ]
-            [
-              ("instruction_table",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::rc::Rc")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 256 ]
-                        [
-                          Ty.function
-                            [
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "revm_interpreter::interpreter::Interpreter")
-                                    []
-                                    [ WIRE ]
-                                ];
-                              Ty.apply (Ty.path "&mut") [] [ HOST ]
-                            ]
-                            (Ty.tuple [])
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::interpreter::EthInstructionProvider"
+              [
+                ("instruction_table",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::rc::Rc")
                       []
@@ -1528,41 +1686,91 @@ Module interpreter.
                           ];
                         Ty.path "alloc::alloc::Global"
                       ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
+                    M.get_associated_function (|
                       Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 256 ]
+                        (Ty.path "alloc::rc::Rc")
+                        []
                         [
-                          Ty.function
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 256 ]
                             [
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
+                              Ty.function
                                 [
                                   Ty.apply
-                                    (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                    (Ty.path "&mut")
                                     []
-                                    [ WIRE ]
-                                ];
-                              Ty.apply (Ty.path "&mut") [] [ HOST ]
-                            ]
-                            (Ty.tuple [])
+                                    [
+                                      Ty.apply
+                                        (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                        []
+                                        [ WIRE ]
+                                    ];
+                                  Ty.apply (Ty.path "&mut") [] [ HOST ]
+                                ]
+                                (Ty.tuple [])
+                            ];
+                          Ty.path "alloc::alloc::Global"
                         ],
-                      M.get_function (|
-                        "revm_interpreter::table::make_instruction_table",
-                        [],
-                        [ WIRE; HOST ]
-                      |),
+                      "new",
+                      [],
                       []
-                    |)
-                  ]
-                |))
-            ]))
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 256 ]
+                            [
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                        []
+                                        [ WIRE ]
+                                    ];
+                                  Ty.apply (Ty.path "&mut") [] [ HOST ]
+                                ]
+                                (Ty.tuple [])
+                            ],
+                          M.get_function (|
+                            "revm_interpreter::table::make_instruction_table",
+                            [],
+                            [ WIRE; HOST ]
+                          |),
+                          []
+                        |))
+                        (Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 256 ]
+                          [
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                      []
+                                      [ WIRE ]
+                                  ];
+                                Ty.apply (Ty.path "&mut") [] [ HOST ]
+                              ]
+                              (Ty.tuple [])
+                          ])
+                    ]
+                  |))
+              ])
+            (Ty.apply
+              (Ty.path "revm_interpreter::interpreter::EthInstructionProvider")
+              []
+              [ WIRE; HOST ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1674,14 +1882,45 @@ Module interpreter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::interpreter::EthInstructionProvider",
-                          "instruction_table"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::EthInstructionProvider",
+                            "instruction_table"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 256 ]
+                                  [
+                                    Ty.function
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "revm_interpreter::interpreter::Interpreter")
+                                              []
+                                              [ WIRE ]
+                                          ];
+                                        Ty.apply (Ty.path "&mut") [] [ HOST ]
+                                      ]
+                                      (Ty.tuple [])
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ])
                     ]
                   |)
                 |)
@@ -1821,8 +2060,16 @@ Module interpreter.
                 Ty.tuple [],
                 M.read (| M.deref (| M.read (| self |) |) |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| interpreter |) |) |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| host |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| interpreter |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| host |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ H ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1983,14 +2230,26 @@ Module interpreter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_interpreter::interpreter::Interpreter",
-                      "bytecode"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::interpreter::Interpreter",
+                        "bytecode"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "revm_interpreter::interpreter_types::InterpreterTypes"
+                          []
+                          []
+                          IW
+                          "Bytecode"
+                      ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -2011,15 +2270,27 @@ Module interpreter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_interpreter::interpreter::Interpreter",
-                      "bytecode"
-                    |)
-                  |);
-                  Value.Integer IntegerKind.Isize 1
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::interpreter::Interpreter",
+                        "bytecode"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "revm_interpreter::interpreter_types::InterpreterTypes"
+                          []
+                          []
+                          IW
+                          "Bytecode"
+                      ]);
+                  M.value_with_ty (Value.Integer IntegerKind.Isize 1) (Ty.path "isize")
                 ]
               |) in
             M.alloc (|
@@ -2036,15 +2307,25 @@ Module interpreter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_array_field (|
-                      M.deref (| M.read (| instruction_table |) |),
-                      M.cast (Ty.path "usize") (M.read (| opcode |))
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| host |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_array_field (|
+                        M.deref (| M.read (| instruction_table |) |),
+                        M.cast (Ty.path "usize") (M.read (| opcode |))
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ FN ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "revm_interpreter::interpreter::Interpreter") [] [ IW ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| host |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ H ])
                 ]
               |)
             |)
@@ -2134,24 +2415,40 @@ Module interpreter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::interpreter::Interpreter",
-                          "control"
-                        |)
-                      |);
-                      Value.StructTuple
-                        "revm_interpreter::interpreter_action::InterpreterAction::None"
-                        []
-                        []
-                        [];
-                      Value.StructTuple
-                        "revm_interpreter::instruction_result::InstructionResult::Continue"
-                        []
-                        []
-                        []
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::Interpreter",
+                            "control"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              IW
+                              "Control"
+                          ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "revm_interpreter::interpreter_action::InterpreterAction::None"
+                            [])
+                          (Ty.path "revm_interpreter::interpreter_action::InterpreterAction"))
+                        (Ty.path "revm_interpreter::interpreter_action::InterpreterAction");
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "revm_interpreter::instruction_result::InstructionResult::Continue"
+                            [])
+                          (Ty.path "revm_interpreter::instruction_result::InstructionResult"))
+                        (Ty.path "revm_interpreter::instruction_result::InstructionResult")
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -2181,34 +2478,49 @@ Module interpreter.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path
-                                                "revm_interpreter::instruction_result::InstructionResult",
-                                              M.get_trait_method (|
-                                                "revm_interpreter::interpreter_types::LoopControl",
-                                                Ty.associated_in_trait
-                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.path
+                                                  "revm_interpreter::instruction_result::InstructionResult",
+                                                M.get_trait_method (|
+                                                  "revm_interpreter::interpreter_types::LoopControl",
+                                                  Ty.associated_in_trait
+                                                    "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                    []
+                                                    []
+                                                    IW
+                                                    "Control",
+                                                  [],
+                                                  [],
+                                                  "instruction_result",
+                                                  [],
                                                   []
-                                                  []
-                                                  IW
-                                                  "Control",
-                                                [],
-                                                [],
-                                                "instruction_result",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "revm_interpreter::interpreter::Interpreter",
-                                                    "control"
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "revm_interpreter::interpreter::Interpreter",
+                                                        "control"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.associated_in_trait
+                                                          "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                          []
+                                                          []
+                                                          IW
+                                                          "Control"
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.path
+                                                "revm_interpreter::instruction_result::InstructionResult")
                                           ]
                                         |)
                                       |)) in
@@ -2231,18 +2543,41 @@ Module interpreter.
                                           [ FN; H ]
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| instruction_table |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| host |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "revm_interpreter::interpreter::Interpreter")
+                                                  []
+                                                  [ IW ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| instruction_table |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 256 ]
+                                                  [ FN ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| host |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&mut") [] [ H ])
                                         ]
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2279,14 +2614,26 @@ Module interpreter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::interpreter::Interpreter",
-                          "control"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::Interpreter",
+                            "control"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                              []
+                              []
+                              IW
+                              "Control"
+                          ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -2309,7 +2656,17 @@ Module interpreter.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, action |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, action |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.path
+                                            "revm_interpreter::interpreter_action::InterpreterAction"
+                                        ])
+                                  ]
                                 |)
                               |)) in
                           let _ :=
@@ -2320,64 +2677,19 @@ Module interpreter.
                   |) in
                 M.alloc (|
                   Ty.path "revm_interpreter::interpreter_action::InterpreterAction",
-                  Value.mkStructRecord
-                    "revm_interpreter::interpreter_action::InterpreterAction::Return"
-                    []
-                    []
-                    [
-                      ("result",
-                        Value.mkStructRecord
-                          "revm_interpreter::interpreter::InterpreterResult"
-                          []
-                          []
-                          [
-                            ("result",
-                              M.call_closure (|
-                                Ty.path "revm_interpreter::instruction_result::InstructionResult",
-                                M.get_trait_method (|
-                                  "revm_interpreter::interpreter_types::LoopControl",
-                                  Ty.associated_in_trait
-                                    "revm_interpreter::interpreter_types::InterpreterTypes"
-                                    []
-                                    []
-                                    IW
-                                    "Control",
-                                  [],
-                                  [],
-                                  "instruction_result",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "revm_interpreter::interpreter::Interpreter",
-                                      "control"
-                                    |)
-                                  |)
-                                ]
-                              |));
-                            ("output",
-                              M.call_closure (|
-                                Ty.path "alloy_primitives::bytes_::Bytes",
-                                M.get_associated_function (|
-                                  Ty.path "alloy_primitives::bytes_::Bytes",
-                                  "new",
-                                  [],
-                                  []
-                                |),
-                                []
-                              |));
-                            ("gas",
-                              M.read (|
-                                M.deref (|
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_interpreter::interpreter_action::InterpreterAction::Return"
+                      [
+                        ("result",
+                          M.value_with_ty
+                            (Value.mkStructRecord
+                              "revm_interpreter::interpreter::InterpreterResult"
+                              [
+                                ("result",
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.path "revm_interpreter::gas::Gas" ],
+                                    Ty.path
+                                      "revm_interpreter::instruction_result::InstructionResult",
                                     M.get_trait_method (|
                                       "revm_interpreter::interpreter_types::LoopControl",
                                       Ty.associated_in_trait
@@ -2388,25 +2700,95 @@ Module interpreter.
                                         "Control",
                                       [],
                                       [],
-                                      "gas",
+                                      "instruction_result",
                                       [],
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "revm_interpreter::interpreter::Interpreter",
-                                          "control"
-                                        |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_interpreter::interpreter::Interpreter",
+                                            "control"
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                                              []
+                                              []
+                                              IW
+                                              "Control"
+                                          ])
                                     ]
-                                  |)
-                                |)
-                              |))
-                          ])
-                    ]
+                                  |));
+                                ("output",
+                                  M.call_closure (|
+                                    Ty.path "alloy_primitives::bytes_::Bytes",
+                                    M.get_associated_function (|
+                                      Ty.path "alloy_primitives::bytes_::Bytes",
+                                      "new",
+                                      [],
+                                      []
+                                    |),
+                                    []
+                                  |));
+                                ("gas",
+                                  M.read (|
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.path "revm_interpreter::gas::Gas" ],
+                                        M.get_trait_method (|
+                                          "revm_interpreter::interpreter_types::LoopControl",
+                                          Ty.associated_in_trait
+                                            "revm_interpreter::interpreter_types::InterpreterTypes"
+                                            []
+                                            []
+                                            IW
+                                            "Control",
+                                          [],
+                                          [],
+                                          "gas",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "revm_interpreter::interpreter::Interpreter",
+                                                "control"
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.associated_in_trait
+                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                  []
+                                                  []
+                                                  IW
+                                                  "Control"
+                                              ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                              ])
+                            (Ty.path "revm_interpreter::interpreter::InterpreterResult"))
+                      ])
+                    (Ty.path "revm_interpreter::interpreter_action::InterpreterAction")
                 |)
               |)))
           |)))
@@ -2449,96 +2831,105 @@ Module interpreter.
                 [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
               self
             |) in
-          Value.mkStructRecord
-            "revm_interpreter::interpreter::InterpreterResult"
-            []
-            []
-            [
-              ("result",
-                M.call_closure (|
-                  Ty.path "revm_interpreter::instruction_result::InstructionResult",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::interpreter::InterpreterResult"
+              [
+                ("result",
+                  M.call_closure (|
                     Ty.path "revm_interpreter::instruction_result::InstructionResult",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "revm_interpreter::instruction_result::InstructionResult",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::InterpreterResult",
-                            "result"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::InterpreterResult",
+                                "result"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("output",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ])
+                    ]
+                  |));
+                ("output",
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::InterpreterResult",
-                            "output"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::InterpreterResult",
+                                "output"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("gas",
-                M.call_closure (|
-                  Ty.path "revm_interpreter::gas::Gas",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                    ]
+                  |));
+                ("gas",
+                  M.call_closure (|
                     Ty.path "revm_interpreter::gas::Gas",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "revm_interpreter::gas::Gas",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::InterpreterResult",
-                            "gas"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::InterpreterResult",
+                                "gas"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::Gas" ])
+                    ]
+                  |))
+              ])
+            (Ty.path "revm_interpreter::interpreter::InterpreterResult")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2581,89 +2972,105 @@ Module interpreter.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InterpreterResult" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "result" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::interpreter::InterpreterResult",
-                          "result"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InterpreterResult" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "result" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::InterpreterResult",
+                            "result"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "output" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_interpreter::interpreter::InterpreterResult",
-                          "output"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "output" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::InterpreterResult",
+                            "output"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::Gas" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::Gas" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_interpreter::interpreter::InterpreterResult",
-                              "gas"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::Gas" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::Gas" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::InterpreterResult",
+                                "gas"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2728,22 +3135,32 @@ Module interpreter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_interpreter::interpreter::InterpreterResult",
-                      "result"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_interpreter::interpreter::InterpreterResult",
-                      "result"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::interpreter::InterpreterResult",
+                        "result"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_interpreter::interpreter::InterpreterResult",
+                        "result"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::instruction_result::InstructionResult" ])
                 ]
               |),
               ltac:(M.monadic
@@ -2759,22 +3176,26 @@ Module interpreter.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_interpreter::interpreter::InterpreterResult",
-                        "output"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "revm_interpreter::interpreter::InterpreterResult",
-                        "output"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::InterpreterResult",
+                          "output"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_interpreter::interpreter::InterpreterResult",
+                          "output"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
                   ]
                 |)))
             |),
@@ -2791,22 +3212,26 @@ Module interpreter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_interpreter::interpreter::InterpreterResult",
-                      "gas"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_interpreter::interpreter::InterpreterResult",
-                      "gas"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_interpreter::interpreter::InterpreterResult",
+                        "gas"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::Gas" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_interpreter::interpreter::InterpreterResult",
+                        "gas"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_interpreter::gas::Gas" ])
                 ]
               |)))
           |)))
@@ -2899,15 +3324,15 @@ Module interpreter.
             |) in
           let output := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", output |) in
           let gas := M.alloc (| Ty.path "revm_interpreter::gas::Gas", gas |) in
-          Value.mkStructRecord
-            "revm_interpreter::interpreter::InterpreterResult"
-            []
-            []
-            [
-              ("result", M.read (| result |));
-              ("output", M.read (| output |));
-              ("gas", M.read (| gas |))
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_interpreter::interpreter::InterpreterResult"
+              [
+                ("result", M.read (| result |));
+                ("output", M.read (| output |));
+                ("gas", M.read (| gas |))
+              ])
+            (Ty.path "revm_interpreter::interpreter::InterpreterResult")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2941,13 +3366,15 @@ Module interpreter.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_interpreter::interpreter::InterpreterResult",
-                  "result"
-                |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "revm_interpreter::interpreter::InterpreterResult",
+                    "result"
+                  |)
+                |))
+                (Ty.path "revm_interpreter::instruction_result::InstructionResult")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2983,13 +3410,15 @@ Module interpreter.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_interpreter::interpreter::InterpreterResult",
-                  "result"
-                |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "revm_interpreter::interpreter::InterpreterResult",
+                    "result"
+                  |)
+                |))
+                (Ty.path "revm_interpreter::instruction_result::InstructionResult")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3026,13 +3455,15 @@ Module interpreter.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_interpreter::interpreter::InterpreterResult",
-                  "result"
-                |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "revm_interpreter::interpreter::InterpreterResult",
+                    "result"
+                  |)
+                |))
+                (Ty.path "revm_interpreter::instruction_result::InstructionResult")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

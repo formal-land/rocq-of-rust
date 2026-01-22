@@ -19,7 +19,7 @@ Module ptr.
         M.call_closure (|
           Ty.tuple [],
           M.get_function (| "core::ptr::drop_in_place", [], [ T ] |),
-          [ M.read (| to_drop |) ]
+          [ M.value_with_ty (M.read (| to_drop |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -42,12 +42,14 @@ Module ptr.
           Ty.apply (Ty.path "*const") [] [ T ],
           M.get_function (| "core::ptr::metadata::from_raw_parts", [], [ T; Ty.tuple [] ] |),
           [
-            M.call_closure (|
-              Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-              M.get_function (| "core::ptr::without_provenance", [], [ Ty.tuple [] ] |),
-              [ Value.Integer IntegerKind.Usize 0 ]
-            |);
-            Value.Tuple []
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                M.get_function (| "core::ptr::without_provenance", [], [ Ty.tuple [] ] |),
+                [ M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize") ]
+              |))
+              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+            M.value_with_ty (Value.Tuple []) (Ty.tuple [])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -70,12 +72,14 @@ Module ptr.
           Ty.apply (Ty.path "*mut") [] [ T ],
           M.get_function (| "core::ptr::metadata::from_raw_parts_mut", [], [ T; Ty.tuple [] ] |),
           [
-            M.call_closure (|
-              Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ],
-              M.get_function (| "core::ptr::without_provenance_mut", [], [ Ty.tuple [] ] |),
-              [ Value.Integer IntegerKind.Usize 0 ]
-            |);
-            Value.Tuple []
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ],
+                M.get_function (| "core::ptr::without_provenance_mut", [], [ Ty.tuple [] ] |),
+                [ M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize") ]
+              |))
+              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]);
+            M.value_with_ty (Value.Tuple []) (Ty.tuple [])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -107,7 +111,7 @@ Module ptr.
             [],
             [ Ty.path "usize"; Ty.apply (Ty.path "*const") [] [ T ] ]
           |),
-          [ M.read (| addr |) ]
+          [ M.value_with_ty (M.read (| addr |)) (Ty.path "usize") ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -130,11 +134,13 @@ Module ptr.
           Ty.apply (Ty.path "*const") [] [ T ],
           M.get_function (| "core::ptr::without_provenance", [], [ T ] |),
           [
-            M.call_closure (|
-              Ty.path "usize",
-              M.get_function (| "core::mem::align_of", [], [ T ] |),
-              []
-            |)
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.path "usize",
+                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                []
+              |))
+              (Ty.path "usize")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -166,7 +172,7 @@ Module ptr.
             [],
             [ Ty.path "usize"; Ty.apply (Ty.path "*mut") [] [ T ] ]
           |),
-          [ M.read (| addr |) ]
+          [ M.value_with_ty (M.read (| addr |)) (Ty.path "usize") ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -189,11 +195,13 @@ Module ptr.
           Ty.apply (Ty.path "*mut") [] [ T ],
           M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
           [
-            M.call_closure (|
-              Ty.path "usize",
-              M.get_function (| "core::mem::align_of", [], [ T ] |),
-              []
-            |)
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.path "usize",
+                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                []
+              |))
+              (Ty.path "usize")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -300,7 +308,10 @@ Module ptr.
             [],
             [ Ty.apply (Ty.path "slice") [] [ T ]; T ]
           |),
-          [ M.read (| data |); M.read (| len |) ]
+          [
+            M.value_with_ty (M.read (| data |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+            M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -328,7 +339,10 @@ Module ptr.
             [],
             [ Ty.apply (Ty.path "slice") [] [ T ]; T ]
           |),
-          [ M.read (| data |); M.read (| len |) ]
+          [
+            M.value_with_ty (M.read (| data |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+            M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -379,25 +393,36 @@ Module ptr.
               Ty.tuple [],
               M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ T ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ T ])
-                    (Ty.apply (Ty.path "*const") [] [ T ]),
-                  [ M.read (| x |) ]
-                |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ T ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                    "as_mut_ptr",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.MutRef, tmp |) ]
-                |);
-                Value.Integer IntegerKind.Usize 1
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ T ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ T ])
+                      (Ty.apply (Ty.path "*const") [] [ T ]),
+                    [ M.read (| x |) ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ T ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ T ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                      "as_mut_ptr",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, tmp |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -405,16 +430,18 @@ Module ptr.
               Ty.tuple [],
               M.get_function (| "core::intrinsics::copy", [], [ T ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ T ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ T ])
-                    (Ty.apply (Ty.path "*const") [] [ T ]),
-                  [ M.read (| y |) ]
-                |);
-                M.read (| x |);
-                Value.Integer IntegerKind.Usize 1
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ T ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ T ])
+                      (Ty.apply (Ty.path "*const") [] [ T ]),
+                    [ M.read (| y |) ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ T ]);
+                M.value_with_ty (M.read (| x |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -422,18 +449,27 @@ Module ptr.
               Ty.tuple [],
               M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ T ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                    "as_ptr",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, tmp |) ]
-                |);
-                M.read (| y |);
-                Value.Integer IntegerKind.Usize 1
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ T ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                      "as_ptr",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, tmp |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ T ]);
+                M.value_with_ty (M.read (| y |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -537,23 +573,31 @@ Module ptr.
                                 []
                               |),
                               [
-                                M.cast
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                  (M.read (| x |));
-                                M.cast
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                  (M.read (| y |));
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                  []
-                                |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_function (| "core::mem::align_of", [], [ T ] |),
-                                  []
-                                |);
-                                M.read (| count |)
+                                M.value_with_ty
+                                  (M.cast
+                                    (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                    (M.read (| x |)))
+                                  (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]);
+                                M.value_with_ty
+                                  (M.cast
+                                    (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                    (M.read (| y |)))
+                                  (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_function (| "core::mem::size_of", [], [ T ] |),
+                                    []
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                    []
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty (M.read (| count |)) (Ty.path "usize")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -608,11 +652,17 @@ Module ptr.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                              []
-                                            |)
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.path "usize",
+                                                M.get_function (|
+                                                  "core::mem::size_of",
+                                                  [],
+                                                  [ T ]
+                                                |),
+                                                []
+                                              |))
+                                              (Ty.path "usize")
                                           ]
                                         |)
                                       ]
@@ -736,7 +786,11 @@ Module ptr.
                                               [],
                                               [ Ty.path "usize" ]
                                             |),
-                                            [ M.read (| x |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| x |))
+                                                (Ty.apply (Ty.path "*mut") [] [ T ])
+                                            ]
                                           |) in
                                         let~ y : Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ] :=
                                           M.call_closure (|
@@ -747,7 +801,11 @@ Module ptr.
                                               [],
                                               [ Ty.path "usize" ]
                                             |),
-                                            [ M.read (| y |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| y |))
+                                                (Ty.apply (Ty.path "*mut") [] [ T ])
+                                            ]
                                           |) in
                                         let~ count : Ty.path "usize" :=
                                           M.call_closure (|
@@ -789,7 +847,15 @@ Module ptr.
                                               [],
                                               [ Ty.path "usize" ]
                                             |),
-                                            [ M.read (| x |); M.read (| y |); M.read (| count |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| x |))
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                                              M.value_with_ty
+                                                (M.read (| y |))
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                                              M.value_with_ty (M.read (| count |)) (Ty.path "usize")
+                                            ]
                                           |)
                                         |)
                                       |)
@@ -883,7 +949,11 @@ Module ptr.
                                               [],
                                               [ Ty.path "u8" ]
                                             |),
-                                            [ M.read (| x |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| x |))
+                                                (Ty.apply (Ty.path "*mut") [] [ T ])
+                                            ]
                                           |) in
                                         let~ y : Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] :=
                                           M.call_closure (|
@@ -894,7 +964,11 @@ Module ptr.
                                               [],
                                               [ Ty.path "u8" ]
                                             |),
-                                            [ M.read (| y |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| y |))
+                                                (Ty.apply (Ty.path "*mut") [] [ T ])
+                                            ]
                                           |) in
                                         let~ count : Ty.path "usize" :=
                                           M.call_closure (|
@@ -936,7 +1010,15 @@ Module ptr.
                                               [],
                                               [ Ty.path "u8" ]
                                             |),
-                                            [ M.read (| x |); M.read (| y |); M.read (| count |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| x |))
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                              M.value_with_ty
+                                                (M.read (| y |))
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                              M.value_with_ty (M.read (| count |)) (Ty.path "usize")
+                                            ]
                                           |)
                                         |)
                                       |)
@@ -954,7 +1036,11 @@ Module ptr.
                 M.call_closure (|
                   Ty.tuple [],
                   M.get_function (| "core::ptr::swap_nonoverlapping_simple_untyped", [], [ T ] |),
-                  [ M.read (| x |); M.read (| y |); M.read (| count |) ]
+                  [
+                    M.value_with_ty (M.read (| x |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (M.read (| y |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (M.read (| count |)) (Ty.path "usize")
+                  ]
                 |)
               |)
             |)))
@@ -1027,7 +1113,7 @@ Module ptr.
                 [],
                 [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
               |),
-              [ M.read (| x |) ]
+              [ M.value_with_ty (M.read (| x |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
             |) in
           let~ y :
               Ty.apply
@@ -1045,7 +1131,7 @@ Module ptr.
                 [],
                 [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
               |),
-              [ M.read (| y |) ]
+              [ M.value_with_ty (M.read (| y |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
             |) in
           let~ i : Ty.path "usize" := Value.Integer IntegerKind.Usize 0 in
           M.loop (|
@@ -1097,7 +1183,20 @@ Module ptr.
                                 [],
                                 []
                               |),
-                              [ M.read (| x |); M.read (| i |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| x |))
+                                  (Ty.apply
+                                    (Ty.path "*mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ]);
+                                M.value_with_ty (M.read (| i |)) (Ty.path "usize")
+                              ]
                             |) in
                           let~ y :
                               Ty.apply
@@ -1125,7 +1224,20 @@ Module ptr.
                                 [],
                                 []
                               |),
-                              [ M.read (| y |); M.read (| i |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| y |))
+                                  (Ty.apply
+                                    (Ty.path "*mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ]
+                                    ]);
+                                M.value_with_ty (M.read (| i |)) (Ty.path "usize")
+                              ]
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.read (|
@@ -1150,28 +1262,9 @@ Module ptr.
                                     ]
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "*const")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ T ]
-                                        ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply
-                                          (Ty.path "*mut")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ])
-                                        (Ty.apply
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
                                           (Ty.path "*const")
                                           []
                                           [
@@ -1179,9 +1272,38 @@ Module ptr.
                                               (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                               []
                                               [ T ]
-                                          ]),
-                                      [ M.read (| x |) ]
-                                    |)
+                                          ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply
+                                            (Ty.path "*mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ T ]
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "*const")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ T ]
+                                            ]),
+                                        [ M.read (| x |) ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ T ]
+                                        ])
                                   ]
                                 |) in
                               let~ b :
@@ -1205,28 +1327,9 @@ Module ptr.
                                     ]
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "*const")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ T ]
-                                        ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply
-                                          (Ty.path "*mut")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ T ]
-                                          ])
-                                        (Ty.apply
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
                                           (Ty.path "*const")
                                           []
                                           [
@@ -1234,9 +1337,38 @@ Module ptr.
                                               (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                               []
                                               [ T ]
-                                          ]),
-                                      [ M.read (| y |) ]
-                                    |)
+                                          ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply
+                                            (Ty.path "*mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ T ]
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "*const")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ T ]
+                                            ]),
+                                        [ M.read (| y |) ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ T ]
+                                        ])
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -1252,7 +1384,25 @@ Module ptr.
                                         [ T ]
                                     ]
                                   |),
-                                  [ M.read (| x |); M.read (| b |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| x |))
+                                      (Ty.apply
+                                        (Ty.path "*mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ T ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.read (| b |))
+                                      (Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ])
+                                  ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 M.call_closure (|
@@ -1267,7 +1417,25 @@ Module ptr.
                                         [ T ]
                                     ]
                                   |),
-                                  [ M.read (| y |); M.read (| a |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| y |))
+                                      (Ty.apply
+                                        (Ty.path "*mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ T ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.read (| a |))
+                                      (Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ T ])
+                                  ]
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |) in
@@ -1358,20 +1526,26 @@ Module ptr.
                           Ty.tuple [],
                           M.get_function (| "core::ptr::replace.precondition_check", [], [] |),
                           [
-                            M.cast
-                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                              (M.read (| dst |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
-                                Ty.path "bool"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                                (M.read (| dst |)))
+                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                  Ty.path "bool"
+                                |)
+                              |))
+                              (Ty.path "bool")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1385,11 +1559,13 @@ Module ptr.
               T,
               M.get_function (| "core::mem::replace", [], [ T ] |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| dst |) |) |) |)
-                |);
-                M.read (| src |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| dst |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ T ]);
+                M.value_with_ty (M.read (| src |)) T
               ]
             |)
           |)
@@ -1475,20 +1651,26 @@ Module ptr.
                           Ty.tuple [],
                           M.get_function (| "core::ptr::read.precondition_check", [], [] |),
                           [
-                            M.cast
-                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                              (M.read (| src |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
-                                Ty.path "bool"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                                (M.read (| src |)))
+                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                  Ty.path "bool"
+                                |)
+                              |))
+                              (Ty.path "bool")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1501,7 +1683,7 @@ Module ptr.
             M.call_closure (|
               T,
               M.get_function (| "core::intrinsics::read_via_copy", [], [ T ] |),
-              [ M.read (| src |) ]
+              [ M.value_with_ty (M.read (| src |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
             |)
           |)
         |)))
@@ -1549,24 +1731,37 @@ Module ptr.
               Ty.tuple [],
               M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
               [
-                M.cast (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]) (M.read (| src |));
-                M.cast
-                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                M.value_with_ty
+                  (M.cast (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]) (M.read (| src |)))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.cast
+                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*mut") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                        "as_mut_ptr",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, tmp |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ])
+                      ]
+                    |)))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty
                   (M.call_closure (|
-                    Ty.apply (Ty.path "*mut") [] [ T ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                      "as_mut_ptr",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, tmp |) ]
-                  |));
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_function (| "core::mem::size_of", [], [ T ] |),
-                  []
-                |)
+                    Ty.path "usize",
+                    M.get_function (| "core::mem::size_of", [], [ T ] |),
+                    []
+                  |))
+                  (Ty.path "usize")
               ]
             |) in
           M.alloc (|
@@ -1579,7 +1774,11 @@ Module ptr.
                 [],
                 []
               |),
-              [ M.read (| tmp |) ]
+              [
+                M.value_with_ty
+                  (M.read (| tmp |))
+                  (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ])
+              ]
             |)
           |)
         |)))
@@ -1650,20 +1849,26 @@ Module ptr.
                           Ty.tuple [],
                           M.get_function (| "core::ptr::write.precondition_check", [], [] |),
                           [
-                            M.cast
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                              (M.read (| dst |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
-                                Ty.path "bool"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                (M.read (| dst |)))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                  Ty.path "bool"
+                                |)
+                              |))
+                              (Ty.path "bool")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1676,7 +1881,10 @@ Module ptr.
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "core::intrinsics::write_via_move", [], [ T ] |),
-              [ M.read (| dst |); M.read (| src |) ]
+              [
+                M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| src |)) T
+              ]
             |)
           |)
         |)))
@@ -1711,22 +1919,28 @@ Module ptr.
               Ty.tuple [],
               M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ Ty.path "u8" ] |),
               [
-                M.cast
-                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ])
-                  (M.borrow (| Pointer.Kind.ConstPointer, src |));
-                M.cast (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]) (M.read (| dst |));
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_function (| "core::mem::size_of", [], [ T ] |),
-                  []
-                |)
+                M.value_with_ty
+                  (M.cast
+                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ])
+                    (M.borrow (| Pointer.Kind.ConstPointer, src |)))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.cast (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]) (M.read (| dst |)))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_function (| "core::mem::size_of", [], [ T ] |),
+                    []
+                  |))
+                  (Ty.path "usize")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "core::intrinsics::forget", [], [ T ] |),
-              [ M.read (| src |) ]
+              [ M.value_with_ty (M.read (| src |)) T ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))
@@ -1789,20 +2003,26 @@ Module ptr.
                             []
                           |),
                           [
-                            M.cast
-                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                              (M.read (| src |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
-                                Ty.path "bool"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                                (M.read (| src |)))
+                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                  Ty.path "bool"
+                                |)
+                              |))
+                              (Ty.path "bool")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1815,7 +2035,7 @@ Module ptr.
             M.call_closure (|
               T,
               M.get_function (| "core::intrinsics::volatile_load", [], [ T ] |),
-              [ M.read (| src |) ]
+              [ M.value_with_ty (M.read (| src |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
             |)
           |)
         |)))
@@ -1879,20 +2099,26 @@ Module ptr.
                             []
                           |),
                           [
-                            M.cast
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                              (M.read (| dst |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
-                                Ty.path "bool"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                (M.read (| dst |)))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                  Ty.path "bool"
+                                |)
+                              |))
+                              (Ty.path "bool")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1904,7 +2130,10 @@ Module ptr.
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "core::intrinsics::volatile_store", [], [ T ] |),
-              [ M.read (| dst |); M.read (| src |) ]
+              [
+                M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| src |)) T
+              ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))
@@ -2113,13 +2342,16 @@ Module ptr.
                     [],
                     []
                   |),
-                  [ M.read (| p |) ]
+                  [ M.value_with_ty (M.read (| p |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
                 |) in
               let~ a_minus_one : Ty.path "usize" :=
                 M.call_closure (|
                   Ty.path "usize",
                   M.get_function (| "core::intrinsics::unchecked_sub", [], [ Ty.path "usize" ] |),
-                  [ M.read (| a |); Value.Integer IntegerKind.Usize 1 ]
+                  [
+                    M.value_with_ty (M.read (| a |)) (Ty.path "usize");
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -2194,7 +2426,10 @@ Module ptr.
                 M.call_closure (|
                   Ty.path "usize",
                   M.get_function (| "core::intrinsics::unchecked_rem", [], [ Ty.path "usize" ] |),
-                  [ M.read (| a |); M.read (| stride |) ]
+                  [
+                    M.value_with_ty (M.read (| a |)) (Ty.path "usize");
+                    M.value_with_ty (M.read (| stride |)) (Ty.path "usize")
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -2228,7 +2463,10 @@ Module ptr.
                                       [],
                                       [ Ty.path "usize" ]
                                     |),
-                                    [ M.read (| addr |); M.read (| a_minus_one |) ]
+                                    [
+                                      M.value_with_ty (M.read (| addr |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| a_minus_one |)) (Ty.path "usize")
+                                    ]
                                   |);
                                   M.call_closure (|
                                     Ty.path "usize",
@@ -2237,7 +2475,12 @@ Module ptr.
                                       [],
                                       [ Ty.path "usize" ]
                                     |),
-                                    [ Value.Integer IntegerKind.Usize 0; M.read (| a |) ]
+                                    [
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 0)
+                                        (Ty.path "usize");
+                                      M.value_with_ty (M.read (| a |)) (Ty.path "usize")
+                                    ]
                                   |)
                                 ]
                               |) in
@@ -2249,18 +2492,23 @@ Module ptr.
                                   [],
                                   [ Ty.path "usize" ]
                                 |),
-                                [ M.read (| aligned_address |); M.read (| addr |) ]
+                                [
+                                  M.value_with_ty (M.read (| aligned_address |)) (Ty.path "usize");
+                                  M.value_with_ty (M.read (| addr |)) (Ty.path "usize")
+                                ]
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.call_closure (|
                                 Ty.tuple [],
                                 M.get_function (| "core::intrinsics::assume", [], [] |),
                                 [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [ M.read (| byte_offset |); M.read (| a |) ]
-                                  |)
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.lt,
+                                      [ M.read (| byte_offset |); M.read (| a |) ]
+                                    |))
+                                    (Ty.path "bool")
                                 ]
                               |) in
                             let~ addr_mod_stride : Ty.path "usize" :=
@@ -2271,7 +2519,10 @@ Module ptr.
                                   [],
                                   [ Ty.path "usize" ]
                                 |),
-                                [ M.read (| addr |); M.read (| stride |) ]
+                                [
+                                  M.value_with_ty (M.read (| addr |)) (Ty.path "usize");
+                                  M.value_with_ty (M.read (| stride |)) (Ty.path "usize")
+                                ]
                               |) in
                             M.return_ (|
                               M.match_operator (|
@@ -2305,7 +2556,12 @@ Module ptr.
                                           [],
                                           [ Ty.path "usize" ]
                                         |),
-                                        [ M.read (| byte_offset |); M.read (| stride |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| byte_offset |))
+                                            (Ty.path "usize");
+                                          M.value_with_ty (M.read (| stride |)) (Ty.path "usize")
+                                        ]
                                       |)));
                                   fun γ =>
                                     ltac:(M.monadic
@@ -2334,7 +2590,7 @@ Module ptr.
                         [],
                         [ Ty.path "usize" ]
                       |),
-                      [ M.read (| stride |) ]
+                      [ M.value_with_ty (M.read (| stride |)) (Ty.path "usize") ]
                     |) in
                   let~ y : Ty.path "u32" :=
                     M.call_closure (|
@@ -2344,7 +2600,7 @@ Module ptr.
                         [],
                         [ Ty.path "usize" ]
                       |),
-                      [ M.read (| a |) ]
+                      [ M.value_with_ty (M.read (| a |)) (Ty.path "usize") ]
                     |) in
                   M.alloc (|
                     Ty.path "u32",
@@ -2380,7 +2636,10 @@ Module ptr.
                     [],
                     [ Ty.path "usize"; Ty.path "u32" ]
                   |),
-                  [ Value.Integer IntegerKind.Usize 1; M.read (| gcdpow |) ]
+                  [
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize");
+                    M.value_with_ty (M.read (| gcdpow |)) (Ty.path "u32")
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -2409,7 +2668,12 @@ Module ptr.
                                           [],
                                           [ Ty.path "usize" ]
                                         |),
-                                        [ M.read (| gcd |); Value.Integer IntegerKind.Usize 1 ]
+                                        [
+                                          M.value_with_ty (M.read (| gcd |)) (Ty.path "usize");
+                                          M.value_with_ty
+                                            (Value.Integer IntegerKind.Usize 1)
+                                            (Ty.path "usize")
+                                        ]
                                       |)
                                     ]
                                   |);
@@ -2428,7 +2692,10 @@ Module ptr.
                                   [],
                                   [ Ty.path "usize"; Ty.path "u32" ]
                                 |),
-                                [ M.read (| a |); M.read (| gcdpow |) ]
+                                [
+                                  M.value_with_ty (M.read (| a |)) (Ty.path "usize");
+                                  M.value_with_ty (M.read (| gcdpow |)) (Ty.path "u32")
+                                ]
                               |) in
                             let~ a2minus1 : Ty.path "usize" :=
                               M.call_closure (|
@@ -2438,7 +2705,12 @@ Module ptr.
                                   [],
                                   [ Ty.path "usize" ]
                                 |),
-                                [ M.read (| a2 |); Value.Integer IntegerKind.Usize 1 ]
+                                [
+                                  M.value_with_ty (M.read (| a2 |)) (Ty.path "usize");
+                                  M.value_with_ty
+                                    (Value.Integer IntegerKind.Usize 1)
+                                    (Ty.path "usize")
+                                ]
                               |) in
                             let~ s2 : Ty.path "usize" :=
                               M.call_closure (|
@@ -2449,12 +2721,14 @@ Module ptr.
                                   [ Ty.path "usize"; Ty.path "u32" ]
                                 |),
                                 [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.bit_and,
-                                    [ M.read (| stride |); M.read (| a_minus_one |) ]
-                                  |);
-                                  M.read (| gcdpow |)
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "usize",
+                                      BinOp.Wrap.bit_and,
+                                      [ M.read (| stride |); M.read (| a_minus_one |) ]
+                                    |))
+                                    (Ty.path "usize");
+                                  M.value_with_ty (M.read (| gcdpow |)) (Ty.path "u32")
                                 ]
                               |) in
                             let~ minusp2 : Ty.path "usize" :=
@@ -2466,23 +2740,27 @@ Module ptr.
                                   [ Ty.path "usize" ]
                                 |),
                                 [
-                                  M.read (| a2 |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_function (|
-                                      "core::intrinsics::unchecked_shr",
-                                      [],
-                                      [ Ty.path "usize"; Ty.path "u32" ]
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        BinOp.Wrap.bit_and,
-                                        [ M.read (| addr |); M.read (| a_minus_one |) ]
-                                      |);
-                                      M.read (| gcdpow |)
-                                    ]
-                                  |)
+                                  M.value_with_ty (M.read (| a2 |)) (Ty.path "usize");
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_function (|
+                                        "core::intrinsics::unchecked_shr",
+                                        [],
+                                        [ Ty.path "usize"; Ty.path "u32" ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.bit_and,
+                                            [ M.read (| addr |); M.read (| a_minus_one |) ]
+                                          |))
+                                          (Ty.path "usize");
+                                        M.value_with_ty (M.read (| gcdpow |)) (Ty.path "u32")
+                                      ]
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |) in
                             M.return_ (|
@@ -2498,16 +2776,21 @@ Module ptr.
                                       [ Ty.path "usize" ]
                                     |),
                                     [
-                                      M.read (| minusp2 |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_function (|
-                                          "core::ptr::align_offset.mod_inv",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| s2 |); M.read (| a2 |) ]
-                                      |)
+                                      M.value_with_ty (M.read (| minusp2 |)) (Ty.path "usize");
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_function (|
+                                            "core::ptr::align_offset.mod_inv",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty (M.read (| s2 |)) (Ty.path "usize");
+                                            M.value_with_ty (M.read (| a2 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.path "usize")
                                     ]
                                   |);
                                   M.read (| a2minus1 |)
@@ -2585,7 +2868,10 @@ Module ptr.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_function (| "core::intrinsics::unchecked_sub", [], [ Ty.path "usize" ] |),
-                [ M.read (| m |); Value.Integer IntegerKind.Usize 1 ]
+                [
+                  M.value_with_ty (M.read (| m |)) (Ty.path "usize");
+                  M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
+                ]
               |) in
             let~ inverse : Ty.path "usize" :=
               M.cast
@@ -2674,27 +2960,36 @@ Module ptr.
                             [ Ty.path "usize" ]
                           |),
                           [
-                            M.read (| inverse |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (|
-                                "core::intrinsics::wrapping_sub",
-                                [],
-                                [ Ty.path "usize" ]
-                              |),
-                              [
-                                Value.Integer IntegerKind.Usize 2;
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_function (|
-                                    "core::intrinsics::wrapping_mul",
-                                    [],
-                                    [ Ty.path "usize" ]
-                                  |),
-                                  [ M.read (| x |); M.read (| inverse |) ]
-                                |)
-                              ]
-                            |)
+                            M.value_with_ty (M.read (| inverse |)) (Ty.path "usize");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (|
+                                  "core::intrinsics::wrapping_sub",
+                                  [],
+                                  [ Ty.path "usize" ]
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (Value.Integer IntegerKind.Usize 2)
+                                    (Ty.path "usize");
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_function (|
+                                        "core::intrinsics::wrapping_mul",
+                                        [],
+                                        [ Ty.path "usize" ]
+                                      |),
+                                      [
+                                        M.value_with_ty (M.read (| x |)) (Ty.path "usize");
+                                        M.value_with_ty (M.read (| inverse |)) (Ty.path "usize")
+                                      ]
+                                    |))
+                                    (Ty.path "usize")
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |)
                       |) in
@@ -2711,7 +3006,10 @@ Module ptr.
                               [],
                               [ Ty.path "usize" ]
                             |),
-                            [ M.read (| mod_gate |); M.read (| mod_gate |) ]
+                            [
+                              M.value_with_ty (M.read (| mod_gate |)) (Ty.path "usize");
+                              M.value_with_ty (M.read (| mod_gate |)) (Ty.path "usize")
+                            ]
                           |)
                         |),
                         [
@@ -2861,12 +3159,12 @@ Module ptr.
             M.call_closure (|
               Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
               M.get_trait_method (| "core::marker::FnPtr", T, [], [], "addr", [], [] |),
-              [ M.read (| f |) ]
+              [ M.value_with_ty (M.read (| f |)) T ]
             |);
             M.call_closure (|
               Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
               M.get_trait_method (| "core::marker::FnPtr", U, [], [], "addr", [], [] |),
-              [ M.read (| g |) ]
+              [ M.value_with_ty (M.read (| g |)) U ]
             |)
           ]
         |)))
@@ -2904,8 +3202,12 @@ Module ptr.
                 [ S ]
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, hashee |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| into |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, hashee |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ T ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| into |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ S ])
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2939,12 +3241,12 @@ Module ptr.
               M.call_closure (|
                 Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
                 M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
-                [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                [ M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) F ]
               |);
               M.call_closure (|
                 Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
                 M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
-                [ M.read (| M.deref (| M.read (| other |) |) |) ]
+                [ M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) F ]
               |)
             ]
           |)))
@@ -3001,33 +3303,37 @@ Module ptr.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                    M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                  |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
+                    M.call_closure (|
                       Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                      M.call_closure (|
+                      M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
+                      [ M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) F ]
+                    |)
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
                         Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                        M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
-                        [ M.read (| M.deref (| M.read (| other |) |) |) ]
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                          M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
+                          [ M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) F ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3070,33 +3376,37 @@ Module ptr.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                    M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                  |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
+                    M.call_closure (|
                       Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                      M.call_closure (|
+                      M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
+                      [ M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) F ]
+                    |)
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
                         Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                        M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
-                        [ M.read (| M.deref (| M.read (| other |) |) |) ]
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                          M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
+                          [ M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) F ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3131,14 +3441,18 @@ Module ptr.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", HH, [], [], "write_usize", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-              M.cast
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ HH ]);
+              M.value_with_ty
+                (M.cast
+                  (Ty.path "usize")
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                    M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
+                    [ M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) F ]
+                  |)))
                 (Ty.path "usize")
-                (M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                  M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                |))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3177,14 +3491,18 @@ Module ptr.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_function (| "core::fmt::pointer_fmt_inner", [], [] |),
             [
-              M.cast
-                (Ty.path "usize")
-                (M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                  M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                |));
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+              M.value_with_ty
+                (M.cast
+                  (Ty.path "usize")
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                    M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
+                    [ M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) F ]
+                  |)))
+                (Ty.path "usize");
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3223,14 +3541,18 @@ Module ptr.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_function (| "core::fmt::pointer_fmt_inner", [], [] |),
             [
-              M.cast
-                (Ty.path "usize")
-                (M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                  M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                |));
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+              M.value_with_ty
+                (M.cast
+                  (Ty.path "usize")
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                    M.get_trait_method (| "core::marker::FnPtr", F, [], [], "addr", [], [] |),
+                    [ M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) F ]
+                  |)))
+                (Ty.path "usize");
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

@@ -55,94 +55,134 @@ Module vec.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.alloc (|
-                            Ty.path "core::fmt::builders::DebugTuple",
-                            M.call_closure (|
-                              Ty.path "core::fmt::builders::DebugTuple",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "debug_tuple",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "IntoIter" |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
+                                Ty.path "core::fmt::builders::DebugTuple",
+                                M.call_closure (|
+                                  Ty.path "core::fmt::builders::DebugTuple",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Formatter",
+                                    "debug_tuple",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| f |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "IntoIter" |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
                                 |)
-                              ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
+                              |)
+                            |))
                             (Ty.apply
-                              (Ty.path "&")
+                              (Ty.path "&mut")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                              [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "&")
                                       []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                      M.get_associated_function (|
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
                                         Ty.apply
-                                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                                          (Ty.path "&")
                                           []
-                                          [ T; A ],
-                                        "as_slice",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::into_iter::IntoIter")
+                                              []
+                                              [ T; A ],
+                                            "as_slice",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                    []
+                                                    [ T; A ]
+                                                ])
+                                          ]
                                         |)
-                                      ]
+                                      |)
                                     |)
                                   |)
                                 |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -187,46 +227,59 @@ Module vec.
                   Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                   M.get_function (| "core::slice::raw::from_raw_parts", [], [ T ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ T ],
-                      M.pointer_coercion
-                        M.PointerCoercion.MutToConstPointer
-                        (Ty.apply (Ty.path "*mut") [] [ T ])
-                        (Ty.apply (Ty.path "*const") [] [ T ]),
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*mut") [] [ T ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                            "as_ptr",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::into_iter::IntoIter",
-                                "ptr"
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_trait_method (|
-                        "core::iter::traits::exact_size::ExactSizeIterator",
-                        Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ],
-                        [],
-                        [],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*const") [] [ T ],
+                        M.pointer_coercion
+                          M.PointerCoercion.MutToConstPointer
+                          (Ty.apply (Ty.path "*mut") [] [ T ])
+                          (Ty.apply (Ty.path "*const") [] [ T ]),
+                        [
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*mut") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              "as_ptr",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::vec::into_iter::IntoIter",
+                                    "ptr"
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                            ]
+                          |)
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_trait_method (|
+                          "core::iter::traits::exact_size::ExactSizeIterator",
+                          Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ],
+                          [],
+                          [],
+                          "len",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ])
+                        ]
+                      |))
+                      (Ty.path "usize")
                   ]
                 |)
               |)
@@ -283,7 +336,21 @@ Module vec.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                                        []
+                                        [ T; A ]
+                                    ])
                               ]
                             |)
                           |)
@@ -336,19 +403,24 @@ Module vec.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::vec::into_iter::IntoIter",
-                            "alloc"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::vec::into_iter::IntoIter",
+                              "alloc"
+                            |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::mem::manually_drop::ManuallyDrop") [] [ A ] ])
                   ]
                 |)
               |)
@@ -389,40 +461,58 @@ Module vec.
               Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
               M.get_function (| "core::ptr::slice_from_raw_parts_mut", [], [ T ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ T ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                    "as_ptr",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::vec::into_iter::IntoIter",
-                        "ptr"
-                      |)
-                    |)
-                  ]
-                |);
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_trait_method (|
-                    "core::iter::traits::exact_size::ExactSizeIterator",
-                    Ty.apply
-                      (Ty.path "&mut")
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ T ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                      "as_ptr",
+                      [],
                       []
-                      [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ],
-                    [],
-                    [],
-                    "len",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                |)
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::vec::into_iter::IntoIter",
+                            "ptr"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_trait_method (|
+                      "core::iter::traits::exact_size::ExactSizeIterator",
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ],
+                      [],
+                      [],
+                      "len",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, self |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -482,7 +572,14 @@ Module vec.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.write (|
@@ -512,31 +609,41 @@ Module vec.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "alloc::raw_vec::RawVec")
-                            []
-                            [ T; Ty.path "alloc::alloc::Global" ],
-                          M.call_closure (|
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "alloc::raw_vec::RawVec")
                               []
                               [ T; Ty.path "alloc::alloc::Global" ],
-                            M.get_associated_function (|
+                            M.call_closure (|
                               Ty.apply
                                 (Ty.path "alloc::raw_vec::RawVec")
                                 []
                                 [ T; Ty.path "alloc::alloc::Global" ],
-                              "new",
-                              [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::raw_vec::RawVec")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ],
+                                "new",
+                                [],
+                                []
+                              |),
                               []
-                            |),
-                            []
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::raw_vec::RawVec")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ]
+                          ])
                     ]
                   |)
                 |) in
@@ -578,13 +685,15 @@ Module vec.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::vec::into_iter::IntoIter",
-                              "buf"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::vec::into_iter::IntoIter",
+                                "buf"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
                         ]
                       |)
                     ]
@@ -598,7 +707,11 @@ Module vec.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ T ] ]
                   |),
-                  [ M.read (| remaining |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| remaining |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                  ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -663,13 +776,15 @@ Module vec.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::vec::into_iter::IntoIter",
-                              "ptr"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::vec::into_iter::IntoIter",
+                                "ptr"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
                         ]
                       |)
                     ]
@@ -750,7 +865,11 @@ Module vec.
                     [],
                     []
                   |),
-                  [ M.read (| self |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| self |))
+                      (Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ])
+                  ]
                 |) in
               let~ buf : Ty.apply (Ty.path "*mut") [] [ T ] :=
                 M.call_closure (|
@@ -762,34 +881,54 @@ Module vec.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (|
+                            M.call_closure (|
                               Ty.apply
-                                (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                (Ty.path "&")
                                 []
                                 [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ]
                                 ],
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, this |) ]
-                          |)
-                        |),
-                        "alloc::vec::into_iter::IntoIter",
-                        "buf"
-                      |)
-                    |)
+                              M.get_trait_method (|
+                                "core::ops::deref::Deref",
+                                Ty.apply
+                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ]
+                                  ],
+                                [],
+                                [],
+                                "deref",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, this |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::into_iter::IntoIter")
+                                            []
+                                            [ T; A ]
+                                        ]
+                                    ])
+                              ]
+                            |)
+                          |),
+                          "alloc::vec::into_iter::IntoIter",
+                          "buf"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
                   ]
                 |) in
               let~ initialized :
@@ -807,213 +946,310 @@ Module vec.
                               Ty.path "bool"
                             |)) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                        Value.mkStructRecord
-                          "core::ops::range::Range"
-                          []
-                          [ Ty.path "usize" ]
-                          [
-                            ("start", Value.Integer IntegerKind.Usize 0);
-                            ("end_",
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_trait_method (|
-                                  "core::iter::traits::exact_size::ExactSizeIterator",
-                                  Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ],
-                                  [],
-                                  [],
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::ops::range::Range"
+                            [
+                              ("start", Value.Integer IntegerKind.Usize 0);
+                              ("end_",
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_trait_method (|
+                                    "core::iter::traits::exact_size::ExactSizeIterator",
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                                      []
+                                      [ T; A ],
+                                    [],
+                                    [],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
                                             Ty.apply
-                                              (Ty.path "alloc::vec::into_iter::IntoIter")
+                                              (Ty.path "&")
                                               []
-                                              [ T; A ]
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::ops::deref::Deref",
-                                          Ty.apply
-                                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                            []
-                                            [
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                  []
+                                                  [ T; A ]
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::ops::deref::Deref",
                                               Ty.apply
-                                                (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                (Ty.path "core::mem::manually_drop::ManuallyDrop")
                                                 []
-                                                [ T; A ]
-                                            ],
-                                          [],
-                                          [],
-                                          "deref",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.borrow (| Pointer.Kind.Ref, this |) ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |))
-                          ]));
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                    []
+                                                    [ T; A ]
+                                                ],
+                                              [],
+                                              [],
+                                              "deref",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, this |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::mem::manually_drop::ManuallyDrop")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::vec::into_iter::IntoIter")
+                                                          []
+                                                          [ T; A ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::into_iter::IntoIter")
+                                            []
+                                            [ T; A ]
+                                        ])
+                                  ]
+                                |))
+                            ])
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])));
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.mkStructRecord
-                          "core::ops::range::Range"
-                          []
-                          [ Ty.path "usize" ]
-                          [
-                            ("start",
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                  "sub_ptr",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
+                        (M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::ops::range::Range"
+                            [
+                              ("start",
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                    "sub_ptr",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                (Ty.path "&")
                                                 []
-                                                [ T; A ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::deref::Deref",
-                                            Ty.apply
-                                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                              []
-                                              [
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                    []
+                                                    [ T; A ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::deref::Deref",
                                                 Ty.apply
-                                                  (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
                                                   []
-                                                  [ T; A ]
-                                              ],
-                                            [],
-                                            [],
-                                            "deref",
-                                            [],
-                                            []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                      []
+                                                      [ T; A ]
+                                                  ],
+                                                [],
+                                                [],
+                                                "deref",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, this |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::manually_drop::ManuallyDrop")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloc::vec::into_iter::IntoIter")
+                                                            []
+                                                            [ T; A ]
+                                                        ]
+                                                    ])
+                                              ]
+                                            |)
                                           |),
-                                          [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                          "alloc::vec::into_iter::IntoIter",
+                                          "ptr"
                                         |)
-                                      |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "ptr"
-                                    |)
-                                  |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
+                                      |))
+                                      (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                (Ty.path "&")
                                                 []
-                                                [ T; A ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::deref::Deref",
-                                            Ty.apply
-                                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                              []
-                                              [
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                    []
+                                                    [ T; A ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::deref::Deref",
                                                 Ty.apply
-                                                  (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
                                                   []
-                                                  [ T; A ]
-                                              ],
-                                            [],
-                                            [],
-                                            "deref",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, this |) ]
-                                        |)
-                                      |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "buf"
-                                    |)
-                                  |)
-                                ]
-                              |));
-                            ("end_",
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "*const") [] [ T ],
-                                  "sub_ptr",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                      []
+                                                      [ T; A ]
+                                                  ],
+                                                [],
+                                                [],
+                                                "deref",
+                                                [],
                                                 []
-                                                [ T; A ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::deref::Deref",
-                                            Ty.apply
-                                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                              []
+                                              |),
                                               [
-                                                Ty.apply
-                                                  (Ty.path "alloc::vec::into_iter::IntoIter")
-                                                  []
-                                                  [ T; A ]
-                                              ],
-                                            [],
-                                            [],
-                                            "deref",
-                                            [],
-                                            []
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, this |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::manually_drop::ManuallyDrop")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloc::vec::into_iter::IntoIter")
+                                                            []
+                                                            [ T; A ]
+                                                        ]
+                                                    ])
+                                              ]
+                                            |)
                                           |),
-                                          [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                          "alloc::vec::into_iter::IntoIter",
+                                          "buf"
                                         |)
-                                      |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "end"
-                                    |)
-                                  |);
-                                  M.call_closure (|
+                                      |))
+                                      (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                                  ]
+                                |));
+                              ("end_",
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
                                     Ty.apply (Ty.path "*const") [] [ T ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.MutToConstPointer
-                                      (Ty.apply (Ty.path "*mut") [] [ T ])
-                                      (Ty.apply (Ty.path "*const") [] [ T ]),
-                                    [ M.read (| buf |) ]
-                                  |)
-                                ]
-                              |))
-                          ]))
+                                    "sub_ptr",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                    []
+                                                    [ T; A ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::deref::Deref",
+                                                Ty.apply
+                                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                      []
+                                                      [ T; A ]
+                                                  ],
+                                                [],
+                                                [],
+                                                "deref",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, this |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::manually_drop::ManuallyDrop")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloc::vec::into_iter::IntoIter")
+                                                            []
+                                                            [ T; A ]
+                                                        ]
+                                                    ])
+                                              ]
+                                            |)
+                                          |),
+                                          "alloc::vec::into_iter::IntoIter",
+                                          "end"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ T ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply (Ty.path "*mut") [] [ T ])
+                                          (Ty.apply (Ty.path "*const") [] [ T ]),
+                                        [ M.read (| buf |) ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ])
+                                  ]
+                                |))
+                            ])
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])))
                   ]
                 |) in
               let~ cap : Ty.path "usize" :=
@@ -1037,7 +1273,20 @@ Module vec.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, this |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ]
+                                  ]
+                              ])
+                        ]
                       |)
                     |),
                     "alloc::vec::into_iter::IntoIter",
@@ -1054,23 +1303,17 @@ Module vec.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::DerefMut",
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (|
+                                M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                    (Ty.path "&mut")
                                     []
                                     [
                                       Ty.apply
@@ -1078,21 +1321,53 @@ Module vec.
                                         []
                                         [ T; A ]
                                     ],
-                                  [],
-                                  [],
-                                  "deref_mut",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.MutRef, this |) ]
-                              |)
-                            |),
-                            "alloc::vec::into_iter::IntoIter",
-                            "alloc"
+                                  M.get_trait_method (|
+                                    "core::ops::deref::DerefMut",
+                                    Ty.apply
+                                      (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                                          []
+                                          [ T; A ]
+                                      ],
+                                    [],
+                                    [],
+                                    "deref_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, this |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                []
+                                                [ T; A ]
+                                            ]
+                                        ])
+                                  ]
+                                |)
+                              |),
+                              "alloc::vec::into_iter::IntoIter",
+                              "alloc"
+                            |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "core::mem::manually_drop::ManuallyDrop") [] [ A ] ])
                   ]
                 |) in
               M.alloc (|
@@ -1105,7 +1380,13 @@ Module vec.
                     [],
                     []
                   |),
-                  [ M.read (| buf |); M.read (| initialized |); M.read (| cap |); M.read (| alloc |)
+                  [
+                    M.value_with_ty (M.read (| buf |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty
+                      (M.read (| initialized |))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty (M.read (| cap |)) (Ty.path "usize");
+                    M.value_with_ty (M.read (| alloc |)) A
                   ]
                 |)
               |)
@@ -1153,7 +1434,14 @@ Module vec.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ])
+                  ]
                 |)
               |)
             |)))
@@ -1285,13 +1573,18 @@ Module vec.
                                                       []
                                                     |),
                                                     [
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "alloc::vec::into_iter::IntoIter",
-                                                          "ptr"
-                                                        |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::vec::into_iter::IntoIter",
+                                                            "ptr"
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [ T ])
                                                     ]
                                                   |);
                                                   M.cast
@@ -1314,11 +1607,9 @@ Module vec.
                                         M.never_to_any (|
                                           M.read (|
                                             M.return_ (|
-                                              Value.StructTuple
-                                                "core::option::Option::None"
-                                                []
-                                                [ T ]
-                                                []
+                                              M.value_with_ty
+                                                (Value.StructTuple "core::option::Option::None" [])
+                                                (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                                             |)
                                           |)
                                         |)));
@@ -1341,14 +1632,18 @@ Module vec.
                                       []
                                     |),
                                     [
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::vec::into_iter::IntoIter",
-                                          "end"
-                                        |)
-                                      |);
-                                      Value.Integer IntegerKind.Usize 1
+                                      M.value_with_ty
+                                        (M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::vec::into_iter::IntoIter",
+                                            "end"
+                                          |)
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ T ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 1)
+                                        (Ty.path "usize")
                                     ]
                                   |)
                                 |) in
@@ -1392,38 +1687,58 @@ Module vec.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::vec::into_iter::IntoIter",
-                                                      "ptr"
-                                                    |)
-                                                  |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.cast
-                                                        (Ty.apply
-                                                          (Ty.path "*const")
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "alloc::vec::into_iter::IntoIter",
+                                                        "ptr"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
                                                           []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path
-                                                                "core::ptr::non_null::NonNull")
-                                                              []
-                                                              [ T ]
-                                                          ])
-                                                        (M.borrow (|
-                                                          Pointer.Kind.ConstPointer,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "alloc::vec::into_iter::IntoIter",
-                                                            "end"
-                                                          |)
-                                                        |))
-                                                    |)
-                                                  |)
+                                                          [ T ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.cast
+                                                          (Ty.apply
+                                                            (Ty.path "*const")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::ptr::non_null::NonNull")
+                                                                []
+                                                                [ T ]
+                                                            ])
+                                                          (M.borrow (|
+                                                            Pointer.Kind.ConstPointer,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| self |) |),
+                                                              "alloc::vec::into_iter::IntoIter",
+                                                              "end"
+                                                            |)
+                                                          |))
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [ T ]
+                                                      ])
                                                 ]
                                               |)
                                             |)) in
@@ -1435,11 +1750,9 @@ Module vec.
                                         M.never_to_any (|
                                           M.read (|
                                             M.return_ (|
-                                              Value.StructTuple
-                                                "core::option::Option::None"
-                                                []
-                                                [ T ]
-                                                []
+                                              M.value_with_ty
+                                                (Value.StructTuple "core::option::Option::None" [])
+                                                (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                                             |)
                                           |)
                                         |)));
@@ -1470,7 +1783,17 @@ Module vec.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| old |); Value.Integer IntegerKind.Usize 1 ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| old |))
+                                        (Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [ T ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 1)
+                                        (Ty.path "usize")
+                                    ]
                                   |)
                                 |) in
                               old
@@ -1479,22 +1802,26 @@ Module vec.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ T ]
-                      [
-                        M.call_closure (|
-                          T,
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                            "read",
-                            [],
-                            []
-                          |),
-                          [ M.read (| ptr |) ]
-                        |)
-                      ]
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.call_closure (|
+                            T,
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                              "read",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                   |)
                 |)))
             |)))
@@ -1543,53 +1870,66 @@ Module vec.
                           Ty.path "usize",
                           M.get_associated_function (| Ty.path "usize", "wrapping_sub", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "*const") [] [ T ],
-                                "addr",
-                                [],
-                                []
-                              |),
-                              [
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::vec::into_iter::IntoIter",
-                                    "end"
-                                  |)
-                                |)
-                              ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "*mut") [] [ T ],
-                                "addr",
-                                [],
-                                []
-                              |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*mut") [] [ T ],
-                                  M.get_associated_function (|
-                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                    "as_ptr",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "*const") [] [ T ],
+                                  "addr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (|
                                       M.SubPointer.get_struct_record_field (|
                                         M.deref (| M.read (| self |) |),
                                         "alloc::vec::into_iter::IntoIter",
-                                        "ptr"
+                                        "end"
                                       |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                            |)
+                                    |))
+                                    (Ty.apply (Ty.path "*const") [] [ T ])
+                                ]
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "*mut") [] [ T ],
+                                  "addr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.apply (Ty.path "*mut") [] [ T ],
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                        "as_ptr",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "alloc::vec::into_iter::IntoIter",
+                                              "ptr"
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [ T ])
+                                      ]
+                                    |))
+                                    (Ty.apply (Ty.path "*mut") [] [ T ])
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |)));
                     fun γ =>
@@ -1603,30 +1943,35 @@ Module vec.
                             []
                           |),
                           [
-                            M.read (|
-                              M.deref (|
-                                M.cast
-                                  (Ty.apply
-                                    (Ty.path "*const")
-                                    []
-                                    [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
-                                  (M.borrow (|
-                                    Pointer.Kind.ConstPointer,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "end"
-                                    |)
-                                  |))
-                              |)
-                            |);
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::into_iter::IntoIter",
-                                "ptr"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.read (|
+                                M.deref (|
+                                  M.cast
+                                    (Ty.apply
+                                      (Ty.path "*const")
+                                      []
+                                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ]
+                                      ])
+                                    (M.borrow (|
+                                      Pointer.Kind.ConstPointer,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |))
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ]);
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::vec::into_iter::IntoIter",
+                                  "ptr"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
                           ]
                         |)))
                   ]
@@ -1640,11 +1985,9 @@ Module vec.
                 Value.Tuple
                   [
                     M.read (| exact |);
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "usize" ]
-                      [ M.read (| exact |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::Some" [ M.read (| exact |) ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                   ]
               |)
             |)))
@@ -1694,23 +2037,38 @@ Module vec.
                   Ty.path "usize",
                   M.get_trait_method (| "core::cmp::Ord", Ty.path "usize", [], [], "min", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_trait_method (|
-                        "core::iter::traits::exact_size::ExactSizeIterator",
-                        Ty.apply
-                          (Ty.path "&mut")
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_trait_method (|
+                          "core::iter::traits::exact_size::ExactSizeIterator",
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ],
+                          [],
+                          [],
+                          "len",
+                          [],
                           []
-                          [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ],
-                        [],
-                        [],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                    |);
-                    M.read (| n |)
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, self |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ]
+                                  ]
+                              ])
+                        ]
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                   ]
                 |) in
               let~ to_drop : Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
@@ -1718,25 +2076,29 @@ Module vec.
                   Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                   M.get_function (| "core::ptr::slice_from_raw_parts_mut", [], [ T ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                        "as_ptr",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::vec::into_iter::IntoIter",
-                            "ptr"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| step_size |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                          "as_ptr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::vec::into_iter::IntoIter",
+                                "ptr"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (M.read (| step_size |)) (Ty.path "usize")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1770,14 +2132,16 @@ Module vec.
                                   []
                                 |),
                                 [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "end"
-                                    |)
-                                  |);
-                                  M.read (| step_size |)
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "*const") [] [ T ]);
+                                  M.value_with_ty (M.read (| step_size |)) (Ty.path "usize")
                                 ]
                               |)
                             |) in
@@ -1802,14 +2166,16 @@ Module vec.
                                   []
                                 |),
                                 [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "ptr"
-                                    |)
-                                  |);
-                                  M.read (| step_size |)
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "ptr"
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ]);
+                                  M.value_with_ty (M.read (| step_size |)) (Ty.path "usize")
                                 ]
                               |)
                             |) in
@@ -1827,7 +2193,11 @@ Module vec.
                         [],
                         [ Ty.apply (Ty.path "slice") [] [ T ] ]
                       |),
-                      [ M.read (| to_drop |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| to_drop |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
@@ -1874,40 +2244,62 @@ Module vec.
                     ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [ M.read (| n |); M.read (| step_size |) ]
+                            |))
+                            (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                        "new",
-                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                        ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ]))
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
                         []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.path "usize",
-                          BinOp.Wrap.sub,
-                          [ M.read (| n |); M.read (| step_size |) ]
-                        |)
-                      ]
-                    |);
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                      ]
-                      [ Value.Tuple [] ];
-                    M.constructor_as_closure
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                      ]
+                        [
+                          Ty.tuple [];
+                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                        ]);
+                    M.value_with_ty
+                      (M.constructor_as_closure "core::result::Result::Err")
+                      (Ty.function
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ]
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ]))
                   ]
                 |)
               |)
@@ -1941,7 +2333,14 @@ Module vec.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, self |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, self |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2040,7 +2439,19 @@ Module vec.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, self |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ]
+                            ])
+                      ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.match_operator (|
@@ -2096,52 +2507,87 @@ Module vec.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.deref (| M.read (| self |) |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloc::vec::into_iter::IntoIter")
+                                                            []
+                                                            [ T; A ]
+                                                        ])
                                                   ]
                                                 |) in
                                               M.return_ (|
-                                                Value.StructTuple
-                                                  "core::result::Result::Err"
-                                                  []
-                                                  [
-                                                    Ty.apply (Ty.path "array") [ N ] [ T ];
-                                                    Ty.apply
-                                                      (Ty.path "core::array::iter::IntoIter")
-                                                      [ N ]
-                                                      [ T ]
-                                                  ]
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "core::array::iter::IntoIter")
-                                                        [ N ]
-                                                        [ T ],
-                                                      M.get_associated_function (|
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::result::Result::Err"
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "core::array::iter::IntoIter")
                                                           [ N ]
                                                           [ T ],
-                                                        "new_unchecked",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.read (| raw_ary |);
-                                                        Value.mkStructRecord
-                                                          "core::ops::range::Range"
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "core::array::iter::IntoIter")
+                                                            [ N ]
+                                                            [ T ],
+                                                          "new_unchecked",
+                                                          [],
                                                           []
-                                                          [ Ty.path "usize" ]
-                                                          [
-                                                            ("start",
-                                                              Value.Integer IntegerKind.Usize 0);
-                                                            ("end_", M.read (| len |))
-                                                          ]
-                                                      ]
-                                                    |)
-                                                  ]
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| raw_ary |))
+                                                            (Ty.apply
+                                                              (Ty.path "array")
+                                                              [ N ]
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                  []
+                                                                  [ T ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.value_with_ty
+                                                              (Value.mkStructRecord
+                                                                "core::ops::range::Range"
+                                                                [
+                                                                  ("start",
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      0);
+                                                                  ("end_", M.read (| len |))
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "core::ops::range::Range")
+                                                                []
+                                                                [ Ty.path "usize" ]))
+                                                            (Ty.apply
+                                                              (Ty.path "core::ops::range::Range")
+                                                              []
+                                                              [ Ty.path "usize" ])
+                                                        ]
+                                                      |)
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply (Ty.path "array") [ N ] [ T ];
+                                                      Ty.apply
+                                                        (Ty.path "core::array::iter::IntoIter")
+                                                        [ N ]
+                                                        [ T ]
+                                                    ])
                                               |)
                                             |)
                                           |)));
@@ -2164,62 +2610,86 @@ Module vec.
                                         []
                                       |),
                                       [
-                                        M.read (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "alloc::vec::into_iter::IntoIter",
-                                            "end"
-                                          |)
-                                        |);
-                                        N
+                                        M.value_with_ty
+                                          (M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "alloc::vec::into_iter::IntoIter",
+                                              "end"
+                                            |)
+                                          |))
+                                          (Ty.apply (Ty.path "*const") [] [ T ]);
+                                        M.value_with_ty N (Ty.path "usize")
                                       ]
                                     |)
                                   |) in
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Ok"
-                                    []
-                                    [
-                                      Ty.apply (Ty.path "array") [ N ] [ T ];
-                                      Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ]
-                                    ]
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "array") [ N ] [ T ],
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                          "assume_init",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Ok"
+                                      [
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "array") [ N ] [ T ],
+                                          M.get_associated_function (|
                                             Ty.apply
                                               (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                               []
                                               [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ N ]
-                                                [
+                                            "assume_init",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                  []
+                                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                                M.get_associated_function (|
                                                   Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              "transpose",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| raw_ary |) ]
-                                          |)
-                                        ]
-                                      |)
-                                    ]
+                                                    (Ty.path "array")
+                                                    [ N ]
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ T ]
+                                                    ],
+                                                  "transpose",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| raw_ary |))
+                                                    (Ty.apply
+                                                      (Ty.path "array")
+                                                      [ N ]
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ T ]
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                                          ]
+                                        |)
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.apply (Ty.path "array") [ N ] [ T ];
+                                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ]
+                                      ])
                                 |)
                               |)
                             |)));
@@ -2256,51 +2726,49 @@ Module vec.
                                       [ T ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ T ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.MutToConstPointer
-                                          (Ty.apply (Ty.path "*mut") [] [ T ])
-                                          (Ty.apply (Ty.path "*const") [] [ T ]),
-                                        [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*mut") [] [ T ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::ptr::non_null::NonNull")
-                                                []
-                                                [ T ],
-                                              "as_ptr",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::vec::into_iter::IntoIter",
-                                                  "ptr"
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |);
-                                      M.cast
-                                        (Ty.apply (Ty.path "*mut") [] [ T ])
+                                      M.value_with_ty
                                         (M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "*mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          Ty.apply (Ty.path "*const") [] [ T ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.MutToConstPointer
+                                            (Ty.apply (Ty.path "*mut") [] [ T ])
+                                            (Ty.apply (Ty.path "*const") [] [ T ]),
+                                          [
+                                            M.call_closure (|
+                                              Ty.apply (Ty.path "*mut") [] [ T ],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [ T ],
+                                                "as_ptr",
+                                                [],
                                                 []
-                                                [ T ]
-                                            ],
-                                          M.get_associated_function (|
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "alloc::vec::into_iter::IntoIter",
+                                                      "ptr"
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::ptr::non_null::NonNull")
+                                                    []
+                                                    [ T ])
+                                              ]
+                                            |)
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ T ]);
+                                      M.value_with_ty
+                                        (M.cast
+                                          (Ty.apply (Ty.path "*mut") [] [ T ])
+                                          (M.call_closure (|
                                             Ty.apply
-                                              (Ty.path "slice")
+                                              (Ty.path "*mut")
                                               []
                                               [
                                                 Ty.apply
@@ -2308,44 +2776,72 @@ Module vec.
                                                   []
                                                   [ T ]
                                               ],
-                                            "as_mut_ptr",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
+                                            M.get_associated_function (|
                                               Ty.apply
-                                                (Ty.path "&mut")
+                                                (Ty.path "slice")
                                                 []
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "slice")
+                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    []
+                                                    [ T ]
+                                                ],
+                                              "as_mut_ptr",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
                                                     []
                                                     [
                                                       Ty.apply
-                                                        (Ty.path
-                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        (Ty.path "slice")
                                                         []
-                                                        [ T ]
-                                                    ]
-                                                ],
-                                              M.pointer_coercion
-                                                M.PointerCoercion.Unsize
-                                                (Ty.apply
-                                                  (Ty.path "&mut")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ N ]
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::mem::maybe_uninit::MaybeUninit")
+                                                            []
+                                                            [ T ]
+                                                        ]
+                                                    ],
+                                                  M.pointer_coercion
+                                                    M.PointerCoercion.Unsize
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
                                                       [
                                                         Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          (Ty.path "array")
+                                                          [ N ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::mem::maybe_uninit::MaybeUninit")
+                                                              []
+                                                              [ T ]
+                                                          ]
+                                                      ])
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
                                                           []
-                                                          [ T ]
-                                                      ]
-                                                  ])
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::mem::maybe_uninit::MaybeUninit")
+                                                              []
+                                                              [ T ]
+                                                          ]
+                                                      ]),
+                                                  [ M.borrow (| Pointer.Kind.MutRef, raw_ary |) ]
+                                                |))
                                                 (Ty.apply
                                                   (Ty.path "&mut")
                                                   []
@@ -2360,12 +2856,11 @@ Module vec.
                                                           []
                                                           [ T ]
                                                       ]
-                                                  ]),
-                                              [ M.borrow (| Pointer.Kind.MutRef, raw_ary |) ]
-                                            |)
-                                          ]
-                                        |));
-                                      M.read (| len |)
+                                                  ])
+                                            ]
+                                          |)))
+                                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                      M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -2381,48 +2876,79 @@ Module vec.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::into_iter::IntoIter")
+                                              []
+                                              [ T; A ]
+                                          ])
                                     ]
                                   |) in
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.apply (Ty.path "array") [ N ] [ T ];
-                                      Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ]
-                                    ]
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::array::iter::IntoIter")
-                                          [ N ]
-                                          [ T ],
-                                        M.get_associated_function (|
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "core::array::iter::IntoIter")
                                             [ N ]
                                             [ T ],
-                                          "new_unchecked",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.read (| raw_ary |);
-                                          Value.mkStructRecord
-                                            "core::ops::range::Range"
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::array::iter::IntoIter")
+                                              [ N ]
+                                              [ T ],
+                                            "new_unchecked",
+                                            [],
                                             []
-                                            [ Ty.path "usize" ]
-                                            [
-                                              ("start", Value.Integer IntegerKind.Usize 0);
-                                              ("end_", M.read (| len |))
-                                            ]
-                                        ]
-                                      |)
-                                    ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| raw_ary |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ N ]
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    []
+                                                    [ T ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::ops::range::Range"
+                                                  [
+                                                    ("start", Value.Integer IntegerKind.Usize 0);
+                                                    ("end_", M.read (| len |))
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::Range")
+                                                  []
+                                                  [ Ty.path "usize" ]))
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ])
+                                          ]
+                                        |)
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.apply (Ty.path "array") [ N ] [ T ];
+                                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ]
+                                      ])
                                 |)
                               |)
                             |)));
@@ -2434,83 +2960,109 @@ Module vec.
                       Ty.tuple [],
                       M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*const") [] [ T ],
-                          M.pointer_coercion
-                            M.PointerCoercion.MutToConstPointer
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "*const") [] [ T ],
+                            M.pointer_coercion
+                              M.PointerCoercion.MutToConstPointer
+                              (Ty.apply (Ty.path "*mut") [] [ T ])
+                              (Ty.apply (Ty.path "*const") [] [ T ]),
+                            [
+                              M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                  "as_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "ptr"
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                                ]
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "*const") [] [ T ]);
+                        M.value_with_ty
+                          (M.cast
                             (Ty.apply (Ty.path "*mut") [] [ T ])
-                            (Ty.apply (Ty.path "*const") [] [ T ]),
-                          [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*mut") [] [ T ],
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "*mut")
+                                []
+                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
+                                ],
                               M.get_associated_function (|
-                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                "as_ptr",
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ T ]
+                                  ],
+                                "as_mut_ptr",
                                 [],
                                 []
                               |),
                               [
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::vec::into_iter::IntoIter",
-                                    "ptr"
-                                  |)
-                                |)
-                              ]
-                            |)
-                          ]
-                        |);
-                        M.cast
-                          (Ty.apply (Ty.path "*mut") [] [ T ])
-                          (M.call_closure (|
-                            Ty.apply
-                              (Ty.path "*mut")
-                              []
-                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "slice")
-                                []
-                                [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ]
-                                ],
-                              "as_mut_ptr",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "slice")
+                                      (Ty.path "&mut")
                                       []
                                       [
                                         Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          (Ty.path "slice")
                                           []
-                                          [ T ]
-                                      ]
-                                  ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ N ]
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.Unsize
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
                                         [
                                           Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            (Ty.path "array")
+                                            [ N ]
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ T ]
+                                            ]
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
                                             []
-                                            [ T ]
-                                        ]
-                                    ])
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ T ]
+                                            ]
+                                        ]),
+                                    [ M.borrow (| Pointer.Kind.MutRef, raw_ary |) ]
+                                  |))
                                   (Ty.apply
                                     (Ty.path "&mut")
                                     []
@@ -2524,12 +3076,11 @@ Module vec.
                                             []
                                             [ T ]
                                         ]
-                                    ]),
-                                [ M.borrow (| Pointer.Kind.MutRef, raw_ary |) ]
-                              |)
-                            ]
-                          |));
-                        N
+                                    ])
+                              ]
+                            |)))
+                          (Ty.apply (Ty.path "*mut") [] [ T ]);
+                        M.value_with_ty N (Ty.path "usize")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -2548,14 +3099,16 @@ Module vec.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::vec::into_iter::IntoIter",
-                              "ptr"
-                            |)
-                          |);
-                          N
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::vec::into_iter::IntoIter",
+                                "ptr"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ]);
+                          M.value_with_ty N (Ty.path "usize")
                         ]
                       |)
                     |) in
@@ -2567,50 +3120,70 @@ Module vec.
                         Ty.apply (Ty.path "array") [ N ] [ T ];
                         Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ]
                       ],
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.apply (Ty.path "array") [ N ] [ T ];
-                        Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ]
-                      ]
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "array") [ N ] [ T ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                              []
-                              [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                            "assume_init",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Ok"
+                        [
+                          M.call_closure (|
+                            Ty.apply (Ty.path "array") [ N ] [ T ],
+                            M.get_associated_function (|
                               Ty.apply
                                 (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                 []
                                 [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ N ]
-                                  [
+                              "assume_init",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                  M.get_associated_function (|
                                     Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ T ]
-                                  ],
-                                "transpose",
-                                [],
-                                []
-                              |),
-                              [ M.read (| raw_ary |) ]
-                            |)
-                          ]
-                        |)
-                      ]
+                                      (Ty.path "array")
+                                      [ N ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ T ]
+                                      ],
+                                    "transpose",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| raw_ary |))
+                                      (Ty.apply
+                                        (Ty.path "array")
+                                        [ N ]
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ T ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply (Ty.path "array") [ N ] [ T ];
+                          Ty.apply (Ty.path "core::array::iter::IntoIter") [ N ] [ T ]
+                        ])
                   |)
                 |)))
             |)))
@@ -2703,13 +3276,18 @@ Module vec.
                                                       []
                                                     |),
                                                     [
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          self,
-                                                          "alloc::vec::into_iter::IntoIter",
-                                                          "ptr"
-                                                        |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            self,
+                                                            "alloc::vec::into_iter::IntoIter",
+                                                            "ptr"
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [ T ])
                                                     ]
                                                   |);
                                                   M.call_closure (|
@@ -2721,13 +3299,15 @@ Module vec.
                                                       []
                                                     |),
                                                     [
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          self,
-                                                          "alloc::vec::into_iter::IntoIter",
-                                                          "end"
-                                                        |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            self,
+                                                            "alloc::vec::into_iter::IntoIter",
+                                                            "end"
+                                                          |)
+                                                        |))
+                                                        (Ty.apply (Ty.path "*const") [] [ T ])
                                                     ]
                                                   |)
                                                 ]
@@ -2752,13 +3332,18 @@ Module vec.
                                                 []
                                               |),
                                               [
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    self,
-                                                    "alloc::vec::into_iter::IntoIter",
-                                                    "ptr"
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      self,
+                                                      "alloc::vec::into_iter::IntoIter",
+                                                      "ptr"
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::ptr::non_null::NonNull")
+                                                    []
+                                                    [ T ])
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
@@ -2777,14 +3362,18 @@ Module vec.
                                                   []
                                                 |),
                                                 [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      self,
-                                                      "alloc::vec::into_iter::IntoIter",
-                                                      "end"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 1
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "alloc::vec::into_iter::IntoIter",
+                                                        "end"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "*const") [] [ T ]);
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.Usize 1)
+                                                    (Ty.path "usize")
                                                 ]
                                               |)
                                             |) in
@@ -2803,9 +3392,13 @@ Module vec.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [ M.read (| accum |); M.read (| tmp |) ]
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                  M.value_with_ty
+                                                    (Value.Tuple
+                                                      [ M.read (| accum |); M.read (| tmp |) ])
+                                                    (Ty.tuple [ B; T ])
                                                 ]
                                               |)
                                             |) in
@@ -2863,38 +3456,58 @@ Module vec.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      self,
-                                                      "alloc::vec::into_iter::IntoIter",
-                                                      "ptr"
-                                                    |)
-                                                  |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.cast
-                                                        (Ty.apply
-                                                          (Ty.path "*const")
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "alloc::vec::into_iter::IntoIter",
+                                                        "ptr"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
                                                           []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path
-                                                                "core::ptr::non_null::NonNull")
-                                                              []
-                                                              [ T ]
-                                                          ])
-                                                        (M.borrow (|
-                                                          Pointer.Kind.ConstPointer,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            self,
-                                                            "alloc::vec::into_iter::IntoIter",
-                                                            "end"
-                                                          |)
-                                                        |))
-                                                    |)
-                                                  |)
+                                                          [ T ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.cast
+                                                          (Ty.apply
+                                                            (Ty.path "*const")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::ptr::non_null::NonNull")
+                                                                []
+                                                                [ T ]
+                                                            ])
+                                                          (M.borrow (|
+                                                            Pointer.Kind.ConstPointer,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              self,
+                                                              "alloc::vec::into_iter::IntoIter",
+                                                              "end"
+                                                            |)
+                                                          |))
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [ T ]
+                                                      ])
                                                 ]
                                               |)
                                             |)) in
@@ -2917,13 +3530,18 @@ Module vec.
                                                 []
                                               |),
                                               [
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    self,
-                                                    "alloc::vec::into_iter::IntoIter",
-                                                    "ptr"
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      self,
+                                                      "alloc::vec::into_iter::IntoIter",
+                                                      "ptr"
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::ptr::non_null::NonNull")
+                                                    []
+                                                    [ T ])
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
@@ -2948,14 +3566,21 @@ Module vec.
                                                   []
                                                 |),
                                                 [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      self,
-                                                      "alloc::vec::into_iter::IntoIter",
-                                                      "ptr"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 1
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "alloc::vec::into_iter::IntoIter",
+                                                        "ptr"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [ T ]);
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.Usize 1)
+                                                    (Ty.path "usize")
                                                 ]
                                               |)
                                             |) in
@@ -2974,9 +3599,13 @@ Module vec.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple
-                                                    [ M.read (| accum |); M.read (| tmp |) ]
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                  M.value_with_ty
+                                                    (Value.Tuple
+                                                      [ M.read (| accum |); M.read (| tmp |) ])
+                                                    (Ty.tuple [ B; T ])
                                                 ]
                                               |)
                                             |) in
@@ -3097,13 +3726,19 @@ Module vec.
                                                           []
                                                         |),
                                                         [
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "alloc::vec::into_iter::IntoIter",
-                                                              "ptr"
-                                                            |)
-                                                          |)
+                                                          M.value_with_ty
+                                                            (M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "alloc::vec::into_iter::IntoIter",
+                                                                "ptr"
+                                                              |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [ T ])
                                                         ]
                                                       |);
                                                       M.call_closure (|
@@ -3115,13 +3750,15 @@ Module vec.
                                                           []
                                                         |),
                                                         [
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "alloc::vec::into_iter::IntoIter",
-                                                              "end"
-                                                            |)
-                                                          |)
+                                                          M.value_with_ty
+                                                            (M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "alloc::vec::into_iter::IntoIter",
+                                                                "end"
+                                                              |)
+                                                            |))
+                                                            (Ty.apply (Ty.path "*const") [] [ T ])
                                                         ]
                                                       |)
                                                     ]
@@ -3146,13 +3783,18 @@ Module vec.
                                                     []
                                                   |),
                                                   [
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "alloc::vec::into_iter::IntoIter",
-                                                        "ptr"
-                                                      |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "alloc::vec::into_iter::IntoIter",
+                                                          "ptr"
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "core::ptr::non_null::NonNull")
+                                                        []
+                                                        [ T ])
                                                   ]
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
@@ -3171,14 +3813,18 @@ Module vec.
                                                       []
                                                     |),
                                                     [
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "alloc::vec::into_iter::IntoIter",
-                                                          "end"
-                                                        |)
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 1
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::vec::into_iter::IntoIter",
+                                                            "end"
+                                                          |)
+                                                        |))
+                                                        (Ty.apply (Ty.path "*const") [] [ T ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 1)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |)
                                                 |) in
@@ -3225,26 +3871,38 @@ Module vec.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            R,
-                                                            M.get_trait_method (|
-                                                              "core::ops::function::FnMut",
-                                                              F,
-                                                              [],
-                                                              [ Ty.tuple [ B; T ] ],
-                                                              "call_mut",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (| Pointer.Kind.MutRef, f |);
-                                                              Value.Tuple
-                                                                [
-                                                                  M.read (| accum |);
-                                                                  M.read (| tmp |)
-                                                                ]
-                                                            ]
-                                                          |)
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              R,
+                                                              M.get_trait_method (|
+                                                                "core::ops::function::FnMut",
+                                                                F,
+                                                                [],
+                                                                [ Ty.tuple [ B; T ] ],
+                                                                "call_mut",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    f
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [ F ]);
+                                                                M.value_with_ty
+                                                                  (Value.Tuple
+                                                                    [
+                                                                      M.read (| accum |);
+                                                                      M.read (| tmp |)
+                                                                    ])
+                                                                  (Ty.tuple [ B; T ])
+                                                              ]
+                                                            |))
+                                                            R
                                                         ]
                                                       |)
                                                     |),
@@ -3288,7 +3946,16 @@ Module vec.
                                                                     [],
                                                                     []
                                                                   |),
-                                                                  [ M.read (| residual |) ]
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.read (| residual |))
+                                                                      (Ty.associated_in_trait
+                                                                        "core::ops::try_trait::Try"
+                                                                        []
+                                                                        []
+                                                                        R
+                                                                        "Residual")
+                                                                  ]
                                                                 |)
                                                               |)
                                                             |)
@@ -3360,38 +4027,60 @@ Module vec.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "alloc::vec::into_iter::IntoIter",
-                                                          "ptr"
-                                                        |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.cast
-                                                            (Ty.apply
-                                                              (Ty.path "*const")
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::vec::into_iter::IntoIter",
+                                                            "ptr"
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
                                                               []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "core::ptr::non_null::NonNull")
-                                                                  []
-                                                                  [ T ]
-                                                              ])
-                                                            (M.borrow (|
-                                                              Pointer.Kind.ConstPointer,
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "alloc::vec::into_iter::IntoIter",
-                                                                "end"
-                                                              |)
-                                                            |))
-                                                        |)
-                                                      |)
+                                                              [ T ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.cast
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::ptr::non_null::NonNull")
+                                                                    []
+                                                                    [ T ]
+                                                                ])
+                                                              (M.borrow (|
+                                                                Pointer.Kind.ConstPointer,
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "alloc::vec::into_iter::IntoIter",
+                                                                  "end"
+                                                                |)
+                                                              |))
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [ T ]
+                                                          ])
                                                     ]
                                                   |)
                                                 |)) in
@@ -3414,13 +4103,18 @@ Module vec.
                                                     []
                                                   |),
                                                   [
-                                                    M.read (|
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "alloc::vec::into_iter::IntoIter",
-                                                        "ptr"
-                                                      |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.read (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "alloc::vec::into_iter::IntoIter",
+                                                          "ptr"
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "core::ptr::non_null::NonNull")
+                                                        []
+                                                        [ T ])
                                                   ]
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
@@ -3445,14 +4139,21 @@ Module vec.
                                                       []
                                                     |),
                                                     [
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "alloc::vec::into_iter::IntoIter",
-                                                          "ptr"
-                                                        |)
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 1
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::vec::into_iter::IntoIter",
+                                                            "ptr"
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [ T ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 1)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |)
                                                 |) in
@@ -3499,26 +4200,38 @@ Module vec.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            R,
-                                                            M.get_trait_method (|
-                                                              "core::ops::function::FnMut",
-                                                              F,
-                                                              [],
-                                                              [ Ty.tuple [ B; T ] ],
-                                                              "call_mut",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (| Pointer.Kind.MutRef, f |);
-                                                              Value.Tuple
-                                                                [
-                                                                  M.read (| accum |);
-                                                                  M.read (| tmp |)
-                                                                ]
-                                                            ]
-                                                          |)
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              R,
+                                                              M.get_trait_method (|
+                                                                "core::ops::function::FnMut",
+                                                                F,
+                                                                [],
+                                                                [ Ty.tuple [ B; T ] ],
+                                                                "call_mut",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    f
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [ F ]);
+                                                                M.value_with_ty
+                                                                  (Value.Tuple
+                                                                    [
+                                                                      M.read (| accum |);
+                                                                      M.read (| tmp |)
+                                                                    ])
+                                                                  (Ty.tuple [ B; T ])
+                                                              ]
+                                                            |))
+                                                            R
                                                         ]
                                                       |)
                                                     |),
@@ -3562,7 +4275,16 @@ Module vec.
                                                                     [],
                                                                     []
                                                                   |),
-                                                                  [ M.read (| residual |) ]
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.read (| residual |))
+                                                                      (Ty.associated_in_trait
+                                                                        "core::ops::try_trait::Try"
+                                                                        []
+                                                                        []
+                                                                        R
+                                                                        "Residual")
+                                                                  ]
                                                                 |)
                                                               |)
                                                             |)
@@ -3611,7 +4333,7 @@ Module vec.
                         [],
                         []
                       |),
-                      [ M.read (| accum |) ]
+                      [ M.value_with_ty (M.read (| accum |)) B ]
                     |)
                   |)
                 |)))
@@ -3663,25 +4385,29 @@ Module vec.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                    "add",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::vec::into_iter::IntoIter",
-                        "ptr"
-                      |)
-                    |);
-                    M.read (| i |)
-                  ]
-                |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                      "add",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::vec::into_iter::IntoIter",
+                            "ptr"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ]);
+                      M.value_with_ty (M.read (| i |)) (Ty.path "usize")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3791,13 +4517,18 @@ Module vec.
                                                   []
                                                 |),
                                                 [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::vec::into_iter::IntoIter",
-                                                      "ptr"
-                                                    |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "alloc::vec::into_iter::IntoIter",
+                                                        "ptr"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [ T ])
                                                 ]
                                               |);
                                               M.cast
@@ -3820,7 +4551,9 @@ Module vec.
                                     M.never_to_any (|
                                       M.read (|
                                         M.return_ (|
-                                          Value.StructTuple "core::option::Option::None" [] [ T ] []
+                                          M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                                         |)
                                       |)
                                     |)));
@@ -3843,61 +4576,72 @@ Module vec.
                                   []
                                 |),
                                 [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "end"
-                                    |)
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "*const") [] [ T ]);
+                                  M.value_with_ty
+                                    (Value.Integer IntegerKind.Usize 1)
+                                    (Ty.path "usize")
                                 ]
                               |)
                             |) in
                           M.alloc (|
                             Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ T ]
-                              [
-                                M.call_closure (|
-                                  T,
-                                  M.get_function (| "core::ptr::read", [], [ T ] |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ T ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply (Ty.path "*mut") [] [ T ])
-                                        (Ty.apply (Ty.path "*const") [] [ T ]),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply (Ty.path "*mut") [] [ T ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "core::ptr::non_null::NonNull")
-                                              []
-                                              [ T ],
-                                            "as_ptr",
-                                            [],
-                                            []
-                                          |),
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.call_closure (|
+                                    T,
+                                    M.get_function (| "core::ptr::read", [], [ T ] |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply (Ty.path "*const") [] [ T ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.MutToConstPointer
+                                            (Ty.apply (Ty.path "*mut") [] [ T ])
+                                            (Ty.apply (Ty.path "*const") [] [ T ]),
                                           [
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "alloc::vec::into_iter::IntoIter",
-                                                "ptr"
-                                              |)
+                                            M.call_closure (|
+                                              Ty.apply (Ty.path "*mut") [] [ T ],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [ T ],
+                                                "as_ptr",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "alloc::vec::into_iter::IntoIter",
+                                                      "ptr"
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::ptr::non_null::NonNull")
+                                                    []
+                                                    [ T ])
+                                              ]
                                             |)
                                           ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ T ])
+                                    ]
+                                  |)
+                                ])
+                              (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                           |)
                         |)));
                     fun γ =>
@@ -3934,37 +4678,57 @@ Module vec.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "alloc::vec::into_iter::IntoIter",
-                                                  "ptr"
-                                                |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.cast
-                                                    (Ty.apply
-                                                      (Ty.path "*const")
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::vec::into_iter::IntoIter",
+                                                    "ptr"
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
                                                       []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "core::ptr::non_null::NonNull")
-                                                          []
-                                                          [ T ]
-                                                      ])
-                                                    (M.borrow (|
-                                                      Pointer.Kind.ConstPointer,
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "alloc::vec::into_iter::IntoIter",
-                                                        "end"
-                                                      |)
-                                                    |))
-                                                |)
-                                              |)
+                                                      [ T ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.cast
+                                                      (Ty.apply
+                                                        (Ty.path "*const")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "core::ptr::non_null::NonNull")
+                                                            []
+                                                            [ T ]
+                                                        ])
+                                                      (M.borrow (|
+                                                        Pointer.Kind.ConstPointer,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "alloc::vec::into_iter::IntoIter",
+                                                          "end"
+                                                        |)
+                                                      |))
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [ T ]
+                                                  ])
                                             ]
                                           |)
                                         |)) in
@@ -3976,7 +4740,9 @@ Module vec.
                                     M.never_to_any (|
                                       M.read (|
                                         M.return_ (|
-                                          Value.StructTuple "core::option::Option::None" [] [ T ] []
+                                          M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                                         |)
                                       |)
                                     |)));
@@ -3999,38 +4765,44 @@ Module vec.
                                   []
                                 |),
                                 [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "end"
-                                    |)
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |)
-                            |) in
-                          M.alloc (|
-                            Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ T ]
-                              [
-                                M.call_closure (|
-                                  T,
-                                  M.get_function (| "core::ptr::read", [], [ T ] |),
-                                  [
-                                    M.read (|
+                                  M.value_with_ty
+                                    (M.read (|
                                       M.SubPointer.get_struct_record_field (|
                                         M.deref (| M.read (| self |) |),
                                         "alloc::vec::into_iter::IntoIter",
                                         "end"
                                       |)
-                                    |)
-                                  ]
-                                |)
-                              ]
+                                    |))
+                                    (Ty.apply (Ty.path "*const") [] [ T ]);
+                                  M.value_with_ty
+                                    (Value.Integer IntegerKind.Usize 1)
+                                    (Ty.path "usize")
+                                ]
+                              |)
+                            |) in
+                          M.alloc (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.call_closure (|
+                                    T,
+                                    M.get_function (| "core::ptr::read", [], [ T ] |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::vec::into_iter::IntoIter",
+                                            "end"
+                                          |)
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ T ])
+                                    ]
+                                  |)
+                                ])
+                              (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                           |)
                         |)))
                   ]
@@ -4082,23 +4854,38 @@ Module vec.
                   Ty.path "usize",
                   M.get_trait_method (| "core::cmp::Ord", Ty.path "usize", [], [], "min", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_trait_method (|
-                        "core::iter::traits::exact_size::ExactSizeIterator",
-                        Ty.apply
-                          (Ty.path "&mut")
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_trait_method (|
+                          "core::iter::traits::exact_size::ExactSizeIterator",
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ],
+                          [],
+                          [],
+                          "len",
+                          [],
                           []
-                          [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ],
-                        [],
-                        [],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, self |) ]
-                    |);
-                    M.read (| n |)
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, self |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ]
+                                  ]
+                              ])
+                        ]
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -4132,14 +4919,16 @@ Module vec.
                                   []
                                 |),
                                 [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "end"
-                                    |)
-                                  |);
-                                  M.read (| step_size |)
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "*const") [] [ T ]);
+                                  M.value_with_ty (M.read (| step_size |)) (Ty.path "usize")
                                 ]
                               |)
                             |) in
@@ -4164,14 +4953,16 @@ Module vec.
                                   []
                                 |),
                                 [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "end"
-                                    |)
-                                  |);
-                                  M.read (| step_size |)
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "*const") [] [ T ]);
+                                  M.value_with_ty (M.read (| step_size |)) (Ty.path "usize")
                                 ]
                               |)
                             |) in
@@ -4184,16 +4975,18 @@ Module vec.
                   Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                   M.get_function (| "core::ptr::slice_from_raw_parts_mut", [], [ T ] |),
                   [
-                    M.cast
-                      (Ty.apply (Ty.path "*mut") [] [ T ])
-                      (M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::vec::into_iter::IntoIter",
-                          "end"
-                        |)
-                      |));
-                    M.read (| step_size |)
+                    M.value_with_ty
+                      (M.cast
+                        (Ty.apply (Ty.path "*mut") [] [ T ])
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::vec::into_iter::IntoIter",
+                            "end"
+                          |)
+                        |)))
+                      (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (M.read (| step_size |)) (Ty.path "usize")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -4206,7 +4999,11 @@ Module vec.
                         [],
                         [ Ty.apply (Ty.path "slice") [] [ T ] ]
                       |),
-                      [ M.read (| to_drop |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| to_drop |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
@@ -4253,40 +5050,62 @@ Module vec.
                     ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [ M.read (| n |); M.read (| step_size |) ]
+                            |))
+                            (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                        "new",
-                        [],
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                        ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ]))
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
                         []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.path "usize",
-                          BinOp.Wrap.sub,
-                          [ M.read (| n |); M.read (| step_size |) ]
-                        |)
-                      ]
-                    |);
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                      ]
-                      [ Value.Tuple [] ];
-                    M.constructor_as_closure
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.tuple [];
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
-                      ]
+                        [
+                          Ty.tuple [];
+                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                        ]);
+                    M.value_with_ty
+                      (M.constructor_as_closure "core::result::Result::Err")
+                      (Ty.function
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ]
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.tuple [];
+                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ]
+                          ]))
                   ]
                 |)
               |)
@@ -4360,13 +5179,15 @@ Module vec.
                             []
                           |),
                           [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::into_iter::IntoIter",
-                                "ptr"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::vec::into_iter::IntoIter",
+                                  "ptr"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
                           ]
                         |);
                         M.cast
@@ -4394,32 +5215,42 @@ Module vec.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::vec::into_iter::IntoIter",
-                            "ptr"
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.cast
-                              (Ty.apply
-                                (Ty.path "*const")
-                                []
-                                [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
-                              (M.borrow (|
-                                Pointer.Kind.ConstPointer,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::vec::into_iter::IntoIter",
-                                  "end"
-                                |)
-                              |))
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::vec::into_iter::IntoIter",
+                              "ptr"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.cast
+                                (Ty.apply
+                                  (Ty.path "*const")
+                                  []
+                                  [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
+                                (M.borrow (|
+                                  Pointer.Kind.ConstPointer,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::vec::into_iter::IntoIter",
+                                    "end"
+                                  |)
+                                |))
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
                       ]
                     |)))
               ]
@@ -4505,30 +5336,34 @@ Module vec.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                    "new_in",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      A,
-                      M.get_trait_method (|
-                        "core::default::Default",
-                        A,
-                        [],
-                        [],
-                        "default",
-                        [],
-                        []
-                      |),
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
+                      "new_in",
+                      [],
                       []
-                    |)
-                  ]
-                |)
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          A,
+                          M.get_trait_method (|
+                            "core::default::Default",
+                            A,
+                            [],
+                            [],
+                            "default",
+                            [],
+                            []
+                          |),
+                          []
+                        |))
+                        A
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4620,68 +5455,98 @@ Module vec.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "slice") [] [ T ],
-                    "to_vec_in",
-                    [],
-                    [ A ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ],
-                            "as_slice",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |);
-                    M.call_closure (|
-                      A,
-                      M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
-                      [
-                        M.borrow (|
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "slice") [] [ T ],
+                      "to_vec_in",
+                      [],
+                      [ A ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
                           M.deref (|
                             M.call_closure (|
-                              Ty.apply (Ty.path "&") [] [ A ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.apply
-                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                  []
-                                  [ A ],
-                                [],
-                                [],
-                                "deref",
+                              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ],
+                                "as_slice",
                                 [],
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::vec::into_iter::IntoIter",
-                                    "alloc"
-                                  |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                                        []
+                                        [ T; A ]
+                                    ])
                               ]
                             |)
                           |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          A,
+                          M.get_trait_method (| "core::clone::Clone", A, [], [], "clone", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "&") [] [ A ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::Deref",
+                                      Ty.apply
+                                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                        []
+                                        [ A ],
+                                      [],
+                                      [],
+                                      "deref",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::vec::into_iter::IntoIter",
+                                            "alloc"
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                              []
+                                              [ A ]
+                                          ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ A ])
+                          ]
+                        |))
+                        A
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; A ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4740,11 +5605,11 @@ Module vec.
             M.read (|
               let~ guard :
                   Ty.apply (Ty.path "alloc::vec::into_iter::drop::DropGuard") [] [ T; A ] :=
-                Value.StructTuple
-                  "alloc::vec::into_iter::drop::DropGuard"
-                  []
-                  [ T; A ]
-                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ] in
+                M.value_with_ty
+                  (Value.StructTuple
+                    "alloc::vec::into_iter::drop::DropGuard"
+                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ])
+                  (Ty.apply (Ty.path "alloc::vec::into_iter::drop::DropGuard") [] [ T; A ]) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
@@ -4754,29 +5619,36 @@ Module vec.
                     [ Ty.apply (Ty.path "slice") [] [ T ] ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ],
-                        "as_raw_mut_slice",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.read (|
-                              M.SubPointer.get_struct_tuple_field (|
-                                guard,
-                                "alloc::vec::into_iter::drop::DropGuard",
-                                0
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ],
+                          "as_raw_mut_slice",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_tuple_field (|
+                                    guard,
+                                    "alloc::vec::into_iter::drop::DropGuard",
+                                    0
+                                  |)
+                                |)
                               |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [ T; A ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4827,7 +5699,7 @@ Module vec.
                 [],
                 []
               |),
-              [ Value.Integer IntegerKind.Usize 1 ]
+              [ M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize") ]
             |)
           |))).
       
@@ -4860,7 +5732,7 @@ Module vec.
                 [],
                 []
               |),
-              [ Value.Integer IntegerKind.Usize 1 ]
+              [ M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize") ]
             |)
           |))).
       

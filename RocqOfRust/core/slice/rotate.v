@@ -339,7 +339,12 @@ Module slice.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| mid |); M.read (| left |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| mid |))
+                                                (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                              M.value_with_ty (M.read (| left |)) (Ty.path "usize")
+                                            ]
                                           |) in
                                         let~ tmp : T :=
                                           M.call_closure (|
@@ -350,7 +355,11 @@ Module slice.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| x |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| x |))
+                                                (Ty.apply (Ty.path "*mut") [] [ T ])
+                                            ]
                                           |) in
                                         let~ i : Ty.path "usize" := M.read (| right |) in
                                         let~ gcd : Ty.path "usize" := M.read (| right |) in
@@ -371,17 +380,29 @@ Module slice.
                                                         []
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.apply (Ty.path "*mut") [] [ T ],
-                                                          M.get_associated_function (|
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
                                                             Ty.apply (Ty.path "*mut") [] [ T ],
-                                                            "add",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [ M.read (| x |); M.read (| i |) ]
-                                                        |);
-                                                        M.read (| tmp |)
+                                                            M.get_associated_function (|
+                                                              Ty.apply (Ty.path "*mut") [] [ T ],
+                                                              "add",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.read (| x |))
+                                                                (Ty.apply
+                                                                  (Ty.path "*mut")
+                                                                  []
+                                                                  [ T ]);
+                                                              M.value_with_ty
+                                                                (M.read (| i |))
+                                                                (Ty.path "usize")
+                                                            ]
+                                                          |))
+                                                          (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                        M.value_with_ty (M.read (| tmp |)) T
                                                       ]
                                                     |)
                                                   |) in
@@ -470,8 +491,15 @@ Module slice.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.read (| x |);
-                                                                                M.read (| tmp |)
+                                                                                M.value_with_ty
+                                                                                  (M.read (| x |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "*mut")
+                                                                                    []
+                                                                                    [ T ]);
+                                                                                M.value_with_ty
+                                                                                  (M.read (| tmp |))
+                                                                                  T
                                                                               ]
                                                                             |) in
                                                                           M.break (||)
@@ -585,15 +613,25 @@ Module slice.
                                                         []
                                                       |),
                                                       [
-                                                        Value.mkStructRecord
-                                                          "core::ops::range::Range"
-                                                          []
-                                                          [ Ty.path "usize" ]
-                                                          [
-                                                            ("start",
-                                                              Value.Integer IntegerKind.Usize 1);
-                                                            ("end_", M.read (| gcd |))
-                                                          ]
+                                                        M.value_with_ty
+                                                          (M.value_with_ty
+                                                            (Value.mkStructRecord
+                                                              "core::ops::range::Range"
+                                                              [
+                                                                ("start",
+                                                                  Value.Integer
+                                                                    IntegerKind.Usize
+                                                                    1);
+                                                                ("end_", M.read (| gcd |))
+                                                              ])
+                                                            (Ty.apply
+                                                              (Ty.path "core::ops::range::Range")
+                                                              []
+                                                              [ Ty.path "usize" ]))
+                                                          (Ty.apply
+                                                            (Ty.path "core::ops::range::Range")
+                                                            []
+                                                            [ Ty.path "usize" ])
                                                       ]
                                                     |)
                                                   |),
@@ -639,15 +677,26 @@ Module slice.
                                                                         []
                                                                       |),
                                                                       [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.MutRef,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              iter
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.MutRef,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.MutRef,
+                                                                                iter
+                                                                              |)
                                                                             |)
-                                                                          |)
-                                                                        |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&mut")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::ops::range::Range")
+                                                                                []
+                                                                                [ Ty.path "usize" ]
+                                                                            ])
                                                                       ]
                                                                     |)
                                                                   |),
@@ -691,31 +740,46 @@ Module slice.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.call_closure (|
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "*mut")
-                                                                                      []
-                                                                                      [ T ],
-                                                                                    M.get_associated_function (|
+                                                                                  M.value_with_ty
+                                                                                    (M.call_closure (|
                                                                                       Ty.apply
                                                                                         (Ty.path
                                                                                           "*mut")
                                                                                         []
                                                                                         [ T ],
-                                                                                      "add",
-                                                                                      [],
+                                                                                      M.get_associated_function (|
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "*mut")
+                                                                                          []
+                                                                                          [ T ],
+                                                                                        "add",
+                                                                                        [],
+                                                                                        []
+                                                                                      |),
+                                                                                      [
+                                                                                        M.value_with_ty
+                                                                                          (M.read (|
+                                                                                            x
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "*mut")
+                                                                                            []
+                                                                                            [ T ]);
+                                                                                        M.value_with_ty
+                                                                                          (M.read (|
+                                                                                            start
+                                                                                          |))
+                                                                                          (Ty.path
+                                                                                            "usize")
+                                                                                      ]
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "*mut")
                                                                                       []
-                                                                                    |),
-                                                                                    [
-                                                                                      M.read (|
-                                                                                        x
-                                                                                      |);
-                                                                                      M.read (|
-                                                                                        start
-                                                                                      |)
-                                                                                    ]
-                                                                                  |)
+                                                                                      [ T ])
                                                                                 ]
                                                                               |)
                                                                             |) in
@@ -753,34 +817,52 @@ Module slice.
                                                                                       []
                                                                                     |),
                                                                                     [
-                                                                                      M.call_closure (|
-                                                                                        Ty.apply
-                                                                                          (Ty.path
-                                                                                            "*mut")
-                                                                                          []
-                                                                                          [ T ],
-                                                                                        M.get_associated_function (|
+                                                                                      M.value_with_ty
+                                                                                        (M.call_closure (|
                                                                                           Ty.apply
                                                                                             (Ty.path
                                                                                               "*mut")
                                                                                             []
                                                                                             [ T ],
-                                                                                          "add",
-                                                                                          [],
+                                                                                          M.get_associated_function (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "*mut")
+                                                                                              []
+                                                                                              [ T ],
+                                                                                            "add",
+                                                                                            [],
+                                                                                            []
+                                                                                          |),
+                                                                                          [
+                                                                                            M.value_with_ty
+                                                                                              (M.read (|
+                                                                                                x
+                                                                                              |))
+                                                                                              (Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "*mut")
+                                                                                                []
+                                                                                                [ T
+                                                                                                ]);
+                                                                                            M.value_with_ty
+                                                                                              (M.read (|
+                                                                                                i
+                                                                                              |))
+                                                                                              (Ty.path
+                                                                                                "usize")
+                                                                                          ]
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "*mut")
                                                                                           []
-                                                                                        |),
-                                                                                        [
-                                                                                          M.read (|
-                                                                                            x
-                                                                                          |);
-                                                                                          M.read (|
-                                                                                            i
-                                                                                          |)
-                                                                                        ]
-                                                                                      |);
-                                                                                      M.read (|
-                                                                                        tmp
-                                                                                      |)
+                                                                                          [ T ]);
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          tmp
+                                                                                        |))
+                                                                                        T
                                                                                     ]
                                                                                   |)
                                                                                 |) in
@@ -911,15 +993,8 @@ Module slice.
                                                                                                               []
                                                                                                             |),
                                                                                                             [
-                                                                                                              M.call_closure (|
-                                                                                                                Ty.apply
-                                                                                                                  (Ty.path
-                                                                                                                    "*mut")
-                                                                                                                  []
-                                                                                                                  [
-                                                                                                                    T
-                                                                                                                  ],
-                                                                                                                M.get_associated_function (|
+                                                                                                              M.value_with_ty
+                                                                                                                (M.call_closure (|
                                                                                                                   Ty.apply
                                                                                                                     (Ty.path
                                                                                                                       "*mut")
@@ -927,22 +1002,50 @@ Module slice.
                                                                                                                     [
                                                                                                                       T
                                                                                                                     ],
-                                                                                                                  "add",
-                                                                                                                  [],
+                                                                                                                  M.get_associated_function (|
+                                                                                                                    Ty.apply
+                                                                                                                      (Ty.path
+                                                                                                                        "*mut")
+                                                                                                                      []
+                                                                                                                      [
+                                                                                                                        T
+                                                                                                                      ],
+                                                                                                                    "add",
+                                                                                                                    [],
+                                                                                                                    []
+                                                                                                                  |),
+                                                                                                                  [
+                                                                                                                    M.value_with_ty
+                                                                                                                      (M.read (|
+                                                                                                                        x
+                                                                                                                      |))
+                                                                                                                      (Ty.apply
+                                                                                                                        (Ty.path
+                                                                                                                          "*mut")
+                                                                                                                        []
+                                                                                                                        [
+                                                                                                                          T
+                                                                                                                        ]);
+                                                                                                                    M.value_with_ty
+                                                                                                                      (M.read (|
+                                                                                                                        start
+                                                                                                                      |))
+                                                                                                                      (Ty.path
+                                                                                                                        "usize")
+                                                                                                                  ]
+                                                                                                                |))
+                                                                                                                (Ty.apply
+                                                                                                                  (Ty.path
+                                                                                                                    "*mut")
                                                                                                                   []
-                                                                                                                |),
-                                                                                                                [
-                                                                                                                  M.read (|
-                                                                                                                    x
-                                                                                                                  |);
-                                                                                                                  M.read (|
-                                                                                                                    start
-                                                                                                                  |)
-                                                                                                                ]
-                                                                                                              |);
-                                                                                                              M.read (|
-                                                                                                                tmp
-                                                                                                              |)
+                                                                                                                  [
+                                                                                                                    T
+                                                                                                                  ]);
+                                                                                                              M.value_with_ty
+                                                                                                                (M.read (|
+                                                                                                                  tmp
+                                                                                                                |))
+                                                                                                                T
                                                                                                             ]
                                                                                                           |) in
                                                                                                         M.break (||)
@@ -1038,7 +1141,13 @@ Module slice.
                                                               [],
                                                               [ Ty.path "usize" ]
                                                             |),
-                                                            [ M.read (| left |); M.read (| right |)
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.read (| left |))
+                                                                (Ty.path "usize");
+                                                              M.value_with_ty
+                                                                (M.read (| right |))
+                                                                (Ty.path "usize")
                                                             ]
                                                           |);
                                                           M.call_closure (|
@@ -1199,7 +1308,42 @@ Module slice.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.borrow (| Pointer.Kind.MutRef, rawarray |)
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            rawarray
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::mem::maybe_uninit::MaybeUninit")
+                                                                []
+                                                                [
+                                                                  Ty.tuple
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            32
+                                                                        ]
+                                                                        [ Ty.path "usize" ];
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            0
+                                                                        ]
+                                                                        [ T ]
+                                                                    ]
+                                                                ]
+                                                            ])
                                                       ]
                                                     |)) in
                                                 let~ dim : Ty.apply (Ty.path "*mut") [] [ T ] :=
@@ -1212,17 +1356,28 @@ Module slice.
                                                       []
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply (Ty.path "*mut") [] [ T ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply (Ty.path "*mut") [] [ T ],
-                                                          "sub",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.read (| mid |); M.read (| left |) ]
-                                                      |);
-                                                      M.read (| right |)
+                                                          M.get_associated_function (|
+                                                            Ty.apply (Ty.path "*mut") [] [ T ],
+                                                            "sub",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| mid |))
+                                                              (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                            M.value_with_ty
+                                                              (M.read (| left |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                      M.value_with_ty
+                                                        (M.read (| right |))
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -1260,45 +1415,64 @@ Module slice.
                                                                   [ T ]
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*const")
-                                                                      []
-                                                                      [ T ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.MutToConstPointer
-                                                                      (Ty.apply
-                                                                        (Ty.path "*mut")
-                                                                        []
-                                                                        [ T ])
-                                                                      (Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
                                                                         (Ty.path "*const")
                                                                         []
-                                                                        [ T ]),
-                                                                    [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                        [ T ],
+                                                                      M.pointer_coercion
+                                                                        M.PointerCoercion.MutToConstPointer
+                                                                        (Ty.apply
                                                                           (Ty.path "*mut")
                                                                           []
-                                                                          [ T ],
-                                                                        M.get_associated_function (|
+                                                                          [ T ])
+                                                                        (Ty.apply
+                                                                          (Ty.path "*const")
+                                                                          []
+                                                                          [ T ]),
+                                                                      [
+                                                                        M.call_closure (|
                                                                           Ty.apply
                                                                             (Ty.path "*mut")
                                                                             []
                                                                             [ T ],
-                                                                          "sub",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.read (| mid |);
-                                                                          M.read (| left |)
-                                                                        ]
-                                                                      |)
-                                                                    ]
-                                                                  |);
-                                                                  M.read (| buf |);
-                                                                  M.read (| left |)
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path "*mut")
+                                                                              []
+                                                                              [ T ],
+                                                                            "sub",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.read (| mid |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "*mut")
+                                                                                []
+                                                                                [ T ]);
+                                                                            M.value_with_ty
+                                                                              (M.read (| left |))
+                                                                              (Ty.path "usize")
+                                                                          ]
+                                                                        |)
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*const")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| buf |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| left |))
+                                                                    (Ty.path "usize")
                                                                 ]
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
@@ -1310,43 +1484,62 @@ Module slice.
                                                                   [ T ]
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*const")
-                                                                      []
-                                                                      [ T ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.MutToConstPointer
-                                                                      (Ty.apply
-                                                                        (Ty.path "*mut")
-                                                                        []
-                                                                        [ T ])
-                                                                      (Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
                                                                         (Ty.path "*const")
                                                                         []
-                                                                        [ T ]),
-                                                                    [ M.read (| mid |) ]
-                                                                  |);
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*mut")
+                                                                        [ T ],
+                                                                      M.pointer_coercion
+                                                                        M.PointerCoercion.MutToConstPointer
+                                                                        (Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ T ])
+                                                                        (Ty.apply
+                                                                          (Ty.path "*const")
+                                                                          []
+                                                                          [ T ]),
+                                                                      [ M.read (| mid |) ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*const")
                                                                       []
-                                                                      [ T ],
-                                                                    M.get_associated_function (|
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
                                                                       Ty.apply
                                                                         (Ty.path "*mut")
                                                                         []
                                                                         [ T ],
-                                                                      "sub",
-                                                                      [],
+                                                                      M.get_associated_function (|
+                                                                        Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ T ],
+                                                                        "sub",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.read (| mid |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "*mut")
+                                                                            []
+                                                                            [ T ]);
+                                                                        M.value_with_ty
+                                                                          (M.read (| left |))
+                                                                          (Ty.path "usize")
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.read (| mid |);
-                                                                      M.read (| left |)
-                                                                    ]
-                                                                  |);
-                                                                  M.read (| right |)
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| right |))
+                                                                    (Ty.path "usize")
                                                                 ]
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
@@ -1358,25 +1551,37 @@ Module slice.
                                                                   [ T ]
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*const")
-                                                                      []
-                                                                      [ T ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.MutToConstPointer
-                                                                      (Ty.apply
-                                                                        (Ty.path "*mut")
-                                                                        []
-                                                                        [ T ])
-                                                                      (Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
                                                                         (Ty.path "*const")
                                                                         []
-                                                                        [ T ]),
-                                                                    [ M.read (| buf |) ]
-                                                                  |);
-                                                                  M.read (| dim |);
-                                                                  M.read (| left |)
+                                                                        [ T ],
+                                                                      M.pointer_coercion
+                                                                        M.PointerCoercion.MutToConstPointer
+                                                                        (Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ T ])
+                                                                        (Ty.apply
+                                                                          (Ty.path "*const")
+                                                                          []
+                                                                          [ T ]),
+                                                                      [ M.read (| buf |) ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*const")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| dim |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| left |))
+                                                                    (Ty.path "usize")
                                                                 ]
                                                               |) in
                                                             M.alloc (|
@@ -1396,25 +1601,37 @@ Module slice.
                                                                   [ T ]
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*const")
-                                                                      []
-                                                                      [ T ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.MutToConstPointer
-                                                                      (Ty.apply
-                                                                        (Ty.path "*mut")
-                                                                        []
-                                                                        [ T ])
-                                                                      (Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
                                                                         (Ty.path "*const")
                                                                         []
-                                                                        [ T ]),
-                                                                    [ M.read (| mid |) ]
-                                                                  |);
-                                                                  M.read (| buf |);
-                                                                  M.read (| right |)
+                                                                        [ T ],
+                                                                      M.pointer_coercion
+                                                                        M.PointerCoercion.MutToConstPointer
+                                                                        (Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ T ])
+                                                                        (Ty.apply
+                                                                          (Ty.path "*const")
+                                                                          []
+                                                                          [ T ]),
+                                                                      [ M.read (| mid |) ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*const")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| buf |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| right |))
+                                                                    (Ty.path "usize")
                                                                 ]
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
@@ -1426,45 +1643,64 @@ Module slice.
                                                                   [ T ]
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*const")
-                                                                      []
-                                                                      [ T ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.MutToConstPointer
-                                                                      (Ty.apply
-                                                                        (Ty.path "*mut")
-                                                                        []
-                                                                        [ T ])
-                                                                      (Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
                                                                         (Ty.path "*const")
                                                                         []
-                                                                        [ T ]),
-                                                                    [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                        [ T ],
+                                                                      M.pointer_coercion
+                                                                        M.PointerCoercion.MutToConstPointer
+                                                                        (Ty.apply
                                                                           (Ty.path "*mut")
                                                                           []
-                                                                          [ T ],
-                                                                        M.get_associated_function (|
+                                                                          [ T ])
+                                                                        (Ty.apply
+                                                                          (Ty.path "*const")
+                                                                          []
+                                                                          [ T ]),
+                                                                      [
+                                                                        M.call_closure (|
                                                                           Ty.apply
                                                                             (Ty.path "*mut")
                                                                             []
                                                                             [ T ],
-                                                                          "sub",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.read (| mid |);
-                                                                          M.read (| left |)
-                                                                        ]
-                                                                      |)
-                                                                    ]
-                                                                  |);
-                                                                  M.read (| dim |);
-                                                                  M.read (| left |)
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path "*mut")
+                                                                              []
+                                                                              [ T ],
+                                                                            "sub",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.read (| mid |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "*mut")
+                                                                                []
+                                                                                [ T ]);
+                                                                            M.value_with_ty
+                                                                              (M.read (| left |))
+                                                                              (Ty.path "usize")
+                                                                          ]
+                                                                        |)
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*const")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| dim |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| left |))
+                                                                    (Ty.path "usize")
                                                                 ]
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
@@ -1476,43 +1712,62 @@ Module slice.
                                                                   [ T ]
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*const")
-                                                                      []
-                                                                      [ T ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.MutToConstPointer
-                                                                      (Ty.apply
-                                                                        (Ty.path "*mut")
-                                                                        []
-                                                                        [ T ])
-                                                                      (Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
                                                                         (Ty.path "*const")
                                                                         []
-                                                                        [ T ]),
-                                                                    [ M.read (| buf |) ]
-                                                                  |);
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*mut")
+                                                                        [ T ],
+                                                                      M.pointer_coercion
+                                                                        M.PointerCoercion.MutToConstPointer
+                                                                        (Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ T ])
+                                                                        (Ty.apply
+                                                                          (Ty.path "*const")
+                                                                          []
+                                                                          [ T ]),
+                                                                      [ M.read (| buf |) ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*const")
                                                                       []
-                                                                      [ T ],
-                                                                    M.get_associated_function (|
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
                                                                       Ty.apply
                                                                         (Ty.path "*mut")
                                                                         []
                                                                         [ T ],
-                                                                      "sub",
-                                                                      [],
+                                                                      M.get_associated_function (|
+                                                                        Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ T ],
+                                                                        "sub",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.read (| mid |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "*mut")
+                                                                            []
+                                                                            [ T ]);
+                                                                        M.value_with_ty
+                                                                          (M.read (| left |))
+                                                                          (Ty.path "usize")
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.read (| mid |);
-                                                                      M.read (| left |)
-                                                                    ]
-                                                                  |);
-                                                                  M.read (| right |)
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| right |))
+                                                                    (Ty.path "usize")
                                                                 ]
                                                               |) in
                                                             M.alloc (|
@@ -1564,27 +1819,46 @@ Module slice.
                                                                     [ T ]
                                                                   |),
                                                                   [
-                                                                    M.call_closure (|
-                                                                      Ty.apply
-                                                                        (Ty.path "*mut")
-                                                                        []
-                                                                        [ T ],
-                                                                      M.get_associated_function (|
+                                                                    M.value_with_ty
+                                                                      (M.call_closure (|
                                                                         Ty.apply
                                                                           (Ty.path "*mut")
                                                                           []
                                                                           [ T ],
-                                                                        "sub",
-                                                                        [],
+                                                                        M.get_associated_function (|
+                                                                          Ty.apply
+                                                                            (Ty.path "*mut")
+                                                                            []
+                                                                            [ T ],
+                                                                          "sub",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.read (| mid |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "*mut")
+                                                                              []
+                                                                              [ T ]);
+                                                                          M.value_with_ty
+                                                                            (M.read (| right |))
+                                                                            (Ty.path "usize")
+                                                                        ]
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "*mut")
                                                                         []
-                                                                      |),
-                                                                      [
-                                                                        M.read (| mid |);
-                                                                        M.read (| right |)
-                                                                      ]
-                                                                    |);
-                                                                    M.read (| mid |);
-                                                                    M.read (| right |)
+                                                                        [ T ]);
+                                                                    M.value_with_ty
+                                                                      (M.read (| mid |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "*mut")
+                                                                        []
+                                                                        [ T ]);
+                                                                    M.value_with_ty
+                                                                      (M.read (| right |))
+                                                                      (Ty.path "usize")
                                                                   ]
                                                                 |) in
                                                               let~ _ : Ty.tuple [] :=
@@ -1605,8 +1879,15 @@ Module slice.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.read (| mid |);
-                                                                      M.read (| right |)
+                                                                      M.value_with_ty
+                                                                        (M.read (| mid |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ T ]);
+                                                                      M.value_with_ty
+                                                                        (M.read (| right |))
+                                                                        (Ty.path "usize")
                                                                     ]
                                                                   |)
                                                                 |) in
@@ -1682,27 +1963,46 @@ Module slice.
                                                                     [ T ]
                                                                   |),
                                                                   [
-                                                                    M.call_closure (|
-                                                                      Ty.apply
-                                                                        (Ty.path "*mut")
-                                                                        []
-                                                                        [ T ],
-                                                                      M.get_associated_function (|
+                                                                    M.value_with_ty
+                                                                      (M.call_closure (|
                                                                         Ty.apply
                                                                           (Ty.path "*mut")
                                                                           []
                                                                           [ T ],
-                                                                        "sub",
-                                                                        [],
+                                                                        M.get_associated_function (|
+                                                                          Ty.apply
+                                                                            (Ty.path "*mut")
+                                                                            []
+                                                                            [ T ],
+                                                                          "sub",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.read (| mid |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "*mut")
+                                                                              []
+                                                                              [ T ]);
+                                                                          M.value_with_ty
+                                                                            (M.read (| left |))
+                                                                            (Ty.path "usize")
+                                                                        ]
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "*mut")
                                                                         []
-                                                                      |),
-                                                                      [
-                                                                        M.read (| mid |);
-                                                                        M.read (| left |)
-                                                                      ]
-                                                                    |);
-                                                                    M.read (| mid |);
-                                                                    M.read (| left |)
+                                                                        [ T ]);
+                                                                    M.value_with_ty
+                                                                      (M.read (| mid |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "*mut")
+                                                                        []
+                                                                        [ T ]);
+                                                                    M.value_with_ty
+                                                                      (M.read (| left |))
+                                                                      (Ty.path "usize")
                                                                   ]
                                                                 |) in
                                                               let~ _ : Ty.tuple [] :=
@@ -1723,8 +2023,15 @@ Module slice.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.read (| mid |);
-                                                                      M.read (| left |)
+                                                                      M.value_with_ty
+                                                                        (M.read (| mid |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ T ]);
+                                                                      M.value_with_ty
+                                                                        (M.read (| left |))
+                                                                        (Ty.path "usize")
                                                                     ]
                                                                   |)
                                                                 |) in

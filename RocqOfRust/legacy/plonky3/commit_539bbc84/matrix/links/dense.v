@@ -24,7 +24,7 @@ Module DenseMatrix.
 
   Global Instance IsLink (T V : Set) `{Link T} `{Link V} : Link (t T V) := {
     Φ := Ty.apply (Ty.path "p3_matrix::dense::DenseMatrix") [] [ Φ T; Φ V ];
-    φ x := Value.StructRecord "p3_matrix::dense::DenseMatrix" [] [] [
+    φ x := Value.StructRecord "p3_matrix::dense::DenseMatrix" [
       ("values", φ x.(values));
       ("width", φ x.(width))
     ];

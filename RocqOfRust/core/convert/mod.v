@@ -60,10 +60,12 @@ Module convert.
                 Ty.apply (Ty.path "&") [] [ U ],
                 M.get_trait_method (| "core::convert::AsRef", T, [], [ U ], "as_ref", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)
             |)
@@ -103,10 +105,12 @@ Module convert.
                 Ty.apply (Ty.path "&") [] [ U ],
                 M.get_trait_method (| "core::convert::AsRef", T, [], [ U ], "as_ref", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)
             |)
@@ -152,10 +156,12 @@ Module convert.
                     Ty.apply (Ty.path "&mut") [] [ U ],
                     M.get_trait_method (| "core::convert::AsMut", T, [], [ U ], "as_mut", [], [] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ T ])
                     ]
                   |)
                 |)
@@ -192,7 +198,7 @@ Module convert.
           M.call_closure (|
             U,
             M.get_trait_method (| "core::convert::From", U, [], [ T ], "from", [], [] |),
-            [ M.read (| self |) ]
+            [ M.value_with_ty (M.read (| self |)) T ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -287,7 +293,7 @@ Module convert.
               []
               [ U; Ty.associated_in_trait "core::convert::TryFrom" [] [ T ] U "Error" ],
             M.get_trait_method (| "core::convert::TryFrom", U, [], [ T ], "try_from", [], [] |),
-            [ M.read (| self |) ]
+            [ M.value_with_ty (M.read (| self |)) T ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -323,17 +329,20 @@ Module convert.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| U, value |) in
-          Value.StructTuple
-            "core::result::Result::Ok"
-            []
-            [ T; Ty.path "core::convert::Infallible" ]
-            [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::convert::Into", U, [], [ T ], "into", [], [] |),
-                [ M.read (| value |) ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::result::Result::Ok"
+              [
+                M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::convert::Into", U, [], [ T ], "into", [], [] |),
+                  [ M.value_with_ty (M.read (| value |)) U ]
+                |)
+              ])
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ T; Ty.path "core::convert::Infallible" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

@@ -159,11 +159,9 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::NotRentExempt"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::NotRentExempt"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "spl_token_interface::error::TokenError::NotRentExempt" [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -172,11 +170,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::InsufficientFunds"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::InsufficientFunds"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::InsufficientFunds"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -185,11 +183,9 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::InvalidMint"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::InvalidMint"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "spl_token_interface::error::TokenError::InvalidMint" [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -198,11 +194,9 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::MintMismatch"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::MintMismatch"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "spl_token_interface::error::TokenError::MintMismatch" [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -211,11 +205,9 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::OwnerMismatch"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::OwnerMismatch"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "spl_token_interface::error::TokenError::OwnerMismatch" [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -224,11 +216,9 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::FixedSupply"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::FixedSupply"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "spl_token_interface::error::TokenError::FixedSupply" [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -237,11 +227,9 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::AlreadyInUse"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::AlreadyInUse"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "spl_token_interface::error::TokenError::AlreadyInUse" [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -250,11 +238,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -263,11 +251,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -276,11 +264,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::UninitializedState"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::UninitializedState"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::UninitializedState"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -289,11 +277,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::NativeNotSupported"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::NativeNotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::NativeNotSupported"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -302,11 +290,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::NonNativeHasBalance"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::NonNativeHasBalance"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::NonNativeHasBalance"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -315,11 +303,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::InvalidInstruction"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::InvalidInstruction"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::InvalidInstruction"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -328,17 +316,17 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::InvalidState"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::InvalidState"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "spl_token_interface::error::TokenError::InvalidState" [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let _ :=
                     M.is_struct_tuple (| γ, "spl_token_interface::error::TokenError::Overflow" |) in
-                  Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -347,11 +335,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::AuthorityTypeNotSupported"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::AuthorityTypeNotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::AuthorityTypeNotSupported"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -360,11 +348,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::MintCannotFreeze"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::MintCannotFreeze"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::MintCannotFreeze"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -373,11 +361,9 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::AccountFrozen"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::AccountFrozen"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "spl_token_interface::error::TokenError::AccountFrozen" [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -386,11 +372,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::MintDecimalsMismatch"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::MintDecimalsMismatch"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::MintDecimalsMismatch"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -399,11 +385,11 @@ Module error.
                       γ,
                       "spl_token_interface::error::TokenError::NonNativeNotSupported"
                     |) in
-                  Value.StructTuple
-                    "spl_token_interface::error::TokenError::NonNativeNotSupported"
-                    []
-                    []
-                    []))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "spl_token_interface::error::TokenError::NonNativeNotSupported"
+                      [])
+                    (Ty.path "spl_token_interface::error::TokenError")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -440,226 +426,248 @@ Module error.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::NotRentExempt"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NotRentExempt" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::InsufficientFunds"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InsufficientFunds" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::InvalidMint"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidMint" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::MintMismatch"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MintMismatch" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::OwnerMismatch"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OwnerMismatch" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::FixedSupply"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FixedSupply" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::AlreadyInUse"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AlreadyInUse" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidNumberOfProvidedSigners" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidNumberOfRequiredSigners" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::UninitializedState"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "UninitializedState" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::NativeNotSupported"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NativeNotSupported" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::NonNativeHasBalance"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NonNativeHasBalance" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::InvalidInstruction"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidInstruction" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::InvalidState"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidState" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::Overflow"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Overflow" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::AuthorityTypeNotSupported"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "AuthorityTypeNotSupported" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::MintCannotFreeze"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MintCannotFreeze" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::AccountFrozen"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AccountFrozen" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::MintDecimalsMismatch"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MintDecimalsMismatch" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::error::TokenError::NonNativeNotSupported"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NonNativeNotSupported" |) |)
-                      |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::NotRentExempt"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NotRentExempt" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::InsufficientFunds"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InsufficientFunds" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::InvalidMint"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidMint" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::MintMismatch"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MintMismatch" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::OwnerMismatch"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "OwnerMismatch" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::FixedSupply"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FixedSupply" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::AlreadyInUse"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "AlreadyInUse" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidNumberOfProvidedSigners" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidNumberOfRequiredSigners" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::UninitializedState"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "UninitializedState" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::NativeNotSupported"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NativeNotSupported" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::NonNativeHasBalance"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NonNativeHasBalance" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::InvalidInstruction"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidInstruction" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::InvalidState"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidState" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::Overflow"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Overflow" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::AuthorityTypeNotSupported"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "AuthorityTypeNotSupported" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::MintCannotFreeze"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MintCannotFreeze" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::AccountFrozen"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "AccountFrozen" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::MintDecimalsMismatch"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MintDecimalsMismatch" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::error::TokenError::NonNativeNotSupported"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NonNativeNotSupported" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -762,11 +770,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Lamport balance below rent-exempt threshold" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Lamport balance below rent-exempt threshold" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -789,11 +801,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Insufficient funds" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Insufficient funds" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -816,8 +832,12 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Invalid Mint" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Invalid Mint" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -840,11 +860,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Account not associated with this Mint" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Account not associated with this Mint" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -867,11 +891,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Owner does not match" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Owner does not match" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -894,8 +922,12 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Fixed supply" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Fixed supply" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -918,8 +950,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Already in use" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Already in use" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -942,11 +981,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Invalid number of provided signers" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Invalid number of provided signers" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -969,11 +1012,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Invalid number of required signers" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Invalid number of required signers" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -996,11 +1043,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "State is uninitialized" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "State is uninitialized" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1023,11 +1074,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Instruction does not support native tokens" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Instruction does not support native tokens" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1050,15 +1105,19 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          mk_str (|
-                            "Non-native account can only be closed if its balance is zero"
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            mk_str (|
+                              "Non-native account can only be closed if its balance is zero"
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1081,11 +1140,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Invalid instruction" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Invalid instruction" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1108,11 +1171,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "State is invalid for requested operation" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "State is invalid for requested operation" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1132,11 +1199,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Operation overflowed" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Operation overflowed" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1159,13 +1230,17 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          mk_str (| "Account does not support specified authority type" |)
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            mk_str (| "Account does not support specified authority type" |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1188,11 +1263,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "This token mint cannot freeze accounts" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "This token mint cannot freeze accounts" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1215,11 +1294,15 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Account is frozen" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Account is frozen" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1242,15 +1325,19 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          mk_str (|
-                            "The provided decimals value different from the Mint decimals"
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            mk_str (|
+                              "The provided decimals value different from the Mint decimals"
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1273,11 +1360,17 @@ Module error.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Instruction does not support non-native tokens" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| __formatter |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            mk_str (| "Instruction does not support non-native tokens" |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)))
             ]
@@ -1327,17 +1420,20 @@ Module error.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "spl_token_interface::error::TokenError" ]
-                      [
-                        Value.StructTuple
-                          "spl_token_interface::error::TokenError::NotRentExempt"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "spl_token_interface::error::TokenError::NotRentExempt"
+                              [])
+                            (Ty.path "spl_token_interface::error::TokenError")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "spl_token_interface::error::TokenError" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.match_operator (|
@@ -1364,17 +1460,20 @@ Module error.
                                 |)) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ Ty.path "spl_token_interface::error::TokenError" ]
-                              [
-                                Value.StructTuple
-                                  "spl_token_interface::error::TokenError::InsufficientFunds"
-                                  []
-                                  []
-                                  []
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "spl_token_interface::error::TokenError::InsufficientFunds"
+                                      [])
+                                    (Ty.path "spl_token_interface::error::TokenError")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "spl_token_interface::error::TokenError" ])));
                         fun γ =>
                           ltac:(M.monadic
                             (M.match_operator (|
@@ -1406,17 +1505,20 @@ Module error.
                                         M.read (| γ |),
                                         Value.Bool true
                                       |) in
-                                    Value.StructTuple
-                                      "core::option::Option::Some"
-                                      []
-                                      [ Ty.path "spl_token_interface::error::TokenError" ]
-                                      [
-                                        Value.StructTuple
-                                          "spl_token_interface::error::TokenError::InvalidMint"
-                                          []
-                                          []
-                                          []
-                                      ]));
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::option::Option::Some"
+                                        [
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "spl_token_interface::error::TokenError::InvalidMint"
+                                              [])
+                                            (Ty.path "spl_token_interface::error::TokenError")
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "spl_token_interface::error::TokenError" ])));
                                 fun γ =>
                                   ltac:(M.monadic
                                     (M.match_operator (|
@@ -1448,17 +1550,22 @@ Module error.
                                                 M.read (| γ |),
                                                 Value.Bool true
                                               |) in
-                                            Value.StructTuple
-                                              "core::option::Option::Some"
-                                              []
-                                              [ Ty.path "spl_token_interface::error::TokenError" ]
-                                              [
-                                                Value.StructTuple
-                                                  "spl_token_interface::error::TokenError::MintMismatch"
-                                                  []
-                                                  []
-                                                  []
-                                              ]));
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::option::Option::Some"
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "spl_token_interface::error::TokenError::MintMismatch"
+                                                      [])
+                                                    (Ty.path
+                                                      "spl_token_interface::error::TokenError")
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "spl_token_interface::error::TokenError"
+                                                ])));
                                         fun γ =>
                                           ltac:(M.monadic
                                             (M.match_operator (|
@@ -1491,20 +1598,24 @@ Module error.
                                                         M.read (| γ |),
                                                         Value.Bool true
                                                       |) in
-                                                    Value.StructTuple
-                                                      "core::option::Option::Some"
-                                                      []
-                                                      [
-                                                        Ty.path
-                                                          "spl_token_interface::error::TokenError"
-                                                      ]
-                                                      [
-                                                        Value.StructTuple
-                                                          "spl_token_interface::error::TokenError::OwnerMismatch"
-                                                          []
-                                                          []
-                                                          []
-                                                      ]));
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::option::Option::Some"
+                                                        [
+                                                          M.value_with_ty
+                                                            (Value.StructTuple
+                                                              "spl_token_interface::error::TokenError::OwnerMismatch"
+                                                              [])
+                                                            (Ty.path
+                                                              "spl_token_interface::error::TokenError")
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "spl_token_interface::error::TokenError"
+                                                        ])));
                                                 fun γ =>
                                                   ltac:(M.monadic
                                                     (M.match_operator (|
@@ -1541,20 +1652,24 @@ Module error.
                                                                 M.read (| γ |),
                                                                 Value.Bool true
                                                               |) in
-                                                            Value.StructTuple
-                                                              "core::option::Option::Some"
-                                                              []
-                                                              [
-                                                                Ty.path
-                                                                  "spl_token_interface::error::TokenError"
-                                                              ]
-                                                              [
-                                                                Value.StructTuple
-                                                                  "spl_token_interface::error::TokenError::FixedSupply"
-                                                                  []
-                                                                  []
-                                                                  []
-                                                              ]));
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::option::Option::Some"
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "spl_token_interface::error::TokenError::FixedSupply"
+                                                                      [])
+                                                                    (Ty.path
+                                                                      "spl_token_interface::error::TokenError")
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "spl_token_interface::error::TokenError"
+                                                                ])));
                                                         fun γ =>
                                                           ltac:(M.monadic
                                                             (M.match_operator (|
@@ -1594,20 +1709,25 @@ Module error.
                                                                         M.read (| γ |),
                                                                         Value.Bool true
                                                                       |) in
-                                                                    Value.StructTuple
-                                                                      "core::option::Option::Some"
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "spl_token_interface::error::TokenError"
-                                                                      ]
-                                                                      [
-                                                                        Value.StructTuple
-                                                                          "spl_token_interface::error::TokenError::AlreadyInUse"
-                                                                          []
-                                                                          []
-                                                                          []
-                                                                      ]));
+                                                                    M.value_with_ty
+                                                                      (Value.StructTuple
+                                                                        "core::option::Option::Some"
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "spl_token_interface::error::TokenError::AlreadyInUse"
+                                                                              [])
+                                                                            (Ty.path
+                                                                              "spl_token_interface::error::TokenError")
+                                                                        ])
+                                                                      (Ty.apply
+                                                                        (Ty.path
+                                                                          "core::option::Option")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "spl_token_interface::error::TokenError"
+                                                                        ])));
                                                                 fun γ =>
                                                                   ltac:(M.monadic
                                                                     (M.match_operator (|
@@ -1651,20 +1771,25 @@ Module error.
                                                                                 M.read (| γ |),
                                                                                 Value.Bool true
                                                                               |) in
-                                                                            Value.StructTuple
-                                                                              "core::option::Option::Some"
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "spl_token_interface::error::TokenError"
-                                                                              ]
-                                                                              [
-                                                                                Value.StructTuple
-                                                                                  "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners"
-                                                                                  []
-                                                                                  []
-                                                                                  []
-                                                                              ]));
+                                                                            M.value_with_ty
+                                                                              (Value.StructTuple
+                                                                                "core::option::Option::Some"
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (Value.StructTuple
+                                                                                      "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners"
+                                                                                      [])
+                                                                                    (Ty.path
+                                                                                      "spl_token_interface::error::TokenError")
+                                                                                ])
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::option::Option")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "spl_token_interface::error::TokenError"
+                                                                                ])));
                                                                         fun γ =>
                                                                           ltac:(M.monadic
                                                                             (M.match_operator (|
@@ -1713,20 +1838,25 @@ Module error.
                                                                                         Value.Bool
                                                                                           true
                                                                                       |) in
-                                                                                    Value.StructTuple
-                                                                                      "core::option::Option::Some"
-                                                                                      []
-                                                                                      [
-                                                                                        Ty.path
-                                                                                          "spl_token_interface::error::TokenError"
-                                                                                      ]
-                                                                                      [
-                                                                                        Value.StructTuple
-                                                                                          "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners"
-                                                                                          []
-                                                                                          []
-                                                                                          []
-                                                                                      ]));
+                                                                                    M.value_with_ty
+                                                                                      (Value.StructTuple
+                                                                                        "core::option::Option::Some"
+                                                                                        [
+                                                                                          M.value_with_ty
+                                                                                            (Value.StructTuple
+                                                                                              "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners"
+                                                                                              [])
+                                                                                            (Ty.path
+                                                                                              "spl_token_interface::error::TokenError")
+                                                                                        ])
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "core::option::Option")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "spl_token_interface::error::TokenError"
+                                                                                        ])));
                                                                                 fun γ =>
                                                                                   ltac:(M.monadic
                                                                                     (M.match_operator (|
@@ -1777,20 +1907,25 @@ Module error.
                                                                                                 Value.Bool
                                                                                                   true
                                                                                               |) in
-                                                                                            Value.StructTuple
-                                                                                              "core::option::Option::Some"
-                                                                                              []
-                                                                                              [
-                                                                                                Ty.path
-                                                                                                  "spl_token_interface::error::TokenError"
-                                                                                              ]
-                                                                                              [
-                                                                                                Value.StructTuple
-                                                                                                  "spl_token_interface::error::TokenError::UninitializedState"
-                                                                                                  []
-                                                                                                  []
-                                                                                                  []
-                                                                                              ]));
+                                                                                            M.value_with_ty
+                                                                                              (Value.StructTuple
+                                                                                                "core::option::Option::Some"
+                                                                                                [
+                                                                                                  M.value_with_ty
+                                                                                                    (Value.StructTuple
+                                                                                                      "spl_token_interface::error::TokenError::UninitializedState"
+                                                                                                      [])
+                                                                                                    (Ty.path
+                                                                                                      "spl_token_interface::error::TokenError")
+                                                                                                ])
+                                                                                              (Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "core::option::Option")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "spl_token_interface::error::TokenError"
+                                                                                                ])));
                                                                                         fun γ =>
                                                                                           ltac:(M.monadic
                                                                                             (M.match_operator (|
@@ -1844,20 +1979,25 @@ Module error.
                                                                                                         Value.Bool
                                                                                                           true
                                                                                                       |) in
-                                                                                                    Value.StructTuple
-                                                                                                      "core::option::Option::Some"
-                                                                                                      []
-                                                                                                      [
-                                                                                                        Ty.path
-                                                                                                          "spl_token_interface::error::TokenError"
-                                                                                                      ]
-                                                                                                      [
-                                                                                                        Value.StructTuple
-                                                                                                          "spl_token_interface::error::TokenError::NativeNotSupported"
-                                                                                                          []
-                                                                                                          []
-                                                                                                          []
-                                                                                                      ]));
+                                                                                                    M.value_with_ty
+                                                                                                      (Value.StructTuple
+                                                                                                        "core::option::Option::Some"
+                                                                                                        [
+                                                                                                          M.value_with_ty
+                                                                                                            (Value.StructTuple
+                                                                                                              "spl_token_interface::error::TokenError::NativeNotSupported"
+                                                                                                              [])
+                                                                                                            (Ty.path
+                                                                                                              "spl_token_interface::error::TokenError")
+                                                                                                        ])
+                                                                                                      (Ty.apply
+                                                                                                        (Ty.path
+                                                                                                          "core::option::Option")
+                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.path
+                                                                                                            "spl_token_interface::error::TokenError"
+                                                                                                        ])));
                                                                                                 fun
                                                                                                     γ =>
                                                                                                   ltac:(M.monadic
@@ -1912,20 +2052,25 @@ Module error.
                                                                                                                 Value.Bool
                                                                                                                   true
                                                                                                               |) in
-                                                                                                            Value.StructTuple
-                                                                                                              "core::option::Option::Some"
-                                                                                                              []
-                                                                                                              [
-                                                                                                                Ty.path
-                                                                                                                  "spl_token_interface::error::TokenError"
-                                                                                                              ]
-                                                                                                              [
-                                                                                                                Value.StructTuple
-                                                                                                                  "spl_token_interface::error::TokenError::NonNativeHasBalance"
-                                                                                                                  []
-                                                                                                                  []
-                                                                                                                  []
-                                                                                                              ]));
+                                                                                                            M.value_with_ty
+                                                                                                              (Value.StructTuple
+                                                                                                                "core::option::Option::Some"
+                                                                                                                [
+                                                                                                                  M.value_with_ty
+                                                                                                                    (Value.StructTuple
+                                                                                                                      "spl_token_interface::error::TokenError::NonNativeHasBalance"
+                                                                                                                      [])
+                                                                                                                    (Ty.path
+                                                                                                                      "spl_token_interface::error::TokenError")
+                                                                                                                ])
+                                                                                                              (Ty.apply
+                                                                                                                (Ty.path
+                                                                                                                  "core::option::Option")
+                                                                                                                []
+                                                                                                                [
+                                                                                                                  Ty.path
+                                                                                                                    "spl_token_interface::error::TokenError"
+                                                                                                                ])));
                                                                                                         fun
                                                                                                             γ =>
                                                                                                           ltac:(M.monadic
@@ -1980,20 +2125,25 @@ Module error.
                                                                                                                         Value.Bool
                                                                                                                           true
                                                                                                                       |) in
-                                                                                                                    Value.StructTuple
-                                                                                                                      "core::option::Option::Some"
-                                                                                                                      []
-                                                                                                                      [
-                                                                                                                        Ty.path
-                                                                                                                          "spl_token_interface::error::TokenError"
-                                                                                                                      ]
-                                                                                                                      [
-                                                                                                                        Value.StructTuple
-                                                                                                                          "spl_token_interface::error::TokenError::InvalidInstruction"
-                                                                                                                          []
-                                                                                                                          []
-                                                                                                                          []
-                                                                                                                      ]));
+                                                                                                                    M.value_with_ty
+                                                                                                                      (Value.StructTuple
+                                                                                                                        "core::option::Option::Some"
+                                                                                                                        [
+                                                                                                                          M.value_with_ty
+                                                                                                                            (Value.StructTuple
+                                                                                                                              "spl_token_interface::error::TokenError::InvalidInstruction"
+                                                                                                                              [])
+                                                                                                                            (Ty.path
+                                                                                                                              "spl_token_interface::error::TokenError")
+                                                                                                                        ])
+                                                                                                                      (Ty.apply
+                                                                                                                        (Ty.path
+                                                                                                                          "core::option::Option")
+                                                                                                                        []
+                                                                                                                        [
+                                                                                                                          Ty.path
+                                                                                                                            "spl_token_interface::error::TokenError"
+                                                                                                                        ])));
                                                                                                                 fun
                                                                                                                     γ =>
                                                                                                                   ltac:(M.monadic
@@ -2048,20 +2198,25 @@ Module error.
                                                                                                                                 Value.Bool
                                                                                                                                   true
                                                                                                                               |) in
-                                                                                                                            Value.StructTuple
-                                                                                                                              "core::option::Option::Some"
-                                                                                                                              []
-                                                                                                                              [
-                                                                                                                                Ty.path
-                                                                                                                                  "spl_token_interface::error::TokenError"
-                                                                                                                              ]
-                                                                                                                              [
-                                                                                                                                Value.StructTuple
-                                                                                                                                  "spl_token_interface::error::TokenError::InvalidState"
-                                                                                                                                  []
-                                                                                                                                  []
-                                                                                                                                  []
-                                                                                                                              ]));
+                                                                                                                            M.value_with_ty
+                                                                                                                              (Value.StructTuple
+                                                                                                                                "core::option::Option::Some"
+                                                                                                                                [
+                                                                                                                                  M.value_with_ty
+                                                                                                                                    (Value.StructTuple
+                                                                                                                                      "spl_token_interface::error::TokenError::InvalidState"
+                                                                                                                                      [])
+                                                                                                                                    (Ty.path
+                                                                                                                                      "spl_token_interface::error::TokenError")
+                                                                                                                                ])
+                                                                                                                              (Ty.apply
+                                                                                                                                (Ty.path
+                                                                                                                                  "core::option::Option")
+                                                                                                                                []
+                                                                                                                                [
+                                                                                                                                  Ty.path
+                                                                                                                                    "spl_token_interface::error::TokenError"
+                                                                                                                                ])));
                                                                                                                         fun
                                                                                                                             γ =>
                                                                                                                           ltac:(M.monadic
@@ -2116,20 +2271,25 @@ Module error.
                                                                                                                                         Value.Bool
                                                                                                                                           true
                                                                                                                                       |) in
-                                                                                                                                    Value.StructTuple
-                                                                                                                                      "core::option::Option::Some"
-                                                                                                                                      []
-                                                                                                                                      [
-                                                                                                                                        Ty.path
-                                                                                                                                          "spl_token_interface::error::TokenError"
-                                                                                                                                      ]
-                                                                                                                                      [
-                                                                                                                                        Value.StructTuple
-                                                                                                                                          "spl_token_interface::error::TokenError::Overflow"
-                                                                                                                                          []
-                                                                                                                                          []
-                                                                                                                                          []
-                                                                                                                                      ]));
+                                                                                                                                    M.value_with_ty
+                                                                                                                                      (Value.StructTuple
+                                                                                                                                        "core::option::Option::Some"
+                                                                                                                                        [
+                                                                                                                                          M.value_with_ty
+                                                                                                                                            (Value.StructTuple
+                                                                                                                                              "spl_token_interface::error::TokenError::Overflow"
+                                                                                                                                              [])
+                                                                                                                                            (Ty.path
+                                                                                                                                              "spl_token_interface::error::TokenError")
+                                                                                                                                        ])
+                                                                                                                                      (Ty.apply
+                                                                                                                                        (Ty.path
+                                                                                                                                          "core::option::Option")
+                                                                                                                                        []
+                                                                                                                                        [
+                                                                                                                                          Ty.path
+                                                                                                                                            "spl_token_interface::error::TokenError"
+                                                                                                                                        ])));
                                                                                                                                 fun
                                                                                                                                     γ =>
                                                                                                                                   ltac:(M.monadic
@@ -2184,20 +2344,25 @@ Module error.
                                                                                                                                                 Value.Bool
                                                                                                                                                   true
                                                                                                                                               |) in
-                                                                                                                                            Value.StructTuple
-                                                                                                                                              "core::option::Option::Some"
-                                                                                                                                              []
-                                                                                                                                              [
-                                                                                                                                                Ty.path
-                                                                                                                                                  "spl_token_interface::error::TokenError"
-                                                                                                                                              ]
-                                                                                                                                              [
-                                                                                                                                                Value.StructTuple
-                                                                                                                                                  "spl_token_interface::error::TokenError::AuthorityTypeNotSupported"
-                                                                                                                                                  []
-                                                                                                                                                  []
-                                                                                                                                                  []
-                                                                                                                                              ]));
+                                                                                                                                            M.value_with_ty
+                                                                                                                                              (Value.StructTuple
+                                                                                                                                                "core::option::Option::Some"
+                                                                                                                                                [
+                                                                                                                                                  M.value_with_ty
+                                                                                                                                                    (Value.StructTuple
+                                                                                                                                                      "spl_token_interface::error::TokenError::AuthorityTypeNotSupported"
+                                                                                                                                                      [])
+                                                                                                                                                    (Ty.path
+                                                                                                                                                      "spl_token_interface::error::TokenError")
+                                                                                                                                                ])
+                                                                                                                                              (Ty.apply
+                                                                                                                                                (Ty.path
+                                                                                                                                                  "core::option::Option")
+                                                                                                                                                []
+                                                                                                                                                [
+                                                                                                                                                  Ty.path
+                                                                                                                                                    "spl_token_interface::error::TokenError"
+                                                                                                                                                ])));
                                                                                                                                         fun
                                                                                                                                             γ =>
                                                                                                                                           ltac:(M.monadic
@@ -2252,20 +2417,25 @@ Module error.
                                                                                                                                                         Value.Bool
                                                                                                                                                           true
                                                                                                                                                       |) in
-                                                                                                                                                    Value.StructTuple
-                                                                                                                                                      "core::option::Option::Some"
-                                                                                                                                                      []
-                                                                                                                                                      [
-                                                                                                                                                        Ty.path
-                                                                                                                                                          "spl_token_interface::error::TokenError"
-                                                                                                                                                      ]
-                                                                                                                                                      [
-                                                                                                                                                        Value.StructTuple
-                                                                                                                                                          "spl_token_interface::error::TokenError::MintCannotFreeze"
-                                                                                                                                                          []
-                                                                                                                                                          []
-                                                                                                                                                          []
-                                                                                                                                                      ]));
+                                                                                                                                                    M.value_with_ty
+                                                                                                                                                      (Value.StructTuple
+                                                                                                                                                        "core::option::Option::Some"
+                                                                                                                                                        [
+                                                                                                                                                          M.value_with_ty
+                                                                                                                                                            (Value.StructTuple
+                                                                                                                                                              "spl_token_interface::error::TokenError::MintCannotFreeze"
+                                                                                                                                                              [])
+                                                                                                                                                            (Ty.path
+                                                                                                                                                              "spl_token_interface::error::TokenError")
+                                                                                                                                                        ])
+                                                                                                                                                      (Ty.apply
+                                                                                                                                                        (Ty.path
+                                                                                                                                                          "core::option::Option")
+                                                                                                                                                        []
+                                                                                                                                                        [
+                                                                                                                                                          Ty.path
+                                                                                                                                                            "spl_token_interface::error::TokenError"
+                                                                                                                                                        ])));
                                                                                                                                                 fun
                                                                                                                                                     γ =>
                                                                                                                                                   ltac:(M.monadic
@@ -2320,20 +2490,25 @@ Module error.
                                                                                                                                                                 Value.Bool
                                                                                                                                                                   true
                                                                                                                                                               |) in
-                                                                                                                                                            Value.StructTuple
-                                                                                                                                                              "core::option::Option::Some"
-                                                                                                                                                              []
-                                                                                                                                                              [
-                                                                                                                                                                Ty.path
-                                                                                                                                                                  "spl_token_interface::error::TokenError"
-                                                                                                                                                              ]
-                                                                                                                                                              [
-                                                                                                                                                                Value.StructTuple
-                                                                                                                                                                  "spl_token_interface::error::TokenError::AccountFrozen"
-                                                                                                                                                                  []
-                                                                                                                                                                  []
-                                                                                                                                                                  []
-                                                                                                                                                              ]));
+                                                                                                                                                            M.value_with_ty
+                                                                                                                                                              (Value.StructTuple
+                                                                                                                                                                "core::option::Option::Some"
+                                                                                                                                                                [
+                                                                                                                                                                  M.value_with_ty
+                                                                                                                                                                    (Value.StructTuple
+                                                                                                                                                                      "spl_token_interface::error::TokenError::AccountFrozen"
+                                                                                                                                                                      [])
+                                                                                                                                                                    (Ty.path
+                                                                                                                                                                      "spl_token_interface::error::TokenError")
+                                                                                                                                                                ])
+                                                                                                                                                              (Ty.apply
+                                                                                                                                                                (Ty.path
+                                                                                                                                                                  "core::option::Option")
+                                                                                                                                                                []
+                                                                                                                                                                [
+                                                                                                                                                                  Ty.path
+                                                                                                                                                                    "spl_token_interface::error::TokenError"
+                                                                                                                                                                ])));
                                                                                                                                                         fun
                                                                                                                                                             γ =>
                                                                                                                                                           ltac:(M.monadic
@@ -2388,20 +2563,25 @@ Module error.
                                                                                                                                                                         Value.Bool
                                                                                                                                                                           true
                                                                                                                                                                       |) in
-                                                                                                                                                                    Value.StructTuple
-                                                                                                                                                                      "core::option::Option::Some"
-                                                                                                                                                                      []
-                                                                                                                                                                      [
-                                                                                                                                                                        Ty.path
-                                                                                                                                                                          "spl_token_interface::error::TokenError"
-                                                                                                                                                                      ]
-                                                                                                                                                                      [
-                                                                                                                                                                        Value.StructTuple
-                                                                                                                                                                          "spl_token_interface::error::TokenError::MintDecimalsMismatch"
-                                                                                                                                                                          []
-                                                                                                                                                                          []
-                                                                                                                                                                          []
-                                                                                                                                                                      ]));
+                                                                                                                                                                    M.value_with_ty
+                                                                                                                                                                      (Value.StructTuple
+                                                                                                                                                                        "core::option::Option::Some"
+                                                                                                                                                                        [
+                                                                                                                                                                          M.value_with_ty
+                                                                                                                                                                            (Value.StructTuple
+                                                                                                                                                                              "spl_token_interface::error::TokenError::MintDecimalsMismatch"
+                                                                                                                                                                              [])
+                                                                                                                                                                            (Ty.path
+                                                                                                                                                                              "spl_token_interface::error::TokenError")
+                                                                                                                                                                        ])
+                                                                                                                                                                      (Ty.apply
+                                                                                                                                                                        (Ty.path
+                                                                                                                                                                          "core::option::Option")
+                                                                                                                                                                        []
+                                                                                                                                                                        [
+                                                                                                                                                                          Ty.path
+                                                                                                                                                                            "spl_token_interface::error::TokenError"
+                                                                                                                                                                        ])));
                                                                                                                                                                 fun
                                                                                                                                                                     γ =>
                                                                                                                                                                   ltac:(M.monadic
@@ -2456,31 +2636,40 @@ Module error.
                                                                                                                                                                                 Value.Bool
                                                                                                                                                                                   true
                                                                                                                                                                               |) in
-                                                                                                                                                                            Value.StructTuple
-                                                                                                                                                                              "core::option::Option::Some"
-                                                                                                                                                                              []
-                                                                                                                                                                              [
-                                                                                                                                                                                Ty.path
-                                                                                                                                                                                  "spl_token_interface::error::TokenError"
-                                                                                                                                                                              ]
-                                                                                                                                                                              [
-                                                                                                                                                                                Value.StructTuple
-                                                                                                                                                                                  "spl_token_interface::error::TokenError::NonNativeNotSupported"
-                                                                                                                                                                                  []
-                                                                                                                                                                                  []
-                                                                                                                                                                                  []
-                                                                                                                                                                              ]));
+                                                                                                                                                                            M.value_with_ty
+                                                                                                                                                                              (Value.StructTuple
+                                                                                                                                                                                "core::option::Option::Some"
+                                                                                                                                                                                [
+                                                                                                                                                                                  M.value_with_ty
+                                                                                                                                                                                    (Value.StructTuple
+                                                                                                                                                                                      "spl_token_interface::error::TokenError::NonNativeNotSupported"
+                                                                                                                                                                                      [])
+                                                                                                                                                                                    (Ty.path
+                                                                                                                                                                                      "spl_token_interface::error::TokenError")
+                                                                                                                                                                                ])
+                                                                                                                                                                              (Ty.apply
+                                                                                                                                                                                (Ty.path
+                                                                                                                                                                                  "core::option::Option")
+                                                                                                                                                                                []
+                                                                                                                                                                                [
+                                                                                                                                                                                  Ty.path
+                                                                                                                                                                                    "spl_token_interface::error::TokenError"
+                                                                                                                                                                                ])));
                                                                                                                                                                         fun
                                                                                                                                                                             γ =>
                                                                                                                                                                           ltac:(M.monadic
-                                                                                                                                                                            (Value.StructTuple
-                                                                                                                                                                              "core::option::Option::None"
-                                                                                                                                                                              []
-                                                                                                                                                                              [
-                                                                                                                                                                                Ty.path
-                                                                                                                                                                                  "spl_token_interface::error::TokenError"
-                                                                                                                                                                              ]
-                                                                                                                                                                              []))
+                                                                                                                                                                            (M.value_with_ty
+                                                                                                                                                                              (Value.StructTuple
+                                                                                                                                                                                "core::option::Option::None"
+                                                                                                                                                                                [])
+                                                                                                                                                                              (Ty.apply
+                                                                                                                                                                                (Ty.path
+                                                                                                                                                                                  "core::option::Option")
+                                                                                                                                                                                []
+                                                                                                                                                                                [
+                                                                                                                                                                                  Ty.path
+                                                                                                                                                                                    "spl_token_interface::error::TokenError"
+                                                                                                                                                                                ])))
                                                                                                                                                                       ]
                                                                                                                                                                     |)))
                                                                                                                                                               ]
@@ -2544,7 +2733,7 @@ Module error.
                 [],
                 []
               |),
-              [ M.cast (Ty.path "i64") (M.read (| n |)) ]
+              [ M.value_with_ty (M.cast (Ty.path "i64") (M.read (| n |))) (Ty.path "i64") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2600,7 +2789,11 @@ Module error.
                   [],
                   [ Ty.path "spl_token_interface::error::TokenError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "spl_token_interface::error::TokenError" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -2610,7 +2803,11 @@ Module error.
                   [],
                   [ Ty.path "spl_token_interface::error::TokenError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "spl_token_interface::error::TokenError" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -2646,11 +2843,11 @@ Module error.
       | [], [], [ e ] =>
         ltac:(M.monadic
           (let e := M.alloc (| Ty.path "spl_token_interface::error::TokenError", e |) in
-          Value.StructTuple
-            "solana_program_error::ProgramError::Custom"
-            []
-            []
-            [ M.cast (Ty.path "u32") (M.read (| e |)) ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "solana_program_error::ProgramError::Custom"
+              [ M.cast (Ty.path "u32") (M.read (| e |)) ])
+            (Ty.path "solana_program_error::ProgramError")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2718,20 +2915,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 0
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::NotRentExempt"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::NotRentExempt"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2739,20 +2939,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 1
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::InsufficientFunds"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::InsufficientFunds"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2760,20 +2963,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 2
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::InvalidMint"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::InvalidMint"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2781,20 +2987,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 3
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::MintMismatch"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::MintMismatch"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2802,20 +3011,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 4
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::OwnerMismatch"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::OwnerMismatch"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2823,20 +3035,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 5
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::FixedSupply"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::FixedSupply"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2844,20 +3059,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 6
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::AlreadyInUse"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::AlreadyInUse"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2865,20 +3083,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 7
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2886,20 +3107,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 8
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2907,20 +3131,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 9
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::UninitializedState"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::UninitializedState"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2928,20 +3155,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 10
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::NativeNotSupported"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::NativeNotSupported"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2949,20 +3179,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 11
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::NonNativeHasBalance"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::NonNativeHasBalance"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2970,20 +3203,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 12
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::InvalidInstruction"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::InvalidInstruction"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -2991,20 +3227,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 13
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::InvalidState"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::InvalidState"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -3012,15 +3251,21 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 14
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [ Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -3028,20 +3273,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 15
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::AuthorityTypeNotSupported"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::AuthorityTypeNotSupported"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -3049,20 +3297,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 16
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::MintCannotFreeze"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::MintCannotFreeze"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -3070,20 +3321,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 17
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::AccountFrozen"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::AccountFrozen"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -3091,20 +3345,23 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 18
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::MintDecimalsMismatch"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::MintDecimalsMismatch"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -3112,36 +3369,42 @@ Module error.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U32 19
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::error::TokenError::NonNativeNotSupported"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::error::TokenError::NonNativeNotSupported"
+                            [])
+                          (Ty.path "spl_token_interface::error::TokenError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.path "spl_token_interface::error::TokenError";
-                      Ty.path "solana_program_error::ProgramError"
-                    ]
-                    [
-                      Value.StructTuple
-                        "solana_program_error::ProgramError::InvalidArgument"
-                        []
-                        []
-                        []
-                    ]))
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "solana_program_error::ProgramError::InvalidArgument"
+                            [])
+                          (Ty.path "solana_program_error::ProgramError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::error::TokenError";
+                        Ty.path "solana_program_error::ProgramError"
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

@@ -163,23 +163,27 @@ Module gas_algebra.
                             []
                           |),
                           [
-                            M.read (| __serializer |);
-                            mk_str (| "GasQuantity" |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.add,
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.cast (Ty.path "usize") (Value.Bool false);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |);
-                                Value.Integer IntegerKind.Usize 1
-                              ]
-                            |)
+                            M.value_with_ty (M.read (| __serializer |)) __S;
+                            M.value_with_ty
+                              (mk_str (| "GasQuantity" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.add,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      M.cast (Ty.path "usize") (Value.Bool false);
+                                      Value.Integer IntegerKind.Usize 1
+                                    ]
+                                  |);
+                                  Value.Integer IntegerKind.Usize 1
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |)
                       |),
@@ -219,24 +223,27 @@ Module gas_algebra.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [ M.read (| __err |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Ok";
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Error"
+                                      ])
                                 |)
                               |)
                             |)))
@@ -276,24 +283,40 @@ Module gas_algebra.
                             [ Ty.path "u64" ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "val" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::gas_algebra::GasQuantity",
-                                    "val"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "serde::ser::Serializer"
+                                    []
+                                    []
+                                    __S
+                                    "SerializeStruct"
+                                ]);
+                            M.value_with_ty
+                              (mk_str (| "val" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_core_types::gas_algebra::GasQuantity",
+                                      "val"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
                           ]
                         |)
                       |),
@@ -324,24 +347,27 @@ Module gas_algebra.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [ M.read (| __err |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Ok";
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Error"
+                                      ])
                                 |)
                               |)
                             |)))
@@ -381,24 +407,43 @@ Module gas_algebra.
                             [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ U ] ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "phantom" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::gas_algebra::GasQuantity",
-                                    "phantom"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "serde::ser::Serializer"
+                                    []
+                                    []
+                                    __S
+                                    "SerializeStruct"
+                                ]);
+                            M.value_with_ty
+                              (mk_str (| "phantom" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_core_types::gas_algebra::GasQuantity",
+                                      "phantom"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ U ] ])
                           ]
                         |)
                       |),
@@ -429,24 +474,27 @@ Module gas_algebra.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [ M.read (| __err |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Ok";
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Error"
+                                      ])
                                 |)
                               |)
                             |)))
@@ -477,7 +525,16 @@ Module gas_algebra.
                         [],
                         []
                       |),
-                      [ M.read (| __serde_state |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| __serde_state |))
+                          (Ty.associated_in_trait
+                            "serde::ser::Serializer"
+                            []
+                            []
+                            __S
+                            "SerializeStruct")
+                      ]
                     |)
                   |)
                 |)))
@@ -528,40 +585,63 @@ Module gas_algebra.
                 ]
               |),
               [
-                M.read (| __deserializer |);
-                mk_str (| "GasQuantity" |);
-                M.read (|
-                  get_constant (|
-                    "move_core_types::gas_algebra::_'1::deserialize::FIELDS",
-                    Ty.apply
-                      (Ty.path "&")
-                      []
+                M.value_with_ty (M.read (| __deserializer |)) __D;
+                M.value_with_ty
+                  (mk_str (| "GasQuantity" |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.read (|
+                    get_constant (|
+                      "move_core_types::gas_algebra::_'1::deserialize::FIELDS",
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ]
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                    ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.mkStructRecord
+                      "move_core_types::gas_algebra::_'1::deserialize::__Visitor"
                       [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      ]
-                  |)
-                |);
-                Value.mkStructRecord
-                  "move_core_types::gas_algebra::_'1::deserialize::__Visitor"
-                  []
-                  [ U ]
-                  [
-                    ("marker",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ] ]
-                        []);
-                    ("lifetime",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                        [])
-                  ]
+                        ("marker",
+                          M.value_with_ty
+                            (Value.StructTuple "core::marker::PhantomData" [])
+                            (Ty.apply
+                              (Ty.path "core::marker::PhantomData")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "move_core_types::gas_algebra::GasQuantity")
+                                  []
+                                  [ U ]
+                              ]));
+                        ("lifetime",
+                          M.value_with_ty
+                            (Value.StructTuple "core::marker::PhantomData" [])
+                            (Ty.apply
+                              (Ty.path "core::marker::PhantomData")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]))
+                      ])
+                    (Ty.apply
+                      (Ty.path "move_core_types::gas_algebra::_'1::deserialize::__Visitor")
+                      []
+                      [ U ]))
+                  (Ty.apply
+                    (Ty.path "move_core_types::gas_algebra::_'1::deserialize::__Visitor")
+                    []
+                    [ U ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -673,7 +753,7 @@ Module gas_algebra.
             [],
             []
           |),
-          [ Value.Integer IntegerKind.U64 16 ]
+          [ M.value_with_ty (Value.Integer IntegerKind.U64 16) (Ty.path "u64") ]
         |)
       |))).
   
@@ -707,7 +787,7 @@ Module gas_algebra.
             [],
             []
           |),
-          [ Value.Integer IntegerKind.U64 8 ]
+          [ M.value_with_ty (Value.Integer IntegerKind.U64 8) (Ty.path "u64") ]
         |)
       |))).
   
@@ -736,14 +816,17 @@ Module gas_algebra.
       | [], [], [ val ] =>
         ltac:(M.monadic
           (let val := M.alloc (| Ty.path "u64", val |) in
-          Value.mkStructRecord
-            "move_core_types::gas_algebra::GasQuantity"
-            []
-            [ U ]
-            [
-              ("val", M.read (| val |));
-              ("phantom", Value.StructTuple "core::marker::PhantomData" [] [ U ] [])
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_core_types::gas_algebra::GasQuantity"
+              [
+                ("val", M.read (| val |));
+                ("phantom",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ U ]))
+              ])
+            (Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -771,7 +854,7 @@ Module gas_algebra.
               [],
               []
             |),
-            [ Value.Integer IntegerKind.U64 0 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -800,7 +883,7 @@ Module gas_algebra.
               [],
               []
             |),
-            [ Value.Integer IntegerKind.U64 1 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -881,27 +964,31 @@ Module gas_algebra.
             Ty.path "core::cmp::Ordering",
             M.get_trait_method (| "core::cmp::Ord", Ty.path "u64", [], [], "cmp", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "move_core_types::gas_algebra::GasQuantity",
-                  "val"
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "move_core_types::gas_algebra::GasQuantity",
-                      "val"
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "move_core_types::gas_algebra::GasQuantity",
+                    "val"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "move_core_types::gas_algebra::GasQuantity",
+                        "val"
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -949,32 +1036,42 @@ Module gas_algebra.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                M.get_associated_function (| Ty.path "u64", "checked_sub", [], [] |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      self,
-                      "move_core_types::gas_algebra::GasQuantity",
-                      "val"
-                    |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      other,
-                      "move_core_types::gas_algebra::GasQuantity",
-                      "val"
-                    |)
-                  |)
-                ]
-              |);
-              M.get_associated_function (|
-                Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ],
-                "new",
-                [],
-                []
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                  M.get_associated_function (| Ty.path "u64", "checked_sub", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |))
+                      (Ty.path "u64");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          other,
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |))
+                      (Ty.path "u64")
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ]);
+              M.value_with_ty
+                (M.get_associated_function (|
+                  Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ],
+                  "new",
+                  [],
+                  []
+                |))
+                (Ty.function
+                  [ Ty.path "u64" ]
+                  (Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ]))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1023,26 +1120,32 @@ Module gas_algebra.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_associated_function (| Ty.path "u64", "saturating_sub", [], [] |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      self,
-                      "move_core_types::gas_algebra::GasQuantity",
-                      "val"
-                    |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      other,
-                      "move_core_types::gas_algebra::GasQuantity",
-                      "val"
-                    |)
-                  |)
-                ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "u64", "saturating_sub", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |))
+                      (Ty.path "u64");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          other,
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |))
+                      (Ty.path "u64")
+                  ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1131,7 +1234,9 @@ Module gas_algebra.
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Ne" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Ne" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -1142,30 +1247,42 @@ Module gas_algebra.
                                         [ Ty.path "u64"; Ty.path "u64" ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -1187,25 +1304,31 @@ Module gas_algebra.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.path "u64",
-                    M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "move_core_types::gas_algebra::GasQuantity",
-                          "val"
-                        |)
-                      |);
-                      M.read (|
-                        get_constant (|
-                          "move_core_types::gas_algebra::ToUnit::MULTIPLIER",
-                          Ty.path "u64"
-                        |)
-                      |)
-                    ]
-                  |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "move_core_types::gas_algebra::GasQuantity",
+                              "val"
+                            |)
+                          |))
+                          (Ty.path "u64");
+                        M.value_with_ty
+                          (M.read (|
+                            get_constant (|
+                              "move_core_types::gas_algebra::ToUnit::MULTIPLIER",
+                              Ty.path "u64"
+                            |)
+                          |))
+                          (Ty.path "u64")
+                      ]
+                    |))
+                    (Ty.path "u64")
                 ]
               |)
             |)
@@ -1255,31 +1378,43 @@ Module gas_algebra.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_function (| "move_core_types::gas_algebra::apply_ratio_round_down", [], [] |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      self,
-                      "move_core_types::gas_algebra::GasQuantity",
-                      "val"
-                    |)
-                  |);
-                  M.read (|
-                    get_constant (|
-                      "move_core_types::gas_algebra::ToUnitFractional::NOMINATOR",
-                      Ty.path "u64"
-                    |)
-                  |);
-                  M.read (|
-                    get_constant (|
-                      "move_core_types::gas_algebra::ToUnitFractional::DENOMINATOR",
-                      Ty.path "u64"
-                    |)
-                  |)
-                ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_function (|
+                    "move_core_types::gas_algebra::apply_ratio_round_down",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |))
+                      (Ty.path "u64");
+                    M.value_with_ty
+                      (M.read (|
+                        get_constant (|
+                          "move_core_types::gas_algebra::ToUnitFractional::NOMINATOR",
+                          Ty.path "u64"
+                        |)
+                      |))
+                      (Ty.path "u64");
+                    M.value_with_ty
+                      (M.read (|
+                        get_constant (|
+                          "move_core_types::gas_algebra::ToUnitFractional::DENOMINATOR",
+                          Ty.path "u64"
+                        |)
+                      |))
+                      (Ty.path "u64")
+                  ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1323,31 +1458,39 @@ Module gas_algebra.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_function (| "move_core_types::gas_algebra::apply_ratio_round_up", [], [] |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      self,
-                      "move_core_types::gas_algebra::GasQuantity",
-                      "val"
-                    |)
-                  |);
-                  M.read (|
-                    get_constant (|
-                      "move_core_types::gas_algebra::ToUnitFractional::NOMINATOR",
-                      Ty.path "u64"
-                    |)
-                  |);
-                  M.read (|
-                    get_constant (|
-                      "move_core_types::gas_algebra::ToUnitFractional::DENOMINATOR",
-                      Ty.path "u64"
-                    |)
-                  |)
-                ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_function (| "move_core_types::gas_algebra::apply_ratio_round_up", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |))
+                      (Ty.path "u64");
+                    M.value_with_ty
+                      (M.read (|
+                        get_constant (|
+                          "move_core_types::gas_algebra::ToUnitFractional::NOMINATOR",
+                          Ty.path "u64"
+                        |)
+                      |))
+                      (Ty.path "u64");
+                    M.value_with_ty
+                      (M.read (|
+                        get_constant (|
+                          "move_core_types::gas_algebra::ToUnitFractional::DENOMINATOR",
+                          Ty.path "u64"
+                        |)
+                      |))
+                      (Ty.path "u64")
+                  ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1414,7 +1557,21 @@ Module gas_algebra.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| params |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| params |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "move_core_types::gas_algebra::ToUnitWithParams"
+                          []
+                          [ T ]
+                          U
+                          "Params"
+                      ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.match_operator (|
@@ -1467,7 +1624,9 @@ Module gas_algebra.
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Ne" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Ne" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -1478,30 +1637,42 @@ Module gas_algebra.
                                         [ Ty.path "u64"; Ty.path "u64" ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -1523,20 +1694,24 @@ Module gas_algebra.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.path "u64",
-                    M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "move_core_types::gas_algebra::GasQuantity",
-                          "val"
-                        |)
-                      |);
-                      M.read (| multiplier |)
-                    ]
-                  |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "move_core_types::gas_algebra::GasQuantity",
+                              "val"
+                            |)
+                          |))
+                          (Ty.path "u64");
+                        M.value_with_ty (M.read (| multiplier |)) (Ty.path "u64")
+                      ]
+                    |))
+                    (Ty.path "u64")
                 ]
               |)
             |)
@@ -1607,7 +1782,21 @@ Module gas_algebra.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| params |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| params |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "move_core_types::gas_algebra::ToUnitFractionalWithParams"
+                          []
+                          [ T ]
+                          U
+                          "Params"
+                      ])
+                ]
               |)
             |),
             [
@@ -1626,25 +1815,29 @@ Module gas_algebra.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_function (|
-                          "move_core_types::gas_algebra::apply_ratio_round_down",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "move_core_types::gas_algebra::GasQuantity",
-                              "val"
-                            |)
-                          |);
-                          M.read (| n |);
-                          M.read (| d |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_function (|
+                            "move_core_types::gas_algebra::apply_ratio_round_down",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "move_core_types::gas_algebra::GasQuantity",
+                                  "val"
+                                |)
+                              |))
+                              (Ty.path "u64");
+                            M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                            M.value_with_ty (M.read (| d |)) (Ty.path "u64")
+                          ]
+                        |))
+                        (Ty.path "u64")
                     ]
                   |)))
             ]
@@ -1718,7 +1911,21 @@ Module gas_algebra.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| params |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| params |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "move_core_types::gas_algebra::ToUnitFractionalWithParams"
+                          []
+                          [ T ]
+                          U
+                          "Params"
+                      ])
+                ]
               |)
             |),
             [
@@ -1737,25 +1944,29 @@ Module gas_algebra.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_function (|
-                          "move_core_types::gas_algebra::apply_ratio_round_up",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "move_core_types::gas_algebra::GasQuantity",
-                              "val"
-                            |)
-                          |);
-                          M.read (| n |);
-                          M.read (| d |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_function (|
+                            "move_core_types::gas_algebra::apply_ratio_round_up",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "move_core_types::gas_algebra::GasQuantity",
+                                  "val"
+                                |)
+                              |))
+                              (Ty.path "u64");
+                            M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                            M.value_with_ty (M.read (| d |)) (Ty.path "u64")
+                          ]
+                        |))
+                        (Ty.path "u64")
                     ]
                   |)))
             ]
@@ -1796,7 +2007,7 @@ Module gas_algebra.
               [],
               []
             |),
-            [ M.read (| val |) ]
+            [ M.value_with_ty (M.read (| val |)) (Ty.path "u64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1881,13 +2092,15 @@ Module gas_algebra.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "move_core_types::gas_algebra::GasQuantity",
-                  "val"
-                |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "move_core_types::gas_algebra::GasQuantity",
+                    "val"
+                  |)
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1948,74 +2161,100 @@ Module gas_algebra.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_v1",
+                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "" |) ]
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "" |) ]
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          Value.Array
-                            [
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.path "u64" ]
-                                |),
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.path "core::fmt::rt::Argument" ],
+                              Value.Array
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "move_core_types::gas_algebra::GasQuantity",
-                                          "val"
-                                        |)
-                                      |)
-                                    |)
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      "new_display",
+                                      [],
+                                      [ Ty.path "u64" ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "move_core_types::gas_algebra::GasQuantity",
+                                                "val"
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                                    ]
                                   |)
                                 ]
-                              |)
-                            ]
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [ Ty.path "core::fmt::rt::Argument" ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2062,101 +2301,136 @@ Module gas_algebra.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_v1",
-                  [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_v1",
+                    [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 3 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "" |); mk_str (| " (" |); mk_str (| ")" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 3 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "" |); mk_str (| " (" |); mk_str (| ")" |) ]
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 2 ]
+                                [ Ty.path "core::fmt::rt::Argument" ],
+                              Value.Array
+                                [
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      "new_display",
+                                      [],
+                                      [ Ty.path "u64" ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "move_core_types::gas_algebra::GasQuantity",
+                                                "val"
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                                    ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      "new_display",
+                                      [],
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                M.call_closure (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                                  M.get_function (|
+                                                    "core::any::type_name",
+                                                    [],
+                                                    [ U ]
+                                                  |),
+                                                  []
+                                                |)
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+                                    ]
+                                  |)
+                                ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 2 ]
-                            [ Ty.path "core::fmt::rt::Argument" ],
-                          Value.Array
-                            [
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.path "u64" ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "move_core_types::gas_algebra::GasQuantity",
-                                          "val"
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::Argument",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  "new_display",
-                                  [],
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                            M.get_function (| "core::any::type_name", [], [ U ] |),
-                                            []
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.path "core::fmt::rt::Argument" ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2216,8 +2490,18 @@ Module gas_algebra.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ] ])
                 ]
               |)
             |),
@@ -2287,28 +2571,39 @@ Module gas_algebra.
                 [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ] ],
               other
             |) in
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "core::cmp::Ordering" ]
-            [
-              M.call_closure (|
-                Ty.path "core::cmp::Ordering",
-                M.get_trait_method (|
-                  "core::cmp::Ord",
-                  Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ],
-                  [],
-                  [],
-                  "cmp",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::option::Option::Some"
+              [
+                M.call_closure (|
+                  Ty.path "core::cmp::Ordering",
+                  M.get_trait_method (|
+                    "core::cmp::Ord",
+                    Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ],
+                    [],
+                    [],
+                    "cmp",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ] ])
+                  ]
+                |)
+              ])
+            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2362,8 +2657,18 @@ Module gas_algebra.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2416,26 +2721,32 @@ Module gas_algebra.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_associated_function (| Ty.path "u64", "saturating_add", [], [] |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      self,
-                      "move_core_types::gas_algebra::GasQuantity",
-                      "val"
-                    |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      rhs,
-                      "move_core_types::gas_algebra::GasQuantity",
-                      "val"
-                    |)
-                  |)
-                ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "u64", "saturating_add", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |))
+                      (Ty.path "u64");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          rhs,
+                          "move_core_types::gas_algebra::GasQuantity",
+                          "val"
+                        |)
+                      |))
+                      (Ty.path "u64")
+                  ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2493,7 +2804,14 @@ Module gas_algebra.
                 [],
                 []
               |),
-              [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+              [
+                M.value_with_ty
+                  (M.read (| M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ]);
+                M.value_with_ty
+                  (M.read (| rhs |))
+                  (Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U ])
+              ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2542,26 +2860,32 @@ Module gas_algebra.
             []
           |),
           [
-            M.call_closure (|
-              Ty.path "u64",
-              M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
-              [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    x,
-                    "move_core_types::gas_algebra::GasQuantity",
-                    "val"
-                  |)
-                |);
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    y,
-                    "move_core_types::gas_algebra::GasQuantity",
-                    "val"
-                  |)
-                |)
-              ]
-            |)
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.path "u64",
+                M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
+                [
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        x,
+                        "move_core_types::gas_algebra::GasQuantity",
+                        "val"
+                      |)
+                    |))
+                    (Ty.path "u64");
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        y,
+                        "move_core_types::gas_algebra::GasQuantity",
+                        "val"
+                      |)
+                    |))
+                    (Ty.path "u64")
+                ]
+              |))
+              (Ty.path "u64")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2606,7 +2930,17 @@ Module gas_algebra.
           M.call_closure (|
             Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U1 ],
             M.get_function (| "move_core_types::gas_algebra::mul_impl", [], [ U1; U2 ] |),
-            [ M.read (| self |); M.read (| rhs |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U2 ]);
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply
+                  (Ty.path "move_core_types::gas_algebra::GasQuantity")
+                  []
+                  [ Ty.apply (Ty.path "move_core_types::gas_algebra::UnitDiv") [] [ U1; U2 ] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2665,7 +2999,17 @@ Module gas_algebra.
           M.call_closure (|
             Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U1 ],
             M.get_function (| "move_core_types::gas_algebra::mul_impl", [], [ U1; U2 ] |),
-            [ M.read (| rhs |); M.read (| self |) ]
+            [
+              M.value_with_ty
+                (M.read (| rhs |))
+                (Ty.apply (Ty.path "move_core_types::gas_algebra::GasQuantity") [] [ U2 ]);
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply
+                  (Ty.path "move_core_types::gas_algebra::GasQuantity")
+                  []
+                  [ Ty.apply (Ty.path "move_core_types::gas_algebra::UnitDiv") [] [ U1; U2 ] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2754,7 +3098,9 @@ Module gas_algebra.
                             M.never_to_any (|
                               M.read (|
                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                  Value.StructTuple "core::panicking::AssertKind::Ne" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::panicking::AssertKind::Ne" [])
+                                    (Ty.path "core::panicking::AssertKind") in
                                 M.alloc (|
                                   Ty.path "never",
                                   M.call_closure (|
@@ -2765,30 +3111,42 @@ Module gas_algebra.
                                       [ Ty.path "u64"; Ty.path "u64" ]
                                     |),
                                     [
-                                      M.read (| kind |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
+                                      M.value_with_ty
+                                        (M.read (| kind |))
+                                        (Ty.path "core::panicking::AssertKind");
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [ Ty.path "core::fmt::Arguments" ]
-                                        []
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ])
                                     ]
                                   |)
                                 |)
@@ -2850,7 +3208,9 @@ Module gas_algebra.
                             M.never_to_any (|
                               M.read (|
                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                  Value.StructTuple "core::panicking::AssertKind::Ne" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::panicking::AssertKind::Ne" [])
+                                    (Ty.path "core::panicking::AssertKind") in
                                 M.alloc (|
                                   Ty.path "never",
                                   M.call_closure (|
@@ -2861,30 +3221,42 @@ Module gas_algebra.
                                       [ Ty.path "u64"; Ty.path "u64" ]
                                     |),
                                     [
-                                      M.read (| kind |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
+                                      M.value_with_ty
+                                        (M.read (| kind |))
+                                        (Ty.path "core::panicking::AssertKind");
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [ Ty.path "core::fmt::Arguments" ]
-                                        []
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ])
                                     ]
                                   |)
                                 |)
@@ -3028,7 +3400,9 @@ Module gas_algebra.
                             M.never_to_any (|
                               M.read (|
                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                  Value.StructTuple "core::panicking::AssertKind::Ne" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::panicking::AssertKind::Ne" [])
+                                    (Ty.path "core::panicking::AssertKind") in
                                 M.alloc (|
                                   Ty.path "never",
                                   M.call_closure (|
@@ -3039,30 +3413,42 @@ Module gas_algebra.
                                       [ Ty.path "u64"; Ty.path "u64" ]
                                     |),
                                     [
-                                      M.read (| kind |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
+                                      M.value_with_ty
+                                        (M.read (| kind |))
+                                        (Ty.path "core::panicking::AssertKind");
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [ Ty.path "core::fmt::Arguments" ]
-                                        []
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ])
                                     ]
                                   |)
                                 |)
@@ -3124,7 +3510,9 @@ Module gas_algebra.
                             M.never_to_any (|
                               M.read (|
                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                  Value.StructTuple "core::panicking::AssertKind::Ne" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::panicking::AssertKind::Ne" [])
+                                    (Ty.path "core::panicking::AssertKind") in
                                 M.alloc (|
                                   Ty.path "never",
                                   M.call_closure (|
@@ -3135,30 +3523,42 @@ Module gas_algebra.
                                       [ Ty.path "u64"; Ty.path "u64" ]
                                     |),
                                     [
-                                      M.read (| kind |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
+                                      M.value_with_ty
+                                        (M.read (| kind |))
+                                        (Ty.path "core::panicking::AssertKind");
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [ Ty.path "core::fmt::Arguments" ]
-                                        []
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ])
                                     ]
                                   |)
                                 |)

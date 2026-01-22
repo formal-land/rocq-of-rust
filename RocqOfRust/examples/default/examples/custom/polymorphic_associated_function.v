@@ -27,26 +27,28 @@ Module Impl_polymorphic_associated_function_Foo_A.
       ltac:(M.monadic
         (let self :=
           M.alloc (| Ty.apply (Ty.path "polymorphic_associated_function::Foo") [] [ A ], self |) in
-        Value.mkStructRecord
-          "polymorphic_associated_function::Foo"
-          []
-          [ B ]
-          [
-            ("data",
-              M.call_closure (|
-                B,
-                M.get_trait_method (| "core::convert::Into", A, [], [ B ], "into", [], [] |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      self,
-                      "polymorphic_associated_function::Foo",
-                      "data"
-                    |)
-                  |)
-                ]
-              |))
-          ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "polymorphic_associated_function::Foo"
+            [
+              ("data",
+                M.call_closure (|
+                  B,
+                  M.get_trait_method (| "core::convert::Into", A, [], [ B ], "into", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "polymorphic_associated_function::Foo",
+                          "data"
+                        |)
+                      |))
+                      A
+                  ]
+                |))
+            ])
+          (Ty.apply (Ty.path "polymorphic_associated_function::Foo") [] [ B ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -71,11 +73,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.read (|
         let~ foo : Ty.apply (Ty.path "polymorphic_associated_function::Foo") [] [ Ty.path "i32" ] :=
-          Value.mkStructRecord
-            "polymorphic_associated_function::Foo"
-            []
-            [ Ty.path "i32" ]
-            [ ("data", Value.Integer IntegerKind.I32 42) ] in
+          M.value_with_ty
+            (Value.mkStructRecord
+              "polymorphic_associated_function::Foo"
+              [ ("data", Value.Integer IntegerKind.I32 42) ])
+            (Ty.apply (Ty.path "polymorphic_associated_function::Foo") [] [ Ty.path "i32" ]) in
         let~ bar : Ty.apply (Ty.path "polymorphic_associated_function::Foo") [] [ Ty.path "f64" ] :=
           M.call_closure (|
             Ty.apply (Ty.path "polymorphic_associated_function::Foo") [] [ Ty.path "f64" ],
@@ -85,7 +87,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               [ Ty.path "f64" ]
             |),
-            [ M.read (| foo |) ]
+            [
+              M.value_with_ty
+                (M.read (| foo |))
+                (Ty.apply (Ty.path "polymorphic_associated_function::Foo") [] [ Ty.path "i32" ])
+            ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.match_operator (|
@@ -146,7 +152,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -157,30 +165,42 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     [ Ty.path "f64"; Ty.path "f64" ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)

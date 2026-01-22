@@ -27,7 +27,7 @@ Module MemoryGas.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::gas::MemoryGas";
     φ x :=
-      Value.StructRecord "revm_interpreter::gas::MemoryGas" [] [] [
+      Value.StructRecord "revm_interpreter::gas::MemoryGas" [
         ("expansion_cost", φ x.(expansion_cost));
         ("words_num", φ x.(words_num))
       ];
@@ -43,7 +43,7 @@ Module MemoryGas.
       (expansion_cost' : Value.t) {H_expansion_cost : OfValueWith.C (u64) expansion_cost'}
       (words_num' : Value.t) {H_words_num : OfValueWith.C (usize) words_num'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::gas::MemoryGas" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_interpreter::gas::MemoryGas" [
       ("expansion_cost", expansion_cost');
       ("words_num", words_num')
     ]) :=
@@ -59,7 +59,7 @@ Module MemoryGas.
       (expansion_cost' : Value.t) {H_expansion_cost : OfValueWith.C (u64) expansion_cost'}
       (words_num' : Value.t) {H_words_num : OfValueWith.C (usize) words_num'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::gas::MemoryGas" [] [] [
+    OfValue.C (Value.StructRecord "revm_interpreter::gas::MemoryGas" [
       ("expansion_cost", expansion_cost');
       ("words_num", words_num')
     ]) :=
@@ -197,11 +197,11 @@ Module MemoryExtensionResult.
     φ x :=
       match x with
       | Extended =>
-          Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Extended" [] [] []
+          Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Extended" []
       | Same =>
-          Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Same" [] [] []
+          Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Same" []
       | OutOfGas =>
-          Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::OutOfGas" [] [] []
+          Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::OutOfGas" []
       end
   }.
 
@@ -212,42 +212,42 @@ Module MemoryExtensionResult.
   }.
 
   Instance IsOfValueWith_Extended :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Extended" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Extended" []) :=
   {
     value := Extended;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Extended :
-    OfValue.C (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Extended" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Extended" []) :=
   {
     value := Extended;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Same :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Same" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Same" []) :=
   {
     value := Same;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Same :
-    OfValue.C (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Same" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Same" []) :=
   {
     value := Same;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_OutOfGas :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::OutOfGas" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::OutOfGas" []) :=
   {
     value := OutOfGas;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_OutOfGas :
-    OfValue.C (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::OutOfGas" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::OutOfGas" []) :=
   {
     value := OutOfGas;
     eq := eq_refl;
@@ -284,7 +284,7 @@ Module Gas.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::gas::Gas";
     φ x :=
-      Value.StructRecord "revm_interpreter::gas::Gas" [] [] [
+      Value.StructRecord "revm_interpreter::gas::Gas" [
         ("limit", φ x.(limit));
         ("memory", φ x.(memory));
         ("refunded", φ x.(refunded));
@@ -304,7 +304,7 @@ Module Gas.
       (refunded' : Value.t) {H_refunded : OfValueWith.C (i64) refunded'}
       (remaining' : Value.t) {H_remaining : OfValueWith.C (u64) remaining'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::gas::Gas" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_interpreter::gas::Gas" [
       ("limit", limit');
       ("memory", memory');
       ("refunded", refunded');
@@ -326,7 +326,7 @@ Module Gas.
       (refunded' : Value.t) {H_refunded : OfValueWith.C (i64) refunded'}
       (remaining' : Value.t) {H_remaining : OfValueWith.C (u64) remaining'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::gas::Gas" [] [] [
+    OfValue.C (Value.StructRecord "revm_interpreter::gas::Gas" [
       ("limit", limit');
       ("memory", memory');
       ("refunded", refunded');

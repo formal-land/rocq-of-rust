@@ -11,7 +11,7 @@ Module Address.
 
   Instance IsLink : Link t := {
     Φ := Ty.path "solana_address::Address";
-    φ x := Value.StructTuple "solana_address::Address" [] [] [φ x.(value)];
+    φ x := Value.StructTuple "solana_address::Address" [φ x.(value)];
   }.
 
   Definition of_ty : OfTy.t (Ty.path "solana_address::Address").
@@ -20,13 +20,13 @@ Module Address.
 
   Lemma of_value_with value value' :
     value' = φ value ->
-    Value.StructTuple "solana_address::Address" [] [] [φ value] = φ (Build_t value).
+    Value.StructTuple "solana_address::Address" [φ value] = φ (Build_t value).
   Proof. now intros; subst. Qed.
   Smpl Add apply of_value_with : of_value.
 
   Definition of_value (value : array.t u8 {| Integer.value := 32 |}) value' :
     value' = φ value ->
-    OfValue.t (Value.StructTuple "solana_address::Address" [] [] [φ value]).
+    OfValue.t (Value.StructTuple "solana_address::Address" [φ value]).
   Proof. econstructor; eapply of_value_with; eassumption. Defined.
   Smpl Add apply of_value : of_value.
 

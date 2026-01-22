@@ -36,72 +36,101 @@ Module ability_field_requirements.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
+                M.get_function (|
+                  "move_bytecode_verifier::ability_field_requirements::verify_module_impl",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_binary_format::file_format::CompiledModule" ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::result::Result")
                 []
-                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-              M.get_function (|
-                "move_bytecode_verifier::ability_field_requirements::verify_module_impl",
-                [],
-                []
-              |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |) ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "move_binary_format::errors::VMError",
-                        M.alloc (| Ty.path "move_binary_format::errors::PartialVMError", α0 |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let e :=
-                                M.copy (|
-                                  Ty.path "move_binary_format::errors::PartialVMError",
-                                  γ
-                                |) in
-                              M.call_closure (|
-                                Ty.path "move_binary_format::errors::VMError",
-                                M.get_associated_function (|
-                                  Ty.path "move_binary_format::errors::PartialVMError",
-                                  "finish",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| e |);
-                                  Value.StructTuple
-                                    "move_binary_format::errors::Location::Module"
+                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "move_binary_format::errors::VMError",
+                          M.alloc (| Ty.path "move_binary_format::errors::PartialVMError", α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let e :=
+                                  M.copy (|
+                                    Ty.path "move_binary_format::errors::PartialVMError",
+                                    γ
+                                  |) in
+                                M.call_closure (|
+                                  Ty.path "move_binary_format::errors::VMError",
+                                  M.get_associated_function (|
+                                    Ty.path "move_binary_format::errors::PartialVMError",
+                                    "finish",
+                                    [],
                                     []
-                                    []
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "move_core_types::language_storage::ModuleId",
-                                        M.get_associated_function (|
-                                          Ty.path "move_binary_format::file_format::CompiledModule",
-                                          "self_id",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| module |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                ]
-                              |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| e |))
+                                      (Ty.path "move_binary_format::errors::PartialVMError");
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple
+                                          "move_binary_format::errors::Location::Module"
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "move_core_types::language_storage::ModuleId",
+                                              M.get_associated_function (|
+                                                Ty.path
+                                                  "move_binary_format::file_format::CompiledModule",
+                                                "self_id",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| module |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_binary_format::file_format::CompiledModule"
+                                                    ])
+                                              ]
+                                            |)
+                                          ])
+                                        (Ty.path "move_binary_format::errors::Location"))
+                                      (Ty.path "move_binary_format::errors::Location")
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.path "move_binary_format::errors::PartialVMError" ]
+                (Ty.path "move_binary_format::errors::VMError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -210,54 +239,98 @@ Module ability_field_requirements.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::slice::iter::Iter")
-                                      []
-                                      [ Ty.path "move_binary_format::file_format::StructDefinition"
-                                      ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::iter::traits::iterator::Iterator",
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "core::slice::iter::Iter")
+                                    (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                     []
-                                    [ Ty.path "move_binary_format::file_format::StructDefinition" ],
-                                  [],
-                                  [],
-                                  "enumerate",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
+                                        [
+                                          Ty.path
+                                            "move_binary_format::file_format::StructDefinition"
+                                        ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::iter::traits::iterator::Iterator",
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
                                       [ Ty.path "move_binary_format::file_format::StructDefinition"
                                       ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
+                                    [],
+                                    [],
+                                    "enumerate",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_binary_format::file_format::StructDefinition"
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [
+                                              Ty.path
+                                                "move_binary_format::file_format::StructDefinition"
+                                            ],
+                                          "iter",
+                                          [],
+                                          []
+                                        |),
                                         [
-                                          Ty.path
-                                            "move_binary_format::file_format::StructDefinition"
-                                        ],
-                                      "iter",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "slice")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format::StructDefinition"
+                                                        ]
+                                                    ],
+                                                  M.get_associated_function (|
+                                                    Ty.path
+                                                      "move_binary_format::file_format::CompiledModule",
+                                                    "struct_defs",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| module |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format::CompiledModule"
+                                                        ])
+                                                  ]
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
                                               (Ty.path "&")
                                               []
                                               [
@@ -268,27 +341,28 @@ Module ability_field_requirements.
                                                     Ty.path
                                                       "move_binary_format::file_format::StructDefinition"
                                                   ]
-                                              ],
-                                            M.get_associated_function (|
-                                              Ty.path
-                                                "move_binary_format::file_format::CompiledModule",
-                                              "struct_defs",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| module |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
+                                        [
+                                          Ty.path
+                                            "move_binary_format::file_format::StructDefinition"
+                                        ])
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::slice::iter::Iter")
+                                      []
+                                      [ Ty.path "move_binary_format::file_format::StructDefinition"
+                                      ]
+                                  ])
                             ]
                           |)
                         |),
@@ -372,12 +446,31 @@ Module ability_field_requirements.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::iter::adapters::enumerate::Enumerate")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::slice::iter::Iter")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_binary_format::file_format::StructDefinition"
+                                                          ]
+                                                      ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -439,17 +532,28 @@ Module ability_field_requirements.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| module |) |)
-                                                      |);
-                                                      M.read (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| struct_def |) |),
-                                                          "move_binary_format::file_format::StructDefinition",
-                                                          "struct_handle"
-                                                        |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| module |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_binary_format::file_format::CompiledModule"
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| struct_def |) |),
+                                                            "move_binary_format::file_format::StructDefinition",
+                                                            "struct_handle"
+                                                          |)
+                                                        |))
+                                                        (Ty.path
+                                                          "move_binary_format::file_format::StructHandleIndex")
                                                     ]
                                                   |) in
                                                 let~ fields :
@@ -579,8 +683,134 @@ Module ability_field_requirements.
                                                       ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::iter::adapters::map::Map")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_binary_format::file_format::AbilitySetIterator";
+                                                              Ty.function
+                                                                [
+                                                                  Ty.path
+                                                                    "move_binary_format::file_format::Ability"
+                                                                ]
+                                                                (Ty.path
+                                                                  "move_binary_format::file_format::Ability")
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::iter::traits::iterator::Iterator",
+                                                            Ty.path
+                                                              "move_binary_format::file_format::AbilitySetIterator",
+                                                            [],
+                                                            [],
+                                                            "map",
+                                                            [],
+                                                            [
+                                                              Ty.path
+                                                                "move_binary_format::file_format::Ability";
+                                                              Ty.function
+                                                                [
+                                                                  Ty.path
+                                                                    "move_binary_format::file_format::Ability"
+                                                                ]
+                                                                (Ty.path
+                                                                  "move_binary_format::file_format::Ability")
+                                                            ]
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path
+                                                                  "move_binary_format::file_format::AbilitySetIterator",
+                                                                M.get_trait_method (|
+                                                                  "core::iter::traits::collect::IntoIterator",
+                                                                  Ty.path
+                                                                    "move_binary_format::file_format::AbilitySet",
+                                                                  [],
+                                                                  [],
+                                                                  "into_iter",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.read (|
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| sh |)
+                                                                        |),
+                                                                        "move_binary_format::file_format::StructHandle",
+                                                                        "abilities"
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.path
+                                                                      "move_binary_format::file_format::AbilitySet")
+                                                                ]
+                                                              |))
+                                                              (Ty.path
+                                                                "move_binary_format::file_format::AbilitySetIterator");
+                                                            M.value_with_ty
+                                                              (M.closure
+                                                                (fun γ =>
+                                                                  ltac:(M.monadic
+                                                                    match γ with
+                                                                    | [ α0 ] =>
+                                                                      ltac:(M.monadic
+                                                                        (M.match_operator (|
+                                                                          Ty.path
+                                                                            "move_binary_format::file_format::Ability",
+                                                                          M.alloc (|
+                                                                            Ty.path
+                                                                              "move_binary_format::file_format::Ability",
+                                                                            α0
+                                                                          |),
+                                                                          [
+                                                                            fun γ =>
+                                                                              ltac:(M.monadic
+                                                                                (let a :=
+                                                                                  M.copy (|
+                                                                                    Ty.path
+                                                                                      "move_binary_format::file_format::Ability",
+                                                                                    γ
+                                                                                  |) in
+                                                                                M.call_closure (|
+                                                                                  Ty.path
+                                                                                    "move_binary_format::file_format::Ability",
+                                                                                  M.get_associated_function (|
+                                                                                    Ty.path
+                                                                                      "move_binary_format::file_format::Ability",
+                                                                                    "requires",
+                                                                                    [],
+                                                                                    []
+                                                                                  |),
+                                                                                  [
+                                                                                    M.value_with_ty
+                                                                                      (M.read (|
+                                                                                        a
+                                                                                      |))
+                                                                                      (Ty.path
+                                                                                        "move_binary_format::file_format::Ability")
+                                                                                  ]
+                                                                                |)))
+                                                                          ]
+                                                                        |)))
+                                                                    | _ =>
+                                                                      M.impossible
+                                                                        "wrong number of arguments"
+                                                                    end)))
+                                                              (Ty.function
+                                                                [
+                                                                  Ty.path
+                                                                    "move_binary_format::file_format::Ability"
+                                                                ]
+                                                                (Ty.path
+                                                                  "move_binary_format::file_format::Ability"))
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
                                                           (Ty.path "core::iter::adapters::map::Map")
                                                           []
                                                           [
@@ -593,176 +823,108 @@ Module ability_field_requirements.
                                                               ]
                                                               (Ty.path
                                                                 "move_binary_format::file_format::Ability")
-                                                          ],
-                                                        M.get_trait_method (|
-                                                          "core::iter::traits::iterator::Iterator",
-                                                          Ty.path
-                                                            "move_binary_format::file_format::AbilitySetIterator",
-                                                          [],
-                                                          [],
-                                                          "map",
-                                                          [],
-                                                          [
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          get_associated_constant (|
                                                             Ty.path
-                                                              "move_binary_format::file_format::Ability";
-                                                            Ty.function
-                                                              [
-                                                                Ty.path
-                                                                  "move_binary_format::file_format::Ability"
-                                                              ]
-                                                              (Ty.path
-                                                                "move_binary_format::file_format::Ability")
-                                                          ]
-                                                        |),
-                                                        [
-                                                          M.call_closure (|
+                                                              "move_binary_format::file_format::AbilitySet",
+                                                            "EMPTY",
                                                             Ty.path
-                                                              "move_binary_format::file_format::AbilitySetIterator",
-                                                            M.get_trait_method (|
-                                                              "core::iter::traits::collect::IntoIterator",
-                                                              Ty.path
-                                                                "move_binary_format::file_format::AbilitySet",
-                                                              [],
-                                                              [],
-                                                              "into_iter",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| sh |) |),
-                                                                  "move_binary_format::file_format::StructHandle",
-                                                                  "abilities"
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.closure
-                                                            (fun γ =>
-                                                              ltac:(M.monadic
-                                                                match γ with
-                                                                | [ α0 ] =>
-                                                                  ltac:(M.monadic
-                                                                    (M.match_operator (|
-                                                                      Ty.path
-                                                                        "move_binary_format::file_format::Ability",
-                                                                      M.alloc (|
-                                                                        Ty.path
-                                                                          "move_binary_format::file_format::Ability",
-                                                                        α0
-                                                                      |),
-                                                                      [
-                                                                        fun γ =>
-                                                                          ltac:(M.monadic
-                                                                            (let a :=
-                                                                              M.copy (|
-                                                                                Ty.path
-                                                                                  "move_binary_format::file_format::Ability",
-                                                                                γ
-                                                                              |) in
-                                                                            M.call_closure (|
-                                                                              Ty.path
-                                                                                "move_binary_format::file_format::Ability",
-                                                                              M.get_associated_function (|
-                                                                                Ty.path
-                                                                                  "move_binary_format::file_format::Ability",
-                                                                                "requires",
-                                                                                [],
-                                                                                []
-                                                                              |),
-                                                                              [ M.read (| a |) ]
-                                                                            |)))
-                                                                      ]
-                                                                    |)))
-                                                                | _ =>
-                                                                  M.impossible
-                                                                    "wrong number of arguments"
-                                                                end))
-                                                        ]
-                                                      |);
-                                                      M.read (|
-                                                        get_associated_constant (|
-                                                          Ty.path
-                                                            "move_binary_format::file_format::AbilitySet",
-                                                          "EMPTY",
-                                                          Ty.path
-                                                            "move_binary_format::file_format::AbilitySet"
-                                                        |)
-                                                      |);
-                                                      M.closure
-                                                        (fun γ =>
-                                                          ltac:(M.monadic
-                                                            match γ with
-                                                            | [ α0; α1 ] =>
-                                                              ltac:(M.monadic
-                                                                (M.match_operator (|
-                                                                  Ty.path
-                                                                    "move_binary_format::file_format::AbilitySet",
-                                                                  M.alloc (|
+                                                              "move_binary_format::file_format::AbilitySet"
+                                                          |)
+                                                        |))
+                                                        (Ty.path
+                                                          "move_binary_format::file_format::AbilitySet");
+                                                      M.value_with_ty
+                                                        (M.closure
+                                                          (fun γ =>
+                                                            ltac:(M.monadic
+                                                              match γ with
+                                                              | [ α0; α1 ] =>
+                                                                ltac:(M.monadic
+                                                                  (M.match_operator (|
                                                                     Ty.path
                                                                       "move_binary_format::file_format::AbilitySet",
-                                                                    α0
-                                                                  |),
-                                                                  [
-                                                                    fun γ =>
-                                                                      ltac:(M.monadic
-                                                                        (let acc :=
-                                                                          M.copy (|
+                                                                    M.alloc (|
+                                                                      Ty.path
+                                                                        "move_binary_format::file_format::AbilitySet",
+                                                                      α0
+                                                                    |),
+                                                                    [
+                                                                      fun γ =>
+                                                                        ltac:(M.monadic
+                                                                          (let acc :=
+                                                                            M.copy (|
+                                                                              Ty.path
+                                                                                "move_binary_format::file_format::AbilitySet",
+                                                                              γ
+                                                                            |) in
+                                                                          M.match_operator (|
                                                                             Ty.path
                                                                               "move_binary_format::file_format::AbilitySet",
-                                                                            γ
-                                                                          |) in
-                                                                        M.match_operator (|
-                                                                          Ty.path
-                                                                            "move_binary_format::file_format::AbilitySet",
-                                                                          M.alloc (|
-                                                                            Ty.path
-                                                                              "move_binary_format::file_format::Ability",
-                                                                            α1
-                                                                          |),
-                                                                          [
-                                                                            fun γ =>
-                                                                              ltac:(M.monadic
-                                                                                (let required :=
-                                                                                  M.copy (|
-                                                                                    Ty.path
-                                                                                      "move_binary_format::file_format::Ability",
-                                                                                    γ
-                                                                                  |) in
-                                                                                M.call_closure (|
-                                                                                  Ty.path
-                                                                                    "move_binary_format::file_format::AbilitySet",
-                                                                                  M.get_trait_method (|
-                                                                                    "core::ops::bit::BitOr",
+                                                                            M.alloc (|
+                                                                              Ty.path
+                                                                                "move_binary_format::file_format::Ability",
+                                                                              α1
+                                                                            |),
+                                                                            [
+                                                                              fun γ =>
+                                                                                ltac:(M.monadic
+                                                                                  (let required :=
+                                                                                    M.copy (|
+                                                                                      Ty.path
+                                                                                        "move_binary_format::file_format::Ability",
+                                                                                      γ
+                                                                                    |) in
+                                                                                  M.call_closure (|
                                                                                     Ty.path
                                                                                       "move_binary_format::file_format::AbilitySet",
-                                                                                    [],
-                                                                                    [
+                                                                                    M.get_trait_method (|
+                                                                                      "core::ops::bit::BitOr",
                                                                                       Ty.path
-                                                                                        "move_binary_format::file_format::Ability"
-                                                                                    ],
-                                                                                    "bitor",
-                                                                                    [],
-                                                                                    []
-                                                                                  |),
-                                                                                  [
-                                                                                    M.read (|
-                                                                                      acc
-                                                                                    |);
-                                                                                    M.read (|
-                                                                                      required
-                                                                                    |)
-                                                                                  ]
-                                                                                |)))
-                                                                          ]
-                                                                        |)))
-                                                                  ]
-                                                                |)))
-                                                            | _ =>
-                                                              M.impossible
-                                                                "wrong number of arguments"
-                                                            end))
+                                                                                        "move_binary_format::file_format::AbilitySet",
+                                                                                      [],
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "move_binary_format::file_format::Ability"
+                                                                                      ],
+                                                                                      "bitor",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          acc
+                                                                                        |))
+                                                                                        (Ty.path
+                                                                                          "move_binary_format::file_format::AbilitySet");
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          required
+                                                                                        |))
+                                                                                        (Ty.path
+                                                                                          "move_binary_format::file_format::Ability")
+                                                                                    ]
+                                                                                  |)))
+                                                                            ]
+                                                                          |)))
+                                                                    ]
+                                                                  |)))
+                                                              | _ =>
+                                                                M.impossible
+                                                                  "wrong number of arguments"
+                                                              end)))
+                                                        (Ty.function
+                                                          [
+                                                            Ty.path
+                                                              "move_binary_format::file_format::AbilitySet";
+                                                            Ty.path
+                                                              "move_binary_format::file_format::Ability"
+                                                          ]
+                                                          (Ty.path
+                                                            "move_binary_format::file_format::AbilitySet"))
                                                     ]
                                                   |) in
                                                 let~ type_parameter_abilities :
@@ -825,8 +987,227 @@ Module ability_field_requirements.
                                                       ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::iter::adapters::map::Map")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::slice::iter::Iter")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_binary_format::file_format::StructTypeParameter"
+                                                                ];
+                                                              Ty.function
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_binary_format::file_format::StructTypeParameter"
+                                                                    ]
+                                                                ]
+                                                                (Ty.path
+                                                                  "move_binary_format::file_format::AbilitySet")
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::iter::traits::iterator::Iterator",
+                                                            Ty.apply
+                                                              (Ty.path "core::slice::iter::Iter")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_binary_format::file_format::StructTypeParameter"
+                                                              ],
+                                                            [],
+                                                            [],
+                                                            "map",
+                                                            [],
+                                                            [
+                                                              Ty.path
+                                                                "move_binary_format::file_format::AbilitySet";
+                                                              Ty.function
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_binary_format::file_format::StructTypeParameter"
+                                                                    ]
+                                                                ]
+                                                                (Ty.path
+                                                                  "move_binary_format::file_format::AbilitySet")
+                                                            ]
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::iter::Iter")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_binary_format::file_format::StructTypeParameter"
+                                                                  ],
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_binary_format::file_format::StructTypeParameter"
+                                                                    ],
+                                                                  "iter",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "slice")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "move_binary_format::file_format::StructTypeParameter"
+                                                                                ]
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::deref::Deref",
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "alloc::vec::Vec")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "move_binary_format::file_format::StructTypeParameter";
+                                                                                Ty.path
+                                                                                  "alloc::alloc::Global"
+                                                                              ],
+                                                                            [],
+                                                                            [],
+                                                                            "deref",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (| sh |)
+                                                                                  |),
+                                                                                  "move_binary_format::file_format::StructHandle",
+                                                                                  "type_parameters"
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "alloc::vec::Vec")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "move_binary_format::file_format::StructTypeParameter";
+                                                                                      Ty.path
+                                                                                        "alloc::alloc::Global"
+                                                                                    ]
+                                                                                ])
+                                                                          ]
+                                                                        |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_binary_format::file_format::StructTypeParameter"
+                                                                          ]
+                                                                      ])
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "core::slice::iter::Iter")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_binary_format::file_format::StructTypeParameter"
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.closure
+                                                                (fun γ =>
+                                                                  ltac:(M.monadic
+                                                                    match γ with
+                                                                    | [ α0 ] =>
+                                                                      ltac:(M.monadic
+                                                                        (M.match_operator (|
+                                                                          Ty.path
+                                                                            "move_binary_format::file_format::AbilitySet",
+                                                                          M.alloc (|
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "move_binary_format::file_format::StructTypeParameter"
+                                                                              ],
+                                                                            α0
+                                                                          |),
+                                                                          [
+                                                                            fun γ =>
+                                                                              ltac:(M.monadic
+                                                                                (M.read (|
+                                                                                  get_associated_constant (|
+                                                                                    Ty.path
+                                                                                      "move_binary_format::file_format::AbilitySet",
+                                                                                    "ALL",
+                                                                                    Ty.path
+                                                                                      "move_binary_format::file_format::AbilitySet"
+                                                                                  |)
+                                                                                |)))
+                                                                          ]
+                                                                        |)))
+                                                                    | _ =>
+                                                                      M.impossible
+                                                                        "wrong number of arguments"
+                                                                    end)))
+                                                              (Ty.function
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_binary_format::file_format::StructTypeParameter"
+                                                                    ]
+                                                                ]
+                                                                (Ty.path
+                                                                  "move_binary_format::file_format::AbilitySet"))
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
                                                           (Ty.path "core::iter::adapters::map::Map")
                                                           []
                                                           [
@@ -849,148 +1230,7 @@ Module ability_field_requirements.
                                                               ]
                                                               (Ty.path
                                                                 "move_binary_format::file_format::AbilitySet")
-                                                          ],
-                                                        M.get_trait_method (|
-                                                          "core::iter::traits::iterator::Iterator",
-                                                          Ty.apply
-                                                            (Ty.path "core::slice::iter::Iter")
-                                                            []
-                                                            [
-                                                              Ty.path
-                                                                "move_binary_format::file_format::StructTypeParameter"
-                                                            ],
-                                                          [],
-                                                          [],
-                                                          "map",
-                                                          [],
-                                                          [
-                                                            Ty.path
-                                                              "move_binary_format::file_format::AbilitySet";
-                                                            Ty.function
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_binary_format::file_format::StructTypeParameter"
-                                                                  ]
-                                                              ]
-                                                              (Ty.path
-                                                                "move_binary_format::file_format::AbilitySet")
-                                                          ]
-                                                        |),
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "core::slice::iter::Iter")
-                                                              []
-                                                              [
-                                                                Ty.path
-                                                                  "move_binary_format::file_format::StructTypeParameter"
-                                                              ],
-                                                            M.get_associated_function (|
-                                                              Ty.apply
-                                                                (Ty.path "slice")
-                                                                []
-                                                                [
-                                                                  Ty.path
-                                                                    "move_binary_format::file_format::StructTypeParameter"
-                                                                ],
-                                                              "iter",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path "slice")
-                                                                          []
-                                                                          [
-                                                                            Ty.path
-                                                                              "move_binary_format::file_format::StructTypeParameter"
-                                                                          ]
-                                                                      ],
-                                                                    M.get_trait_method (|
-                                                                      "core::ops::deref::Deref",
-                                                                      Ty.apply
-                                                                        (Ty.path "alloc::vec::Vec")
-                                                                        []
-                                                                        [
-                                                                          Ty.path
-                                                                            "move_binary_format::file_format::StructTypeParameter";
-                                                                          Ty.path
-                                                                            "alloc::alloc::Global"
-                                                                        ],
-                                                                      [],
-                                                                      [],
-                                                                      "deref",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.SubPointer.get_struct_record_field (|
-                                                                          M.deref (|
-                                                                            M.read (| sh |)
-                                                                          |),
-                                                                          "move_binary_format::file_format::StructHandle",
-                                                                          "type_parameters"
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.closure
-                                                            (fun γ =>
-                                                              ltac:(M.monadic
-                                                                match γ with
-                                                                | [ α0 ] =>
-                                                                  ltac:(M.monadic
-                                                                    (M.match_operator (|
-                                                                      Ty.path
-                                                                        "move_binary_format::file_format::AbilitySet",
-                                                                      M.alloc (|
-                                                                        Ty.apply
-                                                                          (Ty.path "&")
-                                                                          []
-                                                                          [
-                                                                            Ty.path
-                                                                              "move_binary_format::file_format::StructTypeParameter"
-                                                                          ],
-                                                                        α0
-                                                                      |),
-                                                                      [
-                                                                        fun γ =>
-                                                                          ltac:(M.monadic
-                                                                            (M.read (|
-                                                                              get_associated_constant (|
-                                                                                Ty.path
-                                                                                  "move_binary_format::file_format::AbilitySet",
-                                                                                "ALL",
-                                                                                Ty.path
-                                                                                  "move_binary_format::file_format::AbilitySet"
-                                                                              |)
-                                                                            |)))
-                                                                      ]
-                                                                    |)))
-                                                                | _ =>
-                                                                  M.impossible
-                                                                    "wrong number of arguments"
-                                                                end))
-                                                        ]
-                                                      |)
+                                                          ])
                                                     ]
                                                   |) in
                                                 M.use
@@ -1035,7 +1275,23 @@ Module ability_field_requirements.
                                                             [],
                                                             []
                                                           |),
-                                                          [ M.read (| fields |) ]
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| fields |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "alloc::vec::Vec")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_binary_format::file_format::FieldDefinition";
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ]
+                                                                ])
+                                                          ]
                                                         |)
                                                       |),
                                                       [
@@ -1103,15 +1359,29 @@ Module ability_field_requirements.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              M.deref (|
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.MutRef,
-                                                                                  iter
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.MutRef,
+                                                                                M.deref (|
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.MutRef,
+                                                                                    iter
+                                                                                  |)
                                                                                 |)
-                                                                              |)
-                                                                            |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::slice::iter::Iter")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "move_binary_format::file_format::FieldDefinition"
+                                                                                    ]
+                                                                                ])
                                                                           ]
                                                                         |)
                                                                       |),
@@ -1211,8 +1481,158 @@ Module ability_field_requirements.
                                                                                         []
                                                                                       |),
                                                                                       [
-                                                                                        M.call_closure (|
-                                                                                          Ty.apply
+                                                                                        M.value_with_ty
+                                                                                          (M.call_closure (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::result::Result")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "move_binary_format::file_format::AbilitySet";
+                                                                                                Ty.path
+                                                                                                  "move_binary_format::errors::PartialVMError"
+                                                                                              ],
+                                                                                            M.get_associated_function (|
+                                                                                              Ty.path
+                                                                                                "move_binary_format::file_format::CompiledModule",
+                                                                                              "abilities",
+                                                                                              [],
+                                                                                              []
+                                                                                            |),
+                                                                                            [
+                                                                                              M.value_with_ty
+                                                                                                (M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  M.deref (|
+                                                                                                    M.read (|
+                                                                                                      module
+                                                                                                    |)
+                                                                                                  |)
+                                                                                                |))
+                                                                                                (Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "move_binary_format::file_format::CompiledModule"
+                                                                                                  ]);
+                                                                                              M.value_with_ty
+                                                                                                (M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  M.deref (|
+                                                                                                    M.borrow (|
+                                                                                                      Pointer.Kind.Ref,
+                                                                                                      M.SubPointer.get_struct_tuple_field (|
+                                                                                                        M.SubPointer.get_struct_record_field (|
+                                                                                                          M.deref (|
+                                                                                                            M.read (|
+                                                                                                              field
+                                                                                                            |)
+                                                                                                          |),
+                                                                                                          "move_binary_format::file_format::FieldDefinition",
+                                                                                                          "signature"
+                                                                                                        |),
+                                                                                                        "move_binary_format::file_format::TypeSignature",
+                                                                                                        0
+                                                                                                      |)
+                                                                                                    |)
+                                                                                                  |)
+                                                                                                |))
+                                                                                                (Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "move_binary_format::file_format::SignatureToken"
+                                                                                                  ]);
+                                                                                              M.value_with_ty
+                                                                                                (M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  M.deref (|
+                                                                                                    M.call_closure (|
+                                                                                                      Ty.apply
+                                                                                                        (Ty.path
+                                                                                                          "&")
+                                                                                                        []
+                                                                                                        [
+                                                                                                          Ty.apply
+                                                                                                            (Ty.path
+                                                                                                              "slice")
+                                                                                                            []
+                                                                                                            [
+                                                                                                              Ty.path
+                                                                                                                "move_binary_format::file_format::AbilitySet"
+                                                                                                            ]
+                                                                                                        ],
+                                                                                                      M.get_trait_method (|
+                                                                                                        "core::ops::deref::Deref",
+                                                                                                        Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "alloc::vec::Vec")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.path
+                                                                                                              "move_binary_format::file_format::AbilitySet";
+                                                                                                            Ty.path
+                                                                                                              "alloc::alloc::Global"
+                                                                                                          ],
+                                                                                                        [],
+                                                                                                        [],
+                                                                                                        "deref",
+                                                                                                        [],
+                                                                                                        []
+                                                                                                      |),
+                                                                                                      [
+                                                                                                        M.value_with_ty
+                                                                                                          (M.borrow (|
+                                                                                                            Pointer.Kind.Ref,
+                                                                                                            M.deref (|
+                                                                                                              M.borrow (|
+                                                                                                                Pointer.Kind.Ref,
+                                                                                                                type_parameter_abilities
+                                                                                                              |)
+                                                                                                            |)
+                                                                                                          |))
+                                                                                                          (Ty.apply
+                                                                                                            (Ty.path
+                                                                                                              "&")
+                                                                                                            []
+                                                                                                            [
+                                                                                                              Ty.apply
+                                                                                                                (Ty.path
+                                                                                                                  "alloc::vec::Vec")
+                                                                                                                []
+                                                                                                                [
+                                                                                                                  Ty.path
+                                                                                                                    "move_binary_format::file_format::AbilitySet";
+                                                                                                                  Ty.path
+                                                                                                                    "alloc::alloc::Global"
+                                                                                                                ]
+                                                                                                            ])
+                                                                                                      ]
+                                                                                                    |)
+                                                                                                  |)
+                                                                                                |))
+                                                                                                (Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "slice")
+                                                                                                      []
+                                                                                                      [
+                                                                                                        Ty.path
+                                                                                                          "move_binary_format::file_format::AbilitySet"
+                                                                                                      ]
+                                                                                                  ])
+                                                                                            ]
+                                                                                          |))
+                                                                                          (Ty.apply
                                                                                             (Ty.path
                                                                                               "core::result::Result")
                                                                                             []
@@ -1221,96 +1641,7 @@ Module ability_field_requirements.
                                                                                                 "move_binary_format::file_format::AbilitySet";
                                                                                               Ty.path
                                                                                                 "move_binary_format::errors::PartialVMError"
-                                                                                            ],
-                                                                                          M.get_associated_function (|
-                                                                                            Ty.path
-                                                                                              "move_binary_format::file_format::CompiledModule",
-                                                                                            "abilities",
-                                                                                            [],
-                                                                                            []
-                                                                                          |),
-                                                                                          [
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.read (|
-                                                                                                  module
-                                                                                                |)
-                                                                                              |)
-                                                                                            |);
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.Ref,
-                                                                                                  M.SubPointer.get_struct_tuple_field (|
-                                                                                                    M.SubPointer.get_struct_record_field (|
-                                                                                                      M.deref (|
-                                                                                                        M.read (|
-                                                                                                          field
-                                                                                                        |)
-                                                                                                      |),
-                                                                                                      "move_binary_format::file_format::FieldDefinition",
-                                                                                                      "signature"
-                                                                                                    |),
-                                                                                                    "move_binary_format::file_format::TypeSignature",
-                                                                                                    0
-                                                                                                  |)
-                                                                                                |)
-                                                                                              |)
-                                                                                            |);
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.call_closure (|
-                                                                                                  Ty.apply
-                                                                                                    (Ty.path
-                                                                                                      "&")
-                                                                                                    []
-                                                                                                    [
-                                                                                                      Ty.apply
-                                                                                                        (Ty.path
-                                                                                                          "slice")
-                                                                                                        []
-                                                                                                        [
-                                                                                                          Ty.path
-                                                                                                            "move_binary_format::file_format::AbilitySet"
-                                                                                                        ]
-                                                                                                    ],
-                                                                                                  M.get_trait_method (|
-                                                                                                    "core::ops::deref::Deref",
-                                                                                                    Ty.apply
-                                                                                                      (Ty.path
-                                                                                                        "alloc::vec::Vec")
-                                                                                                      []
-                                                                                                      [
-                                                                                                        Ty.path
-                                                                                                          "move_binary_format::file_format::AbilitySet";
-                                                                                                        Ty.path
-                                                                                                          "alloc::alloc::Global"
-                                                                                                      ],
-                                                                                                    [],
-                                                                                                    [],
-                                                                                                    "deref",
-                                                                                                    [],
-                                                                                                    []
-                                                                                                  |),
-                                                                                                  [
-                                                                                                    M.borrow (|
-                                                                                                      Pointer.Kind.Ref,
-                                                                                                      M.deref (|
-                                                                                                        M.borrow (|
-                                                                                                          Pointer.Kind.Ref,
-                                                                                                          type_parameter_abilities
-                                                                                                        |)
-                                                                                                      |)
-                                                                                                    |)
-                                                                                                  ]
-                                                                                                |)
-                                                                                              |)
-                                                                                            |)
-                                                                                          ]
-                                                                                        |)
+                                                                                            ])
                                                                                       ]
                                                                                     |)
                                                                                   |),
@@ -1382,9 +1713,20 @@ Module ability_field_requirements.
                                                                                                   []
                                                                                                 |),
                                                                                                 [
-                                                                                                  M.read (|
-                                                                                                    residual
-                                                                                                  |)
+                                                                                                  M.value_with_ty
+                                                                                                    (M.read (|
+                                                                                                      residual
+                                                                                                    |))
+                                                                                                    (Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "core::result::Result")
+                                                                                                      []
+                                                                                                      [
+                                                                                                        Ty.path
+                                                                                                          "core::convert::Infallible";
+                                                                                                        Ty.path
+                                                                                                          "move_binary_format::errors::PartialVMError"
+                                                                                                      ])
                                                                                                 ]
                                                                                               |)
                                                                                             |)
@@ -1441,12 +1783,18 @@ Module ability_field_requirements.
                                                                                                       []
                                                                                                     |),
                                                                                                     [
-                                                                                                      M.read (|
-                                                                                                        required_abilities
-                                                                                                      |);
-                                                                                                      M.read (|
-                                                                                                        field_abilities
-                                                                                                      |)
+                                                                                                      M.value_with_ty
+                                                                                                        (M.read (|
+                                                                                                          required_abilities
+                                                                                                        |))
+                                                                                                        (Ty.path
+                                                                                                          "move_binary_format::file_format::AbilitySet");
+                                                                                                      M.value_with_ty
+                                                                                                        (M.read (|
+                                                                                                          field_abilities
+                                                                                                        |))
+                                                                                                        (Ty.path
+                                                                                                          "move_binary_format::file_format::AbilitySet")
                                                                                                     ]
                                                                                                   |)
                                                                                                 ]
@@ -1463,44 +1811,59 @@ Module ability_field_requirements.
                                                                                         M.never_to_any (|
                                                                                           M.read (|
                                                                                             M.return_ (|
-                                                                                              Value.StructTuple
-                                                                                                "core::result::Result::Err"
-                                                                                                []
-                                                                                                [
-                                                                                                  Ty.tuple
-                                                                                                    [];
-                                                                                                  Ty.path
-                                                                                                    "move_binary_format::errors::PartialVMError"
-                                                                                                ]
-                                                                                                [
-                                                                                                  M.call_closure (|
+                                                                                              M.value_with_ty
+                                                                                                (Value.StructTuple
+                                                                                                  "core::result::Result::Err"
+                                                                                                  [
+                                                                                                    M.call_closure (|
+                                                                                                      Ty.path
+                                                                                                        "move_binary_format::errors::PartialVMError",
+                                                                                                      M.get_function (|
+                                                                                                        "move_binary_format::errors::verification_error",
+                                                                                                        [],
+                                                                                                        []
+                                                                                                      |),
+                                                                                                      [
+                                                                                                        M.value_with_ty
+                                                                                                          (M.value_with_ty
+                                                                                                            (Value.StructTuple
+                                                                                                              "move_core_types::vm_status::StatusCode::FIELD_MISSING_TYPE_ABILITY"
+                                                                                                              [])
+                                                                                                            (Ty.path
+                                                                                                              "move_core_types::vm_status::StatusCode"))
+                                                                                                          (Ty.path
+                                                                                                            "move_core_types::vm_status::StatusCode");
+                                                                                                        M.value_with_ty
+                                                                                                          (M.value_with_ty
+                                                                                                            (Value.StructTuple
+                                                                                                              "move_binary_format::IndexKind::StructDefinition"
+                                                                                                              [])
+                                                                                                            (Ty.path
+                                                                                                              "move_binary_format::IndexKind"))
+                                                                                                          (Ty.path
+                                                                                                            "move_binary_format::IndexKind");
+                                                                                                        M.value_with_ty
+                                                                                                          (M.cast
+                                                                                                            (Ty.path
+                                                                                                              "u16")
+                                                                                                            (M.read (|
+                                                                                                              idx
+                                                                                                            |)))
+                                                                                                          (Ty.path
+                                                                                                            "u16")
+                                                                                                      ]
+                                                                                                    |)
+                                                                                                  ])
+                                                                                                (Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "core::result::Result")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.tuple
+                                                                                                      [];
                                                                                                     Ty.path
-                                                                                                      "move_binary_format::errors::PartialVMError",
-                                                                                                    M.get_function (|
-                                                                                                      "move_binary_format::errors::verification_error",
-                                                                                                      [],
-                                                                                                      []
-                                                                                                    |),
-                                                                                                    [
-                                                                                                      Value.StructTuple
-                                                                                                        "move_core_types::vm_status::StatusCode::FIELD_MISSING_TYPE_ABILITY"
-                                                                                                        []
-                                                                                                        []
-                                                                                                        [];
-                                                                                                      Value.StructTuple
-                                                                                                        "move_binary_format::IndexKind::StructDefinition"
-                                                                                                        []
-                                                                                                        []
-                                                                                                        [];
-                                                                                                      M.cast
-                                                                                                        (Ty.path
-                                                                                                          "u16")
-                                                                                                        (M.read (|
-                                                                                                          idx
-                                                                                                        |))
-                                                                                                    ]
-                                                                                                  |)
-                                                                                                ]
+                                                                                                      "move_binary_format::errors::PartialVMError"
+                                                                                                  ])
                                                                                             |)
                                                                                           |)
                                                                                         |)));
@@ -1538,11 +1901,12 @@ Module ability_field_requirements.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
               |)
             |)))
         |)))

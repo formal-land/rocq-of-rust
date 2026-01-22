@@ -79,22 +79,34 @@ Module task.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::task::wake::RawWaker",
-                        "vtable"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "core::task::wake::RawWaker",
-                        "vtable"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::task::wake::RawWaker",
+                          "vtable"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "core::task::wake::RawWaker",
+                          "vtable"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ]
+                        ])
                   ]
                 |)))
             |)))
@@ -137,77 +149,93 @@ Module task.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RawWaker" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::RawWaker",
-                            "data"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RawWaker" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::task::wake::RawWaker",
+                              "data"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "vtable" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ]
-                          ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.path "core::task::wake::RawWakerVTable" ]
-                              ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::task::wake::RawWaker",
-                                "vtable"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "vtable" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::task::wake::RawWakerVTable" ]
+                            ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::task::wake::RawWakerVTable" ]
+                                ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::task::wake::RawWaker",
+                                  "vtable"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -240,11 +268,11 @@ Module task.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ],
                 vtable
               |) in
-            Value.mkStructRecord
-              "core::task::wake::RawWaker"
-              []
-              []
-              [ ("data", M.read (| data |)); ("vtable", M.read (| vtable |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::task::wake::RawWaker"
+                [ ("data", M.read (| data |)); ("vtable", M.read (| vtable |)) ])
+              (Ty.path "core::task::wake::RawWaker")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -276,23 +304,27 @@ Module task.
               Ty.path "core::task::wake::RawWaker",
               M.get_associated_function (| Ty.path "core::task::wake::RawWaker", "new", [], [] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                  M.get_function (| "core::ptr::null", [], [ Ty.tuple [] ] |),
-                  []
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      get_constant (|
-                        "core::task::wake::NOOP::VTABLE",
-                        Ty.path "core::task::wake::RawWakerVTable"
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                    M.get_function (| "core::ptr::null", [], [ Ty.tuple [] ] |),
+                    []
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        get_constant (|
+                          "core::task::wake::NOOP::VTABLE",
+                          Ty.path "core::task::wake::RawWakerVTable"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ])
               ]
             |)
           |))).
@@ -549,140 +581,166 @@ Module task.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RawWakerVTable" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "clone" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.function
-                          [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                          (Ty.path "core::task::wake::RawWaker")
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::RawWakerVTable",
-                            "clone"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RawWakerVTable" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "clone" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.function
+                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                            (Ty.path "core::task::wake::RawWaker")
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::task::wake::RawWakerVTable",
+                              "clone"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "wake" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.function [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ] (Ty.tuple [])
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::RawWakerVTable",
-                            "wake"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "wake" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.function
+                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                            (Ty.tuple [])
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::task::wake::RawWakerVTable",
+                              "wake"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "wake_by_ref" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.function [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ] (Ty.tuple [])
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::RawWakerVTable",
-                            "wake_by_ref"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "wake_by_ref" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.function
+                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                            (Ty.tuple [])
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::task::wake::RawWakerVTable",
+                              "wake_by_ref"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "drop" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple [])
-                          ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.function
-                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                  (Ty.tuple [])
-                              ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::task::wake::RawWakerVTable",
-                                "drop"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "drop" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.function
+                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                (Ty.tuple [])
+                            ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.function
+                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                    (Ty.tuple [])
+                                ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::task::wake::RawWakerVTable",
+                                  "drop"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -736,16 +794,16 @@ Module task.
                 Ty.function [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ] (Ty.tuple []),
                 drop
               |) in
-            Value.mkStructRecord
-              "core::task::wake::RawWakerVTable"
-              []
-              []
-              [
-                ("clone", M.read (| clone |));
-                ("wake", M.read (| wake |));
-                ("wake_by_ref", M.read (| wake_by_ref |));
-                ("drop", M.read (| drop |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::task::wake::RawWakerVTable"
+                [
+                  ("clone", M.read (| clone |));
+                  ("wake", M.read (| wake |));
+                  ("wake_by_ref", M.read (| wake_by_ref |));
+                  ("drop", M.read (| drop |))
+                ])
+              (Ty.path "core::task::wake::RawWakerVTable")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -834,37 +892,46 @@ Module task.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Some" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Some" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
-                                  ]
-                              ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]
+                                    ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)));
                 fun γ =>
@@ -889,27 +956,36 @@ Module task.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "None" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "None" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)))
               ]
@@ -983,16 +1059,22 @@ Module task.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "core::task::wake::ContextBuilder",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::task::wake::ContextBuilder",
-                    "from_waker",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| waker |) |) |) ]
-                |)
+                    M.get_associated_function (|
+                      Ty.path "core::task::wake::ContextBuilder",
+                      "from_waker",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| waker |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ])
+                    ]
+                  |))
+                  (Ty.path "core::task::wake::ContextBuilder")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1269,73 +1351,101 @@ Module task.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugStruct",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.alloc (|
-                            Ty.path "core::fmt::builders::DebugStruct",
-                            M.call_closure (|
-                              Ty.path "core::fmt::builders::DebugStruct",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "debug_struct",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "Context" |) |)
-                                |)
-                              ]
-                            |)
-                          |)
-                        |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "waker" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::task::wake::Context",
-                                    "waker"
-                                  |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugStruct",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
+                                Ty.path "core::fmt::builders::DebugStruct",
+                                M.call_closure (|
+                                  Ty.path "core::fmt::builders::DebugStruct",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Formatter",
+                                    "debug_struct",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| f |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "Context" |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
                                 |)
                               |)
-                            |)
-                          ]
-                        |)
-                      ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "waker" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::task::wake::Context",
+                                        "waker"
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1404,168 +1514,192 @@ Module task.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ContextBuilder" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "waker" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::ContextBuilder",
-                            "waker"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ContextBuilder" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "waker" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::task::wake::ContextBuilder",
+                              "waker"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "local_waker" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::LocalWaker" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::ContextBuilder",
-                            "local_waker"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "local_waker" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::LocalWaker" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::task::wake::ContextBuilder",
+                              "local_waker"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ext" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::ExtData" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::ContextBuilder",
-                            "ext"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ext" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::ExtData" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::task::wake::ContextBuilder",
+                              "ext"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "_marker" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::marker::PhantomData")
-                          []
-                          [
-                            Ty.function
-                              [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                              (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
-                          ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::ContextBuilder",
-                            "_marker"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "_marker" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::marker::PhantomData")
+                            []
+                            [
+                              Ty.function
+                                [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                                (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
+                            ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::task::wake::ContextBuilder",
+                              "_marker"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "_marker2" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::marker::PhantomData")
-                              []
-                              [ Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ] ]
-                          ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::marker::PhantomData")
-                                  []
-                                  [ Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ] ]
-                              ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::task::wake::ContextBuilder",
-                                "_marker2"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "_marker2" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::marker::PhantomData")
+                                []
+                                [ Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ] ]
+                            ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::marker::PhantomData")
+                                    []
+                                    [ Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ] ]
+                                ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::task::wake::ContextBuilder",
+                                  "_marker2"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1618,36 +1752,44 @@ Module task.
                       Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::LocalWaker" ]
                     ]
                   |),
-                  [ M.read (| waker |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| waker |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "core::task::wake::ContextBuilder",
-                Value.mkStructRecord
-                  "core::task::wake::ContextBuilder"
-                  []
-                  []
-                  [
-                    ("waker", M.read (| waker |));
-                    ("local_waker", M.read (| local_waker |));
-                    ("ext",
-                      Value.StructTuple "core::task::wake::ExtData::None" [] [] [ Value.Tuple [] ]);
-                    ("_marker",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [
-                          Ty.function
-                            [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                            (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
-                        ]
-                        []);
-                    ("_marker2",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ] ]
-                        [])
-                  ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::task::wake::ContextBuilder"
+                    [
+                      ("waker", M.read (| waker |));
+                      ("local_waker", M.read (| local_waker |));
+                      ("ext",
+                        M.value_with_ty
+                          (Value.StructTuple "core::task::wake::ExtData::None" [ Value.Tuple [] ])
+                          (Ty.path "core::task::wake::ExtData"));
+                      ("_marker",
+                        M.value_with_ty
+                          (Value.StructTuple "core::marker::PhantomData" [])
+                          (Ty.apply
+                            (Ty.path "core::marker::PhantomData")
+                            []
+                            [
+                              Ty.function
+                                [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                                (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
+                            ]));
+                      ("_marker2",
+                        M.value_with_ty
+                          (Value.StructTuple "core::marker::PhantomData" [])
+                          (Ty.apply
+                            (Ty.path "core::marker::PhantomData")
+                            []
+                            [ Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ] ]))
+                    ])
+                  (Ty.path "core::task::wake::ContextBuilder")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1724,34 +1866,34 @@ Module task.
                               ],
                             γ1_0
                           |) in
-                        Value.StructTuple
-                          "core::task::wake::ExtData::Some"
-                          []
-                          []
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
-                                (Ty.apply
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::task::wake::ExtData::Some"
+                            [
+                              M.call_closure (|
+                                Ty.apply
                                   (Ty.path "&mut")
                                   []
-                                  [ Ty.dyn [ ("core::any::Any::Trait", []) ] ])
-                                (Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (| M.read (| M.deref (| M.read (| ext |) |) |) |)
-                                |)
-                              ]
-                            |)
-                          ]));
+                                  [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.dyn [ ("core::any::Any::Trait", []) ] ])
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| M.deref (| M.read (| ext |) |) |) |)
+                                  |)
+                                ]
+                              |)
+                            ])
+                          (Ty.path "core::task::wake::ExtData")));
                     fun γ =>
                       ltac:(M.monadic
                         (let γ := M.deref (| M.read (| γ |) |) in
@@ -1761,64 +1903,64 @@ Module task.
                             "core::task::wake::ExtData::None",
                             0
                           |) in
-                        Value.StructTuple
-                          "core::task::wake::ExtData::None"
-                          []
-                          []
-                          [ Value.Tuple [] ]))
+                        M.value_with_ty
+                          (Value.StructTuple "core::task::wake::ExtData::None" [ Value.Tuple [] ])
+                          (Ty.path "core::task::wake::ExtData")))
                   ]
                 |) in
               M.alloc (|
                 Ty.path "core::task::wake::ContextBuilder",
-                Value.mkStructRecord
-                  "core::task::wake::ContextBuilder"
-                  []
-                  []
-                  [
-                    ("waker",
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| cx |) |),
-                              "core::task::wake::Context",
-                              "waker"
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::task::wake::ContextBuilder"
+                    [
+                      ("waker",
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| cx |) |),
+                                "core::task::wake::Context",
+                                "waker"
+                              |)
                             |)
                           |)
-                        |)
-                      |));
-                    ("local_waker",
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| cx |) |),
-                              "core::task::wake::Context",
-                              "local_waker"
+                        |));
+                      ("local_waker",
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| cx |) |),
+                                "core::task::wake::Context",
+                                "local_waker"
+                              |)
                             |)
                           |)
-                        |)
-                      |));
-                    ("ext", M.read (| ext |));
-                    ("_marker",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [
-                          Ty.function
-                            [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                            (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
-                        ]
-                        []);
-                    ("_marker2",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ] ]
-                        [])
-                  ]
+                        |));
+                      ("ext", M.read (| ext |));
+                      ("_marker",
+                        M.value_with_ty
+                          (Value.StructTuple "core::marker::PhantomData" [])
+                          (Ty.apply
+                            (Ty.path "core::marker::PhantomData")
+                            []
+                            [
+                              Ty.function
+                                [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
+                                (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
+                            ]));
+                      ("_marker2",
+                        M.value_with_ty
+                          (Value.StructTuple "core::marker::PhantomData" [])
+                          (Ty.apply
+                            (Ty.path "core::marker::PhantomData")
+                            []
+                            [ Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ] ]))
+                    ])
+                  (Ty.path "core::task::wake::ContextBuilder")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1896,26 +2038,26 @@ Module task.
               (M.read (| self |))
               [
                 ("ext",
-                  Value.StructTuple
-                    "core::task::wake::ExtData::Some"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ] ])
-                          (Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |) ]
-                      |)
-                    ])
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::task::wake::ExtData::Some"
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::any::Any::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.dyn [ ("core::any::Any::Trait", []) ] ])
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.dyn [ ("core::any::Any::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| data |) |) |) ]
+                        |)
+                      ])
+                    (Ty.path "core::task::wake::ExtData"))
               ]))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2002,24 +2144,30 @@ Module task.
                           [ Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ] ],
                         γ0_4
                       |) in
-                    Value.mkStructRecord
-                      "core::task::wake::Context"
-                      []
-                      []
-                      [
-                        ("waker",
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| waker |) |) |));
-                        ("local_waker",
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| local_waker |) |) |));
-                        ("ext",
-                          Value.StructTuple
-                            "core::panic::unwind_safe::AssertUnwindSafe"
-                            []
-                            [ Ty.path "core::task::wake::ExtData" ]
-                            [ M.read (| ext |) ]);
-                        ("_marker", M.read (| _marker |));
-                        ("_marker2", M.read (| _marker2 |))
-                      ]))
+                    M.value_with_ty
+                      (Value.mkStructRecord
+                        "core::task::wake::Context"
+                        [
+                          ("waker",
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| waker |) |) |));
+                          ("local_waker",
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| local_waker |) |)
+                            |));
+                          ("ext",
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::panic::unwind_safe::AssertUnwindSafe"
+                                [ M.read (| ext |) ])
+                              (Ty.apply
+                                (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
+                                []
+                                [ Ty.path "core::task::wake::ExtData" ]));
+                          ("_marker", M.read (| _marker |));
+                          ("_marker2", M.read (| _marker2 |))
+                        ])
+                      (Ty.path "core::task::wake::Context")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2116,7 +2264,7 @@ Module task.
                     [],
                     []
                   |),
-                  [ M.read (| self |) ]
+                  [ M.value_with_ty (M.read (| self |)) (Ty.path "core::task::wake::Waker") ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -2142,7 +2290,19 @@ Module task.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, this |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                            []
+                                            [ Ty.path "core::task::wake::Waker" ]
+                                        ])
+                                  ]
                                 |)
                               |),
                               "core::task::wake::Waker",
@@ -2158,34 +2318,48 @@ Module task.
                     |)
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
+                    M.value_with_ty
+                      (M.read (|
                         M.SubPointer.get_struct_record_field (|
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.apply
-                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.apply
+                                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                    []
+                                    [ Ty.path "core::task::wake::Waker" ],
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
                                   []
-                                  [ Ty.path "core::task::wake::Waker" ],
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, this |) ]
-                            |)
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, this |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                          []
+                                          [ Ty.path "core::task::wake::Waker" ]
+                                      ])
+                                ]
+                              |)
+                            |),
+                            "core::task::wake::Waker",
+                            "waker"
                           |),
-                          "core::task::wake::Waker",
-                          "waker"
-                        |),
-                        "core::task::wake::RawWaker",
-                        "data"
-                      |)
-                    |)
+                          "core::task::wake::RawWaker",
+                          "data"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2234,17 +2408,19 @@ Module task.
                 |)
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
+                M.value_with_ty
+                  (M.read (|
                     M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::task::wake::Waker",
-                      "waker"
-                    |),
-                    "core::task::wake::RawWaker",
-                    "data"
-                  |)
-                |)
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::task::wake::Waker",
+                        "waker"
+                      |),
+                      "core::task::wake::RawWaker",
+                      "data"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2351,14 +2527,24 @@ Module task.
                                     [ Ty.path "core::task::wake::RawWakerVTable" ]
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| a_vtable |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| b_vtable |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.ConstPointer,
+                                        M.deref (| M.read (| a_vtable |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [ Ty.path "core::task::wake::RawWakerVTable" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.ConstPointer,
+                                        M.deref (| M.read (| b_vtable |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [ Ty.path "core::task::wake::RawWakerVTable" ])
                                   ]
                                 |)))
                             |)))
@@ -2389,18 +2575,18 @@ Module task.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ],
                 vtable
               |) in
-            Value.mkStructRecord
-              "core::task::wake::Waker"
-              []
-              []
-              [
-                ("waker",
-                  Value.mkStructRecord
-                    "core::task::wake::RawWaker"
-                    []
-                    []
-                    [ ("data", M.read (| data |)); ("vtable", M.read (| vtable |)) ])
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::task::wake::Waker"
+                [
+                  ("waker",
+                    M.value_with_ty
+                      (Value.mkStructRecord
+                        "core::task::wake::RawWaker"
+                        [ ("data", M.read (| data |)); ("vtable", M.read (| vtable |)) ])
+                      (Ty.path "core::task::wake::RawWaker"))
+                ])
+              (Ty.path "core::task::wake::Waker")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2418,7 +2604,9 @@ Module task.
         | [], [], [ waker ] =>
           ltac:(M.monadic
             (let waker := M.alloc (| Ty.path "core::task::wake::RawWaker", waker |) in
-            Value.mkStructRecord "core::task::wake::Waker" [] [] [ ("waker", M.read (| waker |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord "core::task::wake::Waker" [ ("waker", M.read (| waker |)) ])
+              (Ty.path "core::task::wake::Waker")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2528,18 +2716,35 @@ Module task.
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ], self |) in
-            Value.mkStructRecord
-              "core::task::wake::Waker"
-              []
-              []
-              [
-                ("waker",
-                  M.call_closure (|
-                    Ty.path "core::task::wake::RawWaker",
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (|
-                          M.read (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::task::wake::Waker"
+                [
+                  ("waker",
+                    M.call_closure (|
+                      Ty.path "core::task::wake::RawWaker",
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (|
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::task::wake::Waker",
+                                  "waker"
+                                |),
+                                "core::task::wake::RawWaker",
+                                "vtable"
+                              |)
+                            |)
+                          |),
+                          "core::task::wake::RawWakerVTable",
+                          "clone"
+                        |)
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (|
                             M.SubPointer.get_struct_record_field (|
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
@@ -2547,29 +2752,14 @@ Module task.
                                 "waker"
                               |),
                               "core::task::wake::RawWaker",
-                              "vtable"
+                              "data"
                             |)
-                          |)
-                        |),
-                        "core::task::wake::RawWakerVTable",
-                        "clone"
-                      |)
-                    |),
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::Waker",
-                            "waker"
-                          |),
-                          "core::task::wake::RawWaker",
-                          "data"
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                      ]
+                    |))
+                ])
+              (Ty.path "core::task::wake::Waker")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2617,8 +2807,24 @@ Module task.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::task::wake::Waker" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| source |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::task::wake::Waker" ])
                                 ]
                               |)
                             ]
@@ -2640,7 +2846,11 @@ Module task.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ])
+                            ]
                           |)
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2704,17 +2914,19 @@ Module task.
                 |)
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
+                M.value_with_ty
+                  (M.read (|
                     M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::task::wake::Waker",
-                      "waker"
-                    |),
-                    "core::task::wake::RawWaker",
-                    "data"
-                  |)
-                |)
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::task::wake::Waker",
+                        "waker"
+                      |),
+                      "core::task::wake::RawWaker",
+                      "data"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2791,136 +3003,172 @@ Module task.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.path "core::fmt::builders::DebugStruct" ],
-                          M.get_associated_function (|
-                            Ty.path "core::fmt::builders::DebugStruct",
-                            "field",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.path "core::fmt::builders::DebugStruct" ],
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::builders::DebugStruct",
-                                    "field",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.alloc (|
-                                        Ty.path "core::fmt::builders::DebugStruct",
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::builders::DebugStruct",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Formatter",
-                                            "debug_struct",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| f |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| mk_str (| "Waker" |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| mk_str (| "data" |) |)
-                                    |);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugStruct" ],
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::builders::DebugStruct",
+                              "field",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
                                     M.call_closure (|
                                       Ty.apply
-                                        (Ty.path "&")
+                                        (Ty.path "&mut")
                                         []
-                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.Unsize
-                                        (Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ])
-                                        (Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                        [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::builders::DebugStruct",
+                                        "field",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::task::wake::Waker",
-                                                  "waker"
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.alloc (|
+                                              Ty.path "core::fmt::builders::DebugStruct",
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::builders::DebugStruct",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::Formatter",
+                                                  "debug_struct",
+                                                  [],
+                                                  []
                                                 |),
-                                                "core::task::wake::RawWaker",
-                                                "data"
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| f |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.path "core::fmt::Formatter" ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| mk_str (| "Waker" |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                                ]
                                               |)
                                             |)
-                                          |)
-                                        |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| mk_str (| "data" |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.Unsize
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ])
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::task::wake::Waker",
+                                                        "waker"
+                                                      |),
+                                                      "core::task::wake::RawWaker",
+                                                      "data"
+                                                    |)
+                                                  |)
+                                                |)
+                                              |)
+                                            ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                                       ]
                                     |)
-                                  ]
-                                |)
-                              |)
-                            |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "vtable" |) |) |);
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
+                                  |)
+                                |))
                                 (Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "&mut")
                                   []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "*const")
-                                      []
-                                      [ Ty.path "core::task::wake::RawWakerVTable" ]
-                                  ])
-                                (Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                              [
-                                M.borrow (|
+                                  [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| M.borrow (| Pointer.Kind.Ref, vtable_ptr |) |)
-                                |)
-                              ]
-                            |)
-                          ]
+                                  M.deref (| mk_str (| "vtable" |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "*const")
+                                          []
+                                          [ Ty.path "core::task::wake::RawWakerVTable" ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, vtable_ptr |) |)
+                                    |)
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
                   ]
                 |)
               |)
@@ -2999,7 +3247,7 @@ Module task.
                     [],
                     []
                   |),
-                  [ M.read (| self |) ]
+                  [ M.value_with_ty (M.read (| self |)) (Ty.path "core::task::wake::LocalWaker") ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -3028,7 +3276,19 @@ Module task.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, this |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, this |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                            []
+                                            [ Ty.path "core::task::wake::LocalWaker" ]
+                                        ])
+                                  ]
                                 |)
                               |),
                               "core::task::wake::LocalWaker",
@@ -3044,34 +3304,51 @@ Module task.
                     |)
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
+                    M.value_with_ty
+                      (M.read (|
                         M.SubPointer.get_struct_record_field (|
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::LocalWaker" ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (|
+                              M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                  (Ty.path "&")
                                   []
                                   [ Ty.path "core::task::wake::LocalWaker" ],
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, this |) ]
-                            |)
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.apply
+                                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                    []
+                                    [ Ty.path "core::task::wake::LocalWaker" ],
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, this |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                          []
+                                          [ Ty.path "core::task::wake::LocalWaker" ]
+                                      ])
+                                ]
+                              |)
+                            |),
+                            "core::task::wake::LocalWaker",
+                            "waker"
                           |),
-                          "core::task::wake::LocalWaker",
-                          "waker"
-                        |),
-                        "core::task::wake::RawWaker",
-                        "data"
-                      |)
-                    |)
+                          "core::task::wake::RawWaker",
+                          "data"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3123,17 +3400,19 @@ Module task.
                 |)
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
+                M.value_with_ty
+                  (M.read (|
                     M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::task::wake::LocalWaker",
-                      "waker"
-                    |),
-                    "core::task::wake::RawWaker",
-                    "data"
-                  |)
-                |)
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::task::wake::LocalWaker",
+                        "waker"
+                      |),
+                      "core::task::wake::RawWaker",
+                      "data"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3243,14 +3522,24 @@ Module task.
                                     [ Ty.path "core::task::wake::RawWakerVTable" ]
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| a_vtable |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| b_vtable |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.ConstPointer,
+                                        M.deref (| M.read (| a_vtable |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [ Ty.path "core::task::wake::RawWakerVTable" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.ConstPointer,
+                                        M.deref (| M.read (| b_vtable |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [ Ty.path "core::task::wake::RawWakerVTable" ])
                                   ]
                                 |)))
                             |)))
@@ -3281,18 +3570,18 @@ Module task.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ],
                 vtable
               |) in
-            Value.mkStructRecord
-              "core::task::wake::LocalWaker"
-              []
-              []
-              [
-                ("waker",
-                  Value.mkStructRecord
-                    "core::task::wake::RawWaker"
-                    []
-                    []
-                    [ ("data", M.read (| data |)); ("vtable", M.read (| vtable |)) ])
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::task::wake::LocalWaker"
+                [
+                  ("waker",
+                    M.value_with_ty
+                      (Value.mkStructRecord
+                        "core::task::wake::RawWaker"
+                        [ ("data", M.read (| data |)); ("vtable", M.read (| vtable |)) ])
+                      (Ty.path "core::task::wake::RawWaker"))
+                ])
+              (Ty.path "core::task::wake::LocalWaker")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3310,11 +3599,11 @@ Module task.
         | [], [], [ waker ] =>
           ltac:(M.monadic
             (let waker := M.alloc (| Ty.path "core::task::wake::RawWaker", waker |) in
-            Value.mkStructRecord
-              "core::task::wake::LocalWaker"
-              []
-              []
-              [ ("waker", M.read (| waker |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::task::wake::LocalWaker"
+                [ ("waker", M.read (| waker |)) ])
+              (Ty.path "core::task::wake::LocalWaker")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3433,18 +3722,35 @@ Module task.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::LocalWaker" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::task::wake::LocalWaker"
-              []
-              []
-              [
-                ("waker",
-                  M.call_closure (|
-                    Ty.path "core::task::wake::RawWaker",
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (|
-                          M.read (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::task::wake::LocalWaker"
+                [
+                  ("waker",
+                    M.call_closure (|
+                      Ty.path "core::task::wake::RawWaker",
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (|
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::task::wake::LocalWaker",
+                                  "waker"
+                                |),
+                                "core::task::wake::RawWaker",
+                                "vtable"
+                              |)
+                            |)
+                          |),
+                          "core::task::wake::RawWakerVTable",
+                          "clone"
+                        |)
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (|
                             M.SubPointer.get_struct_record_field (|
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
@@ -3452,29 +3758,14 @@ Module task.
                                 "waker"
                               |),
                               "core::task::wake::RawWaker",
-                              "vtable"
+                              "data"
                             |)
-                          |)
-                        |),
-                        "core::task::wake::RawWakerVTable",
-                        "clone"
-                      |)
-                    |),
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::task::wake::LocalWaker",
-                            "waker"
-                          |),
-                          "core::task::wake::RawWaker",
-                          "data"
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                      ]
+                    |))
+                ])
+              (Ty.path "core::task::wake::LocalWaker")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3522,8 +3813,24 @@ Module task.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::task::wake::LocalWaker" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| source |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::task::wake::LocalWaker" ])
                                 ]
                               |)
                             ]
@@ -3545,7 +3852,14 @@ Module task.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::task::wake::LocalWaker" ])
+                            ]
                           |)
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3592,7 +3906,11 @@ Module task.
                   Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::LocalWaker" ]
                 ]
               |),
-              [ M.read (| self |) ]
+              [
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::Waker" ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -3648,17 +3966,19 @@ Module task.
                 |)
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
+                M.value_with_ty
+                  (M.read (|
                     M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::task::wake::LocalWaker",
-                      "waker"
-                    |),
-                    "core::task::wake::RawWaker",
-                    "data"
-                  |)
-                |)
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::task::wake::LocalWaker",
+                        "waker"
+                      |),
+                      "core::task::wake::RawWaker",
+                      "data"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3738,136 +4058,172 @@ Module task.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.path "core::fmt::builders::DebugStruct" ],
-                          M.get_associated_function (|
-                            Ty.path "core::fmt::builders::DebugStruct",
-                            "field",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.path "core::fmt::builders::DebugStruct" ],
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::builders::DebugStruct",
-                                    "field",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.alloc (|
-                                        Ty.path "core::fmt::builders::DebugStruct",
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::builders::DebugStruct",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Formatter",
-                                            "debug_struct",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| f |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| mk_str (| "LocalWaker" |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| mk_str (| "data" |) |)
-                                    |);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugStruct" ],
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::builders::DebugStruct",
+                              "field",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
                                     M.call_closure (|
                                       Ty.apply
-                                        (Ty.path "&")
+                                        (Ty.path "&mut")
                                         []
-                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.Unsize
-                                        (Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ])
-                                        (Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                        [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::builders::DebugStruct",
+                                        "field",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::task::wake::LocalWaker",
-                                                  "waker"
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.alloc (|
+                                              Ty.path "core::fmt::builders::DebugStruct",
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::builders::DebugStruct",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::Formatter",
+                                                  "debug_struct",
+                                                  [],
+                                                  []
                                                 |),
-                                                "core::task::wake::RawWaker",
-                                                "data"
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| f |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.path "core::fmt::Formatter" ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| mk_str (| "LocalWaker" |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                                ]
                                               |)
                                             |)
-                                          |)
-                                        |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| mk_str (| "data" |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.Unsize
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ])
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::task::wake::LocalWaker",
+                                                        "waker"
+                                                      |),
+                                                      "core::task::wake::RawWaker",
+                                                      "data"
+                                                    |)
+                                                  |)
+                                                |)
+                                              |)
+                                            ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                                       ]
                                     |)
-                                  ]
-                                |)
-                              |)
-                            |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "vtable" |) |) |);
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
+                                  |)
+                                |))
                                 (Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "&mut")
                                   []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "*const")
-                                      []
-                                      [ Ty.path "core::task::wake::RawWakerVTable" ]
-                                  ])
-                                (Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                              [
-                                M.borrow (|
+                                  [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| M.borrow (| Pointer.Kind.Ref, vtable_ptr |) |)
-                                |)
-                              ]
-                            |)
-                          ]
+                                  M.deref (| mk_str (| "vtable" |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "*const")
+                                          []
+                                          [ Ty.path "core::task::wake::RawWakerVTable" ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, vtable_ptr |) |)
+                                    |)
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
                   ]
                 |)
               |)

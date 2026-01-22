@@ -63,10 +63,15 @@ Definition sum_checked (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| xs |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| xs |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u32" ] ])
                                           ]
                                         |)
                                       ]
@@ -95,13 +100,15 @@ Definition sum_checked (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
                                           []
                                         |),
                                         [
-                                          M.read (| acc |);
-                                          M.read (|
-                                            M.SubPointer.get_array_field (|
-                                              M.deref (| M.read (| xs |) |),
-                                              M.read (| i |)
-                                            |)
-                                          |)
+                                          M.value_with_ty (M.read (| acc |)) (Ty.path "u32");
+                                          M.value_with_ty
+                                            (M.read (|
+                                              M.SubPointer.get_array_field (|
+                                                M.deref (| M.read (| xs |) |),
+                                                M.read (| i |)
+                                              |)
+                                            |))
+                                            (Ty.path "u32")
                                         ]
                                       |)
                                     |),
@@ -126,11 +133,14 @@ Definition sum_checked (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
                                           M.never_to_any (|
                                             M.read (|
                                               M.return_ (|
-                                                Value.StructTuple
-                                                  "core::option::Option::None"
-                                                  []
-                                                  [ Ty.path "u32" ]
-                                                  []
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::option::Option::None"
+                                                    [])
+                                                  (Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "u32" ])
                                               |)
                                             |)
                                           |)))
@@ -164,11 +174,9 @@ Definition sum_checked (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
               |) in
             M.alloc (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ],
-              Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ Ty.path "u32" ]
-                [ M.read (| acc |) ]
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::Some" [ M.read (| acc |) ])
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ])
             |)
           |)))
       |)))
@@ -231,7 +239,17 @@ Definition reverse_in_place (ε : list Value.t) (τ : list Ty.t) (α : list Valu
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| xs |) |) |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| xs |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ] ])
+                                  ]
                                 |);
                                 Value.Integer IntegerKind.Usize 0
                               ]
@@ -256,7 +274,14 @@ Definition reverse_in_place (ε : list Value.t) (τ : list Ty.t) (α : list Valu
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| xs |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| xs |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ] ])
+                    ]
                   |);
                   Value.Integer IntegerKind.Usize 1
                 ]
@@ -414,10 +439,15 @@ Definition is_sorted (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| xs |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| xs |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ] ])
                                           ]
                                         |)
                                       ]

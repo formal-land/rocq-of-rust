@@ -55,24 +55,27 @@ Module ptr.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "core::ptr::unique::Unique"
-              []
-              [ T ]
-              [
-                ("pointer",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                    M.get_associated_function (|
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "core::ptr::unique::Unique"
+                [
+                  ("pointer",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                      "dangling",
-                      [],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                        "dangling",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |));
-                ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-              ]))
+                    |));
+                  ("_marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+                ])
+              (Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -98,24 +101,27 @@ Module ptr.
         | [], [], [ ptr ] =>
           ltac:(M.monadic
             (let ptr := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], ptr |) in
-            Value.mkStructRecord
-              "core::ptr::unique::Unique"
-              []
-              [ T ]
-              [
-                ("pointer",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::ptr::unique::Unique"
+                [
+                  ("pointer",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                      "new_unchecked",
-                      [],
-                      []
-                    |),
-                    [ M.read (| ptr |) ]
-                  |));
-                ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                        "new_unchecked",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
+                    |));
+                  ("_marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+                ])
+              (Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -166,7 +172,8 @@ Module ptr.
                             [],
                             []
                           |),
-                          [ M.read (| ptr |) ]
+                          [ M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ])
+                          ]
                         |)
                       |) in
                     let γ0_0 :=
@@ -180,27 +187,34 @@ Module ptr.
                         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
                         γ0_0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ] ]
-                      [
-                        Value.mkStructRecord
-                          "core::ptr::unique::Unique"
-                          []
-                          [ T ]
-                          [
-                            ("pointer", M.read (| pointer |));
-                            ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-                          ]
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::ptr::unique::Unique"
+                              [
+                                ("pointer", M.read (| pointer |));
+                                ("_marker",
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::marker::PhantomData" [])
+                                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+                              ])
+                            (Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ])
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -233,13 +247,15 @@ Module ptr.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::ptr::unique::Unique",
-                    "pointer"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::ptr::unique::Unique",
+                      "pointer"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -316,14 +332,19 @@ Module ptr.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::ptr::unique::Unique",
-                        "pointer"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::ptr::unique::Unique",
+                          "pointer"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
                   ]
                 |)
               |)
@@ -375,14 +396,19 @@ Module ptr.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::ptr::unique::Unique",
-                                "pointer"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::ptr::unique::Unique",
+                                  "pointer"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
                           ]
                         |)
                       |)
@@ -414,32 +440,37 @@ Module ptr.
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ], self |) in
-            Value.mkStructRecord
-              "core::ptr::unique::Unique"
-              []
-              [ U ]
-              [
-                ("pointer",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                      "cast",
-                      [],
-                      [ U ]
-                    |),
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "core::ptr::unique::Unique",
-                          "pointer"
-                        |)
-                      |)
-                    ]
-                  |));
-                ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ U ] [])
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::ptr::unique::Unique"
+                [
+                  ("pointer",
+                    M.call_closure (|
+                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                        "cast",
+                        [],
+                        [ U ]
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "core::ptr::unique::Unique",
+                              "pointer"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                      ]
+                    |));
+                  ("_marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply (Ty.path "core::marker::PhantomData") [] [ U ]))
+                ])
+              (Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ U ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -578,28 +609,36 @@ Module ptr.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "*mut") [] [ T ],
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply (Ty.path "*mut") [] [ T ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ],
-                            "as_ptr",
-                            [],
-                            []
-                          |),
-                          [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*mut") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ],
+                              "as_ptr",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ])
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -653,28 +692,36 @@ Module ptr.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "*mut") [] [ T ],
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply (Ty.path "*mut") [] [ T ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ],
-                            "as_ptr",
-                            [],
-                            []
-                          |),
-                          [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*mut") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ],
+                              "as_ptr",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ])
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -716,19 +763,22 @@ Module ptr.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                  M.get_trait_method (|
-                    "core::convert::From",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                    [],
-                    [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                    "from",
-                    [],
-                    []
-                  |),
-                  [ M.read (| reference |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::convert::From",
+                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                      [],
+                      [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                      "from",
+                      [],
+                      []
+                    |),
+                    [ M.value_with_ty (M.read (| reference |)) (Ty.apply (Ty.path "&mut") [] [ T ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -759,14 +809,17 @@ Module ptr.
           ltac:(M.monadic
             (let pointer :=
               M.alloc (| Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ], pointer |) in
-            Value.mkStructRecord
-              "core::ptr::unique::Unique"
-              []
-              [ T ]
-              [
-                ("pointer", M.read (| pointer |));
-                ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::ptr::unique::Unique"
+                [
+                  ("pointer", M.read (| pointer |));
+                  ("_marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+                ])
+              (Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       

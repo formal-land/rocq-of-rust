@@ -39,26 +39,26 @@ Module Impl_core_default_Default_for_call_builder_delegate_CallBuilderDelegateTe
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "call_builder_delegate::CallBuilderDelegateTest"
-          []
-          []
-          [
-            ("value",
-              M.call_closure (|
-                Ty.path "i32",
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "call_builder_delegate::CallBuilderDelegateTest"
+            [
+              ("value",
+                M.call_closure (|
                   Ty.path "i32",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "i32",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "call_builder_delegate::CallBuilderDelegateTest")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -84,11 +84,11 @@ Module Impl_call_builder_delegate_CallBuilderDelegateTest.
     | [], [], [ value ] =>
       ltac:(M.monadic
         (let value := M.alloc (| Ty.path "i32", value |) in
-        Value.mkStructRecord
-          "call_builder_delegate::CallBuilderDelegateTest"
-          []
-          []
-          [ ("value", M.read (| value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "call_builder_delegate::CallBuilderDelegateTest"
+            [ ("value", M.read (| value |)) ])
+          (Ty.path "call_builder_delegate::CallBuilderDelegateTest")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -137,11 +137,12 @@ Module Impl_call_builder_delegate_CallBuilderDelegateTest.
             Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
             selector
           |) in
-        Value.StructTuple
-          "core::option::Option::None"
-          []
-          [ Ty.path "call_builder_delegate::LangError" ]
-          []))
+        M.value_with_ty
+          (Value.StructTuple "core::option::Option::None" [])
+          (Ty.apply
+            (Ty.path "core::option::Option")
+            []
+            [ Ty.path "call_builder_delegate::LangError" ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   

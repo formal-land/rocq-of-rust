@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_basic_contract_caller_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "basic_contract_caller::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "basic_contract_caller::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "basic_contract_caller::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -125,11 +125,11 @@ Module Impl_basic_contract_caller_OtherContract.
     | [], [], [ init_value ] =>
       ltac:(M.monadic
         (let init_value := M.alloc (| Ty.path "bool", init_value |) in
-        Value.mkStructRecord
-          "basic_contract_caller::OtherContract"
-          []
-          []
-          [ ("value", M.read (| init_value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "basic_contract_caller::OtherContract"
+            [ ("value", M.read (| init_value |)) ])
+          (Ty.path "basic_contract_caller::OtherContract")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -249,16 +249,20 @@ Module Impl_basic_contract_caller_BasicContractCaller.
               M.call_closure (|
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic", [], [] |),
-                [ mk_str (| "not yet implemented" |) ]
+                [
+                  M.value_with_ty
+                    (mk_str (| "not yet implemented" |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |)
             |) in
           M.alloc (|
             Ty.path "basic_contract_caller::BasicContractCaller",
-            Value.mkStructRecord
-              "basic_contract_caller::BasicContractCaller"
-              []
-              []
-              [ ("other_contract", M.read (| other_contract |)) ]
+            M.value_with_ty
+              (Value.mkStructRecord
+                "basic_contract_caller::BasicContractCaller"
+                [ ("other_contract", M.read (| other_contract |)) ])
+              (Ty.path "basic_contract_caller::BasicContractCaller")
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -294,14 +298,16 @@ Module Impl_basic_contract_caller_BasicContractCaller.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "basic_contract_caller::BasicContractCaller",
-                    "other_contract"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "basic_contract_caller::BasicContractCaller",
+                      "other_contract"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "basic_contract_caller::OtherContract" ])
               ]
             |) in
           M.alloc (|
@@ -315,14 +321,16 @@ Module Impl_basic_contract_caller_BasicContractCaller.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "basic_contract_caller::BasicContractCaller",
-                    "other_contract"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "basic_contract_caller::BasicContractCaller",
+                      "other_contract"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "basic_contract_caller::OtherContract" ])
               ]
             |)
           |)

@@ -63,16 +63,22 @@ Module cell.
               []
             |),
             [
-              M.call_closure (|
-                T,
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                  "get",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  T,
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                    "get",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                  ]
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -110,11 +116,13 @@ Module cell.
               []
             |),
             [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                  []
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -157,38 +165,56 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -244,43 +270,61 @@ Module cell.
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "partial_cmp", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
+                    M.call_closure (|
                       T,
-                      M.call_closure (|
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
                         T,
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                          "get",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                        M.call_closure (|
+                          T,
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                            "get",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -310,38 +354,56 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "lt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -371,38 +433,56 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "le", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -432,38 +512,56 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "gt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -493,38 +591,56 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "ge", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                    M.call_closure (|
+                      T,
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -574,43 +690,61 @@ Module cell.
             Ty.path "core::cmp::Ordering",
             M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  T,
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     T,
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
+                    M.call_closure (|
                       T,
-                      M.call_closure (|
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                      ]
+                    |)
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
                         T,
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
-                          "get",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                        M.call_closure (|
+                          T,
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::cell::Cell") [] [ T ],
+                            "get",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -648,7 +782,7 @@ Module cell.
               [],
               []
             |),
-            [ M.read (| t |) ]
+            [ M.value_with_ty (M.read (| t |)) T ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -677,23 +811,23 @@ Module cell.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| T, value |) in
-          Value.mkStructRecord
-            "core::cell::Cell"
-            []
-            [ T ]
-            [
-              ("value",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::cell::Cell"
+              [
+                ("value",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| value |) ]
-                |))
-            ]))
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [ M.value_with_ty (M.read (| value |)) T ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::cell::Cell") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -729,7 +863,11 @@ Module cell.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| val |)
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ]);
+                  M.value_with_ty (M.read (| val |)) T
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -809,14 +947,24 @@ Module cell.
                                     [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ]
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| self |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| other |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.ConstPointer,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.ConstPointer,
+                                        M.deref (| M.read (| other |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
                                   ]
                                 |)
                               |)) in
@@ -850,14 +998,24 @@ Module cell.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.ConstPointer,
-                                          M.deref (| M.read (| self |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.ConstPointer,
-                                          M.deref (| M.read (| other |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.ConstPointer,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "*const")
+                                            []
+                                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.ConstPointer,
+                                            M.deref (| M.read (| other |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "*const")
+                                            []
+                                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
                                       ]
                                     |)
                                   ]
@@ -870,37 +1028,49 @@ Module cell.
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic_fmt", [], [] |),
                               [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::Arguments",
-                                  M.get_associated_function (|
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.alloc (|
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array
+                                                  [
+                                                    mk_str (|
+                                                      "`Cell::swap` on overlapping non-identical `Cell`s"
+                                                    |)
+                                                  ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "array")
                                               [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array
-                                              [
-                                                mk_str (|
-                                                  "`Cell::swap` on overlapping non-identical `Cell`s"
-                                                |)
-                                              ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
                               ]
                             |)
                           |)));
@@ -912,64 +1082,78 @@ Module cell.
                     Ty.tuple [],
                     M.get_function (| "core::mem::swap", [], [ T ] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                                  "get",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::cell::Cell",
-                                      "value"
-                                    |)
-                                  |)
-                                ]
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ T ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
+                                    "get",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::cell::Cell",
+                                          "value"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                                  "get",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| other |) |),
-                                      "core::cell::Cell",
-                                      "value"
-                                    |)
-                                  |)
-                                ]
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ T ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ T ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
+                                    "get",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| other |) |),
+                                          "core::cell::Cell",
+                                          "value"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ T ])
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1006,41 +1190,48 @@ Module cell.
             T,
             M.get_function (| "core::mem::replace", [], [ T ] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                              "get",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::cell::Cell",
-                                  "value"
-                                |)
-                              |)
-                            ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
+                                "get",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::cell::Cell",
+                                      "value"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
+                              ]
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              |);
-              M.read (| val |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ T ]);
+              M.value_with_ty (M.read (| val |)) T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1072,9 +1263,11 @@ Module cell.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_record_field (| self, "core::cell::Cell", "value" |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (| self, "core::cell::Cell", "value" |)
+                |))
+                (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1113,14 +1306,19 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::cell::Cell",
-                      "value"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::cell::Cell",
+                        "value"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
                 ]
               |)
             |)
@@ -1166,7 +1364,11 @@ Module cell.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ])
+                ]
               |) in
             let~ new : T :=
               M.call_closure (|
@@ -1180,7 +1382,10 @@ Module cell.
                   [],
                   []
                 |),
-                [ M.read (| f |); Value.Tuple [ M.read (| old |) ] ]
+                [
+                  M.value_with_ty (M.read (| f |)) F;
+                  M.value_with_ty (Value.Tuple [ M.read (| old |) ]) (Ty.tuple [ T ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -1191,7 +1396,11 @@ Module cell.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| new |)
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ]);
+                  M.value_with_ty (M.read (| new |)) T
                 ]
               |) in
             new
@@ -1228,14 +1437,16 @@ Module cell.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::cell::Cell",
-                  "value"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::cell::Cell",
+                    "value"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1277,14 +1488,19 @@ Module cell.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::Cell",
-                          "value"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::Cell",
+                            "value"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
                     ]
                   |)
                 |)
@@ -1366,12 +1582,16 @@ Module cell.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::Cell") [] [ T ] ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                  []
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1618,8 +1838,12 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BorrowError" |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BorrowError" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             M.alloc (|
@@ -1638,7 +1862,11 @@ Module cell.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, builder |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, builder |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
+                ]
               |)
             |)
           |)))
@@ -1677,11 +1905,15 @@ Module cell.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| mk_str (| "already mutably borrowed" |) |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| mk_str (| "already mutably borrowed" |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1739,8 +1971,12 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BorrowMutError" |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BorrowMutError" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             M.alloc (|
@@ -1759,7 +1995,11 @@ Module cell.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, builder |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, builder |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
+                ]
               |)
             |)
           |)))
@@ -1801,8 +2041,12 @@ Module cell.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "already borrowed" |) |) |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "already borrowed" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1831,64 +2075,91 @@ Module cell.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                "new_v1",
-                [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_associated_function (|
+                  Ty.path "core::fmt::Arguments",
+                  "new_v1",
+                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "already borrowed: " |) ]
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array [ mk_str (| "already borrowed: " |) ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.path "core::fmt::rt::Argument" ],
-                        Value.Array
-                          [
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_debug",
-                                [],
-                                [ Ty.path "core::cell::BorrowMutError" ]
-                              |),
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ],
+                            Value.Array
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.borrow (| Pointer.Kind.Ref, err |) |)
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_debug",
+                                    [],
+                                    [ Ty.path "core::cell::BorrowMutError" ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, err |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::cell::BorrowMutError" ])
+                                  ]
                                 |)
                               ]
-                            |)
-                          ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ]
+                      ])
+                ]
+              |))
+              (Ty.path "core::fmt::Arguments")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1917,64 +2188,91 @@ Module cell.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                "new_v1",
-                [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_associated_function (|
+                  Ty.path "core::fmt::Arguments",
+                  "new_v1",
+                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "already mutably borrowed: " |) ]
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array [ mk_str (| "already mutably borrowed: " |) ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.path "core::fmt::rt::Argument" ],
-                        Value.Array
-                          [
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_debug",
-                                [],
-                                [ Ty.path "core::cell::BorrowError" ]
-                              |),
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ],
+                            Value.Array
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.borrow (| Pointer.Kind.Ref, err |) |)
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_debug",
+                                    [],
+                                    [ Ty.path "core::cell::BorrowError" ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, err |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::cell::BorrowError" ])
+                                  ]
                                 |)
                               ]
-                            |)
-                          ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ]
+                      ])
+                ]
+              |))
+              (Ty.path "core::fmt::Arguments")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2060,34 +2358,38 @@ Module cell.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| T, value |) in
-          Value.mkStructRecord
-            "core::cell::RefCell"
-            []
-            [ T ]
-            [
-              ("value",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::cell::RefCell"
+              [
+                ("value",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| value |) ]
-                |));
-              ("borrow",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [ M.value_with_ty (M.read (| value |)) T ]
+                  |));
+                ("borrow",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| get_constant (| "core::cell::UNUSED", Ty.path "isize" |) |) ]
-                |))
-            ]))
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| get_constant (| "core::cell::UNUSED", Ty.path "isize" |) |))
+                        (Ty.path "isize")
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::cell::RefCell") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2119,9 +2421,11 @@ Module cell.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_record_field (| self, "core::cell::RefCell", "value" |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (| self, "core::cell::RefCell", "value" |)
+                |))
+                (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2153,47 +2457,64 @@ Module cell.
             T,
             M.get_function (| "core::mem::replace", [], [ T ] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::DerefMut",
-                          Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                          [],
-                          [],
-                          "deref_mut",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.alloc (|
-                              Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                                  "borrow_mut",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
-                          |)
-                        ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&mut") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::DerefMut",
+                            Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                            [],
+                            [],
+                            "deref_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.alloc (|
+                                  Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                      "borrow_mut",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "core::cell::RefMut") [] [ T ] ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |);
-              M.read (| t |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ T ]);
+              M.value_with_ty (M.read (| t |)) T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2240,22 +2561,34 @@ Module cell.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                          M.call_closure (|
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.alloc (|
                             Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow_mut",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                "borrow_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::RefMut") [] [ T ] ])
                     ]
                   |)
                 |)
@@ -2273,9 +2606,11 @@ Module cell.
                   []
                 |),
                 [
-                  M.read (| f |);
-                  Value.Tuple
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| mut_borrow |) |) |) ]
+                  M.value_with_ty (M.read (| f |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| mut_borrow |) |) |) ])
+                    (Ty.tuple [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                 ]
               |) in
             M.alloc (|
@@ -2284,8 +2619,10 @@ Module cell.
                 T,
                 M.get_function (| "core::mem::replace", [], [ T ] |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| mut_borrow |) |) |);
-                  M.read (| replacement |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| mut_borrow |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ T ]);
+                  M.value_with_ty (M.read (| replacement |)) T
                 ]
               |)
             |)
@@ -2323,87 +2660,120 @@ Module cell.
             Ty.tuple [],
             M.get_function (| "core::mem::swap", [], [ T ] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::DerefMut",
-                          Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                          [],
-                          [],
-                          "deref_mut",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.alloc (|
-                              Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                                  "borrow_mut",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
-                          |)
-                        ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&mut") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::DerefMut",
+                            Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                            [],
+                            [],
+                            "deref_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.alloc (|
+                                  Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                      "borrow_mut",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "core::cell::RefMut") [] [ T ] ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::DerefMut",
-                          Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                          [],
-                          [],
-                          "deref_mut",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.alloc (|
-                              Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                                  "borrow_mut",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                                ]
-                              |)
-                            |)
-                          |)
-                        ]
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&mut") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::DerefMut",
+                            Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                            [],
+                            [],
+                            "deref_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.alloc (|
+                                  Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                      "borrow_mut",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| other |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "core::cell::RefMut") [] [ T ] ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2452,7 +2822,14 @@ Module cell.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                ]
               |)
             |),
             [
@@ -2471,7 +2848,7 @@ Module cell.
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "core::cell::panic_already_mutably_borrowed", [], [] |),
-                      [ M.read (| err |) ]
+                      [ M.value_with_ty (M.read (| err |)) (Ty.path "core::cell::BorrowError") ]
                     |)
                   |)))
             ]
@@ -2532,19 +2909,24 @@ Module cell.
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cell::BorrowRef" ],
                 M.get_associated_function (| Ty.path "core::cell::BorrowRef", "new", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::RefCell",
-                          "borrow"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::RefCell",
+                            "borrow"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ])
                 ]
               |)
             |),
@@ -2565,25 +2947,32 @@ Module cell.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                              "get",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::cell::RefCell",
-                                  "value"
-                                |)
-                              |)
-                            ]
-                          |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
+                                "get",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::cell::RefCell",
+                                      "value"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*mut") [] [ T ])
                         ]
                       |) in
                     M.alloc (|
@@ -2594,33 +2983,43 @@ Module cell.
                           Ty.apply (Ty.path "core::cell::Ref") [] [ T ];
                           Ty.path "core::cell::BorrowError"
                         ],
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ];
-                          Ty.path "core::cell::BorrowError"
-                        ]
-                        [
-                          Value.mkStructRecord
-                            "core::cell::Ref"
-                            []
-                            [ T ]
-                            [ ("value", M.read (| value |)); ("borrow", M.read (| b |)) ]
-                        ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::result::Result::Ok"
+                          [
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "core::cell::Ref"
+                                [ ("value", M.read (| value |)); ("borrow", M.read (| b |)) ])
+                              (Ty.apply (Ty.path "core::cell::Ref") [] [ T ])
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ];
+                            Ty.path "core::cell::BorrowError"
+                          ])
                     |)
                   |)));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ];
-                      Ty.path "core::cell::BorrowError"
-                    ]
-                    [ Value.StructTuple "core::cell::BorrowError" [] [] [] ]))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "core::cell::BorrowError" [])
+                          (Ty.path "core::cell::BorrowError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ];
+                        Ty.path "core::cell::BorrowError"
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2674,7 +3073,14 @@ Module cell.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                ]
               |)
             |),
             [
@@ -2693,7 +3099,7 @@ Module cell.
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "core::cell::panic_already_borrowed", [], [] |),
-                      [ M.read (| err |) ]
+                      [ M.value_with_ty (M.read (| err |)) (Ty.path "core::cell::BorrowMutError") ]
                     |)
                   |)))
             ]
@@ -2758,19 +3164,24 @@ Module cell.
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cell::BorrowRefMut" ],
                 M.get_associated_function (| Ty.path "core::cell::BorrowRefMut", "new", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::RefCell",
-                          "borrow"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::RefCell",
+                            "borrow"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ])
                 ]
               |)
             |),
@@ -2791,25 +3202,32 @@ Module cell.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                              "get",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::cell::RefCell",
-                                  "value"
-                                |)
-                              |)
-                            ]
-                          |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
+                                "get",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::cell::RefCell",
+                                      "value"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*mut") [] [ T ])
                         ]
                       |) in
                     M.alloc (|
@@ -2820,42 +3238,53 @@ Module cell.
                           Ty.apply (Ty.path "core::cell::RefMut") [] [ T ];
                           Ty.path "core::cell::BorrowMutError"
                         ],
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.apply (Ty.path "core::cell::RefMut") [] [ T ];
-                          Ty.path "core::cell::BorrowMutError"
-                        ]
-                        [
-                          Value.mkStructRecord
-                            "core::cell::RefMut"
-                            []
-                            [ T ]
-                            [
-                              ("value", M.read (| value |));
-                              ("borrow", M.read (| b |));
-                              ("marker",
-                                Value.StructTuple
-                                  "core::marker::PhantomData"
-                                  []
-                                  [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                                  [])
-                            ]
-                        ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::result::Result::Ok"
+                          [
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "core::cell::RefMut"
+                                [
+                                  ("value", M.read (| value |));
+                                  ("borrow", M.read (| b |));
+                                  ("marker",
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::marker::PhantomData" [])
+                                      (Ty.apply
+                                        (Ty.path "core::marker::PhantomData")
+                                        []
+                                        [ Ty.apply (Ty.path "&mut") [] [ T ] ]))
+                                ])
+                              (Ty.apply (Ty.path "core::cell::RefMut") [] [ T ])
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.apply (Ty.path "core::cell::RefMut") [] [ T ];
+                            Ty.path "core::cell::BorrowMutError"
+                          ])
                     |)
                   |)));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "core::cell::RefMut") [] [ T ];
-                      Ty.path "core::cell::BorrowMutError"
-                    ]
-                    [ Value.StructTuple "core::cell::BorrowMutError" [] [] [] ]))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "core::cell::BorrowMutError" [])
+                          (Ty.path "core::cell::BorrowMutError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "core::cell::RefMut") [] [ T ];
+                        Ty.path "core::cell::BorrowMutError"
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2891,14 +3320,16 @@ Module cell.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::cell::RefCell",
-                  "value"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::cell::RefCell",
+                    "value"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2940,14 +3371,19 @@ Module cell.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::RefCell",
-                          "value"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::RefCell",
+                            "value"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
                     ]
                   |)
                 |)
@@ -2995,14 +3431,19 @@ Module cell.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::cell::RefCell",
-                              "borrow"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::cell::RefCell",
+                                "borrow"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ])
                         ]
                       |)
                     |),
@@ -3021,7 +3462,14 @@ Module cell.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                        ]
                       |)
                     |)
                   |)
@@ -3093,73 +3541,100 @@ Module cell.
                               Ty.path "bool",
                               M.get_function (| "core::cell::is_writing", [], [] |),
                               [
-                                M.call_closure (|
-                                  Ty.path "isize",
-                                  M.get_associated_function (|
-                                    Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ],
-                                    "get",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::cell::RefCell",
-                                        "borrow"
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "isize",
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ],
+                                      "get",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::cell::RefCell",
+                                            "borrow"
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::cell::Cell")
+                                              []
+                                              [ Ty.path "isize" ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "isize")
                               ]
                             |)
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ T ]; Ty.path "core::cell::BorrowError" ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
-                                  "get",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::cell::RefCell",
-                                      "value"
-                                    |)
-                                  |)
-                                ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ T ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ],
+                                    "get",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::cell::RefCell",
+                                          "value"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ T ]; Ty.path "core::cell::BorrowError" ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ T ]; Ty.path "core::cell::BorrowError" ]
-                    [ Value.StructTuple "core::cell::BorrowError" [] [] [] ]))
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "core::cell::BorrowError" [])
+                          (Ty.path "core::cell::BorrowError")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ T ]; Ty.path "core::cell::BorrowError" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3194,12 +3669,16 @@ Module cell.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                  []
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3267,47 +3746,66 @@ Module cell.
               []
             |),
             [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
+              M.value_with_ty
+                (M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
                               Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                                  "borrow",
-                                  [],
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                        "borrow",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                      ]
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
                                   []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
+                                  [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                            ]
                           |)
-                        ]
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
+                  ]
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3337,62 +3835,87 @@ Module cell.
             Ty.tuple [],
             M.get_trait_method (| "core::clone::Clone", T, [], [], "clone_from", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ T ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                      "get_mut",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&mut") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                        "get_mut",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                                  "borrow",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |)
-                                ]
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                      "borrow",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| source |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                    ]
+                                  |)
+                                |)
                               |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3434,11 +3957,13 @@ Module cell.
               []
             |),
             [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                  []
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3481,76 +4006,110 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| other |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3606,60 +4165,24 @@ Module cell.
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "partial_cmp", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
                             M.alloc (|
                               Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
@@ -3671,17 +4194,86 @@ Module cell.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
                                 ]
                               |)
                             |)
-                          |)
-                        ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                      "borrow",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| other |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3711,76 +4303,110 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "lt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| other |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3810,76 +4436,110 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "le", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| other |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3909,76 +4569,110 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "gt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| other |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4008,76 +4702,110 @@ Module cell.
             Ty.path "bool",
             M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "ge", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                  "borrow",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| other |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4127,60 +4855,24 @@ Module cell.
             Ty.path "core::cmp::Ordering",
             M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
-                              "borrow",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
                             M.alloc (|
                               Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
@@ -4192,17 +4884,86 @@ Module cell.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
                                 ]
                               |)
                             |)
-                          |)
-                        ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "core::cell::RefCell") [] [ T ],
+                                      "borrow",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| other |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "core::cell::RefCell") [] [ T ] ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4240,7 +5001,7 @@ Module cell.
               [],
               []
             |),
-            [ M.read (| t |) ]
+            [ M.value_with_ty (M.read (| t |)) T ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -4327,17 +5088,26 @@ Module cell.
                 Ty.path "isize",
                 M.get_associated_function (| Ty.path "isize", "wrapping_add", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "isize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ],
-                      "get",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| borrow |) |) |) ]
-                  |);
-                  Value.Integer IntegerKind.Isize 1
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "isize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ],
+                        "get",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| borrow |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ])
+                      ]
+                    |))
+                    (Ty.path "isize");
+                  M.value_with_ty (Value.Integer IntegerKind.Isize 1) (Ty.path "isize")
                 ]
               |) in
             M.alloc (|
@@ -4359,17 +5129,18 @@ Module cell.
                                 M.call_closure (|
                                   Ty.path "bool",
                                   M.get_function (| "core::cell::is_reading", [], [] |),
-                                  [ M.read (| b |) ]
+                                  [ M.value_with_ty (M.read (| b |)) (Ty.path "isize") ]
                                 |)
                               ]
                             |)
                           |)) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                      Value.StructTuple
-                        "core::option::Option::None"
-                        []
-                        [ Ty.path "core::cell::BorrowRef" ]
-                        []));
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "core::cell::BorrowRef" ])));
                   fun γ =>
                     ltac:(M.monadic
                       (M.read (|
@@ -4383,8 +5154,13 @@ Module cell.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| borrow |) |) |);
-                              M.read (| b |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| borrow |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ]);
+                              M.value_with_ty (M.read (| b |)) (Ty.path "isize")
                             ]
                           |) in
                         M.alloc (|
@@ -4392,23 +5168,26 @@ Module cell.
                             (Ty.path "core::option::Option")
                             []
                             [ Ty.path "core::cell::BorrowRef" ],
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ Ty.path "core::cell::BorrowRef" ]
-                            [
-                              Value.mkStructRecord
-                                "core::cell::BorrowRef"
-                                []
-                                []
-                                [
-                                  ("borrow",
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| borrow |) |)
-                                    |))
-                                ]
-                            ]
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [
+                                M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::cell::BorrowRef"
+                                    [
+                                      ("borrow",
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| borrow |) |)
+                                        |))
+                                    ])
+                                  (Ty.path "core::cell::BorrowRef")
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "core::cell::BorrowRef" ])
                         |)
                       |)))
                 ]
@@ -4450,18 +5229,23 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::BorrowRef",
-                          "borrow"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::BorrowRef",
+                            "borrow"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -4492,7 +5276,11 @@ Module cell.
                                             M.call_closure (|
                                               Ty.path "bool",
                                               M.get_function (| "core::cell::is_reading", [], [] |),
-                                              [ M.read (| borrow |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| borrow |))
+                                                  (Ty.path "isize")
+                                              ]
                                             |)
                                           ]
                                         |)
@@ -4506,7 +5294,11 @@ Module cell.
                                     M.call_closure (|
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic", [], [] |),
-                                      [ mk_str (| "assertion failed: is_reading(borrow)" |) ]
+                                      [
+                                        M.value_with_ty
+                                          (mk_str (| "assertion failed: is_reading(borrow)" |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
                                     |)
                                   |)));
                               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -4527,23 +5319,30 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::BorrowRef",
-                          "borrow"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::BorrowRef",
+                            "borrow"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.call_closure (|
-                    Ty.path "isize",
-                    BinOp.Wrap.sub,
-                    [ M.read (| borrow |); Value.Integer IntegerKind.Isize 1 ]
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "isize",
+                      BinOp.Wrap.sub,
+                      [ M.read (| borrow |); Value.Integer IntegerKind.Isize 1 ]
+                    |))
+                    (Ty.path "isize")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4593,18 +5392,23 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::BorrowRef",
-                          "borrow"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::BorrowRef",
+                            "borrow"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -4635,7 +5439,11 @@ Module cell.
                                             M.call_closure (|
                                               Ty.path "bool",
                                               M.get_function (| "core::cell::is_reading", [], [] |),
-                                              [ M.read (| borrow |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| borrow |))
+                                                  (Ty.path "isize")
+                                              ]
                                             |)
                                           ]
                                         |)
@@ -4649,7 +5457,11 @@ Module cell.
                                     M.call_closure (|
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic", [], [] |),
-                                      [ mk_str (| "assertion failed: is_reading(borrow)" |) ]
+                                      [
+                                        M.value_with_ty
+                                          (mk_str (| "assertion failed: is_reading(borrow)" |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
                                     |)
                                   |)));
                               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -4697,7 +5509,11 @@ Module cell.
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: borrow != BorrowFlag::MAX" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: borrow != BorrowFlag::MAX" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -4713,34 +5529,8 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::BorrowRef",
-                          "borrow"
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.call_closure (|
-                    Ty.path "isize",
-                    BinOp.Wrap.add,
-                    [ M.read (| borrow |); Value.Integer IntegerKind.Isize 1 ]
-                  |)
-                ]
-              |) in
-            M.alloc (|
-              Ty.path "core::cell::BorrowRef",
-              Value.mkStructRecord
-                "core::cell::BorrowRef"
-                []
-                []
-                [
-                  ("borrow",
-                    M.borrow (|
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
                       M.deref (|
                         M.read (|
@@ -4752,7 +5542,40 @@ Module cell.
                         |)
                       |)
                     |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "isize",
+                      BinOp.Wrap.add,
+                      [ M.read (| borrow |); Value.Integer IntegerKind.Isize 1 ]
+                    |))
+                    (Ty.path "isize")
                 ]
+              |) in
+            M.alloc (|
+              Ty.path "core::cell::BorrowRef",
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::cell::BorrowRef"
+                  [
+                    ("borrow",
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::cell::BorrowRef",
+                              "borrow"
+                            |)
+                          |)
+                        |)
+                      |))
+                  ])
+                (Ty.path "core::cell::BorrowRef")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4813,14 +5636,19 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::cell::Ref",
-                      "value"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::cell::Ref",
+                        "value"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
                 ]
               |)
             |)
@@ -4870,43 +5698,45 @@ Module cell.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ],
               orig
             |) in
-          Value.mkStructRecord
-            "core::cell::Ref"
-            []
-            [ T ]
-            [
-              ("value",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| orig |) |),
-                    "core::cell::Ref",
-                    "value"
-                  |)
-                |));
-              ("borrow",
-                M.call_closure (|
-                  Ty.path "core::cell::BorrowRef",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
-                    Ty.path "core::cell::BorrowRef",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| orig |) |),
-                        "core::cell::Ref",
-                        "borrow"
-                      |)
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::cell::Ref"
+              [
+                ("value",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| orig |) |),
+                      "core::cell::Ref",
+                      "value"
                     |)
-                  ]
-                |))
-            ]))
+                  |));
+                ("borrow",
+                  M.call_closure (|
+                    Ty.path "core::cell::BorrowRef",
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "core::cell::BorrowRef",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| orig |) |),
+                            "core::cell::Ref",
+                            "borrow"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::cell::BorrowRef" ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::cell::Ref") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4931,72 +5761,83 @@ Module cell.
         ltac:(M.monadic
           (let orig := M.alloc (| Ty.apply (Ty.path "core::cell::Ref") [] [ T ], orig |) in
           let f := M.alloc (| F, f |) in
-          Value.mkStructRecord
-            "core::cell::Ref"
-            []
-            [ U ]
-            [
-              ("value",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                  M.get_trait_method (|
-                    "core::convert::From",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::cell::Ref"
+              [
+                ("value",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ U ] ],
-                    "from",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ U ],
-                      M.get_trait_method (|
-                        "core::ops::function::FnOnce",
-                        F,
-                        [],
-                        [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                        "call_once",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (| f |);
-                        Value.Tuple
+                    M.get_trait_method (|
+                      "core::convert::From",
+                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ U ] ],
+                      "from",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ U ],
+                          M.get_trait_method (|
+                            "core::ops::function::FnOnce",
+                            F,
+                            [],
+                            [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                            "call_once",
+                            [],
+                            []
+                          |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ T ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, orig |) ]
+                            M.value_with_ty (M.read (| f |)) F;
+                            M.value_with_ty
+                              (Value.Tuple
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply (Ty.path "&") [] [ T ],
+                                            M.get_trait_method (|
+                                              "core::ops::deref::Deref",
+                                              Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                              [],
+                                              [],
+                                              "deref",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, orig |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                                            ]
+                                          |)
+                                        |)
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
-                            |)
+                                ])
+                              (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                           ]
-                      ]
-                    |)
-                  ]
-                |));
-              ("borrow",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (| orig, "core::cell::Ref", "borrow" |)
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ U ])
+                    ]
+                  |));
+                ("borrow",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (| orig, "core::cell::Ref", "borrow" |)
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::cell::Ref") [] [ U ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -5046,33 +5887,42 @@ Module cell.
                   []
                 |),
                 [
-                  M.read (| f |);
-                  Value.Tuple
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&") [] [ T ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::Deref",
-                                  Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                                  [],
-                                  [],
-                                  "deref",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, orig |) ]
+                  M.value_with_ty (M.read (| f |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ T ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
+                                    Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, orig |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
+                      ])
+                    (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                 ]
               |)
             |),
@@ -5082,54 +5932,62 @@ Module cell.
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
                   let value := M.copy (| Ty.apply (Ty.path "&") [] [ U ], γ0_0 |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ U ];
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ]
-                    ]
-                    [
-                      Value.mkStructRecord
-                        "core::cell::Ref"
-                        []
-                        [ U ]
-                        [
-                          ("value",
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                              M.get_trait_method (|
-                                "core::convert::From",
-                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                                [],
-                                [ Ty.apply (Ty.path "&") [] [ U ] ],
-                                "from",
-                                [],
-                                []
-                              |),
-                              [ M.read (| value |) ]
-                            |));
-                          ("borrow",
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                orig,
-                                "core::cell::Ref",
-                                "borrow"
-                              |)
-                            |))
-                        ]
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::cell::Ref"
+                            [
+                              ("value",
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
+                                  M.get_trait_method (|
+                                    "core::convert::From",
+                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
+                                    [],
+                                    [ Ty.apply (Ty.path "&") [] [ U ] ],
+                                    "from",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| value |))
+                                      (Ty.apply (Ty.path "&") [] [ U ])
+                                  ]
+                                |));
+                              ("borrow",
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    orig,
+                                    "core::cell::Ref",
+                                    "borrow"
+                                  |)
+                                |))
+                            ])
+                          (Ty.apply (Ty.path "core::cell::Ref") [] [ U ])
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ U ];
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ U ];
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ]
-                    ]
-                    [ M.read (| orig |) ]))
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Err" [ M.read (| orig |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ U ];
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5181,33 +6039,42 @@ Module cell.
                   []
                 |),
                 [
-                  M.read (| f |);
-                  Value.Tuple
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&") [] [ T ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::Deref",
-                                  Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                                  [],
-                                  [],
-                                  "deref",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, orig |) ]
+                  M.value_with_ty (M.read (| f |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ T ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
+                                    Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, orig |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
+                      ])
+                    (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                 ]
               |)
             |),
@@ -5232,14 +6099,16 @@ Module cell.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              orig,
-                              "core::cell::Ref",
-                              "borrow"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                orig,
+                                "core::cell::Ref",
+                                "borrow"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::cell::BorrowRef" ])
                         ]
                       |) in
                     M.alloc (|
@@ -5250,55 +6119,63 @@ Module cell.
                         ],
                       Value.Tuple
                         [
-                          Value.mkStructRecord
-                            "core::cell::Ref"
-                            []
-                            [ U ]
-                            [
-                              ("value",
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                                  M.get_trait_method (|
-                                    "core::convert::From",
+                          M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::cell::Ref"
+                              [
+                                ("value",
+                                  M.call_closure (|
                                     Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                                    [],
-                                    [ Ty.apply (Ty.path "&") [] [ U ] ],
-                                    "from",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| a |) ]
-                                |));
-                              ("borrow", M.read (| borrow |))
-                            ];
-                          Value.mkStructRecord
-                            "core::cell::Ref"
-                            []
-                            [ V ]
-                            [
-                              ("value",
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ V ],
-                                  M.get_trait_method (|
-                                    "core::convert::From",
+                                    M.get_trait_method (|
+                                      "core::convert::From",
+                                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
+                                      [],
+                                      [ Ty.apply (Ty.path "&") [] [ U ] ],
+                                      "from",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| a |))
+                                        (Ty.apply (Ty.path "&") [] [ U ])
+                                    ]
+                                  |));
+                                ("borrow", M.read (| borrow |))
+                              ])
+                            (Ty.apply (Ty.path "core::cell::Ref") [] [ U ]);
+                          M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::cell::Ref"
+                              [
+                                ("value",
+                                  M.call_closure (|
                                     Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ V ],
-                                    [],
-                                    [ Ty.apply (Ty.path "&") [] [ V ] ],
-                                    "from",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| b |) ]
-                                |));
-                              ("borrow",
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    orig,
-                                    "core::cell::Ref",
-                                    "borrow"
-                                  |)
-                                |))
-                            ]
+                                    M.get_trait_method (|
+                                      "core::convert::From",
+                                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ V ],
+                                      [],
+                                      [ Ty.apply (Ty.path "&") [] [ V ] ],
+                                      "from",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| b |))
+                                        (Ty.apply (Ty.path "&") [] [ V ])
+                                    ]
+                                  |));
+                                ("borrow",
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      orig,
+                                      "core::cell::Ref",
+                                      "borrow"
+                                    |)
+                                  |))
+                              ])
+                            (Ty.apply (Ty.path "core::cell::Ref") [] [ V ])
                         ]
                     |)
                   |)))
@@ -5336,9 +6213,11 @@ Module cell.
                 Ty.tuple [],
                 M.get_function (| "core::mem::forget", [], [ Ty.path "core::cell::BorrowRef" ] |),
                 [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (| orig, "core::cell::Ref", "borrow" |)
-                  |)
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_record_field (| orig, "core::cell::Ref", "borrow" |)
+                    |))
+                    (Ty.path "core::cell::BorrowRef")
                 ]
               |) in
             M.alloc (|
@@ -5355,10 +6234,19 @@ Module cell.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (| orig, "core::cell::Ref", "value" |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            orig,
+                            "core::cell::Ref",
+                            "value"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
                     ]
                   |)
                 |)
@@ -5415,25 +6303,36 @@ Module cell.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_trait_method (| "core::fmt::Display", T, [], [], "fmt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::Ref") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::Ref") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5482,72 +6381,84 @@ Module cell.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ U ],
-                    M.get_trait_method (|
-                      "core::ops::function::FnOnce",
-                      F,
-                      [],
-                      [ Ty.tuple [ Ty.apply (Ty.path "&mut") [] [ T ] ] ],
-                      "call_once",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| f |);
-                      Value.Tuple
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&mut") [] [ U ],
+                      M.get_trait_method (|
+                        "core::ops::function::FnOnce",
+                        F,
+                        [],
+                        [ Ty.tuple [ Ty.apply (Ty.path "&mut") [] [ T ] ] ],
+                        "call_once",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty (M.read (| f |)) F;
+                        M.value_with_ty
+                          (Value.Tuple
+                            [
                               M.borrow (|
                                 Pointer.Kind.MutRef,
                                 M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&mut") [] [ T ],
-                                    M.get_trait_method (|
-                                      "core::ops::deref::DerefMut",
-                                      Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                                      [],
-                                      [],
-                                      "deref_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.MutRef, orig |) ]
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "&mut") [] [ T ],
+                                        M.get_trait_method (|
+                                          "core::ops::deref::DerefMut",
+                                          Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                                          [],
+                                          [],
+                                          "deref_mut",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.MutRef, orig |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "core::cell::RefMut") [] [ T ] ])
+                                        ]
+                                      |)
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
-                        ]
-                    ]
-                  |)
+                            ])
+                          (Ty.tuple [ Ty.apply (Ty.path "&mut") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&mut") [] [ U ])
                 ]
               |) in
             M.alloc (|
               Ty.apply (Ty.path "core::cell::RefMut") [] [ U ],
-              Value.mkStructRecord
-                "core::cell::RefMut"
-                []
-                [ U ]
-                [
-                  ("value", M.read (| value |));
-                  ("borrow",
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        orig,
-                        "core::cell::RefMut",
-                        "borrow"
-                      |)
-                    |));
-                  ("marker",
-                    Value.StructTuple
-                      "core::marker::PhantomData"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ U ] ]
-                      [])
-                ]
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::cell::RefMut"
+                  [
+                    ("value", M.read (| value |));
+                    ("borrow",
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          orig,
+                          "core::cell::RefMut",
+                          "borrow"
+                        |)
+                      |));
+                    ("marker",
+                      M.value_with_ty
+                        (Value.StructTuple "core::marker::PhantomData" [])
+                        (Ty.apply
+                          (Ty.path "core::marker::PhantomData")
+                          []
+                          [ Ty.apply (Ty.path "&mut") [] [ U ] ]))
+                  ])
+                (Ty.apply (Ty.path "core::cell::RefMut") [] [ U ])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5605,33 +6516,42 @@ Module cell.
                   []
                 |),
                 [
-                  M.read (| f |);
-                  Value.Tuple
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&mut") [] [ T ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::DerefMut",
-                                  Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                                  [],
-                                  [],
-                                  "deref_mut",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.MutRef, orig |) ]
+                  M.value_with_ty (M.read (| f |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&mut") [] [ T ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::DerefMut",
+                                    Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                                    [],
+                                    [],
+                                    "deref_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, orig |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "core::cell::RefMut") [] [ T ] ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
+                      ])
+                    (Ty.tuple [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                 ]
               |)
             |),
@@ -5641,60 +6561,69 @@ Module cell.
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
                   let value := M.copy (| Ty.apply (Ty.path "&mut") [] [ U ], γ0_0 |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply (Ty.path "core::cell::RefMut") [] [ U ];
-                      Ty.apply (Ty.path "core::cell::RefMut") [] [ T ]
-                    ]
-                    [
-                      Value.mkStructRecord
-                        "core::cell::RefMut"
-                        []
-                        [ U ]
-                        [
-                          ("value",
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                              M.get_trait_method (|
-                                "core::convert::From",
-                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                                [],
-                                [ Ty.apply (Ty.path "&mut") [] [ U ] ],
-                                "from",
-                                [],
-                                []
-                              |),
-                              [ M.read (| value |) ]
-                            |));
-                          ("borrow",
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                orig,
-                                "core::cell::RefMut",
-                                "borrow"
-                              |)
-                            |));
-                          ("marker",
-                            Value.StructTuple
-                              "core::marker::PhantomData"
-                              []
-                              [ Ty.apply (Ty.path "&mut") [] [ U ] ]
-                              [])
-                        ]
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::cell::RefMut"
+                            [
+                              ("value",
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
+                                  M.get_trait_method (|
+                                    "core::convert::From",
+                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
+                                    [],
+                                    [ Ty.apply (Ty.path "&mut") [] [ U ] ],
+                                    "from",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| value |))
+                                      (Ty.apply (Ty.path "&mut") [] [ U ])
+                                  ]
+                                |));
+                              ("borrow",
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    orig,
+                                    "core::cell::RefMut",
+                                    "borrow"
+                                  |)
+                                |));
+                              ("marker",
+                                M.value_with_ty
+                                  (Value.StructTuple "core::marker::PhantomData" [])
+                                  (Ty.apply
+                                    (Ty.path "core::marker::PhantomData")
+                                    []
+                                    [ Ty.apply (Ty.path "&mut") [] [ U ] ]))
+                            ])
+                          (Ty.apply (Ty.path "core::cell::RefMut") [] [ U ])
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "core::cell::RefMut") [] [ U ];
+                        Ty.apply (Ty.path "core::cell::RefMut") [] [ T ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "core::cell::RefMut") [] [ U ];
-                      Ty.apply (Ty.path "core::cell::RefMut") [] [ T ]
-                    ]
-                    [ M.read (| orig |) ]))
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Err" [ M.read (| orig |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "core::cell::RefMut") [] [ U ];
+                        Ty.apply (Ty.path "core::cell::RefMut") [] [ T ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5736,10 +6665,16 @@ Module cell.
                 Ty.path "core::cell::BorrowRefMut",
                 M.get_associated_function (| Ty.path "core::cell::BorrowRefMut", "clone", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (| orig, "core::cell::RefMut", "borrow" |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        orig,
+                        "core::cell::RefMut",
+                        "borrow"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::cell::BorrowRefMut" ])
                 ]
               |) in
             M.alloc (|
@@ -5770,33 +6705,42 @@ Module cell.
                       []
                     |),
                     [
-                      M.read (| f |);
-                      Value.Tuple
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&mut") [] [ T ],
-                                    M.get_trait_method (|
-                                      "core::ops::deref::DerefMut",
-                                      Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                                      [],
-                                      [],
-                                      "deref_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.MutRef, orig |) ]
+                      M.value_with_ty (M.read (| f |)) F;
+                      M.value_with_ty
+                        (Value.Tuple
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "&mut") [] [ T ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::DerefMut",
+                                        Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                                        [],
+                                        [],
+                                        "deref_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.MutRef, orig |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.apply (Ty.path "core::cell::RefMut") [] [ T ] ])
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
+                          ])
+                        (Ty.tuple [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                     ]
                   |)
                 |),
@@ -5809,67 +6753,77 @@ Module cell.
                       let b := M.copy (| Ty.apply (Ty.path "&mut") [] [ V ], γ0_1 |) in
                       Value.Tuple
                         [
-                          Value.mkStructRecord
-                            "core::cell::RefMut"
-                            []
-                            [ U ]
-                            [
-                              ("value",
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                                  M.get_trait_method (|
-                                    "core::convert::From",
+                          M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::cell::RefMut"
+                              [
+                                ("value",
+                                  M.call_closure (|
                                     Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
-                                    [],
-                                    [ Ty.apply (Ty.path "&mut") [] [ U ] ],
-                                    "from",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| a |) ]
-                                |));
-                              ("borrow", M.read (| borrow |));
-                              ("marker",
-                                Value.StructTuple
-                                  "core::marker::PhantomData"
-                                  []
-                                  [ Ty.apply (Ty.path "&mut") [] [ U ] ]
-                                  [])
-                            ];
-                          Value.mkStructRecord
-                            "core::cell::RefMut"
-                            []
-                            [ V ]
-                            [
-                              ("value",
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ V ],
-                                  M.get_trait_method (|
-                                    "core::convert::From",
+                                    M.get_trait_method (|
+                                      "core::convert::From",
+                                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ U ],
+                                      [],
+                                      [ Ty.apply (Ty.path "&mut") [] [ U ] ],
+                                      "from",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| a |))
+                                        (Ty.apply (Ty.path "&mut") [] [ U ])
+                                    ]
+                                  |));
+                                ("borrow", M.read (| borrow |));
+                                ("marker",
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::marker::PhantomData" [])
+                                    (Ty.apply
+                                      (Ty.path "core::marker::PhantomData")
+                                      []
+                                      [ Ty.apply (Ty.path "&mut") [] [ U ] ]))
+                              ])
+                            (Ty.apply (Ty.path "core::cell::RefMut") [] [ U ]);
+                          M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::cell::RefMut"
+                              [
+                                ("value",
+                                  M.call_closure (|
                                     Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ V ],
-                                    [],
-                                    [ Ty.apply (Ty.path "&mut") [] [ V ] ],
-                                    "from",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| b |) ]
-                                |));
-                              ("borrow",
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    orig,
-                                    "core::cell::RefMut",
-                                    "borrow"
-                                  |)
-                                |));
-                              ("marker",
-                                Value.StructTuple
-                                  "core::marker::PhantomData"
-                                  []
-                                  [ Ty.apply (Ty.path "&mut") [] [ V ] ]
-                                  [])
-                            ]
+                                    M.get_trait_method (|
+                                      "core::convert::From",
+                                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ V ],
+                                      [],
+                                      [ Ty.apply (Ty.path "&mut") [] [ V ] ],
+                                      "from",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| b |))
+                                        (Ty.apply (Ty.path "&mut") [] [ V ])
+                                    ]
+                                  |));
+                                ("borrow",
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      orig,
+                                      "core::cell::RefMut",
+                                      "borrow"
+                                    |)
+                                  |));
+                                ("marker",
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::marker::PhantomData" [])
+                                    (Ty.apply
+                                      (Ty.path "core::marker::PhantomData")
+                                      []
+                                      [ Ty.apply (Ty.path "&mut") [] [ V ] ]))
+                              ])
+                            (Ty.apply (Ty.path "core::cell::RefMut") [] [ V ])
                         ]))
                 ]
               |)
@@ -5915,13 +6869,15 @@ Module cell.
                       [ Ty.path "core::cell::BorrowRefMut" ]
                     |),
                     [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          orig,
-                          "core::cell::RefMut",
-                          "borrow"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            orig,
+                            "core::cell::RefMut",
+                            "borrow"
+                          |)
+                        |))
+                        (Ty.path "core::cell::BorrowRefMut")
                     ]
                   |) in
                 M.alloc (|
@@ -5941,14 +6897,19 @@ Module cell.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  orig,
-                                  "core::cell::RefMut",
-                                  "value"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    orig,
+                                    "core::cell::RefMut",
+                                    "value"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
                             ]
                           |)
                         |)
@@ -6014,18 +6975,23 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::BorrowRefMut",
-                          "borrow"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::BorrowRefMut",
+                            "borrow"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -6056,7 +7022,11 @@ Module cell.
                                             M.call_closure (|
                                               Ty.path "bool",
                                               M.get_function (| "core::cell::is_writing", [], [] |),
-                                              [ M.read (| borrow |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| borrow |))
+                                                  (Ty.path "isize")
+                                              ]
                                             |)
                                           ]
                                         |)
@@ -6070,7 +7040,11 @@ Module cell.
                                     M.call_closure (|
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic", [], [] |),
-                                      [ mk_str (| "assertion failed: is_writing(borrow)" |) ]
+                                      [
+                                        M.value_with_ty
+                                          (mk_str (| "assertion failed: is_writing(borrow)" |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
                                     |)
                                   |)));
                               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -6091,23 +7065,30 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::BorrowRefMut",
-                          "borrow"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::BorrowRefMut",
+                            "borrow"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.call_closure (|
-                    Ty.path "isize",
-                    BinOp.Wrap.add,
-                    [ M.read (| borrow |); Value.Integer IntegerKind.Isize 1 ]
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "isize",
+                      BinOp.Wrap.add,
+                      [ M.read (| borrow |); Value.Integer IntegerKind.Isize 1 ]
+                    |))
+                    (Ty.path "isize")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6166,7 +7147,14 @@ Module cell.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| borrow |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| borrow |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ])
+                ]
               |)
             |),
             [
@@ -6188,15 +7176,24 @@ Module cell.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| borrow |) |) |);
-                          M.call_closure (|
-                            Ty.path "isize",
-                            BinOp.Wrap.sub,
-                            [
-                              M.read (| get_constant (| "core::cell::UNUSED", Ty.path "isize" |) |);
-                              Value.Integer IntegerKind.Isize 1
-                            ]
-                          |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| borrow |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "isize",
+                              BinOp.Wrap.sub,
+                              [
+                                M.read (|
+                                  get_constant (| "core::cell::UNUSED", Ty.path "isize" |)
+                                |);
+                                Value.Integer IntegerKind.Isize 1
+                              ]
+                            |))
+                            (Ty.path "isize")
                         ]
                       |) in
                     M.alloc (|
@@ -6204,29 +7201,36 @@ Module cell.
                         (Ty.path "core::option::Option")
                         []
                         [ Ty.path "core::cell::BorrowRefMut" ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "core::cell::BorrowRefMut" ]
-                        [
-                          Value.mkStructRecord
-                            "core::cell::BorrowRefMut"
-                            []
-                            []
-                            [
-                              ("borrow",
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| borrow |) |) |))
-                            ]
-                        ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "core::cell::BorrowRefMut"
+                                [
+                                  ("borrow",
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| borrow |) |)
+                                    |))
+                                ])
+                              (Ty.path "core::cell::BorrowRefMut")
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "core::cell::BorrowRefMut" ])
                     |)
                   |)));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "core::cell::BorrowRefMut" ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "core::cell::BorrowRefMut" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6263,18 +7267,23 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::BorrowRefMut",
-                          "borrow"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::BorrowRefMut",
+                            "borrow"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -6305,7 +7314,11 @@ Module cell.
                                             M.call_closure (|
                                               Ty.path "bool",
                                               M.get_function (| "core::cell::is_writing", [], [] |),
-                                              [ M.read (| borrow |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| borrow |))
+                                                  (Ty.path "isize")
+                                              ]
                                             |)
                                           ]
                                         |)
@@ -6319,7 +7332,11 @@ Module cell.
                                     M.call_closure (|
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic", [], [] |),
-                                      [ mk_str (| "assertion failed: is_writing(borrow)" |) ]
+                                      [
+                                        M.value_with_ty
+                                          (mk_str (| "assertion failed: is_writing(borrow)" |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
                                     |)
                                   |)));
                               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -6367,7 +7384,11 @@ Module cell.
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: borrow != BorrowFlag::MIN" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: borrow != BorrowFlag::MIN" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -6383,34 +7404,8 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::BorrowRefMut",
-                          "borrow"
-                        |)
-                      |)
-                    |)
-                  |);
-                  M.call_closure (|
-                    Ty.path "isize",
-                    BinOp.Wrap.sub,
-                    [ M.read (| borrow |); Value.Integer IntegerKind.Isize 1 ]
-                  |)
-                ]
-              |) in
-            M.alloc (|
-              Ty.path "core::cell::BorrowRefMut",
-              Value.mkStructRecord
-                "core::cell::BorrowRefMut"
-                []
-                []
-                [
-                  ("borrow",
-                    M.borrow (|
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
                       M.deref (|
                         M.read (|
@@ -6422,7 +7417,40 @@ Module cell.
                         |)
                       |)
                     |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ] ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "isize",
+                      BinOp.Wrap.sub,
+                      [ M.read (| borrow |); Value.Integer IntegerKind.Isize 1 ]
+                    |))
+                    (Ty.path "isize")
                 ]
+              |) in
+            M.alloc (|
+              Ty.path "core::cell::BorrowRefMut",
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::cell::BorrowRefMut"
+                  [
+                    ("borrow",
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::cell::BorrowRefMut",
+                              "borrow"
+                            |)
+                          |)
+                        |)
+                      |))
+                  ])
+                (Ty.path "core::cell::BorrowRefMut")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6484,14 +7512,19 @@ Module cell.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::cell::RefMut",
-                      "value"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::cell::RefMut",
+                        "value"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
                 ]
               |)
             |)
@@ -6547,14 +7580,19 @@ Module cell.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::cell::RefMut",
-                              "value"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::cell::RefMut",
+                                "value"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] ])
                         ]
                       |)
                     |)
@@ -6629,25 +7667,36 @@ Module cell.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_trait_method (| "core::fmt::Display", T, [], [], "fmt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.apply (Ty.path "core::cell::RefMut") [] [ T ],
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::RefMut") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6698,7 +7747,9 @@ Module cell.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| T, value |) in
-          Value.mkStructRecord "core::cell::UnsafeCell" [] [ T ] [ ("value", M.read (| value |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord "core::cell::UnsafeCell" [ ("value", M.read (| value |)) ])
+            (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6926,11 +7977,13 @@ Module cell.
               []
             |),
             [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                  []
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6968,7 +8021,7 @@ Module cell.
               [],
               []
             |),
-            [ M.read (| t |) ]
+            [ M.value_with_ty (M.read (| t |)) T ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -7044,18 +8097,18 @@ Module cell.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| T, value |) in
-          Value.mkStructRecord
-            "core::cell::SyncUnsafeCell"
-            []
-            [ T ]
-            [
-              ("value",
-                Value.mkStructRecord
-                  "core::cell::UnsafeCell"
-                  []
-                  [ T ]
-                  [ ("value", M.read (| value |)) ])
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::cell::SyncUnsafeCell"
+              [
+                ("value",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::cell::UnsafeCell"
+                      [ ("value", M.read (| value |)) ])
+                    (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ]))
+              ])
+            (Ty.apply (Ty.path "core::cell::SyncUnsafeCell") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -7086,13 +8139,15 @@ Module cell.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "core::cell::SyncUnsafeCell",
-                  "value"
-                |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_record_field (|
+                    self,
+                    "core::cell::SyncUnsafeCell",
+                    "value"
+                  |)
+                |))
+                (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7130,14 +8185,16 @@ Module cell.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::cell::SyncUnsafeCell",
-                  "value"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::cell::SyncUnsafeCell",
+                    "value"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7182,14 +8239,19 @@ Module cell.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::cell::SyncUnsafeCell",
-                          "value"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::cell::SyncUnsafeCell",
+                            "value"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ T ] ])
                     ]
                   |)
                 |)
@@ -7262,11 +8324,13 @@ Module cell.
               []
             |),
             [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                  []
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7304,7 +8368,7 @@ Module cell.
               [],
               []
             |),
-            [ M.read (| t |) ]
+            [ M.value_with_ty (M.read (| t |)) T ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.

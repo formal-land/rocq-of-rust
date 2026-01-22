@@ -22,40 +22,40 @@ Module Impl_core_default_Default_where_core_default_Default_K_where_core_default
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "dns::Mapping"
-          []
-          [ K; V ]
-          [
-            ("_key",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "dns::Mapping"
+            [
+              ("_key",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("_value",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("_value",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.apply (Ty.path "dns::Mapping") [] [ K; V ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -92,7 +92,11 @@ Module Impl_dns_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -124,7 +128,11 @@ Module Impl_dns_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -157,7 +165,11 @@ Module Impl_dns_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -183,7 +195,11 @@ Module Impl_dns_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -215,7 +231,11 @@ Module Impl_dns_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -247,7 +267,11 @@ Module Impl_dns_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -279,7 +303,11 @@ Module Impl_dns_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -308,25 +336,25 @@ Module Impl_core_default_Default_for_dns_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "dns::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "dns::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "dns::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -452,7 +480,11 @@ Module Impl_core_convert_From_array_Usize_32_u8_for_dns_AccountId.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -594,7 +626,11 @@ Module Impl_dns_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -653,7 +689,11 @@ Definition zero_address (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
           [],
           []
         |),
-        [ lib.repeat (| Value.Integer IntegerKind.U8 0, Value.Integer IntegerKind.Usize 32 |) ]
+        [
+          M.value_with_ty
+            (lib.repeat (| Value.Integer IntegerKind.U8 0, Value.Integer IntegerKind.Usize 32 |))
+            (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ])
+        ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
   end.
@@ -742,31 +782,54 @@ Module Impl_core_default_Default_for_dns_DomainNameService.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, name_to_address |);
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "array")
-                    [ Value.Integer IntegerKind.Usize 32 ]
-                    [ Ty.path "u8" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, name_to_address |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "dns::Mapping")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [ Ty.path "u8" ];
+                          Ty.path "dns::AccountId"
+                        ]
+                    ]);
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
                       (Ty.path "array")
                       [ Value.Integer IntegerKind.Usize 32 ]
                       [ Ty.path "u8" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |);
-                M.call_closure (|
-                  Ty.path "dns::AccountId",
-                  M.get_function (| "dns::zero_address", [], [] |),
-                  []
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 32 ]
+                    [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "dns::AccountId",
+                    M.get_function (| "dns::zero_address", [], [] |),
+                    []
+                  |))
+                  (Ty.path "dns::AccountId")
               ]
             |) in
           let~ name_to_owner :
@@ -827,49 +890,72 @@ Module Impl_core_default_Default_for_dns_DomainNameService.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, name_to_owner |);
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "array")
-                    [ Value.Integer IntegerKind.Usize 32 ]
-                    [ Ty.path "u8" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, name_to_owner |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "dns::Mapping")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [ Ty.path "u8" ];
+                          Ty.path "dns::AccountId"
+                        ]
+                    ]);
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
                       (Ty.path "array")
                       [ Value.Integer IntegerKind.Usize 32 ]
                       [ Ty.path "u8" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |);
-                M.call_closure (|
-                  Ty.path "dns::AccountId",
-                  M.get_function (| "dns::zero_address", [], [] |),
-                  []
-                |)
-              ]
-            |) in
-          M.alloc (|
-            Ty.path "dns::DomainNameService",
-            Value.mkStructRecord
-              "dns::DomainNameService"
-              []
-              []
-              [
-                ("name_to_address", M.read (| name_to_address |));
-                ("name_to_owner", M.read (| name_to_owner |));
-                ("default_address",
-                  M.call_closure (|
+                  |))
+                  (Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 32 ]
+                    [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "dns::AccountId",
                     M.get_function (| "dns::zero_address", [], [] |),
                     []
                   |))
+                  (Ty.path "dns::AccountId")
               ]
+            |) in
+          M.alloc (|
+            Ty.path "dns::DomainNameService",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "dns::DomainNameService"
+                [
+                  ("name_to_address", M.read (| name_to_address |));
+                  ("name_to_owner", M.read (| name_to_owner |));
+                  ("default_address",
+                    M.call_closure (|
+                      Ty.path "dns::AccountId",
+                      M.get_function (| "dns::zero_address", [], [] |),
+                      []
+                    |))
+                ])
+              (Ty.path "dns::DomainNameService")
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -937,7 +1023,11 @@ Module Impl_core_cmp_PartialEq_dns_Error_for_dns_Error.
                 [],
                 [ Ty.path "dns::Error" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "dns::Error" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -947,7 +1037,11 @@ Module Impl_core_cmp_PartialEq_dns_Error_for_dns_Error.
                 [],
                 [ Ty.path "dns::Error" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "dns::Error" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -1018,7 +1112,11 @@ Module Impl_dns_DomainNameService.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1114,22 +1212,28 @@ Module Impl_dns_DomainNameService.
                   Ty.path "dns::AccountId",
                   M.get_associated_function (| Ty.path "dns::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "dns::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "dns::Env",
-                          M.get_associated_function (|
-                            Ty.path "dns::DomainNameService",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "dns::Env",
+                            M.get_associated_function (|
+                              Ty.path "dns::DomainNameService",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "dns::Env" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1161,18 +1265,44 @@ Module Impl_dns_DomainNameService.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "dns::DomainNameService",
-                                      "name_to_owner"
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "dns::DomainNameService",
+                                        "name_to_owner"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "dns::Mapping")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 32 ]
+                                              [ Ty.path "u8" ];
+                                            Ty.path "dns::AccountId"
+                                          ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                          [ Ty.path "u8" ]
+                                      ])
                                 ]
                               |)
                             |)) in
@@ -1180,11 +1310,18 @@ Module Impl_dns_DomainNameService.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "dns::Error" ]
-                                [ Value.StructTuple "dns::Error::NameAlreadyExists" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "dns::Error::NameAlreadyExists" [])
+                                      (Ty.path "dns::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "dns::Error" ])
                             |)
                           |)
                         |)));
@@ -1210,16 +1347,37 @@ Module Impl_dns_DomainNameService.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "dns::DomainNameService",
-                        "name_to_owner"
-                      |)
-                    |);
-                    M.read (| name |);
-                    M.read (| caller |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "dns::DomainNameService",
+                          "name_to_owner"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "dns::Mapping")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ];
+                              Ty.path "dns::AccountId"
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| name |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]);
+                    M.value_with_ty (M.read (| caller |)) (Ty.path "dns::AccountId")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1227,42 +1385,51 @@ Module Impl_dns_DomainNameService.
                   Ty.tuple [],
                   M.get_associated_function (| Ty.path "dns::Env", "emit_event", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "dns::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "dns::Env",
-                          M.get_associated_function (|
-                            Ty.path "dns::DomainNameService",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "dns::Env",
+                            M.get_associated_function (|
+                              Ty.path "dns::DomainNameService",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    Value.StructTuple
-                      "dns::Event::Register"
-                      []
-                      []
-                      [
-                        Value.mkStructRecord
-                          "dns::Register"
-                          []
-                          []
-                          [ ("name", M.read (| name |)); ("from", M.read (| caller |)) ]
-                      ]
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "dns::Env" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "dns::Event::Register"
+                          [
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "dns::Register"
+                                [ ("name", M.read (| name |)); ("from", M.read (| caller |)) ])
+                              (Ty.path "dns::Register")
+                          ])
+                        (Ty.path "dns::Event"))
+                      (Ty.path "dns::Event")
                   ]
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "dns::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "dns::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "dns::Error" ])
               |)
             |)))
         |)))
@@ -1300,42 +1467,75 @@ Module Impl_dns_DomainNameService.
             []
           |),
           [
-            M.call_closure (|
-              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "dns::AccountId" ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "dns::Mapping")
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "dns::AccountId" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "dns::Mapping")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ];
+                      Ty.path "dns::AccountId"
+                    ],
+                  "get",
+                  [],
                   []
-                  [
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 32 ]
-                      [ Ty.path "u8" ];
-                    Ty.path "dns::AccountId"
-                  ],
-                "get",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "dns::DomainNameService",
-                    "name_to_owner"
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |) |)
-              ]
-            |);
-            M.read (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "dns::DomainNameService",
-                "default_address"
-              |)
-            |)
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "dns::DomainNameService",
+                        "name_to_owner"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "dns::Mapping")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [ Ty.path "u8" ];
+                            Ty.path "dns::AccountId"
+                          ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [ Ty.path "u8" ]
+                      ])
+                ]
+              |))
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "dns::AccountId" ]);
+            M.value_with_ty
+              (M.read (|
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "dns::DomainNameService",
+                  "default_address"
+                |)
+              |))
+              (Ty.path "dns::AccountId")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1387,22 +1587,28 @@ Module Impl_dns_DomainNameService.
                   Ty.path "dns::AccountId",
                   M.get_associated_function (| Ty.path "dns::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "dns::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "dns::Env",
-                          M.get_associated_function (|
-                            Ty.path "dns::DomainNameService",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "dns::Env",
+                            M.get_associated_function (|
+                              Ty.path "dns::DomainNameService",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "dns::Env" ])
                   ]
                 |) in
               let~ owner : Ty.path "dns::AccountId" :=
@@ -1415,8 +1621,15 @@ Module Impl_dns_DomainNameService.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| name |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ]);
+                    M.value_with_ty
+                      (M.read (| name |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1442,8 +1655,12 @@ Module Impl_dns_DomainNameService.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, caller |);
-                                  M.borrow (| Pointer.Kind.Ref, owner |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, caller |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "dns::AccountId" ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, owner |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "dns::AccountId" ])
                                 ]
                               |)
                             |)) in
@@ -1451,11 +1668,18 @@ Module Impl_dns_DomainNameService.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "dns::Error" ]
-                                [ Value.StructTuple "dns::Error::CallerIsNotOwner" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "dns::Error::CallerIsNotOwner" [])
+                                      (Ty.path "dns::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "dns::Error" ])
                             |)
                           |)
                         |)));
@@ -1482,18 +1706,44 @@ Module Impl_dns_DomainNameService.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "dns::DomainNameService",
-                        "name_to_address"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "dns::DomainNameService",
+                          "name_to_address"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "dns::Mapping")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ];
+                              Ty.path "dns::AccountId"
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [ Ty.path "u8" ]
+                        ])
                   ]
                 |) in
               let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
@@ -1515,16 +1765,37 @@ Module Impl_dns_DomainNameService.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "dns::DomainNameService",
-                        "name_to_address"
-                      |)
-                    |);
-                    M.read (| name |);
-                    M.read (| new_address |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "dns::DomainNameService",
+                          "name_to_address"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "dns::Mapping")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ];
+                              Ty.path "dns::AccountId"
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| name |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]);
+                    M.value_with_ty (M.read (| new_address |)) (Ty.path "dns::AccountId")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1532,47 +1803,56 @@ Module Impl_dns_DomainNameService.
                   Ty.tuple [],
                   M.get_associated_function (| Ty.path "dns::Env", "emit_event", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "dns::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "dns::Env",
-                          M.get_associated_function (|
-                            Ty.path "dns::DomainNameService",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "dns::Env",
+                            M.get_associated_function (|
+                              Ty.path "dns::DomainNameService",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    Value.StructTuple
-                      "dns::Event::SetAddress"
-                      []
-                      []
-                      [
-                        Value.mkStructRecord
-                          "dns::SetAddress"
-                          []
-                          []
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "dns::Env" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "dns::Event::SetAddress"
                           [
-                            ("name", M.read (| name |));
-                            ("from", M.read (| caller |));
-                            ("old_address", M.read (| old_address |));
-                            ("new_address", M.read (| new_address |))
-                          ]
-                      ]
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "dns::SetAddress"
+                                [
+                                  ("name", M.read (| name |));
+                                  ("from", M.read (| caller |));
+                                  ("old_address", M.read (| old_address |));
+                                  ("new_address", M.read (| new_address |))
+                                ])
+                              (Ty.path "dns::SetAddress")
+                          ])
+                        (Ty.path "dns::Event"))
+                      (Ty.path "dns::Event")
                   ]
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "dns::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "dns::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "dns::Error" ])
               |)
             |)))
         |)))
@@ -1626,22 +1906,28 @@ Module Impl_dns_DomainNameService.
                   Ty.path "dns::AccountId",
                   M.get_associated_function (| Ty.path "dns::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "dns::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "dns::Env",
-                          M.get_associated_function (|
-                            Ty.path "dns::DomainNameService",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "dns::Env",
+                            M.get_associated_function (|
+                              Ty.path "dns::DomainNameService",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "dns::Env" ])
                   ]
                 |) in
               let~ owner : Ty.path "dns::AccountId" :=
@@ -1654,8 +1940,15 @@ Module Impl_dns_DomainNameService.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| name |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ]);
+                    M.value_with_ty
+                      (M.read (| name |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1681,8 +1974,12 @@ Module Impl_dns_DomainNameService.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, caller |);
-                                  M.borrow (| Pointer.Kind.Ref, owner |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, caller |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "dns::AccountId" ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, owner |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "dns::AccountId" ])
                                 ]
                               |)
                             |)) in
@@ -1690,11 +1987,18 @@ Module Impl_dns_DomainNameService.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "dns::Error" ]
-                                [ Value.StructTuple "dns::Error::CallerIsNotOwner" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "dns::Error::CallerIsNotOwner" [])
+                                      (Ty.path "dns::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "dns::Error" ])
                             |)
                           |)
                         |)));
@@ -1721,18 +2025,44 @@ Module Impl_dns_DomainNameService.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "dns::DomainNameService",
-                        "name_to_owner"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "dns::DomainNameService",
+                          "name_to_owner"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "dns::Mapping")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ];
+                              Ty.path "dns::AccountId"
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [ Ty.path "u8" ]
+                        ])
                   ]
                 |) in
               let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
@@ -1754,16 +2084,37 @@ Module Impl_dns_DomainNameService.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "dns::DomainNameService",
-                        "name_to_owner"
-                      |)
-                    |);
-                    M.read (| name |);
-                    M.read (| to |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "dns::DomainNameService",
+                          "name_to_owner"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "dns::Mapping")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 32 ]
+                                [ Ty.path "u8" ];
+                              Ty.path "dns::AccountId"
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| name |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]);
+                    M.value_with_ty (M.read (| to |)) (Ty.path "dns::AccountId")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1771,47 +2122,56 @@ Module Impl_dns_DomainNameService.
                   Ty.tuple [],
                   M.get_associated_function (| Ty.path "dns::Env", "emit_event", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "dns::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "dns::Env",
-                          M.get_associated_function (|
-                            Ty.path "dns::DomainNameService",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "dns::Env",
+                            M.get_associated_function (|
+                              Ty.path "dns::DomainNameService",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    Value.StructTuple
-                      "dns::Event::Transfer"
-                      []
-                      []
-                      [
-                        Value.mkStructRecord
-                          "dns::Transfer"
-                          []
-                          []
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "dns::Env" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "dns::Event::Transfer"
                           [
-                            ("name", M.read (| name |));
-                            ("from", M.read (| caller |));
-                            ("old_owner", M.read (| old_owner |));
-                            ("new_owner", M.read (| to |))
-                          ]
-                      ]
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "dns::Transfer"
+                                [
+                                  ("name", M.read (| name |));
+                                  ("from", M.read (| caller |));
+                                  ("old_owner", M.read (| old_owner |));
+                                  ("new_owner", M.read (| to |))
+                                ])
+                              (Ty.path "dns::Transfer")
+                          ])
+                        (Ty.path "dns::Event"))
+                      (Ty.path "dns::Event")
                   ]
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "dns::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "dns::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "dns::Error" ])
               |)
             |)))
         |)))
@@ -1849,42 +2209,75 @@ Module Impl_dns_DomainNameService.
             []
           |),
           [
-            M.call_closure (|
-              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "dns::AccountId" ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "dns::Mapping")
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "dns::AccountId" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "dns::Mapping")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ];
+                      Ty.path "dns::AccountId"
+                    ],
+                  "get",
+                  [],
                   []
-                  [
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 32 ]
-                      [ Ty.path "u8" ];
-                    Ty.path "dns::AccountId"
-                  ],
-                "get",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "dns::DomainNameService",
-                    "name_to_address"
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |) |)
-              ]
-            |);
-            M.read (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "dns::DomainNameService",
-                "default_address"
-              |)
-            |)
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "dns::DomainNameService",
+                        "name_to_address"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "dns::Mapping")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [ Ty.path "u8" ];
+                            Ty.path "dns::AccountId"
+                          ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, name |) |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [ Ty.path "u8" ]
+                      ])
+                ]
+              |))
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "dns::AccountId" ]);
+            M.value_with_ty
+              (M.read (|
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "dns::DomainNameService",
+                  "default_address"
+                |)
+              |))
+              (Ty.path "dns::AccountId")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1919,7 +2312,14 @@ Module Impl_dns_DomainNameService.
             [],
             []
           |),
-          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| name |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ]);
+            M.value_with_ty
+              (M.read (| name |))
+              (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -1953,7 +2353,14 @@ Module Impl_dns_DomainNameService.
             [],
             []
           |),
-          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| name |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "dns::DomainNameService" ]);
+            M.value_with_ty
+              (M.read (| name |))
+              (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.

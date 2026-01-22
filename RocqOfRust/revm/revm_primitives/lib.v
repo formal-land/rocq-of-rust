@@ -23,12 +23,14 @@ Definition value_KECCAK_EMPTY (ε : list Value.t) (τ : list Ty.t) (α : list Va
           []
         |),
         [
-          M.read (|
-            get_constant (|
-              "revm_primitives::KECCAK_EMPTY::RES",
-              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
-            |)
-          |)
+          M.value_with_ty
+            (M.read (|
+              get_constant (|
+                "revm_primitives::KECCAK_EMPTY::RES",
+                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ]
+              |)
+            |))
+            (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ])
         ]
       |)
     |))).

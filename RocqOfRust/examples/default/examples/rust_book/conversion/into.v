@@ -22,7 +22,9 @@ Module Impl_core_convert_From_i32_for_into_Number.
     | [], [], [ item ] =>
       ltac:(M.monadic
         (let item := M.alloc (| Ty.path "i32", item |) in
-        Value.mkStructRecord "into::Number" [] [] [ ("value", M.read (| item |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord "into::Number" [ ("value", M.read (| item |)) ])
+          (Ty.path "into::Number")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -57,7 +59,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ Value.Integer IntegerKind.I32 5 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.I32 5) (Ty.path "i32") ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

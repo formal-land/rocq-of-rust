@@ -24,7 +24,10 @@ Definition calc_linear_cost_u32 (ε : list Value.t) (τ : list Ty.t) (α : list 
               M.call_closure (|
                 Ty.path "u64",
                 M.get_associated_function (| Ty.path "u64", "div_ceil", [], [] |),
-                [ M.cast (Ty.path "u64") (M.read (| len |)); Value.Integer IntegerKind.U64 32 ]
+                [
+                  M.value_with_ty (M.cast (Ty.path "u64") (M.read (| len |))) (Ty.path "u64");
+                  M.value_with_ty (Value.Integer IntegerKind.U64 32) (Ty.path "u64")
+                ]
               |);
               M.read (| word |)
             ]
@@ -91,34 +94,12 @@ Module Impl_core_clone_Clone_for_revm_precompile_Precompiles.
             Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::Precompiles" ],
             self
           |) in
-        Value.mkStructRecord
-          "revm_precompile::Precompiles"
-          []
-          []
-          [
-            ("inner",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "std::collections::hash::map::HashMap")
-                  []
-                  [
-                    Ty.path "alloy_primitives::bits::address::Address";
-                    Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                        Ty.path "u64"
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.path "revm_precompile::interface::PrecompileOutput";
-                          Ty.path "revm_precompile::interface::PrecompileErrors"
-                        ]);
-                    Ty.path "std::hash::random::RandomState"
-                  ],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+        M.value_with_ty
+          (Value.mkStructRecord
+            "revm_precompile::Precompiles"
+            [
+              ("inner",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "std::collections::hash::map::HashMap")
                     []
@@ -138,39 +119,79 @@ Module Impl_core_clone_Clone_for_revm_precompile_Precompiles.
                           ]);
                       Ty.path "std::hash::random::RandomState"
                     ],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_precompile::Precompiles",
-                          "inner"
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |));
-            ("addresses",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "std::collections::hash::set::HashSet")
-                  []
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply
+                      (Ty.path "std::collections::hash::map::HashMap")
+                      []
+                      [
+                        Ty.path "alloy_primitives::bits::address::Address";
+                        Ty.function
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                            Ty.path "u64"
+                          ]
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "revm_precompile::interface::PrecompileOutput";
+                              Ty.path "revm_precompile::interface::PrecompileErrors"
+                            ]);
+                        Ty.path "std::hash::random::RandomState"
+                      ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
                   [
-                    Ty.path "alloy_primitives::bits::address::Address";
-                    Ty.path "std::hash::random::RandomState"
-                  ],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_precompile::Precompiles",
+                              "inner"
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "std::collections::hash::map::HashMap")
+                            []
+                            [
+                              Ty.path "alloy_primitives::bits::address::Address";
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                                  Ty.path "u64"
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ]);
+                              Ty.path "std::hash::random::RandomState"
+                            ]
+                        ])
+                  ]
+                |));
+              ("addresses",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "std::collections::hash::set::HashSet")
                     []
@@ -178,29 +199,52 @@ Module Impl_core_clone_Clone_for_revm_precompile_Precompiles.
                       Ty.path "alloy_primitives::bits::address::Address";
                       Ty.path "std::hash::random::RandomState"
                     ],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply
+                      (Ty.path "std::collections::hash::set::HashSet")
+                      []
+                      [
+                        Ty.path "alloy_primitives::bits::address::Address";
+                        Ty.path "std::hash::random::RandomState"
+                      ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_precompile::Precompiles",
-                          "addresses"
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_precompile::Precompiles",
+                              "addresses"
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |))
-          ]))
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "std::collections::hash::set::HashSet")
+                            []
+                            [
+                              Ty.path "alloy_primitives::bits::address::Address";
+                              Ty.path "std::hash::random::RandomState"
+                            ]
+                        ])
+                  ]
+                |))
+            ])
+          (Ty.path "revm_precompile::Precompiles")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -221,34 +265,12 @@ Module Impl_core_default_Default_for_revm_precompile_Precompiles.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "revm_precompile::Precompiles"
-          []
-          []
-          [
-            ("inner",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "std::collections::hash::map::HashMap")
-                  []
-                  [
-                    Ty.path "alloy_primitives::bits::address::Address";
-                    Ty.function
-                      [
-                        Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                        Ty.path "u64"
-                      ]
-                      (Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.path "revm_precompile::interface::PrecompileOutput";
-                          Ty.path "revm_precompile::interface::PrecompileErrors"
-                        ]);
-                    Ty.path "std::hash::random::RandomState"
-                  ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "revm_precompile::Precompiles"
+            [
+              ("inner",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "std::collections::hash::map::HashMap")
                     []
@@ -268,25 +290,37 @@ Module Impl_core_default_Default_for_revm_precompile_Precompiles.
                           ]);
                       Ty.path "std::hash::random::RandomState"
                     ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "std::collections::hash::map::HashMap")
+                      []
+                      [
+                        Ty.path "alloy_primitives::bits::address::Address";
+                        Ty.function
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                            Ty.path "u64"
+                          ]
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "revm_precompile::interface::PrecompileOutput";
+                              Ty.path "revm_precompile::interface::PrecompileErrors"
+                            ]);
+                        Ty.path "std::hash::random::RandomState"
+                      ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("addresses",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "std::collections::hash::set::HashSet")
-                  []
-                  [
-                    Ty.path "alloy_primitives::bits::address::Address";
-                    Ty.path "std::hash::random::RandomState"
-                  ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("addresses",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "std::collections::hash::set::HashSet")
                     []
@@ -294,15 +328,25 @@ Module Impl_core_default_Default_for_revm_precompile_Precompiles.
                       Ty.path "alloy_primitives::bits::address::Address";
                       Ty.path "std::hash::random::RandomState"
                     ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "std::collections::hash::set::HashSet")
+                      []
+                      [
+                        Ty.path "alloy_primitives::bits::address::Address";
+                        Ty.path "std::hash::random::RandomState"
+                      ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "revm_precompile::Precompiles")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -338,110 +382,125 @@ Module Impl_core_fmt_Debug_for_revm_precompile_Precompiles.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Precompiles" |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "std::collections::hash::map::HashMap")
-                      []
-                      [
-                        Ty.path "alloy_primitives::bits::address::Address";
-                        Ty.function
-                          [
-                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                            Ty.path "u64"
-                          ]
-                          (Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Precompiles" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "std::collections::hash::map::HashMap")
+                        []
+                        [
+                          Ty.path "alloy_primitives::bits::address::Address";
+                          Ty.function
                             [
-                              Ty.path "revm_precompile::interface::PrecompileOutput";
-                              Ty.path "revm_precompile::interface::PrecompileErrors"
-                            ]);
-                        Ty.path "std::hash::random::RandomState"
-                      ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_precompile::Precompiles",
-                        "inner"
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                              Ty.path "u64"
+                            ]
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "revm_precompile::interface::PrecompileOutput";
+                                Ty.path "revm_precompile::interface::PrecompileErrors"
+                              ]);
+                          Ty.path "std::hash::random::RandomState"
+                        ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_precompile::Precompiles",
+                          "inner"
+                        |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "addresses" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "std::collections::hash::set::HashSet")
-                          []
-                          [
-                            Ty.path "alloy_primitives::bits::address::Address";
-                            Ty.path "std::hash::random::RandomState"
-                          ]
-                      ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "std::collections::hash::set::HashSet")
-                              []
-                              [
-                                Ty.path "alloy_primitives::bits::address::Address";
-                                Ty.path "std::hash::random::RandomState"
-                              ]
-                          ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_precompile::Precompiles",
-                            "addresses"
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "addresses" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "std::collections::hash::set::HashSet")
+                            []
+                            [
+                              Ty.path "alloy_primitives::bits::address::Address";
+                              Ty.path "std::hash::random::RandomState"
+                            ]
+                        ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "std::collections::hash::set::HashSet")
+                                []
+                                [
+                                  Ty.path "alloy_primitives::bits::address::Address";
+                                  Ty.path "std::hash::random::RandomState"
+                                ]
+                            ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_precompile::Precompiles",
+                              "addresses"
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -625,112 +684,130 @@ Module Impl_revm_precompile_Precompiles.
                 ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      get_constant (|
-                        "revm_precompile::homestead::INSTANCE",
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "once_cell::race::once_box::OnceBox")
-                              []
-                              [ Ty.path "revm_precompile::Precompiles" ]
-                          ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        get_constant (|
+                          "revm_precompile::homestead::INSTANCE",
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "once_cell::race::once_box::OnceBox")
+                                []
+                                [ Ty.path "revm_precompile::Precompiles" ]
+                            ]
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "once_cell::race::once_box::OnceBox")
+                        []
+                        [ Ty.path "revm_precompile::Precompiles" ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.path "revm_precompile::Precompiles";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.alloc (| Ty.tuple [], α0 |),
                               [
-                                Ty.path "revm_precompile::Precompiles";
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            M.alloc (| Ty.tuple [], α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (M.read (|
-                                    let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
-                                      M.call_closure (|
-                                        Ty.path "revm_precompile::Precompiles",
-                                        M.get_trait_method (|
-                                          "core::default::Default",
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
+                                        M.call_closure (|
                                           Ty.path "revm_precompile::Precompiles",
-                                          [],
-                                          [],
-                                          "default",
-                                          [],
+                                          M.get_trait_method (|
+                                            "core::default::Default",
+                                            Ty.path "revm_precompile::Precompiles",
+                                            [],
+                                            [],
+                                            "default",
+                                            [],
+                                            []
+                                          |),
                                           []
-                                        |),
-                                        []
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      M.call_closure (|
-                                        Ty.tuple [],
-                                        M.get_associated_function (|
-                                          Ty.path "revm_precompile::Precompiles",
-                                          "extend",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 4 ]
-                                              [ Ty.path "revm_precompile::PrecompileWithAddress" ]
-                                          ]
-                                        |),
-                                        [
-                                          M.borrow (| Pointer.Kind.MutRef, precompiles |);
-                                          Value.Array
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.call_closure (|
+                                          Ty.tuple [],
+                                          M.get_associated_function (|
+                                            Ty.path "revm_precompile::Precompiles",
+                                            "extend",
+                                            [],
                                             [
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::secp256k1::ECRECOVER",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::hash::SHA256",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::hash::RIPEMD160",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::identity::FUN",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |)
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 4 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress" ]
                                             ]
-                                        ]
-                                      |) in
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "alloc::boxed::Box")
-                                        []
-                                        [
-                                          Ty.path "revm_precompile::Precompiles";
-                                          Ty.path "alloc::alloc::Global"
-                                        ],
-                                      M.call_closure (|
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, precompiles |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "revm_precompile::Precompiles" ]);
+                                            M.value_with_ty
+                                              (Value.Array
+                                                [
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::secp256k1::ECRECOVER",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::hash::SHA256",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::hash::RIPEMD160",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::identity::FUN",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |)
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 4 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress"
+                                                ])
+                                          ]
+                                        |) in
+                                      M.alloc (|
                                         Ty.apply
                                           (Ty.path "alloc::boxed::Box")
                                           []
@@ -738,7 +815,7 @@ Module Impl_revm_precompile_Precompiles.
                                             Ty.path "revm_precompile::Precompiles";
                                             Ty.path "alloc::alloc::Global"
                                           ],
-                                        M.get_associated_function (|
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
@@ -746,18 +823,36 @@ Module Impl_revm_precompile_Precompiles.
                                               Ty.path "revm_precompile::Precompiles";
                                               Ty.path "alloc::alloc::Global"
                                             ],
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| precompiles |) ]
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.path "revm_precompile::Precompiles";
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            "new",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| precompiles |))
+                                              (Ty.path "revm_precompile::Precompiles")
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    []
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [ Ty.path "revm_precompile::Precompiles"; Ty.path "alloc::alloc::Global" ]))
               ]
             |)
           |)
@@ -848,131 +943,154 @@ Module Impl_revm_precompile_Precompiles.
                 ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      get_constant (|
-                        "revm_precompile::byzantium::INSTANCE",
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "once_cell::race::once_box::OnceBox")
-                              []
-                              [ Ty.path "revm_precompile::Precompiles" ]
-                          ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        get_constant (|
+                          "revm_precompile::byzantium::INSTANCE",
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "once_cell::race::once_box::OnceBox")
+                                []
+                                [ Ty.path "revm_precompile::Precompiles" ]
+                            ]
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "once_cell::race::once_box::OnceBox")
+                        []
+                        [ Ty.path "revm_precompile::Precompiles" ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.path "revm_precompile::Precompiles";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.alloc (| Ty.tuple [], α0 |),
                               [
-                                Ty.path "revm_precompile::Precompiles";
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            M.alloc (| Ty.tuple [], α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (M.read (|
-                                    let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
-                                      M.call_closure (|
-                                        Ty.path "revm_precompile::Precompiles",
-                                        M.get_trait_method (|
-                                          "core::clone::Clone",
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
+                                        M.call_closure (|
                                           Ty.path "revm_precompile::Precompiles",
-                                          [],
-                                          [],
-                                          "clone",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [ Ty.path "revm_precompile::Precompiles" ],
-                                                M.get_associated_function (|
-                                                  Ty.path "revm_precompile::Precompiles",
-                                                  "homestead",
-                                                  [],
-                                                  []
-                                                |),
-                                                []
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      M.call_closure (|
-                                        Ty.tuple [],
-                                        M.get_associated_function (|
-                                          Ty.path "revm_precompile::Precompiles",
-                                          "extend",
-                                          [],
+                                          M.get_trait_method (|
+                                            "core::clone::Clone",
+                                            Ty.path "revm_precompile::Precompiles",
+                                            [],
+                                            [],
+                                            "clone",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 4 ]
-                                              [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "revm_precompile::Precompiles" ],
+                                                    M.get_associated_function (|
+                                                      Ty.path "revm_precompile::Precompiles",
+                                                      "homestead",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    []
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "revm_precompile::Precompiles" ])
                                           ]
-                                        |),
-                                        [
-                                          M.borrow (| Pointer.Kind.MutRef, precompiles |);
-                                          Value.Array
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.call_closure (|
+                                          Ty.tuple [],
+                                          M.get_associated_function (|
+                                            Ty.path "revm_precompile::Precompiles",
+                                            "extend",
+                                            [],
                                             [
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::bn128::add::BYZANTIUM",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::bn128::mul::BYZANTIUM",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::bn128::pair::BYZANTIUM",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::modexp::BYZANTIUM",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |)
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 4 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress" ]
                                             ]
-                                        ]
-                                      |) in
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "alloc::boxed::Box")
-                                        []
-                                        [
-                                          Ty.path "revm_precompile::Precompiles";
-                                          Ty.path "alloc::alloc::Global"
-                                        ],
-                                      M.call_closure (|
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, precompiles |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "revm_precompile::Precompiles" ]);
+                                            M.value_with_ty
+                                              (Value.Array
+                                                [
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::bn128::add::BYZANTIUM",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::bn128::mul::BYZANTIUM",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::bn128::pair::BYZANTIUM",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::modexp::BYZANTIUM",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |)
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 4 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress"
+                                                ])
+                                          ]
+                                        |) in
+                                      M.alloc (|
                                         Ty.apply
                                           (Ty.path "alloc::boxed::Box")
                                           []
@@ -980,7 +1098,7 @@ Module Impl_revm_precompile_Precompiles.
                                             Ty.path "revm_precompile::Precompiles";
                                             Ty.path "alloc::alloc::Global"
                                           ],
-                                        M.get_associated_function (|
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
@@ -988,18 +1106,36 @@ Module Impl_revm_precompile_Precompiles.
                                               Ty.path "revm_precompile::Precompiles";
                                               Ty.path "alloc::alloc::Global"
                                             ],
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| precompiles |) ]
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.path "revm_precompile::Precompiles";
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            "new",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| precompiles |))
+                                              (Ty.path "revm_precompile::Precompiles")
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    []
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [ Ty.path "revm_precompile::Precompiles"; Ty.path "alloc::alloc::Global" ]))
               ]
             |)
           |)
@@ -1055,131 +1191,154 @@ Module Impl_revm_precompile_Precompiles.
                 ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      get_constant (|
-                        "revm_precompile::istanbul::INSTANCE",
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "once_cell::race::once_box::OnceBox")
-                              []
-                              [ Ty.path "revm_precompile::Precompiles" ]
-                          ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        get_constant (|
+                          "revm_precompile::istanbul::INSTANCE",
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "once_cell::race::once_box::OnceBox")
+                                []
+                                [ Ty.path "revm_precompile::Precompiles" ]
+                            ]
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "once_cell::race::once_box::OnceBox")
+                        []
+                        [ Ty.path "revm_precompile::Precompiles" ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.path "revm_precompile::Precompiles";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.alloc (| Ty.tuple [], α0 |),
                               [
-                                Ty.path "revm_precompile::Precompiles";
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            M.alloc (| Ty.tuple [], α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (M.read (|
-                                    let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
-                                      M.call_closure (|
-                                        Ty.path "revm_precompile::Precompiles",
-                                        M.get_trait_method (|
-                                          "core::clone::Clone",
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
+                                        M.call_closure (|
                                           Ty.path "revm_precompile::Precompiles",
-                                          [],
-                                          [],
-                                          "clone",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [ Ty.path "revm_precompile::Precompiles" ],
-                                                M.get_associated_function (|
-                                                  Ty.path "revm_precompile::Precompiles",
-                                                  "byzantium",
-                                                  [],
-                                                  []
-                                                |),
-                                                []
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      M.call_closure (|
-                                        Ty.tuple [],
-                                        M.get_associated_function (|
-                                          Ty.path "revm_precompile::Precompiles",
-                                          "extend",
-                                          [],
+                                          M.get_trait_method (|
+                                            "core::clone::Clone",
+                                            Ty.path "revm_precompile::Precompiles",
+                                            [],
+                                            [],
+                                            "clone",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 4 ]
-                                              [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "revm_precompile::Precompiles" ],
+                                                    M.get_associated_function (|
+                                                      Ty.path "revm_precompile::Precompiles",
+                                                      "byzantium",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    []
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "revm_precompile::Precompiles" ])
                                           ]
-                                        |),
-                                        [
-                                          M.borrow (| Pointer.Kind.MutRef, precompiles |);
-                                          Value.Array
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.call_closure (|
+                                          Ty.tuple [],
+                                          M.get_associated_function (|
+                                            Ty.path "revm_precompile::Precompiles",
+                                            "extend",
+                                            [],
                                             [
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::bn128::add::ISTANBUL",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::bn128::mul::ISTANBUL",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::bn128::pair::ISTANBUL",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::blake2::FUN",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
-                                                |)
-                                              |)
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 4 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress" ]
                                             ]
-                                        ]
-                                      |) in
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "alloc::boxed::Box")
-                                        []
-                                        [
-                                          Ty.path "revm_precompile::Precompiles";
-                                          Ty.path "alloc::alloc::Global"
-                                        ],
-                                      M.call_closure (|
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, precompiles |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "revm_precompile::Precompiles" ]);
+                                            M.value_with_ty
+                                              (Value.Array
+                                                [
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::bn128::add::ISTANBUL",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::bn128::mul::ISTANBUL",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::bn128::pair::ISTANBUL",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |);
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::blake2::FUN",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |)
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 4 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress"
+                                                ])
+                                          ]
+                                        |) in
+                                      M.alloc (|
                                         Ty.apply
                                           (Ty.path "alloc::boxed::Box")
                                           []
@@ -1187,7 +1346,7 @@ Module Impl_revm_precompile_Precompiles.
                                             Ty.path "revm_precompile::Precompiles";
                                             Ty.path "alloc::alloc::Global"
                                           ],
-                                        M.get_associated_function (|
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
@@ -1195,18 +1354,36 @@ Module Impl_revm_precompile_Precompiles.
                                               Ty.path "revm_precompile::Precompiles";
                                               Ty.path "alloc::alloc::Global"
                                             ],
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| precompiles |) ]
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.path "revm_precompile::Precompiles";
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            "new",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| precompiles |))
+                                              (Ty.path "revm_precompile::Precompiles")
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    []
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [ Ty.path "revm_precompile::Precompiles"; Ty.path "alloc::alloc::Global" ]))
               ]
             |)
           |)
@@ -1257,113 +1434,133 @@ Module Impl_revm_precompile_Precompiles.
                 ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      get_constant (|
-                        "revm_precompile::berlin::INSTANCE",
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "once_cell::race::once_box::OnceBox")
-                              []
-                              [ Ty.path "revm_precompile::Precompiles" ]
-                          ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        get_constant (|
+                          "revm_precompile::berlin::INSTANCE",
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "once_cell::race::once_box::OnceBox")
+                                []
+                                [ Ty.path "revm_precompile::Precompiles" ]
+                            ]
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "once_cell::race::once_box::OnceBox")
+                        []
+                        [ Ty.path "revm_precompile::Precompiles" ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.path "revm_precompile::Precompiles";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.alloc (| Ty.tuple [], α0 |),
                               [
-                                Ty.path "revm_precompile::Precompiles";
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            M.alloc (| Ty.tuple [], α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (M.read (|
-                                    let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
-                                      M.call_closure (|
-                                        Ty.path "revm_precompile::Precompiles",
-                                        M.get_trait_method (|
-                                          "core::clone::Clone",
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
+                                        M.call_closure (|
                                           Ty.path "revm_precompile::Precompiles",
-                                          [],
-                                          [],
-                                          "clone",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [ Ty.path "revm_precompile::Precompiles" ],
-                                                M.get_associated_function (|
-                                                  Ty.path "revm_precompile::Precompiles",
-                                                  "istanbul",
-                                                  [],
-                                                  []
-                                                |),
-                                                []
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      M.call_closure (|
-                                        Ty.tuple [],
-                                        M.get_associated_function (|
-                                          Ty.path "revm_precompile::Precompiles",
-                                          "extend",
-                                          [],
+                                          M.get_trait_method (|
+                                            "core::clone::Clone",
+                                            Ty.path "revm_precompile::Precompiles",
+                                            [],
+                                            [],
+                                            "clone",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.path "revm_precompile::PrecompileWithAddress" ]
-                                          ]
-                                        |),
-                                        [
-                                          M.borrow (| Pointer.Kind.MutRef, precompiles |);
-                                          Value.Array
-                                            [
-                                              M.read (|
-                                                get_constant (|
-                                                  "revm_precompile::modexp::BERLIN",
-                                                  Ty.path "revm_precompile::PrecompileWithAddress"
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "revm_precompile::Precompiles" ],
+                                                    M.get_associated_function (|
+                                                      Ty.path "revm_precompile::Precompiles",
+                                                      "istanbul",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    []
+                                                  |)
                                                 |)
-                                              |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "revm_precompile::Precompiles" ])
+                                          ]
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.call_closure (|
+                                          Ty.tuple [],
+                                          M.get_associated_function (|
+                                            Ty.path "revm_precompile::Precompiles",
+                                            "extend",
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 1 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress" ]
                                             ]
-                                        ]
-                                      |) in
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "alloc::boxed::Box")
-                                        []
-                                        [
-                                          Ty.path "revm_precompile::Precompiles";
-                                          Ty.path "alloc::alloc::Global"
-                                        ],
-                                      M.call_closure (|
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, precompiles |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "revm_precompile::Precompiles" ]);
+                                            M.value_with_ty
+                                              (Value.Array
+                                                [
+                                                  M.read (|
+                                                    get_constant (|
+                                                      "revm_precompile::modexp::BERLIN",
+                                                      Ty.path
+                                                        "revm_precompile::PrecompileWithAddress"
+                                                    |)
+                                                  |)
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 1 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress"
+                                                ])
+                                          ]
+                                        |) in
+                                      M.alloc (|
                                         Ty.apply
                                           (Ty.path "alloc::boxed::Box")
                                           []
@@ -1371,7 +1568,7 @@ Module Impl_revm_precompile_Precompiles.
                                             Ty.path "revm_precompile::Precompiles";
                                             Ty.path "alloc::alloc::Global"
                                           ],
-                                        M.get_associated_function (|
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
@@ -1379,18 +1576,36 @@ Module Impl_revm_precompile_Precompiles.
                                               Ty.path "revm_precompile::Precompiles";
                                               Ty.path "alloc::alloc::Global"
                                             ],
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| precompiles |) ]
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.path "revm_precompile::Precompiles";
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            "new",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| precompiles |))
+                                              (Ty.path "revm_precompile::Precompiles")
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    []
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [ Ty.path "revm_precompile::Precompiles"; Ty.path "alloc::alloc::Global" ]))
               ]
             |)
           |)
@@ -1452,128 +1667,153 @@ Module Impl_revm_precompile_Precompiles.
                 ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      get_constant (|
-                        "revm_precompile::cancun::INSTANCE",
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "once_cell::race::once_box::OnceBox")
-                              []
-                              [ Ty.path "revm_precompile::Precompiles" ]
-                          ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        get_constant (|
+                          "revm_precompile::cancun::INSTANCE",
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "once_cell::race::once_box::OnceBox")
+                                []
+                                [ Ty.path "revm_precompile::Precompiles" ]
+                            ]
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "once_cell::race::once_box::OnceBox")
+                        []
+                        [ Ty.path "revm_precompile::Precompiles" ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.path "revm_precompile::Precompiles";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.alloc (| Ty.tuple [], α0 |),
                               [
-                                Ty.path "revm_precompile::Precompiles";
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            M.alloc (| Ty.tuple [], α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (M.read (|
-                                    let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
-                                      M.call_closure (|
-                                        Ty.path "revm_precompile::Precompiles",
-                                        M.get_trait_method (|
-                                          "core::clone::Clone",
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
+                                        M.call_closure (|
                                           Ty.path "revm_precompile::Precompiles",
-                                          [],
-                                          [],
-                                          "clone",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [ Ty.path "revm_precompile::Precompiles" ],
-                                                M.get_associated_function (|
-                                                  Ty.path "revm_precompile::Precompiles",
-                                                  "berlin",
-                                                  [],
-                                                  []
-                                                |),
-                                                []
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |) in
-                                    let~ precompile :
-                                        Ty.path "revm_precompile::PrecompileWithAddress" :=
-                                      M.call_closure (|
-                                        Ty.path "revm_precompile::PrecompileWithAddress",
-                                        M.get_trait_method (|
-                                          "core::clone::Clone",
-                                          Ty.path "revm_precompile::PrecompileWithAddress",
-                                          [],
-                                          [],
-                                          "clone",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            get_constant (|
-                                              "revm_precompile::kzg_point_evaluation::POINT_EVALUATION",
-                                              Ty.path "revm_precompile::PrecompileWithAddress"
-                                            |)
-                                          |)
-                                        ]
-                                      |) in
-                                    let~ _ : Ty.tuple [] :=
-                                      M.call_closure (|
-                                        Ty.tuple [],
-                                        M.get_associated_function (|
-                                          Ty.path "revm_precompile::Precompiles",
-                                          "extend",
-                                          [],
+                                          M.get_trait_method (|
+                                            "core::clone::Clone",
+                                            Ty.path "revm_precompile::Precompiles",
+                                            [],
+                                            [],
+                                            "clone",
+                                            [],
+                                            []
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "revm_precompile::Precompiles" ],
+                                                    M.get_associated_function (|
+                                                      Ty.path "revm_precompile::Precompiles",
+                                                      "berlin",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    []
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "revm_precompile::Precompiles" ])
                                           ]
-                                        |),
-                                        [
-                                          M.borrow (| Pointer.Kind.MutRef, precompiles |);
-                                          Value.Array [ M.read (| precompile |) ]
-                                        ]
-                                      |) in
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "alloc::boxed::Box")
-                                        []
-                                        [
-                                          Ty.path "revm_precompile::Precompiles";
-                                          Ty.path "alloc::alloc::Global"
-                                        ],
-                                      M.call_closure (|
+                                        |) in
+                                      let~ precompile :
+                                          Ty.path "revm_precompile::PrecompileWithAddress" :=
+                                        M.call_closure (|
+                                          Ty.path "revm_precompile::PrecompileWithAddress",
+                                          M.get_trait_method (|
+                                            "core::clone::Clone",
+                                            Ty.path "revm_precompile::PrecompileWithAddress",
+                                            [],
+                                            [],
+                                            "clone",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                get_constant (|
+                                                  "revm_precompile::kzg_point_evaluation::POINT_EVALUATION",
+                                                  Ty.path "revm_precompile::PrecompileWithAddress"
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress"
+                                                ])
+                                          ]
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.call_closure (|
+                                          Ty.tuple [],
+                                          M.get_associated_function (|
+                                            Ty.path "revm_precompile::Precompiles",
+                                            "extend",
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 1 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                                            ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, precompiles |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "revm_precompile::Precompiles" ]);
+                                            M.value_with_ty
+                                              (Value.Array [ M.read (| precompile |) ])
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 1 ]
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress"
+                                                ])
+                                          ]
+                                        |) in
+                                      M.alloc (|
                                         Ty.apply
                                           (Ty.path "alloc::boxed::Box")
                                           []
@@ -1581,7 +1821,7 @@ Module Impl_revm_precompile_Precompiles.
                                             Ty.path "revm_precompile::Precompiles";
                                             Ty.path "alloc::alloc::Global"
                                           ],
-                                        M.get_associated_function (|
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
@@ -1589,18 +1829,36 @@ Module Impl_revm_precompile_Precompiles.
                                               Ty.path "revm_precompile::Precompiles";
                                               Ty.path "alloc::alloc::Global"
                                             ],
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| precompiles |) ]
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.path "revm_precompile::Precompiles";
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            "new",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| precompiles |))
+                                              (Ty.path "revm_precompile::Precompiles")
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    []
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [ Ty.path "revm_precompile::Precompiles"; Ty.path "alloc::alloc::Global" ]))
               ]
             |)
           |)
@@ -1656,114 +1914,130 @@ Module Impl_revm_precompile_Precompiles.
                 ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      get_constant (|
-                        "revm_precompile::prague::INSTANCE",
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "once_cell::race::once_box::OnceBox")
-                              []
-                              [ Ty.path "revm_precompile::Precompiles" ]
-                          ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        get_constant (|
+                          "revm_precompile::prague::INSTANCE",
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "once_cell::race::once_box::OnceBox")
+                                []
+                                [ Ty.path "revm_precompile::Precompiles" ]
+                            ]
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "once_cell::race::once_box::OnceBox")
+                        []
+                        [ Ty.path "revm_precompile::Precompiles" ]
+                    ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.path "revm_precompile::Precompiles";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.alloc (| Ty.tuple [], α0 |),
                               [
-                                Ty.path "revm_precompile::Precompiles";
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            M.alloc (| Ty.tuple [], α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (M.read (|
-                                    let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
-                                      M.call_closure (|
-                                        Ty.path "revm_precompile::Precompiles",
-                                        M.get_trait_method (|
-                                          "core::clone::Clone",
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (M.read (|
+                                      let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
+                                        M.call_closure (|
                                           Ty.path "revm_precompile::Precompiles",
-                                          [],
-                                          [],
-                                          "clone",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [ Ty.path "revm_precompile::Precompiles" ],
-                                                M.get_associated_function (|
-                                                  Ty.path "revm_precompile::Precompiles",
-                                                  "cancun",
-                                                  [],
-                                                  []
-                                                |),
+                                          M.get_trait_method (|
+                                            "core::clone::Clone",
+                                            Ty.path "revm_precompile::Precompiles",
+                                            [],
+                                            [],
+                                            "clone",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "revm_precompile::Precompiles" ],
+                                                    M.get_associated_function (|
+                                                      Ty.path "revm_precompile::Precompiles",
+                                                      "cancun",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    []
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
                                                 []
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |) in
-                                    let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
-                                      M.read (|
-                                        let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
-                                          M.read (| precompiles |) in
-                                        let~ _ : Ty.tuple [] :=
-                                          M.call_closure (|
-                                            Ty.tuple [],
-                                            M.get_associated_function (|
-                                              Ty.path "revm_precompile::Precompiles",
-                                              "extend",
-                                              [],
-                                              [ Ty.associated_unknown ]
-                                            |),
-                                            [
-                                              M.borrow (| Pointer.Kind.MutRef, precompiles |);
-                                              M.call_closure (|
-                                                Ty.associated_unknown,
-                                                M.get_function (|
-                                                  "revm_precompile::bls12_381::precompiles",
-                                                  [],
-                                                  []
-                                                |),
-                                                []
-                                              |)
-                                            ]
-                                          |) in
-                                        precompiles
-                                      |) in
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "alloc::boxed::Box")
-                                        []
-                                        [
-                                          Ty.path "revm_precompile::Precompiles";
-                                          Ty.path "alloc::alloc::Global"
-                                        ],
-                                      M.call_closure (|
+                                                [ Ty.path "revm_precompile::Precompiles" ])
+                                          ]
+                                        |) in
+                                      let~ precompiles : Ty.path "revm_precompile::Precompiles" :=
+                                        M.read (|
+                                          let~ precompiles :
+                                              Ty.path "revm_precompile::Precompiles" :=
+                                            M.read (| precompiles |) in
+                                          let~ _ : Ty.tuple [] :=
+                                            M.call_closure (|
+                                              Ty.tuple [],
+                                              M.get_associated_function (|
+                                                Ty.path "revm_precompile::Precompiles",
+                                                "extend",
+                                                [],
+                                                [ Ty.associated_unknown ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.MutRef, precompiles |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.path "revm_precompile::Precompiles" ]);
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.associated_unknown,
+                                                    M.get_function (|
+                                                      "revm_precompile::bls12_381::precompiles",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    []
+                                                  |))
+                                                  Ty.associated_unknown
+                                              ]
+                                            |) in
+                                          precompiles
+                                        |) in
+                                      M.alloc (|
                                         Ty.apply
                                           (Ty.path "alloc::boxed::Box")
                                           []
@@ -1771,7 +2045,7 @@ Module Impl_revm_precompile_Precompiles.
                                             Ty.path "revm_precompile::Precompiles";
                                             Ty.path "alloc::alloc::Global"
                                           ],
-                                        M.get_associated_function (|
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "alloc::boxed::Box")
                                             []
@@ -1779,18 +2053,36 @@ Module Impl_revm_precompile_Precompiles.
                                               Ty.path "revm_precompile::Precompiles";
                                               Ty.path "alloc::alloc::Global"
                                             ],
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| precompiles |) ]
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.path "revm_precompile::Precompiles";
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            "new",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| precompiles |))
+                                              (Ty.path "revm_precompile::Precompiles")
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    []
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [ Ty.path "revm_precompile::Precompiles"; Ty.path "alloc::alloc::Global" ]))
               ]
             |)
           |)
@@ -1881,14 +2173,39 @@ Module Impl_revm_precompile_Precompiles.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_precompile::Precompiles",
-                "inner"
-              |)
-            |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "revm_precompile::Precompiles",
+                  "inner"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "std::collections::hash::map::HashMap")
+                    []
+                    [
+                      Ty.path "alloy_primitives::bits::address::Address";
+                      Ty.function
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                          Ty.path "u64"
+                        ]
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                          ]);
+                      Ty.path "std::hash::random::RandomState"
+                    ]
+                ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1953,13 +2270,33 @@ Module Impl_revm_precompile_Precompiles.
             []
           |),
           [
-            M.read (|
-              M.SubPointer.get_struct_record_field (|
-                self,
-                "revm_precompile::Precompiles",
-                "inner"
-              |)
-            |)
+            M.value_with_ty
+              (M.read (|
+                M.SubPointer.get_struct_record_field (|
+                  self,
+                  "revm_precompile::Precompiles",
+                  "inner"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "std::collections::hash::map::HashMap")
+                []
+                [
+                  Ty.path "alloy_primitives::bits::address::Address";
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.path "u64"
+                    ]
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_precompile::interface::PrecompileOutput";
+                        Ty.path "revm_precompile::interface::PrecompileErrors"
+                      ]);
+                  Ty.path "std::hash::random::RandomState"
+                ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2016,15 +2353,42 @@ Module Impl_revm_precompile_Precompiles.
             [ Ty.path "alloy_primitives::bits::address::Address" ]
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_precompile::Precompiles",
-                "inner"
-              |)
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "revm_precompile::Precompiles",
+                  "inner"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "std::collections::hash::map::HashMap")
+                    []
+                    [
+                      Ty.path "alloy_primitives::bits::address::Address";
+                      Ty.function
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                          Ty.path "u64"
+                        ]
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                          ]);
+                      Ty.path "std::hash::random::RandomState"
+                    ]
+                ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2101,15 +2465,42 @@ Module Impl_revm_precompile_Precompiles.
             [ Ty.path "alloy_primitives::bits::address::Address" ]
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_precompile::Precompiles",
-                "inner"
-              |)
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "revm_precompile::Precompiles",
+                  "inner"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "std::collections::hash::map::HashMap")
+                    []
+                    [
+                      Ty.path "alloy_primitives::bits::address::Address";
+                      Ty.function
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                          Ty.path "u64"
+                        ]
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                          ]);
+                      Ty.path "std::hash::random::RandomState"
+                    ]
+                ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2186,15 +2577,42 @@ Module Impl_revm_precompile_Precompiles.
             [ Ty.path "alloy_primitives::bits::address::Address" ]
           |),
           [
-            M.borrow (|
-              Pointer.Kind.MutRef,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_precompile::Precompiles",
-                "inner"
-              |)
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.MutRef,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "revm_precompile::Precompiles",
+                  "inner"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "std::collections::hash::map::HashMap")
+                    []
+                    [
+                      Ty.path "alloy_primitives::bits::address::Address";
+                      Ty.function
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                          Ty.path "u64"
+                        ]
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                          ]);
+                      Ty.path "std::hash::random::RandomState"
+                    ]
+                ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2249,14 +2667,42 @@ Module Impl_revm_precompile_Precompiles.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_precompile::Precompiles",
-                    "inner"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_precompile::Precompiles",
+                      "inner"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "std::collections::hash::map::HashMap")
+                        []
+                        [
+                          Ty.path "alloy_primitives::bits::address::Address";
+                          Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                              Ty.path "u64"
+                            ]
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "revm_precompile::interface::PrecompileOutput";
+                                Ty.path "revm_precompile::interface::PrecompileErrors"
+                              ]);
+                          Ty.path "std::hash::random::RandomState"
+                        ]
+                    ])
               ]
             |);
             Value.Integer IntegerKind.Usize 0
@@ -2310,14 +2756,39 @@ Module Impl_revm_precompile_Precompiles.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "revm_precompile::Precompiles",
-                "inner"
-              |)
-            |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "revm_precompile::Precompiles",
+                  "inner"
+                |)
+              |))
+              (Ty.apply
+                (Ty.path "&")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "std::collections::hash::map::HashMap")
+                    []
+                    [
+                      Ty.path "alloy_primitives::bits::address::Address";
+                      Ty.function
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                          Ty.path "u64"
+                        ]
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "revm_precompile::interface::PrecompileOutput";
+                            Ty.path "revm_precompile::interface::PrecompileErrors"
+                          ]);
+                      Ty.path "std::hash::random::RandomState"
+                    ]
+                ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2415,24 +2886,35 @@ Module Impl_revm_precompile_Precompiles.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.associated_in_trait
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.associated_in_trait
+                      "core::iter::traits::collect::IntoIterator"
+                      []
+                      []
+                      impl_IntoIterator_Item___PrecompileWithAddress_
+                      "IntoIter",
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::IntoIterator",
+                      impl_IntoIterator_Item___PrecompileWithAddress_,
+                      [],
+                      [],
+                      "into_iter",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| other |))
+                        impl_IntoIterator_Item___PrecompileWithAddress_
+                    ]
+                  |))
+                  (Ty.associated_in_trait
                     "core::iter::traits::collect::IntoIterator"
                     []
                     []
                     impl_IntoIterator_Item___PrecompileWithAddress_
-                    "IntoIter",
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::IntoIterator",
-                    impl_IntoIterator_Item___PrecompileWithAddress_,
-                    [],
-                    [],
-                    "into_iter",
-                    [],
-                    []
-                  |),
-                  [ M.read (| other |) ]
-                |)
+                    "IntoIter")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -2472,16 +2954,224 @@ Module Impl_revm_precompile_Precompiles.
                 ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_precompile::Precompiles",
-                    "addresses"
-                  |)
-                |);
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_precompile::Precompiles",
+                      "addresses"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "std::collections::hash::set::HashSet")
+                        []
+                        [
+                          Ty.path "alloy_primitives::bits::address::Address";
+                          Ty.path "std::hash::random::RandomState"
+                        ]
+                    ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::iter::adapters::map::Map")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::slice::iter::Iter")
+                          []
+                          [ Ty.path "revm_precompile::PrecompileWithAddress" ];
+                        Ty.function
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                          ]
+                          (Ty.path "alloy_primitives::bits::address::Address")
+                      ],
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
+                      Ty.apply
+                        (Ty.path "core::slice::iter::Iter")
+                        []
+                        [ Ty.path "revm_precompile::PrecompileWithAddress" ],
+                      [],
+                      [],
+                      "map",
+                      [],
+                      [
+                        Ty.path "alloy_primitives::bits::address::Address";
+                        Ty.function
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                          ]
+                          (Ty.path "alloy_primitives::bits::address::Address")
+                      ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::slice::iter::Iter")
+                            []
+                            [ Ty.path "revm_precompile::PrecompileWithAddress" ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.path "revm_precompile::PrecompileWithAddress" ],
+                            "iter",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::Deref",
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::Vec")
+                                        []
+                                        [
+                                          Ty.path "revm_precompile::PrecompileWithAddress";
+                                          Ty.path "alloc::alloc::Global"
+                                        ],
+                                      [],
+                                      [],
+                                      "deref",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, items |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [
+                                                Ty.path "revm_precompile::PrecompileWithAddress";
+                                                Ty.path "alloc::alloc::Global"
+                                              ]
+                                          ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "core::slice::iter::Iter")
+                          []
+                          [ Ty.path "revm_precompile::PrecompileWithAddress" ]);
+                      M.value_with_ty
+                        (M.closure
+                          (fun γ =>
+                            ltac:(M.monadic
+                              match γ with
+                              | [ α0 ] =>
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "alloy_primitives::bits::address::Address",
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_precompile::PrecompileWithAddress" ],
+                                      α0
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let p :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "revm_precompile::PrecompileWithAddress"
+                                                ],
+                                              γ
+                                            |) in
+                                          M.read (|
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "alloy_primitives::bits::address::Address"
+                                                  ],
+                                                M.get_associated_function (|
+                                                  Ty.path "revm_precompile::PrecompileWithAddress",
+                                                  "address",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| p |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "revm_precompile::PrecompileWithAddress"
+                                                      ])
+                                                ]
+                                              |)
+                                            |)
+                                          |)))
+                                    ]
+                                  |)))
+                              | _ => M.impossible "wrong number of arguments"
+                              end)))
+                        (Ty.function
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                          ]
+                          (Ty.path "alloy_primitives::bits::address::Address"))
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::iter::adapters::map::Map")
                     []
                     [
@@ -2497,134 +3187,7 @@ Module Impl_revm_precompile_Precompiles.
                             [ Ty.path "revm_precompile::PrecompileWithAddress" ]
                         ]
                         (Ty.path "alloy_primitives::bits::address::Address")
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.apply
-                      (Ty.path "core::slice::iter::Iter")
-                      []
-                      [ Ty.path "revm_precompile::PrecompileWithAddress" ],
-                    [],
-                    [],
-                    "map",
-                    [],
-                    [
-                      Ty.path "alloy_primitives::bits::address::Address";
-                      Ty.function
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.path "revm_precompile::PrecompileWithAddress" ]
-                        ]
-                        (Ty.path "alloy_primitives::bits::address::Address")
-                    ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::slice::iter::Iter")
-                        []
-                        [ Ty.path "revm_precompile::PrecompileWithAddress" ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.path "revm_precompile::PrecompileWithAddress" ],
-                        "iter",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "revm_precompile::PrecompileWithAddress" ]
-                                ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.apply
-                                  (Ty.path "alloc::vec::Vec")
-                                  []
-                                  [
-                                    Ty.path "revm_precompile::PrecompileWithAddress";
-                                    Ty.path "alloc::alloc::Global"
-                                  ],
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, items |) ]
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.path "alloy_primitives::bits::address::Address",
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.path "revm_precompile::PrecompileWithAddress" ],
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let p :=
-                                        M.copy (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.path "revm_precompile::PrecompileWithAddress" ],
-                                          γ
-                                        |) in
-                                      M.read (|
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ Ty.path "alloy_primitives::bits::address::Address"
-                                              ],
-                                            M.get_associated_function (|
-                                              Ty.path "revm_precompile::PrecompileWithAddress",
-                                              "address",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| p |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
-                  ]
-                |)
+                    ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -2709,16 +3272,262 @@ Module Impl_revm_precompile_Precompiles.
                 ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_precompile::Precompiles",
-                    "inner"
-                  |)
-                |);
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_precompile::Precompiles",
+                      "inner"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "std::collections::hash::map::HashMap")
+                        []
+                        [
+                          Ty.path "alloy_primitives::bits::address::Address";
+                          Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                              Ty.path "u64"
+                            ]
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "revm_precompile::interface::PrecompileOutput";
+                                Ty.path "revm_precompile::interface::PrecompileErrors"
+                              ]);
+                          Ty.path "std::hash::random::RandomState"
+                        ]
+                    ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::iter::adapters::map::Map")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          []
+                          [
+                            Ty.path "revm_precompile::PrecompileWithAddress";
+                            Ty.path "alloc::alloc::Global"
+                          ];
+                        Ty.function
+                          [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                          (Ty.tuple
+                            [
+                              Ty.path "alloy_primitives::bits::address::Address";
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                                  Ty.path "u64"
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ])
+                            ])
+                      ],
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
+                      Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [
+                          Ty.path "revm_precompile::PrecompileWithAddress";
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      [],
+                      [],
+                      "map",
+                      [],
+                      [
+                        Ty.tuple
+                          [
+                            Ty.path "alloy_primitives::bits::address::Address";
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                                Ty.path "u64"
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "revm_precompile::interface::PrecompileOutput";
+                                  Ty.path "revm_precompile::interface::PrecompileErrors"
+                                ])
+                          ];
+                        Ty.function
+                          [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                          (Ty.tuple
+                            [
+                              Ty.path "alloy_primitives::bits::address::Address";
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                                  Ty.path "u64"
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ])
+                            ])
+                      ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "alloc::vec::into_iter::IntoIter")
+                            []
+                            [
+                              Ty.path "revm_precompile::PrecompileWithAddress";
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          M.get_trait_method (|
+                            "core::iter::traits::collect::IntoIterator",
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.path "revm_precompile::PrecompileWithAddress";
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "into_iter",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| items |))
+                              (Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [
+                                  Ty.path "revm_precompile::PrecompileWithAddress";
+                                  Ty.path "alloc::alloc::Global"
+                                ])
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          []
+                          [
+                            Ty.path "revm_precompile::PrecompileWithAddress";
+                            Ty.path "alloc::alloc::Global"
+                          ]);
+                      M.value_with_ty
+                        (M.closure
+                          (fun γ =>
+                            ltac:(M.monadic
+                              match γ with
+                              | [ α0 ] =>
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.tuple
+                                      [
+                                        Ty.path "alloy_primitives::bits::address::Address";
+                                        Ty.function
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                                            Ty.path "u64"
+                                          ]
+                                          (Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path
+                                                "revm_precompile::interface::PrecompileOutput";
+                                              Ty.path "revm_precompile::interface::PrecompileErrors"
+                                            ])
+                                      ],
+                                    M.alloc (|
+                                      Ty.path "revm_precompile::PrecompileWithAddress",
+                                      α0
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let p :=
+                                            M.copy (|
+                                              Ty.path "revm_precompile::PrecompileWithAddress",
+                                              γ
+                                            |) in
+                                          Value.Tuple
+                                            [
+                                              M.read (|
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  p,
+                                                  "revm_precompile::PrecompileWithAddress",
+                                                  0
+                                                |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  p,
+                                                  "revm_precompile::PrecompileWithAddress",
+                                                  1
+                                                |)
+                                              |)
+                                            ]))
+                                    ]
+                                  |)))
+                              | _ => M.impossible "wrong number of arguments"
+                              end)))
+                        (Ty.function
+                          [ Ty.path "revm_precompile::PrecompileWithAddress" ]
+                          (Ty.tuple
+                            [
+                              Ty.path "alloy_primitives::bits::address::Address";
+                              Ty.function
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                                  Ty.path "u64"
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ])
+                            ]))
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::iter::adapters::map::Map")
                     []
                     [
@@ -2750,147 +3559,7 @@ Module Impl_revm_precompile_Precompiles.
                                   Ty.path "revm_precompile::interface::PrecompileErrors"
                                 ])
                           ])
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.apply
-                      (Ty.path "alloc::vec::into_iter::IntoIter")
-                      []
-                      [
-                        Ty.path "revm_precompile::PrecompileWithAddress";
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    [],
-                    [],
-                    "map",
-                    [],
-                    [
-                      Ty.tuple
-                        [
-                          Ty.path "alloy_primitives::bits::address::Address";
-                          Ty.function
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                              Ty.path "u64"
-                            ]
-                            (Ty.apply
-                              (Ty.path "core::result::Result")
-                              []
-                              [
-                                Ty.path "revm_precompile::interface::PrecompileOutput";
-                                Ty.path "revm_precompile::interface::PrecompileErrors"
-                              ])
-                        ];
-                      Ty.function
-                        [ Ty.path "revm_precompile::PrecompileWithAddress" ]
-                        (Ty.tuple
-                          [
-                            Ty.path "alloy_primitives::bits::address::Address";
-                            Ty.function
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                                Ty.path "u64"
-                              ]
-                              (Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
-                                [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ])
-                          ])
-                    ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::vec::into_iter::IntoIter")
-                        []
-                        [
-                          Ty.path "revm_precompile::PrecompileWithAddress";
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      M.get_trait_method (|
-                        "core::iter::traits::collect::IntoIterator",
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
-                          []
-                          [
-                            Ty.path "revm_precompile::PrecompileWithAddress";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "into_iter",
-                        [],
-                        []
-                      |),
-                      [ M.read (| items |) ]
-                    |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.tuple
-                                  [
-                                    Ty.path "alloy_primitives::bits::address::Address";
-                                    Ty.function
-                                      [
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                                        Ty.path "u64"
-                                      ]
-                                      (Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [
-                                          Ty.path "revm_precompile::interface::PrecompileOutput";
-                                          Ty.path "revm_precompile::interface::PrecompileErrors"
-                                        ])
-                                  ],
-                                M.alloc (| Ty.path "revm_precompile::PrecompileWithAddress", α0 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let p :=
-                                        M.copy (|
-                                          Ty.path "revm_precompile::PrecompileWithAddress",
-                                          γ
-                                        |) in
-                                      Value.Tuple
-                                        [
-                                          M.read (|
-                                            M.SubPointer.get_struct_tuple_field (|
-                                              p,
-                                              "revm_precompile::PrecompileWithAddress",
-                                              0
-                                            |)
-                                          |);
-                                          M.read (|
-                                            M.SubPointer.get_struct_tuple_field (|
-                                              p,
-                                              "revm_precompile::PrecompileWithAddress",
-                                              1
-                                            |)
-                                          |)
-                                        ]))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
-                  ]
-                |)
+                    ])
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2936,53 +3605,43 @@ Module Impl_core_clone_Clone_for_revm_precompile_PrecompileWithAddress.
             Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::PrecompileWithAddress" ],
             self
           |) in
-        Value.StructTuple
-          "revm_precompile::PrecompileWithAddress"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "alloy_primitives::bits::address::Address",
-              M.get_trait_method (|
-                "core::clone::Clone",
+        M.value_with_ty
+          (Value.StructTuple
+            "revm_precompile::PrecompileWithAddress"
+            [
+              M.call_closure (|
                 Ty.path "alloy_primitives::bits::address::Address",
-                [],
-                [],
-                "clone",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_precompile::PrecompileWithAddress",
-                        0
-                      |)
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            M.call_closure (|
-              Ty.function
-                [
-                  Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                  Ty.path "u64"
-                ]
-                (Ty.apply
-                  (Ty.path "core::result::Result")
+                M.get_trait_method (|
+                  "core::clone::Clone",
+                  Ty.path "alloy_primitives::bits::address::Address",
+                  [],
+                  [],
+                  "clone",
+                  [],
                   []
-                  [
-                    Ty.path "revm_precompile::interface::PrecompileOutput";
-                    Ty.path "revm_precompile::interface::PrecompileErrors"
-                  ]),
-              M.get_trait_method (|
-                "core::clone::Clone",
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_precompile::PrecompileWithAddress",
+                            0
+                          |)
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "alloy_primitives::bits::address::Address" ])
+                ]
+              |);
+              M.call_closure (|
                 Ty.function
                   [
                     Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
@@ -2995,29 +3654,62 @@ Module Impl_core_clone_Clone_for_revm_precompile_PrecompileWithAddress.
                       Ty.path "revm_precompile::interface::PrecompileOutput";
                       Ty.path "revm_precompile::interface::PrecompileErrors"
                     ]),
-                [],
-                [],
-                "clone",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_trait_method (|
+                  "core::clone::Clone",
+                  Ty.function
+                    [
+                      Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                      Ty.path "u64"
+                    ]
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "revm_precompile::interface::PrecompileOutput";
+                        Ty.path "revm_precompile::interface::PrecompileErrors"
+                      ]),
+                  [],
+                  [],
+                  "clone",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_precompile::PrecompileWithAddress",
-                        1
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_precompile::PrecompileWithAddress",
+                            1
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
-          ]))
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.function
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                            Ty.path "u64"
+                          ]
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "revm_precompile::interface::PrecompileOutput";
+                              Ty.path "revm_precompile::interface::PrecompileErrors"
+                            ])
+                      ])
+                ]
+              |)
+            ])
+          (Ty.path "revm_precompile::PrecompileWithAddress")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -3053,98 +3745,109 @@ Module Impl_core_fmt_Debug_for_revm_precompile_PrecompileWithAddress.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PrecompileWithAddress" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_precompile::PrecompileWithAddress",
-                        0
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PrecompileWithAddress" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_precompile::PrecompileWithAddress",
+                          0
+                        |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.function
-                          [
-                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                            Ty.path "u64"
-                          ]
-                          (Ty.apply
-                            (Ty.path "core::result::Result")
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.function
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                              Ty.path "u64"
+                            ]
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "revm_precompile::interface::PrecompileOutput";
+                                Ty.path "revm_precompile::interface::PrecompileErrors"
+                              ])
+                        ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
                             []
                             [
-                              Ty.path "revm_precompile::interface::PrecompileOutput";
-                              Ty.path "revm_precompile::interface::PrecompileErrors"
-                            ])
-                      ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.function
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ];
-                                Ty.path "u64"
-                              ]
-                              (Ty.apply
-                                (Ty.path "core::result::Result")
-                                []
+                              Ty.function
                                 [
-                                  Ty.path "revm_precompile::interface::PrecompileOutput";
-                                  Ty.path "revm_precompile::interface::PrecompileErrors"
-                                ])
-                          ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_precompile::PrecompileWithAddress",
-                            1
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ];
+                                  Ty.path "u64"
+                                ]
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "revm_precompile::interface::PrecompileOutput";
+                                    Ty.path "revm_precompile::interface::PrecompileErrors"
+                                  ])
+                            ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_precompile::PrecompileWithAddress",
+                              1
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3191,14 +3894,14 @@ Module Impl_core_convert_From_Tuple_alloy_primitives_bits_address_Address_ref__a
               ],
             value
           |) in
-        Value.StructTuple
-          "revm_precompile::PrecompileWithAddress"
-          []
-          []
-          [
-            M.read (| M.SubPointer.get_tuple_field (| value, 0 |) |);
-            M.read (| M.SubPointer.get_tuple_field (| value, 1 |) |)
-          ]))
+        M.value_with_ty
+          (Value.StructTuple
+            "revm_precompile::PrecompileWithAddress"
+            [
+              M.read (| M.SubPointer.get_tuple_field (| value, 0 |) |);
+              M.read (| M.SubPointer.get_tuple_field (| value, 1 |) |)
+            ])
+          (Ty.path "revm_precompile::PrecompileWithAddress")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -3467,55 +4170,59 @@ Module Impl_core_fmt_Debug_for_revm_precompile_PrecompileSpecId.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.match_operator (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::HOMESTEAD" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "HOMESTEAD" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::BYZANTIUM" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BYZANTIUM" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::ISTANBUL" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ISTANBUL" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::BERLIN" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BERLIN" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::CANCUN" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CANCUN" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::PRAGUE" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PRAGUE" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::LATEST" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LATEST" |) |) |)))
-              ]
-            |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.match_operator (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                self,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::HOMESTEAD" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "HOMESTEAD" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::BYZANTIUM" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BYZANTIUM" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::ISTANBUL" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ISTANBUL" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::BERLIN" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BERLIN" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::CANCUN" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CANCUN" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::PRAGUE" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PRAGUE" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "revm_precompile::PrecompileSpecId::LATEST" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LATEST" |) |) |)))
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3569,7 +4276,11 @@ Module Impl_core_cmp_PartialEq_revm_precompile_PrecompileSpecId_for_revm_precomp
                 [],
                 [ Ty.path "revm_precompile::PrecompileSpecId" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::PrecompileSpecId" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -3579,7 +4290,11 @@ Module Impl_core_cmp_PartialEq_revm_precompile_PrecompileSpecId_for_revm_precomp
                 [],
                 [ Ty.path "revm_precompile::PrecompileSpecId" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::PrecompileSpecId" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -3656,7 +4371,11 @@ Module Impl_core_hash_Hash_for_revm_precompile_PrecompileSpecId.
                 [],
                 [ Ty.path "revm_precompile::PrecompileSpecId" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::PrecompileSpecId" ])
+              ]
             |) in
           M.alloc (|
             Ty.tuple [],
@@ -3672,11 +4391,15 @@ Module Impl_core_hash_Hash_for_revm_precompile_PrecompileSpecId.
                 [ __H ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ __H ])
               ]
             |)
           |)
@@ -3720,7 +4443,11 @@ Module Impl_core_cmp_Ord_for_revm_precompile_PrecompileSpecId.
                 [],
                 [ Ty.path "revm_precompile::PrecompileSpecId" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::PrecompileSpecId" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -3730,7 +4457,11 @@ Module Impl_core_cmp_Ord_for_revm_precompile_PrecompileSpecId.
                 [],
                 [ Ty.path "revm_precompile::PrecompileSpecId" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::PrecompileSpecId" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "core::cmp::Ordering",
@@ -3738,14 +4469,18 @@ Module Impl_core_cmp_Ord_for_revm_precompile_PrecompileSpecId.
               Ty.path "core::cmp::Ordering",
               M.get_trait_method (| "core::cmp::Ord", Ty.path "isize", [], [], "cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
               ]
             |)
           |)
@@ -3789,7 +4524,11 @@ Module Impl_core_cmp_PartialOrd_revm_precompile_PrecompileSpecId_for_revm_precom
                 [],
                 [ Ty.path "revm_precompile::PrecompileSpecId" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::PrecompileSpecId" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -3799,7 +4538,11 @@ Module Impl_core_cmp_PartialOrd_revm_precompile_PrecompileSpecId_for_revm_precom
                 [],
                 [ Ty.path "revm_precompile::PrecompileSpecId" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::PrecompileSpecId" ])
+              ]
             |) in
           M.alloc (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -3815,14 +4558,18 @@ Module Impl_core_cmp_PartialOrd_revm_precompile_PrecompileSpecId_for_revm_precom
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
               ]
             |)
           |)
@@ -3860,7 +4607,8 @@ Module Impl_core_convert_From_revm_specification_hardfork_SpecId_for_revm_precom
             [],
             []
           |),
-          [ M.read (| spec_id |) ]
+          [ M.value_with_ty (M.read (| spec_id |)) (Ty.path "revm_specification::hardfork::SpecId")
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -3961,11 +4709,9 @@ Module Impl_revm_precompile_PrecompileSpecId.
                       match γ with
                       | [] =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "revm_precompile::PrecompileSpecId::HOMESTEAD"
-                            []
-                            []
-                            []))
+                          (M.value_with_ty
+                            (Value.StructTuple "revm_precompile::PrecompileSpecId::HOMESTEAD" [])
+                            (Ty.path "revm_precompile::PrecompileSpecId")))
                       | _ => M.impossible "wrong number of arguments"
                       end)
                 |)));
@@ -4004,11 +4750,9 @@ Module Impl_revm_precompile_PrecompileSpecId.
                       match γ with
                       | [] =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "revm_precompile::PrecompileSpecId::BYZANTIUM"
-                            []
-                            []
-                            []))
+                          (M.value_with_ty
+                            (Value.StructTuple "revm_precompile::PrecompileSpecId::BYZANTIUM" [])
+                            (Ty.path "revm_precompile::PrecompileSpecId")))
                       | _ => M.impossible "wrong number of arguments"
                       end)
                 |)));
@@ -4039,11 +4783,9 @@ Module Impl_revm_precompile_PrecompileSpecId.
                       match γ with
                       | [] =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "revm_precompile::PrecompileSpecId::ISTANBUL"
-                            []
-                            []
-                            []))
+                          (M.value_with_ty
+                            (Value.StructTuple "revm_precompile::PrecompileSpecId::ISTANBUL" [])
+                            (Ty.path "revm_precompile::PrecompileSpecId")))
                       | _ => M.impossible "wrong number of arguments"
                       end)
                 |)));
@@ -4106,7 +4848,9 @@ Module Impl_revm_precompile_PrecompileSpecId.
                       match γ with
                       | [] =>
                         ltac:(M.monadic
-                          (Value.StructTuple "revm_precompile::PrecompileSpecId::BERLIN" [] [] []))
+                          (M.value_with_ty
+                            (Value.StructTuple "revm_precompile::PrecompileSpecId::BERLIN" [])
+                            (Ty.path "revm_precompile::PrecompileSpecId")))
                       | _ => M.impossible "wrong number of arguments"
                       end)
                 |)));
@@ -4114,7 +4858,9 @@ Module Impl_revm_precompile_PrecompileSpecId.
               ltac:(M.monadic
                 (let _ :=
                   M.is_struct_tuple (| γ, "revm_specification::hardfork::SpecId::CANCUN" |) in
-                Value.StructTuple "revm_precompile::PrecompileSpecId::CANCUN" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "revm_precompile::PrecompileSpecId::CANCUN" [])
+                  (Ty.path "revm_precompile::PrecompileSpecId")));
             fun γ =>
               ltac:(M.monadic
                 (M.find_or_pattern (Ty.tuple []) (|
@@ -4142,7 +4888,9 @@ Module Impl_revm_precompile_PrecompileSpecId.
                       match γ with
                       | [] =>
                         ltac:(M.monadic
-                          (Value.StructTuple "revm_precompile::PrecompileSpecId::PRAGUE" [] [] []))
+                          (M.value_with_ty
+                            (Value.StructTuple "revm_precompile::PrecompileSpecId::PRAGUE" [])
+                            (Ty.path "revm_precompile::PrecompileSpecId")))
                       | _ => M.impossible "wrong number of arguments"
                       end)
                 |)));
@@ -4150,7 +4898,9 @@ Module Impl_revm_precompile_PrecompileSpecId.
               ltac:(M.monadic
                 (let _ :=
                   M.is_struct_tuple (| γ, "revm_specification::hardfork::SpecId::LATEST" |) in
-                Value.StructTuple "revm_precompile::PrecompileSpecId::LATEST" [] [] []))
+                M.value_with_ty
+                  (Value.StructTuple "revm_precompile::PrecompileSpecId::LATEST" [])
+                  (Ty.path "revm_precompile::PrecompileSpecId")))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4181,7 +4931,7 @@ Definition u64_to_address (ε : list Value.t) (τ : list Ty.t) (α : list Value.
           M.call_closure (|
             Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
             M.get_associated_function (| Ty.path "u64", "to_be_bytes", [], [] |),
-            [ M.read (| x |) ]
+            [ M.value_with_ty (M.read (| x |)) (Ty.path "u64") ]
           |) in
         M.alloc (|
           Ty.path "alloy_primitives::bits::address::Address",
@@ -4194,45 +4944,47 @@ Definition u64_to_address (ε : list Value.t) (τ : list Ty.t) (α : list Value.
               []
             |),
             [
-              Value.Array
-                [
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  Value.Integer IntegerKind.U8 0;
-                  M.read (|
-                    M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 1 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 2 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 3 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 4 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 5 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 6 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 7 |)
-                  |)
-                ]
+              M.value_with_ty
+                (Value.Array
+                  [
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    Value.Integer IntegerKind.U8 0;
+                    M.read (|
+                      M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 0 |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 1 |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 2 |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 3 |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 4 |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 5 |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 6 |)
+                    |);
+                    M.read (|
+                      M.SubPointer.get_array_field (| x, Value.Integer IntegerKind.Usize 7 |)
+                    |)
+                  ])
+                (Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 20 ] [ Ty.path "u8" ])
             ]
           |)
         |)

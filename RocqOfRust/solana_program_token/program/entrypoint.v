@@ -70,18 +70,35 @@ Module entrypoint.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| program_id |) |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| accounts |) |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| instruction_data |) |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| program_id |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| accounts |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "solana_account_info::AccountInfo" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| instruction_data |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                               ]
                             |)
                           |) in
@@ -100,29 +117,41 @@ Module entrypoint.
                                 Ty.tuple [],
                                 M.get_function (| "solana_msg::sol_log", [], [] |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                        M.get_associated_function (|
-                                          Ty.path "solana_program_error::ProgramError",
-                                          "to_str",
-                                          [],
-                                          [ Ty.path "spl_token_interface::error::TokenError" ]
-                                        |),
-                                        [ M.borrow (| Pointer.Kind.Ref, error |) ]
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                          M.get_associated_function (|
+                                            Ty.path "solana_program_error::ProgramError",
+                                            "to_str",
+                                            [],
+                                            [ Ty.path "spl_token_interface::error::TokenError" ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, error |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "solana_program_error::ProgramError" ])
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                 ]
                               |) in
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ]
-                                [ M.read (| error |) ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [ M.read (| error |) ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ])
                             |)
                           |)
                         |)));
@@ -134,11 +163,12 @@ Module entrypoint.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ])
               |)
             |)))
         |)))

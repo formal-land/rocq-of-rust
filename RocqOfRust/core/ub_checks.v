@@ -34,9 +34,11 @@ Module hint.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: hint::unreachable_unchecked must never be reached"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: hint::unreachable_unchecked must never be reached"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -85,9 +87,11 @@ Module hint.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: hint::assert_unchecked must never be called when the condition is false"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: hint::assert_unchecked must never be called when the condition is false"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -164,7 +168,12 @@ Module intrinsics.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| src |); M.read (| align |); M.read (| zero_size |)
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| src |))
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                        M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                        M.value_with_ty (M.read (| zero_size |)) (Ty.path "bool")
                                       ]
                                     |),
                                     ltac:(M.monadic
@@ -176,16 +185,18 @@ Module intrinsics.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                            M.pointer_coercion
-                                              M.PointerCoercion.MutToConstPointer
-                                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                            [ M.read (| dst |) ]
-                                          |);
-                                          M.read (| align |);
-                                          M.read (| zero_size |)
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.MutToConstPointer
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                              [ M.read (| dst |) ]
+                                            |))
+                                            (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                          M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                          M.value_with_ty (M.read (| zero_size |)) (Ty.path "bool")
                                         ]
                                       |)))
                                   |),
@@ -198,17 +209,21 @@ Module intrinsics.
                                         []
                                       |),
                                       [
-                                        M.read (| src |);
-                                        M.call_closure (|
-                                          Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                          M.pointer_coercion
-                                            M.PointerCoercion.MutToConstPointer
-                                            (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                            (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                          [ M.read (| dst |) ]
-                                        |);
-                                        M.read (| size |);
-                                        M.read (| count |)
+                                        M.value_with_ty
+                                          (M.read (| src |))
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.MutToConstPointer
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                            [ M.read (| dst |) ]
+                                          |))
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                        M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                                        M.value_with_ty (M.read (| count |)) (Ty.path "usize")
                                       ]
                                     |)))
                                 |)
@@ -223,9 +238,11 @@ Module intrinsics.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -281,7 +298,13 @@ Module intrinsics.
                                   [],
                                   []
                                 |),
-                                [ M.read (| src |); M.read (| align |); M.read (| zero_size |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| src |))
+                                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                  M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                  M.value_with_ty (M.read (| zero_size |)) (Ty.path "bool")
+                                ]
                               |),
                               ltac:(M.monadic
                                 (M.call_closure (|
@@ -292,16 +315,18 @@ Module intrinsics.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                        (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                      [ M.read (| dst |) ]
-                                    |);
-                                    M.read (| align |);
-                                    M.read (| zero_size |)
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                        [ M.read (| dst |) ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                    M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                    M.value_with_ty (M.read (| zero_size |)) (Ty.path "bool")
                                   ]
                                 |)))
                             |)
@@ -314,9 +339,11 @@ Module intrinsics.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::copy requires that both pointer arguments are aligned and non-null"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: ptr::copy requires that both pointer arguments are aligned and non-null"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -370,7 +397,13 @@ Module intrinsics.
                                 [],
                                 []
                               |),
-                              [ M.read (| addr |); M.read (| align |); M.read (| zero_size |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| addr |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                M.value_with_ty (M.read (| zero_size |)) (Ty.path "bool")
+                              ]
                             |)
                           ]
                         |)
@@ -381,9 +414,11 @@ Module intrinsics.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::write_bytes requires that the destination pointer is aligned and non-null"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: ptr::write_bytes requires that the destination pointer is aligned and non-null"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -461,16 +496,18 @@ Module ptr.
                                         []
                                       |),
                                       [
-                                        M.call_closure (|
-                                          Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                          M.pointer_coercion
-                                            M.PointerCoercion.MutToConstPointer
-                                            (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                            (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                          [ M.read (| x |) ]
-                                        |);
-                                        M.read (| align |);
-                                        M.read (| zero_size |)
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.MutToConstPointer
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                            [ M.read (| x |) ]
+                                          |))
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                        M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                        M.value_with_ty (M.read (| zero_size |)) (Ty.path "bool")
                                       ]
                                     |),
                                     ltac:(M.monadic
@@ -482,16 +519,18 @@ Module ptr.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                            M.pointer_coercion
-                                              M.PointerCoercion.MutToConstPointer
-                                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                            [ M.read (| y |) ]
-                                          |);
-                                          M.read (| align |);
-                                          M.read (| zero_size |)
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.MutToConstPointer
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                              [ M.read (| y |) ]
+                                            |))
+                                            (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                          M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                          M.value_with_ty (M.read (| zero_size |)) (Ty.path "bool")
                                         ]
                                       |)))
                                   |),
@@ -504,24 +543,28 @@ Module ptr.
                                         []
                                       |),
                                       [
-                                        M.call_closure (|
-                                          Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                          M.pointer_coercion
-                                            M.PointerCoercion.MutToConstPointer
-                                            (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                            (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                          [ M.read (| x |) ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                          M.pointer_coercion
-                                            M.PointerCoercion.MutToConstPointer
-                                            (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                            (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                          [ M.read (| y |) ]
-                                        |);
-                                        M.read (| size |);
-                                        M.read (| count |)
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.MutToConstPointer
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                            [ M.read (| x |) ]
+                                          |))
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.MutToConstPointer
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                            [ M.read (| y |) ]
+                                          |))
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                        M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                                        M.value_with_ty (M.read (| count |)) (Ty.path "usize")
                                       ]
                                     |)))
                                 |)
@@ -536,9 +579,11 @@ Module ptr.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::swap_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: ptr::swap_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -592,7 +637,13 @@ Module ptr.
                                 [],
                                 []
                               |),
-                              [ M.read (| addr |); M.read (| align |); M.read (| is_zst |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| addr |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                M.value_with_ty (M.read (| is_zst |)) (Ty.path "bool")
+                              ]
                             |)
                           ]
                         |)
@@ -603,9 +654,11 @@ Module ptr.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::replace requires that the pointer argument is aligned and non-null"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: ptr::replace requires that the pointer argument is aligned and non-null"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -659,7 +712,13 @@ Module ptr.
                                 [],
                                 []
                               |),
-                              [ M.read (| addr |); M.read (| align |); M.read (| is_zst |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| addr |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                M.value_with_ty (M.read (| is_zst |)) (Ty.path "bool")
+                              ]
                             |)
                           ]
                         |)
@@ -670,9 +729,11 @@ Module ptr.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::read requires that the pointer argument is aligned and non-null"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: ptr::read requires that the pointer argument is aligned and non-null"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -727,16 +788,18 @@ Module ptr.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.MutToConstPointer
-                                    (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                  [ M.read (| addr |) ]
-                                |);
-                                M.read (| align |);
-                                M.read (| is_zst |)
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                    [ M.read (| addr |) ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                M.value_with_ty (M.read (| is_zst |)) (Ty.path "bool")
                               ]
                             |)
                           ]
@@ -748,9 +811,11 @@ Module ptr.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::write requires that the pointer argument is aligned and non-null"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: ptr::write requires that the pointer argument is aligned and non-null"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -804,7 +869,13 @@ Module ptr.
                                 [],
                                 []
                               |),
-                              [ M.read (| addr |); M.read (| align |); M.read (| is_zst |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| addr |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                M.value_with_ty (M.read (| is_zst |)) (Ty.path "bool")
+                              ]
                             |)
                           ]
                         |)
@@ -815,9 +886,11 @@ Module ptr.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::read_volatile requires that the pointer argument is aligned and non-null"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: ptr::read_volatile requires that the pointer argument is aligned and non-null"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -872,16 +945,18 @@ Module ptr.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.MutToConstPointer
-                                    (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                  [ M.read (| addr |) ]
-                                |);
-                                M.read (| align |);
-                                M.read (| is_zst |)
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                    [ M.read (| addr |) ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                M.value_with_ty (M.read (| is_zst |)) (Ty.path "bool")
                               ]
                             |)
                           ]
@@ -893,9 +968,11 @@ Module ptr.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                       [
-                        mk_str (|
-                          "unsafe precondition(s) violated: ptr::write_volatile requires that the pointer argument is aligned and non-null"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "unsafe precondition(s) violated: ptr::write_volatile requires that the pointer argument is aligned and non-null"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));
@@ -953,9 +1030,13 @@ Module ub_checks.
                 ]
               |),
               [
-                Value.Tuple [];
-                M.get_function (| "core::ub_checks::check_language_ub.compiletime", [], [] |);
-                M.get_function (| "core::ub_checks::check_language_ub.runtime", [], [] |)
+                M.value_with_ty (Value.Tuple []) (Ty.tuple []);
+                M.value_with_ty
+                  (M.get_function (| "core::ub_checks::check_language_ub.compiletime", [], [] |))
+                  (Ty.function [] (Ty.path "bool"));
+                M.value_with_ty
+                  (M.get_function (| "core::ub_checks::check_language_ub.runtime", [], [] |))
+                  (Ty.function [] (Ty.path "bool"))
               ]
             |)))
         |)))
@@ -1013,13 +1094,29 @@ Module ub_checks.
             ]
           |),
           [
-            Value.Tuple [ M.read (| ptr |); M.read (| align |); M.read (| is_zst |) ];
-            M.get_function (|
-              "core::ub_checks::maybe_is_aligned_and_not_null.compiletime",
-              [],
-              []
-            |);
-            M.get_function (| "core::ub_checks::maybe_is_aligned_and_not_null.runtime", [], [] |)
+            M.value_with_ty
+              (Value.Tuple [ M.read (| ptr |); M.read (| align |); M.read (| is_zst |) ])
+              (Ty.tuple
+                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]; Ty.path "usize"; Ty.path "bool"
+                ]);
+            M.value_with_ty
+              (M.get_function (|
+                "core::ub_checks::maybe_is_aligned_and_not_null.compiletime",
+                [],
+                []
+              |))
+              (Ty.function
+                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]; Ty.path "usize"; Ty.path "bool" ]
+                (Ty.path "bool"));
+            M.value_with_ty
+              (M.get_function (|
+                "core::ub_checks::maybe_is_aligned_and_not_null.runtime",
+                [],
+                []
+              |))
+              (Ty.function
+                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]; Ty.path "usize"; Ty.path "bool" ]
+                (Ty.path "bool"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1166,10 +1263,36 @@ Module ub_checks.
             ]
           |),
           [
-            Value.Tuple
-              [ M.read (| src |); M.read (| dst |); M.read (| size |); M.read (| count |) ];
-            M.get_function (| "core::ub_checks::maybe_is_nonoverlapping.compiletime", [], [] |);
-            M.get_function (| "core::ub_checks::maybe_is_nonoverlapping.runtime", [], [] |)
+            M.value_with_ty
+              (Value.Tuple
+                [ M.read (| src |); M.read (| dst |); M.read (| size |); M.read (| count |) ])
+              (Ty.tuple
+                [
+                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ];
+                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ];
+                  Ty.path "usize";
+                  Ty.path "usize"
+                ]);
+            M.value_with_ty
+              (M.get_function (| "core::ub_checks::maybe_is_nonoverlapping.compiletime", [], [] |))
+              (Ty.function
+                [
+                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ];
+                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ];
+                  Ty.path "usize";
+                  Ty.path "usize"
+                ]
+                (Ty.path "bool"));
+            M.value_with_ty
+              (M.get_function (| "core::ub_checks::maybe_is_nonoverlapping.runtime", [], [] |))
+              (Ty.function
+                [
+                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ];
+                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ];
+                  Ty.path "usize";
+                  Ty.path "usize"
+                ]
+                (Ty.path "bool"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1227,17 +1350,10 @@ Module char.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [
-                                          Ty.path "char";
-                                          Ty.path "core::char::convert::CharTryFromError"
-                                        ],
-                                      M.call_closure (|
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
@@ -1245,15 +1361,35 @@ Module char.
                                             Ty.path "char";
                                             Ty.path "core::char::convert::CharTryFromError"
                                           ],
-                                        M.get_function (|
-                                          "core::char::convert::char_try_from_u32",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| i |) ]
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "char";
+                                              Ty.path "core::char::convert::CharTryFromError"
+                                            ],
+                                          M.get_function (|
+                                            "core::char::convert::char_try_from_u32",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.value_with_ty (M.read (| i |)) (Ty.path "u32") ]
+                                        |)
                                       |)
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "char";
+                                            Ty.path "core::char::convert::CharTryFromError"
+                                          ]
+                                      ])
                                 ]
                               |)
                             ]
@@ -1264,7 +1400,13 @@ Module char.
                       M.call_closure (|
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-                        [ mk_str (| "unsafe precondition(s) violated: invalid value for `char`" |) ]
+                        [
+                          M.value_with_ty
+                            (mk_str (|
+                              "unsafe precondition(s) violated: invalid value for `char`"
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
                       |)
                     |)));
                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1326,16 +1468,18 @@ Module slice.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                        (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                      [ M.read (| data |) ]
-                                    |);
-                                    M.read (| align |);
-                                    Value.Bool false
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                        [ M.read (| data |) ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                    M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                    M.value_with_ty (Value.Bool false) (Ty.path "bool")
                                   ]
                                 |),
                                 ltac:(M.monadic
@@ -1346,7 +1490,10 @@ Module slice.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| size |); M.read (| len |) ]
+                                    [
+                                      M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                                    ]
                                   |)))
                               |)
                             ]
@@ -1358,9 +1505,11 @@ Module slice.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                         [
-                          mk_str (|
-                            "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`"
-                          |)
+                          M.value_with_ty
+                            (mk_str (|
+                              "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`"
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)
                     |)));
@@ -1417,16 +1566,18 @@ Module slice.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.MutToConstPointer
-                                        (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                                        (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
-                                      [ M.read (| data |) ]
-                                    |);
-                                    M.read (| align |);
-                                    Value.Bool false
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.MutToConstPointer
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]),
+                                        [ M.read (| data |) ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                                    M.value_with_ty (M.read (| align |)) (Ty.path "usize");
+                                    M.value_with_ty (Value.Bool false) (Ty.path "bool")
                                   ]
                                 |),
                                 ltac:(M.monadic
@@ -1437,7 +1588,10 @@ Module slice.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| size |); M.read (| len |) ]
+                                    [
+                                      M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                                    ]
                                   |)))
                               |)
                             ]
@@ -1449,9 +1603,11 @@ Module slice.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                         [
-                          mk_str (|
-                            "unsafe precondition(s) violated: slice::from_raw_parts_mut requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`"
-                          |)
+                          M.value_with_ty
+                            (mk_str (|
+                              "unsafe precondition(s) violated: slice::from_raw_parts_mut requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`"
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)
                     |)));

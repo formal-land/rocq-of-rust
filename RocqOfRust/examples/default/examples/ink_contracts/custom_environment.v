@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_custom_environment_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "custom_environment::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "custom_environment::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "custom_environment::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -114,7 +114,11 @@ Module Impl_core_default_Default_for_custom_environment_Topics.
   (* Default *)
   Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [] => ltac:(M.monadic (Value.StructTuple "custom_environment::Topics" [] [] []))
+    | [], [], [] =>
+      ltac:(M.monadic
+        (M.value_with_ty
+          (Value.StructTuple "custom_environment::Topics" [])
+          (Ty.path "custom_environment::Topics")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -150,82 +154,82 @@ Module Impl_core_default_Default_for_custom_environment_EventWithTopics.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "custom_environment::EventWithTopics"
-          []
-          []
-          [
-            ("first_topic",
-              M.call_closure (|
-                Ty.path "u128",
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "custom_environment::EventWithTopics"
+            [
+              ("first_topic",
+                M.call_closure (|
                   Ty.path "u128",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u128",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("second_topic",
-              M.call_closure (|
-                Ty.path "u128",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("second_topic",
+                M.call_closure (|
                   Ty.path "u128",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u128",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("third_topic",
-              M.call_closure (|
-                Ty.path "u128",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("third_topic",
+                M.call_closure (|
                   Ty.path "u128",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u128",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("fourth_topic",
-              M.call_closure (|
-                Ty.path "u128",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("fourth_topic",
+                M.call_closure (|
                   Ty.path "u128",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u128",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("fifth_topic",
-              M.call_closure (|
-                Ty.path "u128",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("fifth_topic",
+                M.call_closure (|
                   Ty.path "u128",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u128",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "custom_environment::EventWithTopics")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -300,7 +304,11 @@ Module Impl_custom_environment_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -328,7 +336,11 @@ Module Impl_custom_environment_Topics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -416,41 +428,49 @@ Module Impl_custom_environment_Topics.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "custom_environment::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "custom_environment::Env",
-                      M.get_associated_function (|
-                        Ty.path "custom_environment::Topics",
-                        "env",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "custom_environment::Env",
+                        M.get_associated_function (|
+                          Ty.path "custom_environment::Topics",
+                          "env",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "custom_environment::Topics" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "custom_environment::Event::EventWithTopics"
-                  []
-                  []
-                  [
-                    M.call_closure (|
-                      Ty.path "custom_environment::EventWithTopics",
-                      M.get_trait_method (|
-                        "core::default::Default",
-                        Ty.path "custom_environment::EventWithTopics",
-                        [],
-                        [],
-                        "default",
-                        [],
-                        []
-                      |),
-                      []
-                    |)
-                  ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "custom_environment::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "custom_environment::Event::EventWithTopics"
+                      [
+                        M.call_closure (|
+                          Ty.path "custom_environment::EventWithTopics",
+                          M.get_trait_method (|
+                            "core::default::Default",
+                            Ty.path "custom_environment::EventWithTopics",
+                            [],
+                            [],
+                            "default",
+                            [],
+                            []
+                          |),
+                          []
+                        |)
+                      ])
+                    (Ty.path "custom_environment::Event"))
+                  (Ty.path "custom_environment::Event")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)

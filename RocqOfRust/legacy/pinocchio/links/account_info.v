@@ -21,8 +21,8 @@ Module BorrowState.
     Φ := Ty.path "pinocchio::account_info::BorrowState";
     φ x :=
       match x with
-      | Borrowed => Value.StructTuple "pinocchio::account_info::BorrowState::Borrowed" [] [] []
-      | MutablyBorrowed => Value.StructTuple "pinocchio::account_info::BorrowState::MutablyBorrowed" [] [] []
+      | Borrowed => Value.StructTuple "pinocchio::account_info::BorrowState::Borrowed" []
+      | MutablyBorrowed => Value.StructTuple "pinocchio::account_info::BorrowState::MutablyBorrowed" []
       end;
   }.
 
@@ -31,17 +31,17 @@ Module BorrowState.
   Smpl Add apply of_ty : of_ty.
 
   Lemma of_value_with_Borrowed :
-    Value.StructTuple "pinocchio::account_info::BorrowState::Borrowed" [] [] [] = φ Borrowed.
+    Value.StructTuple "pinocchio::account_info::BorrowState::Borrowed" [] = φ Borrowed.
   Proof. reflexivity. Qed.
   Smpl Add apply of_value_with_Borrowed : of_value.
 
   Lemma of_value_with_MutablyBorrowed :
-    Value.StructTuple "pinocchio::account_info::BorrowState::MutablyBorrowed" [] [] [] = φ MutablyBorrowed.
+    Value.StructTuple "pinocchio::account_info::BorrowState::MutablyBorrowed" [] = φ MutablyBorrowed.
   Proof. reflexivity. Qed.
   Smpl Add apply of_value_with_MutablyBorrowed : of_value.
 
   Definition of_value_Borrowed :
-    OfValue.t (Value.StructTuple "pinocchio::account_info::BorrowState::Borrowed" [] [] []).
+    OfValue.t (Value.StructTuple "pinocchio::account_info::BorrowState::Borrowed" []).
   Proof.
     econstructor.
     apply of_value_with_Borrowed.
@@ -49,7 +49,7 @@ Module BorrowState.
   Smpl Add apply of_value_Borrowed : of_value.
 
   Definition of_value_MutablyBorrowed :
-    OfValue.t (Value.StructTuple "pinocchio::account_info::BorrowState::MutablyBorrowed" [] [] []).
+    OfValue.t (Value.StructTuple "pinocchio::account_info::BorrowState::MutablyBorrowed" []).
   Proof.
     econstructor.
     apply of_value_with_MutablyBorrowed.
@@ -72,7 +72,7 @@ Module Account.
   Global Instance IsLink : Link t := {
       Φ := Ty.path "pinocchio::account_info::Account";
       φ x :=
-    Value.StructRecord "pinocchio::account_info::Account" [] [] [
+    Value.StructRecord "pinocchio::account_info::Account" [
       ("borrow_state", φ x.(borrow_state));
       ("is_signer", φ x.(is_signer));
       ("is_writable", φ x.(is_writable));
@@ -109,7 +109,7 @@ Module Account.
     owner' = φ owner ->
     lamports' = φ lamports ->
     data_len' = φ data_len ->
-    Value.StructRecord "pinocchio::account_info::Account" [] [] [
+    Value.StructRecord "pinocchio::account_info::Account" [
       ("borrow_state", borrow_state');
       ("is_signer", is_signer');
       ("is_writable", is_writable');
@@ -140,7 +140,7 @@ Module Account.
     lamports' = φ lamports ->
     data_len' = φ data_len ->
     OfValue.t (
-      Value.StructRecord "pinocchio::account_info::Account" [] [] [
+      Value.StructRecord "pinocchio::account_info::Account" [
         ("borrow_state", borrow_state');
         ("is_signer", is_signer');
         ("is_writable", is_writable');
@@ -260,7 +260,7 @@ Module AccountInfo.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::account_info::AccountInfo";
     φ x :=
-      Value.StructRecord "pinocchio::account_info::AccountInfo" [] [] [
+      Value.StructRecord "pinocchio::account_info::AccountInfo" [
         ("raw", φ x.(raw))
       ];
   }.
@@ -274,7 +274,7 @@ Module AccountInfo.
 
   Lemma of_value_with (raw : '&mut Account.t) (raw' : Value.t) :
     raw' = φ raw ->
-    Value.StructRecord "pinocchio::account_info::AccountInfo" [] [] [
+    Value.StructRecord "pinocchio::account_info::AccountInfo" [
       ("raw", raw')
     ] = φ (Build_t raw).
   Proof. intros; subst; reflexivity. Qed.
@@ -283,7 +283,7 @@ Module AccountInfo.
   Definition of_value (raw : '&mut Account.t) (raw' : Value.t) :
     raw' = φ raw ->
     OfValue.t (
-      Value.StructRecord "pinocchio::account_info::AccountInfo" [] [] [
+      Value.StructRecord "pinocchio::account_info::AccountInfo" [
         ("raw", raw')
       ]).
   Proof. econstructor; apply of_value_with. exact H. Defined.

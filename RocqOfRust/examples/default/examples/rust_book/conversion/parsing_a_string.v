@@ -24,7 +24,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               []
               [ Ty.path "i32"; Ty.path "core::num::error::ParseIntError" ],
             M.get_associated_function (| Ty.path "str", "parse", [], [ Ty.path "i32" ] |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "12" |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "12" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |) in
         let~ _ :
             Ty.apply
@@ -37,7 +41,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               []
               [ Ty.path "bool"; Ty.path "core::str::error::ParseBoolError" ],
             M.get_associated_function (| Ty.path "str", "parse", [], [ Ty.path "bool" ] |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "true" |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "true" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |) in
         let~ _ :
             Ty.apply
@@ -50,7 +58,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               []
               [ Ty.path "u32"; Ty.path "core::num::error::ParseIntError" ],
             M.get_associated_function (| Ty.path "str", "parse", [], [ Ty.path "u32" ] |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "unparsable" |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "unparsable" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

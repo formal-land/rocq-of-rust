@@ -1,5 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
+Require Import alloc.links.alloc.
+Require Import alloc.links.rc.
 Require Import anza_xyz_solana_sdk.account_info.links.lib.
 Require Import anza_xyz_solana_sdk.address.links.lib.
 Require Import anza_xyz_solana_sdk.program_error.links.lib.
@@ -93,11 +95,11 @@ Module Impl_Processor.
     destruct (Impl_Try_for_Result.run u64 TokenError.t).
     destruct (Impl_Try_for_Result.run unit ProgramError.t).
     destruct (Impl_FromResidual_for_Result.run unit ProgramError.t).
-    (* destruct (Impl_Into_for_From_T.run Impl_From_TokenError_for_ProgramError.run). *)
+    destruct (Impl_Deref_for_Ref.run ('&mut (list u8))).
     destruct Impl_Pack_for_Account.run.
     destruct Impl_Pack_for_Mint.run.
-    destruct (Impl_Deref_for_Ref.run ('&mut (list u8))).
-    Time run_symbolic.
+    destruct (Impl_Deref_for_Rc.run (RefCell.t ('&mut (list u8))) Global.t).
+    run_symbolic.
   Admitted.
   Global Opaque run_process_transfer.
 End Impl_Processor.

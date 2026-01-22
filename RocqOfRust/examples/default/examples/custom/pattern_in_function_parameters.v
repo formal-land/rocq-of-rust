@@ -184,34 +184,45 @@ Definition steps_between (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                                                   []
                                                 |),
                                                 [
-                                                  M.call_closure (|
-                                                    Ty.apply
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "usize";
+                                                          Ty.path
+                                                            "core::num::error::TryFromIntError"
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::convert::TryFrom",
+                                                        Ty.path "usize",
+                                                        [],
+                                                        [ Ty.path "u32" ],
+                                                        "try_from",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.path "u32",
+                                                            BinOp.Wrap.sub,
+                                                            [
+                                                              M.read (| count |);
+                                                              Value.Integer IntegerKind.U32 2048
+                                                            ]
+                                                          |))
+                                                          (Ty.path "u32")
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
                                                         Ty.path "usize";
                                                         Ty.path "core::num::error::TryFromIntError"
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::convert::TryFrom",
-                                                      Ty.path "usize",
-                                                      [],
-                                                      [ Ty.path "u32" ],
-                                                      "try_from",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "u32",
-                                                        BinOp.Wrap.sub,
-                                                        [
-                                                          M.read (| count |);
-                                                          Value.Integer IntegerKind.U32 2048
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |)
+                                                      ])
                                                 ]
                                               |)));
                                           fun γ =>
@@ -234,25 +245,38 @@ Definition steps_between (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                                                   []
                                                 |),
                                                 [
-                                                  M.call_closure (|
-                                                    Ty.apply
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "usize";
+                                                          Ty.path
+                                                            "core::num::error::TryFromIntError"
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::convert::TryFrom",
+                                                        Ty.path "usize",
+                                                        [],
+                                                        [ Ty.path "u32" ],
+                                                        "try_from",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| count |))
+                                                          (Ty.path "u32")
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
                                                         Ty.path "usize";
                                                         Ty.path "core::num::error::TryFromIntError"
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::convert::TryFrom",
-                                                      Ty.path "usize",
-                                                      [],
-                                                      [ Ty.path "u32" ],
-                                                      "try_from",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| count |) ]
-                                                  |)
+                                                      ])
                                                 ]
                                               |)))
                                         ]
@@ -261,11 +285,12 @@ Definition steps_between (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                                   |)));
                               fun γ =>
                                 ltac:(M.monadic
-                                  (Value.StructTuple
-                                    "core::option::Option::None"
-                                    []
-                                    [ Ty.path "usize" ]
-                                    []))
+                                  (M.value_with_ty
+                                    (Value.StructTuple "core::option::Option::None" [])
+                                    (Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "usize" ])))
                             ]
                           |)
                         |)

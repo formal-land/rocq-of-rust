@@ -22,40 +22,40 @@ Module Impl_core_default_Default_where_core_default_Default_K_where_core_default
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "erc20::Mapping"
-          []
-          [ K; V ]
-          [
-            ("_key",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "erc20::Mapping"
+            [
+              ("_key",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("_value",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("_value",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.apply (Ty.path "erc20::Mapping") [] [ K; V ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -92,7 +92,11 @@ Module Impl_erc20_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -125,7 +129,11 @@ Module Impl_erc20_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -154,25 +162,25 @@ Module Impl_core_default_Default_for_erc20_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "erc20::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "erc20::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "erc20::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -259,56 +267,46 @@ Module Impl_core_default_Default_for_erc20_Erc20.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "erc20::Erc20"
-          []
-          []
-          [
-            ("total_supply",
-              M.call_closure (|
-                Ty.path "u128",
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "erc20::Erc20"
+            [
+              ("total_supply",
+                M.call_closure (|
                   Ty.path "u128",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u128",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("balances",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "erc20::Mapping")
-                  []
-                  [ Ty.path "erc20::AccountId"; Ty.path "u128" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("balances",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "erc20::Mapping")
                     []
                     [ Ty.path "erc20::AccountId"; Ty.path "u128" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "erc20::Mapping")
+                      []
+                      [ Ty.path "erc20::AccountId"; Ty.path "u128" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("allowances",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "erc20::Mapping")
-                  []
-                  [
-                    Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
-                    Ty.path "u128"
-                  ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("allowances",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "erc20::Mapping")
                     []
@@ -316,15 +314,25 @@ Module Impl_core_default_Default_for_erc20_Erc20.
                       Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
                       Ty.path "u128"
                     ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "erc20::Mapping")
+                      []
+                      [
+                        Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
+                        Ty.path "u128"
+                      ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "erc20::Erc20")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -456,7 +464,11 @@ Module Impl_erc20_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -484,7 +496,11 @@ Module Impl_erc20_Erc20.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -564,17 +580,19 @@ Module Impl_erc20_Erc20.
               Ty.path "erc20::AccountId",
               M.get_associated_function (| Ty.path "erc20::Env", "caller", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "erc20::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "erc20::Env",
-                      M.get_associated_function (| Ty.path "erc20::Erc20", "init_env", [], [] |),
-                      []
+                      M.call_closure (|
+                        Ty.path "erc20::Env",
+                        M.get_associated_function (| Ty.path "erc20::Erc20", "init_env", [], [] |),
+                        []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Env" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -590,9 +608,19 @@ Module Impl_erc20_Erc20.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, balances |);
-                M.read (| caller |);
-                M.read (| total_supply |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, balances |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "erc20::Mapping")
+                        []
+                        [ Ty.path "erc20::AccountId"; Ty.path "u128" ]
+                    ]);
+                M.value_with_ty (M.read (| caller |)) (Ty.path "erc20::AccountId");
+                M.value_with_ty (M.read (| total_supply |)) (Ty.path "u128")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -600,64 +628,62 @@ Module Impl_erc20_Erc20.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "erc20::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "erc20::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "erc20::Env",
-                      M.get_associated_function (| Ty.path "erc20::Erc20", "init_env", [], [] |),
-                      []
+                      M.call_closure (|
+                        Ty.path "erc20::Env",
+                        M.get_associated_function (| Ty.path "erc20::Erc20", "init_env", [], [] |),
+                        []
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "erc20::Event::Transfer"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "erc20::Transfer"
-                      []
-                      []
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "erc20::Event::Transfer"
                       [
-                        ("from",
-                          Value.StructTuple
-                            "core::option::Option::None"
-                            []
-                            [ Ty.path "erc20::AccountId" ]
-                            []);
-                        ("to",
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ Ty.path "erc20::AccountId" ]
-                            [ M.read (| caller |) ]);
-                        ("value", M.read (| total_supply |))
-                      ]
-                  ]
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "erc20::Transfer"
+                            [
+                              ("from",
+                                M.value_with_ty
+                                  (Value.StructTuple "core::option::Option::None" [])
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "erc20::AccountId" ]));
+                              ("to",
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    [ M.read (| caller |) ])
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "erc20::AccountId" ]));
+                              ("value", M.read (| total_supply |))
+                            ])
+                          (Ty.path "erc20::Transfer")
+                      ])
+                    (Ty.path "erc20::Event"))
+                  (Ty.path "erc20::Event")
               ]
             |) in
           M.alloc (|
             Ty.path "erc20::Erc20",
-            Value.mkStructRecord
-              "erc20::Erc20"
-              []
-              []
-              [
-                ("total_supply", M.read (| total_supply |));
-                ("balances", M.read (| balances |));
-                ("allowances",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "erc20::Mapping")
-                      []
-                      [
-                        Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
-                        Ty.path "u128"
-                      ],
-                    M.get_trait_method (|
-                      "core::default::Default",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "erc20::Erc20"
+                [
+                  ("total_supply", M.read (| total_supply |));
+                  ("balances", M.read (| balances |));
+                  ("allowances",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "erc20::Mapping")
                         []
@@ -665,15 +691,25 @@ Module Impl_erc20_Erc20.
                           Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
                           Ty.path "u128"
                         ],
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.apply
+                          (Ty.path "erc20::Mapping")
+                          []
+                          [
+                            Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
+                            Ty.path "u128"
+                          ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |))
-              ]
+                    |))
+                ])
+              (Ty.path "erc20::Erc20")
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -729,29 +765,43 @@ Module Impl_erc20_Erc20.
             []
           |),
           [
-            M.call_closure (|
-              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "erc20::Mapping")
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "erc20::Mapping")
+                    []
+                    [ Ty.path "erc20::AccountId"; Ty.path "u128" ],
+                  "get",
+                  [],
                   []
-                  [ Ty.path "erc20::AccountId"; Ty.path "u128" ],
-                "get",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "erc20::Erc20",
-                    "balances"
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| owner |) |) |)
-              ]
-            |)
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "erc20::Erc20",
+                        "balances"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "erc20::Mapping")
+                          []
+                          [ Ty.path "erc20::AccountId"; Ty.path "u128" ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| owner |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ])
+                ]
+              |))
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -777,8 +827,15 @@ Module Impl_erc20_Erc20.
           Ty.path "u128",
           M.get_associated_function (| Ty.path "erc20::Erc20", "balance_of_impl", [], [] |),
           [
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |) |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -812,47 +869,67 @@ Module Impl_erc20_Erc20.
             []
           |),
           [
-            M.call_closure (|
-              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "erc20::Mapping")
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "erc20::Mapping")
+                    []
+                    [
+                      Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
+                      Ty.path "u128"
+                    ],
+                  "get",
+                  [],
                   []
-                  [
-                    Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
-                    Ty.path "u128"
-                  ],
-                "get",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "erc20::Erc20",
-                    "allowances"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ],
-                        Value.Tuple
-                          [
-                            M.read (| M.deref (| M.read (| owner |) |) |);
-                            M.read (| M.deref (| M.read (| spender |) |) |)
-                          ]
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "erc20::Erc20",
+                        "allowances"
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "erc20::Mapping")
+                          []
+                          [
+                            Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
+                            Ty.path "u128"
+                          ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ],
+                            Value.Tuple
+                              [
+                                M.read (| M.deref (| M.read (| owner |) |) |);
+                                M.read (| M.deref (| M.read (| spender |) |) |)
+                              ]
+                          |)
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ] ])
+                ]
+              |))
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u128" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -879,9 +956,21 @@ Module Impl_erc20_Erc20.
           Ty.path "u128",
           M.get_associated_function (| Ty.path "erc20::Erc20", "allowance_impl", [], [] |),
           [
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, spender |) |) |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.borrow (| Pointer.Kind.Ref, owner |) |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (| M.borrow (| Pointer.Kind.Ref, spender |) |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -927,8 +1016,12 @@ Module Impl_erc20_Erc20.
                   Ty.path "u128",
                   M.get_associated_function (| Ty.path "erc20::Erc20", "balance_of_impl", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -952,11 +1045,18 @@ Module Impl_erc20_Erc20.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "erc20::Error" ]
-                                [ Value.StructTuple "erc20::Error::InsufficientBalance" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "erc20::Error::InsufficientBalance" [])
+                                      (Ty.path "erc20::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "erc20::Error" ])
                             |)
                           |)
                         |)));
@@ -976,20 +1076,34 @@ Module Impl_erc20_Erc20.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "erc20::Erc20",
-                        "balances"
-                      |)
-                    |);
-                    M.read (| M.deref (| M.read (| from |) |) |);
-                    M.call_closure (|
-                      Ty.path "u128",
-                      BinOp.Wrap.sub,
-                      [ M.read (| from_balance |); M.read (| value |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "erc20::Erc20",
+                          "balances"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "erc20::Mapping")
+                            []
+                            [ Ty.path "erc20::AccountId"; Ty.path "u128" ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| from |) |) |))
+                      (Ty.path "erc20::AccountId");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "u128",
+                        BinOp.Wrap.sub,
+                        [ M.read (| from_balance |); M.read (| value |) ]
+                      |))
+                      (Ty.path "u128")
                   ]
                 |) in
               let~ to_balance : Ty.path "u128" :=
@@ -997,8 +1111,12 @@ Module Impl_erc20_Erc20.
                   Ty.path "u128",
                   M.get_associated_function (| Ty.path "erc20::Erc20", "balance_of_impl", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1014,20 +1132,34 @@ Module Impl_erc20_Erc20.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "erc20::Erc20",
-                        "balances"
-                      |)
-                    |);
-                    M.read (| M.deref (| M.read (| to |) |) |);
-                    M.call_closure (|
-                      Ty.path "u128",
-                      BinOp.Wrap.add,
-                      [ M.read (| to_balance |); M.read (| value |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "erc20::Erc20",
+                          "balances"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "erc20::Mapping")
+                            []
+                            [ Ty.path "erc20::AccountId"; Ty.path "u128" ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| to |) |) |))
+                      (Ty.path "erc20::AccountId");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "u128",
+                        BinOp.Wrap.add,
+                        [ M.read (| to_balance |); M.read (| value |) ]
+                      |))
+                      (Ty.path "u128")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1035,42 +1167,56 @@ Module Impl_erc20_Erc20.
                   Ty.tuple [],
                   M.get_associated_function (| Ty.path "erc20::Env", "emit_event", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc20::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc20::Env",
-                          M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc20::Env",
+                            M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    Value.StructTuple
-                      "erc20::Event::Transfer"
-                      []
-                      []
-                      [
-                        Value.mkStructRecord
-                          "erc20::Transfer"
-                          []
-                          []
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Env" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "erc20::Event::Transfer"
                           [
-                            ("from",
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [ Ty.path "erc20::AccountId" ]
-                                [ M.read (| M.deref (| M.read (| from |) |) |) ]);
-                            ("to",
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [ Ty.path "erc20::AccountId" ]
-                                [ M.read (| M.deref (| M.read (| to |) |) |) ]);
-                            ("value", M.read (| value |))
-                          ]
-                      ]
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "erc20::Transfer"
+                                [
+                                  ("from",
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::option::Option::Some"
+                                        [ M.read (| M.deref (| M.read (| from |) |) |) ])
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "erc20::AccountId" ]));
+                                  ("to",
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::option::Option::Some"
+                                        [ M.read (| M.deref (| M.read (| to |) |) |) ])
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "erc20::AccountId" ]));
+                                  ("value", M.read (| value |))
+                                ])
+                              (Ty.path "erc20::Transfer")
+                          ])
+                        (Ty.path "erc20::Event"))
+                      (Ty.path "erc20::Event")
                   ]
                 |) in
               M.alloc (|
@@ -1078,11 +1224,12 @@ Module Impl_erc20_Erc20.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc20::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc20::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc20::Error" ])
               |)
             |)))
         |)))
@@ -1113,17 +1260,23 @@ Module Impl_erc20_Erc20.
               Ty.path "erc20::AccountId",
               M.get_associated_function (| Ty.path "erc20::Env", "caller", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "erc20::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "erc20::Env",
-                      M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "erc20::Env",
+                        M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Env" ])
               ]
             |) in
           M.alloc (|
@@ -1132,13 +1285,22 @@ Module Impl_erc20_Erc20.
               Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "erc20::Error" ],
               M.get_associated_function (| Ty.path "erc20::Erc20", "transfer_from_to", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, from |) |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, to |) |) |);
-                M.read (| value |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc20::Erc20" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, from |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, to |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ]);
+                M.value_with_ty (M.read (| value |)) (Ty.path "u128")
               ]
             |)
           |)
@@ -1175,17 +1337,23 @@ Module Impl_erc20_Erc20.
               Ty.path "erc20::AccountId",
               M.get_associated_function (| Ty.path "erc20::Env", "caller", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "erc20::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "erc20::Env",
-                      M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "erc20::Env",
+                        M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Env" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -1204,16 +1372,31 @@ Module Impl_erc20_Erc20.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "erc20::Erc20",
-                    "allowances"
-                  |)
-                |);
-                Value.Tuple [ M.read (| owner |); M.read (| spender |) ];
-                M.read (| value |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "erc20::Erc20",
+                      "allowances"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "erc20::Mapping")
+                        []
+                        [
+                          Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
+                          Ty.path "u128"
+                        ]
+                    ]);
+                M.value_with_ty
+                  (Value.Tuple [ M.read (| owner |); M.read (| spender |) ])
+                  (Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ]);
+                M.value_with_ty (M.read (| value |)) (Ty.path "u128")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -1221,41 +1404,47 @@ Module Impl_erc20_Erc20.
               Ty.tuple [],
               M.get_associated_function (| Ty.path "erc20::Env", "emit_event", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "erc20::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "erc20::Env",
-                      M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.path "erc20::Env",
+                        M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                Value.StructTuple
-                  "erc20::Event::Approval"
-                  []
-                  []
-                  [
-                    Value.mkStructRecord
-                      "erc20::Approval"
-                      []
-                      []
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Env" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "erc20::Event::Approval"
                       [
-                        ("owner", M.read (| owner |));
-                        ("spender", M.read (| spender |));
-                        ("value", M.read (| value |))
-                      ]
-                  ]
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "erc20::Approval"
+                            [
+                              ("owner", M.read (| owner |));
+                              ("spender", M.read (| spender |));
+                              ("value", M.read (| value |))
+                            ])
+                          (Ty.path "erc20::Approval")
+                      ])
+                    (Ty.path "erc20::Event"))
+                  (Ty.path "erc20::Event")
               ]
             |) in
           M.alloc (|
             Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "erc20::Error" ],
-            Value.StructTuple
-              "core::result::Result::Ok"
-              []
-              [ Ty.tuple []; Ty.path "erc20::Error" ]
-              [ Value.Tuple [] ]
+            M.value_with_ty
+              (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+              (Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "erc20::Error" ])
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1294,17 +1483,23 @@ Module Impl_erc20_Erc20.
                   Ty.path "erc20::AccountId",
                   M.get_associated_function (| Ty.path "erc20::Env", "caller", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "erc20::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "erc20::Env",
-                          M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "erc20::Env",
+                            M.get_associated_function (| Ty.path "erc20::Erc20", "env", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Env" ])
                   ]
                 |) in
               let~ allowance : Ty.path "u128" :=
@@ -1312,15 +1507,21 @@ Module Impl_erc20_Erc20.
                   Ty.path "u128",
                   M.get_associated_function (| Ty.path "erc20::Erc20", "allowance_impl", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, from |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::Erc20" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, from |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1344,11 +1545,18 @@ Module Impl_erc20_Erc20.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "erc20::Error" ]
-                                [ Value.StructTuple "erc20::Error::InsufficientAllowance" [] [] [] ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple "erc20::Error::InsufficientAllowance" [])
+                                      (Ty.path "erc20::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "erc20::Error" ])
                             |)
                           |)
                         |)));
@@ -1393,30 +1601,44 @@ Module Impl_erc20_Erc20.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "erc20::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "erc20::Erc20",
+                              "transfer_from_to",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "erc20::Erc20" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, from |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, to |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "erc20::AccountId" ]);
+                              M.value_with_ty (M.read (| value |)) (Ty.path "u128")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "erc20::Error" ],
-                          M.get_associated_function (|
-                            Ty.path "erc20::Erc20",
-                            "transfer_from_to",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, from |) |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, to |) |)
-                            |);
-                            M.read (| value |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "erc20::Error" ])
                       ]
                     |)
                   |),
@@ -1463,7 +1685,15 @@ Module Impl_erc20_Erc20.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.path "core::convert::Infallible"; Ty.path "erc20::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1496,20 +1726,37 @@ Module Impl_erc20_Erc20.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "erc20::Erc20",
-                        "allowances"
-                      |)
-                    |);
-                    Value.Tuple [ M.read (| from |); M.read (| caller |) ];
-                    M.call_closure (|
-                      Ty.path "u128",
-                      BinOp.Wrap.sub,
-                      [ M.read (| allowance |); M.read (| value |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "erc20::Erc20",
+                          "allowances"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "erc20::Mapping")
+                            []
+                            [
+                              Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ];
+                              Ty.path "u128"
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (Value.Tuple [ M.read (| from |); M.read (| caller |) ])
+                      (Ty.tuple [ Ty.path "erc20::AccountId"; Ty.path "erc20::AccountId" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "u128",
+                        BinOp.Wrap.sub,
+                        [ M.read (| allowance |); M.read (| value |) ]
+                      |))
+                      (Ty.path "u128")
                   ]
                 |) in
               M.alloc (|
@@ -1517,11 +1764,12 @@ Module Impl_erc20_Erc20.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "erc20::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "erc20::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "erc20::Error" ])
               |)
             |)))
         |)))

@@ -31,55 +31,35 @@ Module Impl_custom_allocator_CustomAllocator.
     | [], [], [ init_value ] =>
       ltac:(M.monadic
         (let init_value := M.alloc (| Ty.path "bool", init_value |) in
-        Value.mkStructRecord
-          "custom_allocator::CustomAllocator"
-          []
-          []
-          [
-            ("value",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::Vec")
-                  []
-                  [ Ty.path "bool"; Ty.path "alloc::alloc::Global" ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ Ty.path "bool" ],
-                  "into_vec",
-                  [],
-                  [ Ty.path "alloc::alloc::Global" ]
-                |),
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::boxed::Box")
-                      []
-                      [
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "bool" ];
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "alloc::boxed::Box")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "bool" ];
-                          Ty.path "alloc::alloc::Global"
-                        ])
-                      (Ty.apply
-                        (Ty.path "alloc::boxed::Box")
-                        []
-                        [
-                          Ty.apply (Ty.path "slice") [] [ Ty.path "bool" ];
-                          Ty.path "alloc::alloc::Global"
-                        ]),
-                    [
-                      M.read (|
-                        M.call_closure (|
-                          Ty.apply
+        M.value_with_ty
+          (Value.mkStructRecord
+            "custom_allocator::CustomAllocator"
+            [
+              ("value",
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "alloc::vec::Vec")
+                    []
+                    [ Ty.path "bool"; Ty.path "alloc::alloc::Global" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ Ty.path "bool" ],
+                    "into_vec",
+                    [],
+                    [ Ty.path "alloc::alloc::Global" ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::boxed::Box")
+                          []
+                          [
+                            Ty.apply (Ty.path "slice") [] [ Ty.path "bool" ];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
                             [
@@ -88,38 +68,66 @@ Module Impl_custom_allocator_CustomAllocator.
                                 [ Value.Integer IntegerKind.Usize 1 ]
                                 [ Ty.path "bool" ];
                               Ty.path "alloc::alloc::Global"
-                            ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "bool" ];
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            "new",
-                            [],
+                            ])
+                          (Ty.apply
+                            (Ty.path "alloc::boxed::Box")
                             []
-                          |),
-                          [
-                            M.alloc (|
+                            [
+                              Ty.apply (Ty.path "slice") [] [ Ty.path "bool" ];
+                              Ty.path "alloc::alloc::Global"
+                            ]),
+                        [
+                          M.read (|
+                            M.call_closure (|
                               Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "bool" ],
-                              Value.Array [ M.read (| init_value |) ]
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "bool" ];
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.path "bool" ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ],
+                                "new",
+                                [],
+                                []
+                              |),
+                              [
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "bool" ],
+                                  Value.Array [ M.read (| init_value |) ]
+                                |)
+                              ]
                             |)
-                          ]
-                        |)
-                      |)
-                    ]
-                  |)
-                ]
-              |))
-          ]))
+                          |)
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.apply (Ty.path "slice") [] [ Ty.path "bool" ];
+                          Ty.path "alloc::alloc::Global"
+                        ])
+                  ]
+                |))
+            ])
+          (Ty.path "custom_allocator::CustomAllocator")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -145,19 +153,21 @@ Module Impl_custom_allocator_CustomAllocator.
             []
           |),
           [
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_trait_method (|
-                "core::default::Default",
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "bool",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "bool",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
+              |))
+              (Ty.path "bool")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -200,15 +210,25 @@ Module Impl_custom_allocator_CustomAllocator.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "custom_allocator::CustomAllocator",
-                        "value"
-                      |)
-                    |);
-                    Value.Integer IntegerKind.Usize 0
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "custom_allocator::CustomAllocator",
+                          "value"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "bool"; Ty.path "alloc::alloc::Global" ]
+                        ]);
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
                   ]
                 |)
               |),
@@ -233,15 +253,25 @@ Module Impl_custom_allocator_CustomAllocator.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "custom_allocator::CustomAllocator",
-                              "value"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.Usize 0
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "custom_allocator::CustomAllocator",
+                                "value"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [ Ty.path "bool"; Ty.path "alloc::alloc::Global" ]
+                              ]);
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
                         ]
                       |)
                     |)
@@ -289,15 +319,25 @@ Module Impl_custom_allocator_CustomAllocator.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "custom_allocator::CustomAllocator",
-                    "value"
-                  |)
-                |);
-                Value.Integer IntegerKind.Usize 0
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "custom_allocator::CustomAllocator",
+                      "value"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "bool"; Ty.path "alloc::alloc::Global" ]
+                    ]);
+                M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
               ]
             |)
           |)

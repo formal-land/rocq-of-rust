@@ -16,7 +16,7 @@ Module InstructionContext.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::entrypoint::lazy::InstructionContext";
     φ x :=
-      Value.StructRecord "pinocchio::entrypoint::lazy::InstructionContext" [] [] [
+      Value.StructRecord "pinocchio::entrypoint::lazy::InstructionContext" [
         ("buffer",    φ x.(buffer));
         ("remaining", φ x.(remaining))
       ];

@@ -69,7 +69,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -109,7 +113,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ len_div_8 : Ty.path "usize" :=
                   M.call_closure (|
@@ -128,12 +136,14 @@ Module slice.
                       []
                     |),
                     [
-                      M.read (| v_base |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.mul,
-                        [ M.read (| len_div_8 |); Value.Integer IntegerKind.Usize 4 ]
-                      |)
+                      M.value_with_ty (M.read (| v_base |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.mul,
+                          [ M.read (| len_div_8 |); Value.Integer IntegerKind.Usize 4 ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |) in
                 let~ c : Ty.apply (Ty.path "*const") [] [ T ] :=
@@ -146,12 +156,14 @@ Module slice.
                       []
                     |),
                     [
-                      M.read (| v_base |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.mul,
-                        [ M.read (| len_div_8 |); Value.Integer IntegerKind.Usize 7 ]
-                      |)
+                      M.value_with_ty (M.read (| v_base |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.mul,
+                          [ M.read (| len_div_8 |); Value.Integer IntegerKind.Usize 7 ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |) in
                 M.alloc (|
@@ -191,39 +203,60 @@ Module slice.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ T ],
-                                M.get_function (|
-                                  "core::slice::sort::shared::pivot::median3",
-                                  [],
-                                  [ T; F ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| c |) |) |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| is_less |) |)
-                                  |)
-                                ]
-                              |);
-                              M.read (| v_base |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "*const") [] [ T ],
+                                  M.get_function (|
+                                    "core::slice::sort::shared::pivot::median3",
+                                    [],
+                                    [ T; F ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| a |) |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| b |) |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| c |) |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| is_less |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ F ])
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ T ]);
+                              M.value_with_ty
+                                (M.read (| v_base |))
+                                (Ty.apply (Ty.path "*const") [] [ T ])
                             ]
                           |)));
                       fun γ =>
@@ -237,25 +270,37 @@ Module slice.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ T ],
-                                M.get_function (|
-                                  "core::slice::sort::shared::pivot::median3_rec",
-                                  [],
-                                  [ T; F ]
-                                |),
-                                [
-                                  M.read (| a |);
-                                  M.read (| b |);
-                                  M.read (| c |);
-                                  M.read (| len_div_8 |);
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| is_less |) |)
-                                  |)
-                                ]
-                              |);
-                              M.read (| v_base |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "*const") [] [ T ],
+                                  M.get_function (|
+                                    "core::slice::sort::shared::pivot::median3_rec",
+                                    [],
+                                    [ T; F ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| a |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.read (| b |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.read (| c |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty (M.read (| len_div_8 |)) (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| is_less |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ F ])
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ T ]);
+                              M.value_with_ty
+                                (M.read (| v_base |))
+                                (Ty.apply (Ty.path "*const") [] [ T ])
                             ]
                           |)))
                     ]
@@ -350,46 +395,62 @@ Module slice.
                                     [ T; F ]
                                   |),
                                   [
-                                    M.read (| a |);
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ T ],
-                                      M.get_associated_function (|
+                                    M.value_with_ty
+                                      (M.read (| a |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply (Ty.path "*const") [] [ T ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| a |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.mul,
-                                          [ M.read (| n8 |); Value.Integer IntegerKind.Usize 4 ]
-                                        |)
-                                      ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ T ],
-                                      M.get_associated_function (|
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ T ],
+                                          "add",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| a |))
+                                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.mul,
+                                              [ M.read (| n8 |); Value.Integer IntegerKind.Usize 4 ]
+                                            |))
+                                            (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply (Ty.path "*const") [] [ T ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| a |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.mul,
-                                          [ M.read (| n8 |); Value.Integer IntegerKind.Usize 7 ]
-                                        |)
-                                      ]
-                                    |);
-                                    M.read (| n8 |);
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| is_less |) |)
-                                    |)
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ T ],
+                                          "add",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| a |))
+                                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.mul,
+                                              [ M.read (| n8 |); Value.Integer IntegerKind.Usize 7 ]
+                                            |))
+                                            (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty (M.read (| n8 |)) (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| is_less |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ F ])
                                   ]
                                 |)
                               |) in
@@ -404,46 +465,62 @@ Module slice.
                                     [ T; F ]
                                   |),
                                   [
-                                    M.read (| b |);
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ T ],
-                                      M.get_associated_function (|
+                                    M.value_with_ty
+                                      (M.read (| b |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply (Ty.path "*const") [] [ T ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| b |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.mul,
-                                          [ M.read (| n8 |); Value.Integer IntegerKind.Usize 4 ]
-                                        |)
-                                      ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ T ],
-                                      M.get_associated_function (|
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ T ],
+                                          "add",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| b |))
+                                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.mul,
+                                              [ M.read (| n8 |); Value.Integer IntegerKind.Usize 4 ]
+                                            |))
+                                            (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply (Ty.path "*const") [] [ T ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| b |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.mul,
-                                          [ M.read (| n8 |); Value.Integer IntegerKind.Usize 7 ]
-                                        |)
-                                      ]
-                                    |);
-                                    M.read (| n8 |);
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| is_less |) |)
-                                    |)
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ T ],
+                                          "add",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| b |))
+                                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.mul,
+                                              [ M.read (| n8 |); Value.Integer IntegerKind.Usize 7 ]
+                                            |))
+                                            (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty (M.read (| n8 |)) (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| is_less |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ F ])
                                   ]
                                 |)
                               |) in
@@ -458,46 +535,62 @@ Module slice.
                                     [ T; F ]
                                   |),
                                   [
-                                    M.read (| c |);
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ T ],
-                                      M.get_associated_function (|
+                                    M.value_with_ty
+                                      (M.read (| c |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply (Ty.path "*const") [] [ T ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| c |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.mul,
-                                          [ M.read (| n8 |); Value.Integer IntegerKind.Usize 4 ]
-                                        |)
-                                      ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ T ],
-                                      M.get_associated_function (|
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ T ],
+                                          "add",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| c |))
+                                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.mul,
+                                              [ M.read (| n8 |); Value.Integer IntegerKind.Usize 4 ]
+                                            |))
+                                            (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply (Ty.path "*const") [] [ T ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| c |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.mul,
-                                          [ M.read (| n8 |); Value.Integer IntegerKind.Usize 7 ]
-                                        |)
-                                      ]
-                                    |);
-                                    M.read (| n8 |);
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| is_less |) |)
-                                    |)
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ T ],
+                                          "add",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| c |))
+                                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.mul,
+                                              [ M.read (| n8 |); Value.Integer IntegerKind.Usize 7 ]
+                                            |))
+                                            (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ]);
+                                    M.value_with_ty (M.read (| n8 |)) (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| is_less |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ F ])
                                   ]
                                 |)
                               |) in
@@ -512,19 +605,33 @@ Module slice.
                     Ty.apply (Ty.path "*const") [] [ T ],
                     M.get_function (| "core::slice::sort::shared::pivot::median3", [], [ T; F ] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |) |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |) |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| c |) |) |) |)
-                      |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| is_less |) |) |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| c |) |) |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| is_less |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ F ])
                     ]
                   |)
                 |)
@@ -580,12 +687,17 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| is_less |) |) |);
-                      Value.Tuple
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |)
-                        ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| is_less |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ F ]);
+                      M.value_with_ty
+                        (Value.Tuple
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |);
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |)
+                          ])
+                        (Ty.tuple
+                          [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ])
                     ]
                   |) in
                 let~ y : Ty.path "bool" :=
@@ -604,12 +716,17 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| is_less |) |) |);
-                      Value.Tuple
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| c |) |) |)
-                        ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| is_less |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ F ]);
+                      M.value_with_ty
+                        (Value.Tuple
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |);
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| c |) |) |)
+                          ])
+                        (Ty.tuple
+                          [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ])
                     ]
                   |) in
                 M.alloc (|
@@ -652,15 +769,29 @@ Module slice.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| is_less |) |)
-                                  |);
-                                  Value.Tuple
-                                    [
-                                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |);
-                                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| c |) |) |)
-                                    ]
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| is_less |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                  M.value_with_ty
+                                    (Value.Tuple
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| b |) |)
+                                        |);
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| c |) |)
+                                        |)
+                                      ])
+                                    (Ty.tuple
+                                      [
+                                        Ty.apply (Ty.path "&") [] [ T ];
+                                        Ty.apply (Ty.path "&") [] [ T ]
+                                      ])
                                 ]
                               |) in
                             M.alloc (|

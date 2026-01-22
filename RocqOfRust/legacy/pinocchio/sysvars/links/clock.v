@@ -59,7 +59,7 @@ Module Clock.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::sysvars::clock::Clock";
     φ x :=
-      Value.StructRecord "pinocchio::sysvars::clock::Clock" [] [] [
+      Value.StructRecord "pinocchio::sysvars::clock::Clock" [
         ("slot", φ x.(slot));
         ("epoch_start_timestamp", φ x.(epoch_start_timestamp));
         ("epoch", φ x.(epoch));

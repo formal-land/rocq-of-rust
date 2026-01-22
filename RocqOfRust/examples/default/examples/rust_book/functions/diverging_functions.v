@@ -35,7 +35,11 @@ Module main.
             [],
             [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
           |),
-          [ mk_str (| "This call never returns." |) ]
+          [
+            M.value_with_ty
+              (mk_str (| "This call never returns." |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.

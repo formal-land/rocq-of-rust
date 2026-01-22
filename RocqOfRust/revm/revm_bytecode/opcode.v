@@ -79,36 +79,42 @@ Module opcode.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OpCode" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_bytecode::opcode::OpCode",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OpCode" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_bytecode::opcode::OpCode",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -131,25 +137,25 @@ Module opcode.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple
-            "revm_bytecode::opcode::OpCode"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "u8",
-                M.get_trait_method (|
-                  "core::default::Default",
+          (M.value_with_ty
+            (Value.StructTuple
+              "revm_bytecode::opcode::OpCode"
+              [
+                M.call_closure (|
                   Ty.path "u8",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u8",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |)
-            ]))
+                |)
+              ])
+            (Ty.path "revm_bytecode::opcode::OpCode")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -289,32 +295,36 @@ Module opcode.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_bytecode::opcode::OpCode",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_bytecode::opcode::OpCode",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_bytecode::opcode::OpCode",
-                      0
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_bytecode::opcode::OpCode",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -351,32 +361,36 @@ Module opcode.
             Ty.path "core::cmp::Ordering",
             M.get_trait_method (| "core::cmp::Ord", Ty.path "u8", [], [], "cmp", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_bytecode::opcode::OpCode",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_bytecode::opcode::OpCode",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_bytecode::opcode::OpCode",
-                      0
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_bytecode::opcode::OpCode",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -409,20 +423,24 @@ Module opcode.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hash", Ty.path "u8", [], [], "hash", [], [ __H ] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_bytecode::opcode::OpCode",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_bytecode::opcode::OpCode",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ __H ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -471,7 +489,11 @@ Module opcode.
                   [],
                   []
                 |),
-                [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| M.deref (| M.read (| self |) |) |))
+                    (Ty.path "revm_bytecode::opcode::OpCode")
+                ]
               |) in
             M.alloc (|
               Ty.apply
@@ -522,22 +544,33 @@ Module opcode.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                M.get_associated_function (|
-                                  Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                                  "name",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, val |) ]
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                  M.get_associated_function (|
+                                    Ty.path "revm_bytecode::opcode::OpCodeInfo",
+                                    "name",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, val |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])
+                                  ]
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)));
                   fun γ =>
@@ -554,86 +587,69 @@ Module opcode.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1_formatted",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1_formatted",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "slice")
+                                      (Ty.path "&")
                                       []
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                  ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                    ])
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "slice")
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.Unsize
+                                      (Ty.apply
+                                        (Ty.path "&")
                                         []
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                    ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
+                                        [
                                           Ty.apply
                                             (Ty.path "array")
                                             [ Value.Integer IntegerKind.Usize 2 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [ mk_str (| "UNKNOWN(0x" |); mk_str (| ")" |) ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                        ]),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 2 ]
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                              Value.Array
+                                                [ mk_str (| "UNKNOWN(0x" |); mk_str (| ")" |) ]
+                                            |)
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "slice")
-                                      []
-                                      [ Ty.path "core::fmt::rt::Argument" ]
-                                  ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ]
-                                    ])
+                                    ]
+                                  |))
                                   (Ty.apply
                                     (Ty.path "&")
                                     []
@@ -641,64 +657,179 @@ Module opcode.
                                       Ty.apply
                                         (Ty.path "slice")
                                         []
-                                        [ Ty.path "core::fmt::rt::Argument" ]
-                                    ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [ Ty.path "core::fmt::rt::Argument" ]
+                                      ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.Unsize
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
                                           Ty.apply
                                             (Ty.path "array")
                                             [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_upper_hex",
-                                                  [],
-                                                  [ Ty.path "u8" ]
-                                                |),
+                                            [ Ty.path "core::fmt::rt::Argument" ]
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.path "core::fmt::rt::Argument" ]
+                                        ]),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 1 ]
+                                                [ Ty.path "core::fmt::rt::Argument" ],
+                                              Value.Array
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.borrow (| Pointer.Kind.Ref, n |) |)
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      "new_upper_hex",
+                                                      [],
+                                                      [ Ty.path "u8" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (| Pointer.Kind.Ref, n |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                    ]
                                                   |)
                                                 ]
-                                              |)
-                                            ]
+                                            |)
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "slice")
-                                      []
-                                      [ Ty.path "core::fmt::rt::Placeholder" ]
-                                  ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
+                                    ]
+                                  |))
                                   (Ty.apply
                                     (Ty.path "&")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Placeholder" ]
-                                    ])
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [ Ty.path "core::fmt::rt::Placeholder" ]
+                                      ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.Unsize
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Placeholder" ]
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.path "core::fmt::rt::Placeholder" ]
+                                        ]),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 1 ]
+                                                [ Ty.path "core::fmt::rt::Placeholder" ],
+                                              Value.Array
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Placeholder",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Placeholder",
+                                                      "new",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 0)
+                                                        (Ty.path "usize");
+                                                      M.value_with_ty
+                                                        (Value.UnicodeChar 32)
+                                                        (Ty.path "char");
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::fmt::rt::Alignment::Unknown"
+                                                            [])
+                                                          (Ty.path "core::fmt::rt::Alignment"))
+                                                        (Ty.path "core::fmt::rt::Alignment");
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.U32 8)
+                                                        (Ty.path "u32");
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::fmt::rt::Count::Implied"
+                                                            [])
+                                                          (Ty.path "core::fmt::rt::Count"))
+                                                        (Ty.path "core::fmt::rt::Count");
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::fmt::rt::Count::Is"
+                                                            [ Value.Integer IntegerKind.Usize 2 ])
+                                                          (Ty.path "core::fmt::rt::Count"))
+                                                        (Ty.path "core::fmt::rt::Count")
+                                                    ]
+                                                  |)
+                                                ]
+                                            |)
+                                          |)
+                                        |)
+                                      |)
+                                    ]
+                                  |))
                                   (Ty.apply
                                     (Ty.path "&")
                                     []
@@ -707,68 +838,22 @@ Module opcode.
                                         (Ty.path "slice")
                                         []
                                         [ Ty.path "core::fmt::rt::Placeholder" ]
-                                    ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.path "core::fmt::rt::Placeholder" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Placeholder",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Placeholder",
-                                                  "new",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  Value.Integer IntegerKind.Usize 0;
-                                                  Value.UnicodeChar 32;
-                                                  Value.StructTuple
-                                                    "core::fmt::rt::Alignment::Unknown"
-                                                    []
-                                                    []
-                                                    [];
-                                                  Value.Integer IntegerKind.U32 8;
-                                                  Value.StructTuple
-                                                    "core::fmt::rt::Count::Implied"
-                                                    []
-                                                    []
-                                                    [];
-                                                  Value.StructTuple
-                                                    "core::fmt::rt::Count::Is"
-                                                    []
-                                                    []
-                                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                                ]
-                                              |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::rt::UnsafeArg",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::rt::UnsafeArg",
-                                  "new",
-                                  [],
-                                  []
-                                |),
-                                []
-                              |)
-                            ]
-                          |)
+                                    ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "core::fmt::rt::UnsafeArg",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::rt::UnsafeArg",
+                                      "new",
+                                      [],
+                                      []
+                                    |),
+                                    []
+                                  |))
+                                  (Ty.path "core::fmt::rt::UnsafeArg")
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)))
                 ]
@@ -828,25 +913,29 @@ Module opcode.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_bytecode::opcode::OpCode" ]
-                    [
-                      Value.StructTuple
-                        "revm_bytecode::opcode::OpCode"
-                        []
-                        []
-                        [ M.read (| opcode |) ]
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "revm_bytecode::opcode::OpCode"
+                            [ M.read (| opcode |) ])
+                          (Ty.path "revm_bytecode::opcode::OpCode")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_bytecode::opcode::OpCode" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "revm_bytecode::opcode::OpCode" ]
-                    []))
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_bytecode::opcode::OpCode" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -916,7 +1005,7 @@ Module opcode.
                           [],
                           []
                         |),
-                        [ M.read (| opcode |) ]
+                        [ M.value_with_ty (M.read (| opcode |)) (Ty.path "u8") ]
                       |)
                     |) in
                   let γ0_0 :=
@@ -930,7 +1019,11 @@ Module opcode.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, opcode |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, opcode |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ])
+                    ]
                   |)));
               fun γ => ltac:(M.monadic (Value.Bool false))
             ]
@@ -998,7 +1091,7 @@ Module opcode.
                           [],
                           []
                         |),
-                        [ M.read (| opcode |) ]
+                        [ M.value_with_ty (M.read (| opcode |)) (Ty.path "u8") ]
                       |)
                     |) in
                   let γ0_0 :=
@@ -1012,7 +1105,11 @@ Module opcode.
                       [],
                       []
                     |),
-                    [ M.read (| opcode |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| opcode |))
+                        (Ty.path "revm_bytecode::opcode::OpCode")
+                    ]
                   |)));
               fun γ => ltac:(M.monadic (Value.Bool false))
             ]
@@ -1080,7 +1177,7 @@ Module opcode.
                           [],
                           []
                         |),
-                        [ M.read (| opcode |) ]
+                        [ M.value_with_ty (M.read (| opcode |)) (Ty.path "u8") ]
                       |)
                     |) in
                   let γ0_0 :=
@@ -1094,7 +1191,11 @@ Module opcode.
                       [],
                       []
                     |),
-                    [ M.read (| opcode |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| opcode |))
+                        (Ty.path "revm_bytecode::opcode::OpCode")
+                    ]
                   |)));
               fun γ => ltac:(M.monadic (Value.Bool false))
             ]
@@ -1117,7 +1218,9 @@ Module opcode.
       | [], [], [ opcode ] =>
         ltac:(M.monadic
           (let opcode := M.alloc (| Ty.path "u8", opcode |) in
-          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ M.read (| opcode |) ]))
+          M.value_with_ty
+            (Value.StructTuple "revm_bytecode::opcode::OpCode" [ M.read (| opcode |) ])
+            (Ty.path "revm_bytecode::opcode::OpCode")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1145,22 +1248,28 @@ Module opcode.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                    M.get_associated_function (|
-                      Ty.path "revm_bytecode::opcode::OpCode",
-                      "info",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                    M.call_closure (|
+                      Ty.path "revm_bytecode::opcode::OpCodeInfo",
+                      M.get_associated_function (|
+                        Ty.path "revm_bytecode::opcode::OpCode",
+                        "info",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, self |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1207,7 +1316,7 @@ Module opcode.
                           [],
                           []
                         |),
-                        [ M.read (| opcode |) ]
+                        [ M.value_with_ty (M.read (| opcode |)) (Ty.path "u8") ]
                       |)
                     |) in
                   let γ0_0 :=
@@ -1221,7 +1330,11 @@ Module opcode.
                       [],
                       []
                     |),
-                    [ M.read (| opcode |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| opcode |))
+                        (Ty.path "revm_bytecode::opcode::OpCode")
+                    ]
                   |)));
               fun γ => ltac:(M.monadic (mk_str (| "Unknown" |)))
             ]
@@ -1257,22 +1370,28 @@ Module opcode.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                    M.get_associated_function (|
-                      Ty.path "revm_bytecode::opcode::OpCode",
-                      "info",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      Ty.path "revm_bytecode::opcode::OpCodeInfo",
+                      M.get_associated_function (|
+                        Ty.path "revm_bytecode::opcode::OpCode",
+                        "info",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1305,22 +1424,28 @@ Module opcode.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                    M.get_associated_function (|
-                      Ty.path "revm_bytecode::opcode::OpCode",
-                      "info",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      Ty.path "revm_bytecode::opcode::OpCodeInfo",
+                      M.get_associated_function (|
+                        Ty.path "revm_bytecode::opcode::OpCode",
+                        "info",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1353,22 +1478,28 @@ Module opcode.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                    M.get_associated_function (|
-                      Ty.path "revm_bytecode::opcode::OpCode",
-                      "info",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      Ty.path "revm_bytecode::opcode::OpCodeInfo",
+                      M.get_associated_function (|
+                        Ty.path "revm_bytecode::opcode::OpCode",
+                        "info",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1418,35 +1549,46 @@ Module opcode.
                           [],
                           []
                         |),
-                        [ M.read (| opcode |) ]
+                        [ M.value_with_ty (M.read (| opcode |)) (Ty.path "u8") ]
                       |)
                     |) in
                   let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
                   let opcode := M.copy (| Ty.path "revm_bytecode::opcode::OpCode", γ0_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-                    [
-                      M.call_closure (|
-                        Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                        M.get_associated_function (|
-                          Ty.path "revm_bytecode::opcode::OpCode",
-                          "info",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, opcode |) ]
-                      |)
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.path "revm_bytecode::opcode::OpCodeInfo",
+                          M.get_associated_function (|
+                            Ty.path "revm_bytecode::opcode::OpCode",
+                            "info",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, opcode |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_bytecode::opcode::OpCode" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1546,32 +1688,44 @@ Module opcode.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array [ mk_str (| "opcode not found" |) ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array [ mk_str (| "opcode not found" |) ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)))
@@ -1609,7 +1763,11 @@ Module opcode.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [ Ty.path "u8"; Ty.path "u8" ],
@@ -1688,7 +1846,9 @@ Module opcode.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "revm_bytecode::opcode::OpCode",
-          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 0 ]
+          M.value_with_ty
+            (Value.StructTuple "revm_bytecode::opcode::OpCode" [ Value.Integer IntegerKind.U8 0 ])
+            (Ty.path "revm_bytecode::opcode::OpCode")
         |))).
     
     Global Instance AssociatedConstant_value_STOP : M.IsAssociatedFunction.C Self "STOP" value_STOP.
@@ -1701,7 +1861,9 @@ Module opcode.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "revm_bytecode::opcode::OpCode",
-          Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [ Value.Integer IntegerKind.U8 1 ]
+          M.value_with_ty
+            (Value.StructTuple "revm_bytecode::opcode::OpCode" [ Value.Integer IntegerKind.U8 1 ])
+            (Ty.path "revm_bytecode::opcode::OpCode")
         |))).
     
     Global Instance AssociatedConstant_value_ADD : M.IsAssociatedFunction.C Self "ADD" value_ADD.
@@ -1714,11 +1876,9 @@ Module opcode.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "revm_bytecode::opcode::OpCode",
-          Value.StructTuple
-            "revm_bytecode::opcode::OpCode"
-            []
-            []
-            [ Value.Integer IntegerKind.U8 49 ]
+          M.value_with_ty
+            (Value.StructTuple "revm_bytecode::opcode::OpCode" [ Value.Integer IntegerKind.U8 49 ])
+            (Ty.path "revm_bytecode::opcode::OpCode")
         |))).
     
     Global Instance AssociatedConstant_value_BALANCE :
@@ -1853,22 +2013,42 @@ Module opcode.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_bytecode::opcode::OpCodeInfo",
-                              "name_ptr"
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| other |) |),
-                              "revm_bytecode::opcode::OpCodeInfo",
-                              "name_ptr"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_bytecode::opcode::OpCodeInfo",
+                                "name_ptr"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| other |) |),
+                                "revm_bytecode::opcode::OpCodeInfo",
+                                "name_ptr"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ptr::non_null::NonNull")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ])
                         ]
                       |),
                       ltac:(M.monadic
@@ -2100,32 +2280,42 @@ Module opcode.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "name_ptr"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "name_ptr"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| other |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "name_ptr"
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| other |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "name_ptr"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ] ])
                 ]
               |)
             |),
@@ -2157,32 +2347,36 @@ Module opcode.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "revm_bytecode::opcode::OpCodeInfo",
-                                  "name_len"
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "revm_bytecode::opcode::OpCodeInfo",
+                                    "name_len"
+                                  |)
                                 |)
                               |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| other |) |),
-                                  "revm_bytecode::opcode::OpCodeInfo",
-                                  "name_len"
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| other |) |),
+                                    "revm_bytecode::opcode::OpCodeInfo",
+                                    "name_len"
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                         ]
                       |)
                     |),
@@ -2221,32 +2415,36 @@ Module opcode.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "revm_bytecode::opcode::OpCodeInfo",
-                                          "inputs"
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_bytecode::opcode::OpCodeInfo",
+                                            "inputs"
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| other |) |),
-                                          "revm_bytecode::opcode::OpCodeInfo",
-                                          "inputs"
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| other |) |),
+                                            "revm_bytecode::opcode::OpCodeInfo",
+                                            "inputs"
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                                 ]
                               |)
                             |),
@@ -2286,32 +2484,36 @@ Module opcode.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                  "outputs"
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "revm_bytecode::opcode::OpCodeInfo",
+                                                    "outputs"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| other |) |),
-                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                  "outputs"
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| other |) |),
+                                                    "revm_bytecode::opcode::OpCodeInfo",
+                                                    "outputs"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                                         ]
                                       |)
                                     |),
@@ -2354,32 +2556,36 @@ Module opcode.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "revm_bytecode::opcode::OpCodeInfo",
-                                                          "immediate_size"
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "revm_bytecode::opcode::OpCodeInfo",
+                                                            "immediate_size"
+                                                          |)
                                                         |)
                                                       |)
-                                                    |)
-                                                  |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| other |) |),
-                                                          "revm_bytecode::opcode::OpCodeInfo",
-                                                          "immediate_size"
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| other |) |),
+                                                            "revm_bytecode::opcode::OpCodeInfo",
+                                                            "immediate_size"
+                                                          |)
                                                         |)
                                                       |)
-                                                    |)
-                                                  |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                                                 ]
                                               |)
                                             |),
@@ -2422,32 +2628,44 @@ Module opcode.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                                  "not_eof"
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (| M.read (| self |) |),
+                                                                    "revm_bytecode::opcode::OpCodeInfo",
+                                                                    "not_eof"
+                                                                  |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| other |) |),
-                                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                                  "not_eof"
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "bool" ]);
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (|
+                                                                      M.read (| other |)
+                                                                    |),
+                                                                    "revm_bytecode::opcode::OpCodeInfo",
+                                                                    "not_eof"
+                                                                  |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "bool" ])
                                                         ]
                                                       |)
                                                     |),
@@ -2480,36 +2698,46 @@ Module opcode.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.read (| self |)
-                                                                      |),
-                                                                      "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "terminating"
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |),
+                                                                        "revm_bytecode::opcode::OpCodeInfo",
+                                                                        "terminating"
+                                                                      |)
                                                                     |)
                                                                   |)
-                                                                |)
-                                                              |);
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.read (| other |)
-                                                                      |),
-                                                                      "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "terminating"
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "bool" ]);
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| other |)
+                                                                        |),
+                                                                        "revm_bytecode::opcode::OpCodeInfo",
+                                                                        "terminating"
+                                                                      |)
                                                                     |)
                                                                   |)
-                                                                |)
-                                                              |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "bool" ])
                                                             ]
                                                           |)));
                                                       fun γ =>
@@ -2636,32 +2864,42 @@ Module opcode.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "name_ptr"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "name_ptr"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| other |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "name_ptr"
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| other |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "name_ptr"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ] ])
                 ]
               |)
             |),
@@ -2685,32 +2923,36 @@ Module opcode.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "revm_bytecode::opcode::OpCodeInfo",
-                                  "name_len"
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "revm_bytecode::opcode::OpCodeInfo",
+                                    "name_len"
+                                  |)
                                 |)
                               |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| other |) |),
-                                  "revm_bytecode::opcode::OpCodeInfo",
-                                  "name_len"
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| other |) |),
+                                    "revm_bytecode::opcode::OpCodeInfo",
+                                    "name_len"
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                         ]
                       |)
                     |),
@@ -2734,32 +2976,36 @@ Module opcode.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "revm_bytecode::opcode::OpCodeInfo",
-                                          "inputs"
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_bytecode::opcode::OpCodeInfo",
+                                            "inputs"
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| other |) |),
-                                          "revm_bytecode::opcode::OpCodeInfo",
-                                          "inputs"
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| other |) |),
+                                            "revm_bytecode::opcode::OpCodeInfo",
+                                            "inputs"
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                                 ]
                               |)
                             |),
@@ -2784,32 +3030,36 @@ Module opcode.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                  "outputs"
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "revm_bytecode::opcode::OpCodeInfo",
+                                                    "outputs"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| other |) |),
-                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                  "outputs"
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| other |) |),
+                                                    "revm_bytecode::opcode::OpCodeInfo",
+                                                    "outputs"
+                                                  |)
                                                 |)
                                               |)
-                                            |)
-                                          |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                                         ]
                                       |)
                                     |),
@@ -2837,32 +3087,36 @@ Module opcode.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "revm_bytecode::opcode::OpCodeInfo",
-                                                          "immediate_size"
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "revm_bytecode::opcode::OpCodeInfo",
+                                                            "immediate_size"
+                                                          |)
                                                         |)
                                                       |)
-                                                    |)
-                                                  |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| other |) |),
-                                                          "revm_bytecode::opcode::OpCodeInfo",
-                                                          "immediate_size"
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| other |) |),
+                                                            "revm_bytecode::opcode::OpCodeInfo",
+                                                            "immediate_size"
+                                                          |)
                                                         |)
                                                       |)
-                                                    |)
-                                                  |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                                                 ]
                                               |)
                                             |),
@@ -2890,32 +3144,44 @@ Module opcode.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                                  "not_eof"
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (| M.read (| self |) |),
+                                                                    "revm_bytecode::opcode::OpCodeInfo",
+                                                                    "not_eof"
+                                                                  |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| other |) |),
-                                                                  "revm_bytecode::opcode::OpCodeInfo",
-                                                                  "not_eof"
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "bool" ]);
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (|
+                                                                      M.read (| other |)
+                                                                    |),
+                                                                    "revm_bytecode::opcode::OpCodeInfo",
+                                                                    "not_eof"
+                                                                  |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "bool" ])
                                                         ]
                                                       |)
                                                     |),
@@ -2939,36 +3205,46 @@ Module opcode.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.read (| self |)
-                                                                      |),
-                                                                      "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "terminating"
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |),
+                                                                        "revm_bytecode::opcode::OpCodeInfo",
+                                                                        "terminating"
+                                                                      |)
                                                                     |)
                                                                   |)
-                                                                |)
-                                                              |);
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.read (| other |)
-                                                                      |),
-                                                                      "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "terminating"
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "bool" ]);
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| other |)
+                                                                        |),
+                                                                        "revm_bytecode::opcode::OpCodeInfo",
+                                                                        "terminating"
+                                                                      |)
                                                                     |)
                                                                   |)
-                                                                |)
-                                                              |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "bool" ])
                                                             ]
                                                           |)));
                                                       fun γ =>
@@ -3053,20 +3329,27 @@ Module opcode.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "name_ptr"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "name_ptr"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -3082,20 +3365,24 @@ Module opcode.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "name_len"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "name_len"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -3111,20 +3398,24 @@ Module opcode.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "inputs"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "inputs"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -3140,20 +3431,24 @@ Module opcode.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "outputs"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "outputs"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -3169,20 +3464,24 @@ Module opcode.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "immediate_size"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "immediate_size"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -3198,20 +3497,24 @@ Module opcode.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "not_eof"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "not_eof"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -3228,20 +3531,24 @@ Module opcode.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_bytecode::opcode::OpCodeInfo",
-                          "terminating"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_bytecode::opcode::OpCodeInfo",
+                            "terminating"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -3296,64 +3603,53 @@ Module opcode.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::builders::DebugStruct",
-                      "field",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.path "core::fmt::builders::DebugStruct" ],
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::builders::DebugStruct",
-                              "field",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.path "core::fmt::builders::DebugStruct" ],
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::builders::DebugStruct",
-                                      "field",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.path "core::fmt::builders::DebugStruct" ],
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::builders::DebugStruct",
-                                              "field",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::builders::DebugStruct",
+                        "field",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::builders::DebugStruct",
+                                  "field",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::builders::DebugStruct",
+                                            "field",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
                                                 Pointer.Kind.MutRef,
                                                 M.deref (|
                                                   M.call_closure (|
@@ -3369,81 +3665,314 @@ Module opcode.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (|
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "&mut")
-                                                              []
-                                                              [
-                                                                Ty.path
-                                                                  "core::fmt::builders::DebugStruct"
-                                                              ],
-                                                            M.get_associated_function (|
-                                                              Ty.path
-                                                                "core::fmt::builders::DebugStruct",
-                                                              "field",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.alloc (|
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.deref (|
+                                                            M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
                                                                   Ty.path
-                                                                    "core::fmt::builders::DebugStruct",
-                                                                  M.call_closure (|
-                                                                    Ty.path
-                                                                      "core::fmt::builders::DebugStruct",
-                                                                    M.get_associated_function (|
-                                                                      Ty.path
-                                                                        "core::fmt::Formatter",
-                                                                      "debug_struct",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        M.deref (| M.read (| f |) |)
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          mk_str (| "OpCodeInfo" |)
-                                                                        |)
+                                                                    "core::fmt::builders::DebugStruct"
+                                                                ],
+                                                              M.get_associated_function (|
+                                                                Ty.path
+                                                                  "core::fmt::builders::DebugStruct",
+                                                                "field",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.deref (|
+                                                                      M.call_closure (|
+                                                                        Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "core::fmt::builders::DebugStruct"
+                                                                          ],
+                                                                        M.get_associated_function (|
+                                                                          Ty.path
+                                                                            "core::fmt::builders::DebugStruct",
+                                                                          "field",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              M.alloc (|
+                                                                                Ty.path
+                                                                                  "core::fmt::builders::DebugStruct",
+                                                                                M.call_closure (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::builders::DebugStruct",
+                                                                                  M.get_associated_function (|
+                                                                                    Ty.path
+                                                                                      "core::fmt::Formatter",
+                                                                                    "debug_struct",
+                                                                                    [],
+                                                                                    []
+                                                                                  |),
+                                                                                  [
+                                                                                    M.value_with_ty
+                                                                                      (M.borrow (|
+                                                                                        Pointer.Kind.MutRef,
+                                                                                        M.deref (|
+                                                                                          M.read (|
+                                                                                            f
+                                                                                          |)
+                                                                                        |)
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&mut")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "core::fmt::Formatter"
+                                                                                        ]);
+                                                                                    M.value_with_ty
+                                                                                      (M.borrow (|
+                                                                                        Pointer.Kind.Ref,
+                                                                                        M.deref (|
+                                                                                          mk_str (|
+                                                                                            "OpCodeInfo"
+                                                                                          |)
+                                                                                        |)
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "str"
+                                                                                        ])
+                                                                                  ]
+                                                                                |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&mut")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "core::fmt::builders::DebugStruct"
+                                                                              ]);
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                mk_str (| "name" |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Ty.path "str" ]);
+                                                                          M.value_with_ty
+                                                                            (M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.dyn
+                                                                                    [
+                                                                                      ("core::fmt::Debug::Trait",
+                                                                                        [])
+                                                                                    ]
+                                                                                ],
+                                                                              M.pointer_coercion
+                                                                                M.PointerCoercion.Unsize
+                                                                                (Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "str"
+                                                                                      ]
+                                                                                  ])
+                                                                                (Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.dyn
+                                                                                      [
+                                                                                        ("core::fmt::Debug::Trait",
+                                                                                          [])
+                                                                                      ]
+                                                                                  ]),
+                                                                              [
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.deref (|
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.alloc (|
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "str"
+                                                                                          ],
+                                                                                        M.call_closure (|
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "str"
+                                                                                            ],
+                                                                                          M.get_associated_function (|
+                                                                                            Ty.path
+                                                                                              "revm_bytecode::opcode::OpCodeInfo",
+                                                                                            "name",
+                                                                                            [],
+                                                                                            []
+                                                                                          |),
+                                                                                          [
+                                                                                            M.value_with_ty
+                                                                                              (M.borrow (|
+                                                                                                Pointer.Kind.Ref,
+                                                                                                M.deref (|
+                                                                                                  M.read (|
+                                                                                                    self
+                                                                                                  |)
+                                                                                                |)
+                                                                                              |))
+                                                                                              (Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "&")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "revm_bytecode::opcode::OpCodeInfo"
+                                                                                                ])
+                                                                                          ]
+                                                                                        |)
+                                                                                      |)
+                                                                                    |)
+                                                                                  |)
+                                                                                |)
+                                                                              ]
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.dyn
+                                                                                  [
+                                                                                    ("core::fmt::Debug::Trait",
+                                                                                      [])
+                                                                                  ]
+                                                                              ])
+                                                                        ]
                                                                       |)
-                                                                    ]
-                                                                  |)
-                                                                |)
-                                                              |);
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (| mk_str (| "name" |) |)
-                                                              |);
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.dyn
-                                                                      [
-                                                                        ("core::fmt::Debug::Trait",
-                                                                          [])
-                                                                      ]
-                                                                  ],
-                                                                M.pointer_coercion
-                                                                  M.PointerCoercion.Unsize
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "core::fmt::builders::DebugStruct"
+                                                                    ]);
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      mk_str (| "inputs" |)
+                                                                    |)
+                                                                  |))
                                                                   (Ty.apply
                                                                     (Ty.path "&")
                                                                     []
-                                                                    [
-                                                                      Ty.apply
+                                                                    [ Ty.path "str" ]);
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.dyn
+                                                                          [
+                                                                            ("core::fmt::Debug::Trait",
+                                                                              [])
+                                                                          ]
+                                                                      ],
+                                                                    M.pointer_coercion
+                                                                      M.PointerCoercion.Unsize
+                                                                      (Ty.apply
                                                                         (Ty.path "&")
                                                                         []
-                                                                        [ Ty.path "str" ]
-                                                                    ])
+                                                                        [ Ty.path "u8" ])
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.dyn
+                                                                            [
+                                                                              ("core::fmt::Debug::Trait",
+                                                                                [])
+                                                                            ]
+                                                                        ]),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.alloc (|
+                                                                              Ty.path "u8",
+                                                                              M.call_closure (|
+                                                                                Ty.path "u8",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "revm_bytecode::opcode::OpCodeInfo",
+                                                                                  "inputs",
+                                                                                  [],
+                                                                                  []
+                                                                                |),
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          self
+                                                                                        |)
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "revm_bytecode::opcode::OpCodeInfo"
+                                                                                      ])
+                                                                                ]
+                                                                              |)
+                                                                            |)
+                                                                          |)
+                                                                        |)
+                                                                      |)
+                                                                    ]
+                                                                  |))
                                                                   (Ty.apply
                                                                     (Ty.path "&")
                                                                     []
@@ -3453,122 +3982,120 @@ Module opcode.
                                                                           ("core::fmt::Debug::Trait",
                                                                             [])
                                                                         ]
-                                                                    ]),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.alloc (|
-                                                                          Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [ Ty.path "str" ],
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path "&")
-                                                                              []
-                                                                              [ Ty.path "str" ],
-                                                                            M.get_associated_function (|
-                                                                              Ty.path
-                                                                                "revm_bytecode::opcode::OpCodeInfo",
-                                                                              "name",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (| self |)
-                                                                                |)
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  |)
-                                                                ]
-                                                              |)
-                                                            ]
+                                                                    ])
+                                                              ]
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| mk_str (| "inputs" |) |)
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "&")
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
                                                           []
                                                           [
-                                                            Ty.dyn
-                                                              [ ("core::fmt::Debug::Trait", []) ]
-                                                          ],
-                                                        M.pointer_coercion
-                                                          M.PointerCoercion.Unsize
-                                                          (Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "u8" ])
-                                                          (Ty.apply
+                                                            Ty.path
+                                                              "core::fmt::builders::DebugStruct"
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| mk_str (| "outputs" |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "str" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.apply
                                                             (Ty.path "&")
                                                             []
                                                             [
                                                               Ty.dyn
                                                                 [ ("core::fmt::Debug::Trait", []) ]
-                                                            ]),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.alloc (|
-                                                                  Ty.path "u8",
-                                                                  M.call_closure (|
+                                                            ],
+                                                          M.pointer_coercion
+                                                            M.PointerCoercion.Unsize
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "u8" ])
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.dyn
+                                                                  [ ("core::fmt::Debug::Trait", [])
+                                                                  ]
+                                                              ]),
+                                                          [
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.alloc (|
                                                                     Ty.path "u8",
-                                                                    M.get_associated_function (|
-                                                                      Ty.path
-                                                                        "revm_bytecode::opcode::OpCodeInfo",
-                                                                      "inputs",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| self |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
+                                                                    M.call_closure (|
+                                                                      Ty.path "u8",
+                                                                      M.get_associated_function (|
+                                                                        Ty.path
+                                                                          "revm_bytecode::opcode::OpCodeInfo",
+                                                                        "outputs",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| self |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "revm_bytecode::opcode::OpCodeInfo"
+                                                                            ])
+                                                                      ]
+                                                                    |)
                                                                   |)
                                                                 |)
                                                               |)
                                                             |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.dyn
+                                                              [ ("core::fmt::Debug::Trait", []) ]
+                                                          ])
                                                     ]
                                                   |)
                                                 |)
-                                              |);
-                                              M.borrow (|
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
                                                 Pointer.Kind.Ref,
-                                                M.deref (| mk_str (| "outputs" |) |)
-                                              |);
-                                              M.call_closure (|
+                                                M.deref (| mk_str (| "not_eof" |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                            M.value_with_ty
+                                              (M.call_closure (|
                                                 Ty.apply
                                                   (Ty.path "&")
                                                   []
                                                   [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
                                                 M.pointer_coercion
                                                   M.PointerCoercion.Unsize
-                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
                                                   (Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -3580,21 +4107,29 @@ Module opcode.
                                                       M.borrow (|
                                                         Pointer.Kind.Ref,
                                                         M.alloc (|
-                                                          Ty.path "u8",
+                                                          Ty.path "bool",
                                                           M.call_closure (|
-                                                            Ty.path "u8",
+                                                            Ty.path "bool",
                                                             M.get_associated_function (|
                                                               Ty.path
                                                                 "revm_bytecode::opcode::OpCodeInfo",
-                                                              "outputs",
+                                                              "is_disabled_in_eof",
                                                               [],
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (| M.read (| self |) |)
-                                                              |)
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| self |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "revm_bytecode::opcode::OpCodeInfo"
+                                                                  ])
                                                             ]
                                                           |)
                                                         |)
@@ -3602,152 +4137,146 @@ Module opcode.
                                                     |)
                                                   |)
                                                 ]
-                                              |)
-                                            ]
-                                          |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                          ]
                                         |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| mk_str (| "not_eof" |) |)
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "terminating" |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                      M.pointer_coercion
+                                        M.PointerCoercion.Unsize
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                                        (Ty.apply
                                           (Ty.path "&")
                                           []
-                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.path "bool",
+                                                M.call_closure (|
                                                   Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_associated_function (|
-                                                      Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                                                      "is_disabled_in_eof",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
+                                                  M.get_associated_function (|
+                                                    Ty.path "revm_bytecode::opcode::OpCodeInfo",
+                                                    "is_terminating",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
                                                         Pointer.Kind.Ref,
                                                         M.deref (| M.read (| self |) |)
-                                                      |)
-                                                    ]
-                                                  |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "revm_bytecode::opcode::OpCodeInfo"
+                                                        ])
+                                                  ]
                                                 |)
                                               |)
                                             |)
                                           |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |);
+                                        |)
+                                      ]
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "immediate_size" |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
                               M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (| mk_str (| "terminating" |) |)
-                              |);
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                [
+                                M.deref (|
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.path "bool",
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            M.get_associated_function (|
-                                              Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                                              "is_terminating",
-                                              [],
+                                    M.alloc (|
+                                      Ty.path "u8",
+                                      M.call_closure (|
+                                        Ty.path "u8",
+                                        M.get_associated_function (|
+                                          Ty.path "revm_bytecode::opcode::OpCodeInfo",
+                                          "immediate_size",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
                                               []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
+                                              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])
+                                        ]
                                       |)
                                     |)
                                   |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |)
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "immediate_size" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.path "u8",
-                                  M.call_closure (|
-                                    Ty.path "u8",
-                                    M.get_associated_function (|
-                                      Ty.path "revm_bytecode::opcode::OpCodeInfo",
-                                      "immediate_size",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
                                 |)
                               |)
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3808,10 +4337,12 @@ Module opcode.
                                       Ty.path "usize",
                                       M.get_associated_function (| Ty.path "str", "len", [], [] |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| name |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| name |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                       ]
                                     |);
                                     Value.Integer IntegerKind.Usize 256
@@ -3826,32 +4357,44 @@ Module opcode.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array [ mk_str (| "opcode name is too long" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "opcode name is too long" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -3860,53 +4403,68 @@ Module opcode.
               |) in
             M.alloc (|
               Ty.path "revm_bytecode::opcode::OpCodeInfo",
-              Value.mkStructRecord
-                "revm_bytecode::opcode::OpCodeInfo"
-                []
-                []
-                [
-                  ("name_ptr",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "revm_bytecode::opcode::OpCodeInfo"
+                  [
+                    ("name_ptr",
+                      M.call_closure (|
                         Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                        "new_unchecked",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                            "cast_mut",
-                            [],
-                            []
-                          |),
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+                          "new_unchecked",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                "cast_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    M.get_associated_function (| Ty.path "str", "as_ptr", [], [] |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| name |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                        ]
+                      |));
+                    ("name_len",
+                      M.cast
+                        (Ty.path "u8")
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (| Ty.path "str", "len", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                              M.get_associated_function (| Ty.path "str", "as_ptr", [], [] |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| name |) |) |) ]
-                            |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| name |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                           ]
-                        |)
-                      ]
-                    |));
-                  ("name_len",
-                    M.cast
-                      (Ty.path "u8")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| name |) |) |) ]
-                      |)));
-                  ("inputs", Value.Integer IntegerKind.U8 0);
-                  ("outputs", Value.Integer IntegerKind.U8 0);
-                  ("not_eof", Value.Bool false);
-                  ("terminating", Value.Bool false);
-                  ("immediate_size", Value.Integer IntegerKind.U8 0)
-                ]
+                        |)));
+                    ("inputs", Value.Integer IntegerKind.U8 0);
+                    ("outputs", Value.Integer IntegerKind.U8 0);
+                    ("not_eof", Value.Bool false);
+                    ("terminating", Value.Bool false);
+                    ("immediate_size", Value.Integer IntegerKind.U8 0)
+                  ])
+                (Ty.path "revm_bytecode::opcode::OpCodeInfo")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3942,42 +4500,51 @@ Module opcode.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                 M.get_function (| "core::slice::raw::from_raw_parts", [], [ Ty.path "u8" ] |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                    M.pointer_coercion
-                      M.PointerCoercion.MutToConstPointer
-                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                          "as_ptr",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_bytecode::opcode::OpCodeInfo",
-                              "name_ptr"
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |);
-                  M.cast
-                    (Ty.path "usize")
-                    (M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_bytecode::opcode::OpCodeInfo",
-                        "name_len"
-                      |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                      M.pointer_coercion
+                        M.PointerCoercion.MutToConstPointer
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_bytecode::opcode::OpCodeInfo",
+                                  "name_ptr"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "core::ptr::non_null::NonNull")
+                                []
+                                [ Ty.path "u8" ])
+                          ]
+                        |)
+                      ]
                     |))
+                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.cast
+                      (Ty.path "usize")
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_bytecode::opcode::OpCodeInfo",
+                          "name_len"
+                        |)
+                      |)))
+                    (Ty.path "usize")
                 ]
               |) in
             M.alloc (|
@@ -3988,7 +4555,14 @@ Module opcode.
                   M.call_closure (|
                     Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                     M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
                   |)
                 |)
               |)
@@ -4365,11 +4939,12 @@ Module opcode.
                 [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
             ] :=
         lib.repeat (|
-          Value.StructTuple
-            "core::option::Option::None"
-            []
-            [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-            [],
+          M.value_with_ty
+            (Value.StructTuple "core::option::Option::None" [])
+            (Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]),
           Value.Integer IntegerKind.Usize 256
         |) in
       let~ prev : Ty.path "u8" := Value.Integer IntegerKind.U8 0 in
@@ -4411,33 +4986,45 @@ Module opcode.
                     Ty.path "never",
                     M.get_function (| "core::panicking::panic_fmt", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "opcodes must be sorted in ascending order" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)
                 |)));
@@ -4454,28 +5041,33 @@ Module opcode.
             [],
             []
           |),
-          [ mk_str (| "STOP" |) ]
+          [ M.value_with_ty (mk_str (| "STOP" |)) (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]) ]
         |) in
       let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
         M.call_closure (|
           Ty.path "revm_bytecode::opcode::OpCodeInfo",
           M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
-          [ M.read (| info |); Value.Integer IntegerKind.U8 0; Value.Integer IntegerKind.U8 0 ]
+          [
+            M.value_with_ty (M.read (| info |)) (Ty.path "revm_bytecode::opcode::OpCodeInfo");
+            M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+            M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8")
+          ]
         |) in
       let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
         M.call_closure (|
           Ty.path "revm_bytecode::opcode::OpCodeInfo",
           M.get_function (| "revm_bytecode::opcode::terminating", [], [] |),
-          [ M.read (| info |) ]
+          [ M.value_with_ty (M.read (| info |)) (Ty.path "revm_bytecode::opcode::OpCodeInfo") ]
         |) in
       let~ _ : Ty.tuple [] :=
         M.write (|
           M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 0 |),
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-            [ M.read (| info |) ]
+          M.value_with_ty
+            (Value.StructTuple "core::option::Option::Some" [ M.read (| info |) ])
+            (Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])
         |) in
       let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 1 in
       let~ _ : Ty.tuple [] :=
@@ -4515,33 +5107,45 @@ Module opcode.
                     Ty.path "never",
                     M.get_function (| "core::panicking::panic_fmt", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "opcodes must be sorted in ascending order" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)
                 |)));
@@ -4558,22 +5162,27 @@ Module opcode.
             [],
             []
           |),
-          [ mk_str (| "ADD" |) ]
+          [ M.value_with_ty (mk_str (| "ADD" |)) (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]) ]
         |) in
       let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
         M.call_closure (|
           Ty.path "revm_bytecode::opcode::OpCodeInfo",
           M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
-          [ M.read (| info |); Value.Integer IntegerKind.U8 2; Value.Integer IntegerKind.U8 1 ]
+          [
+            M.value_with_ty (M.read (| info |)) (Ty.path "revm_bytecode::opcode::OpCodeInfo");
+            M.value_with_ty (Value.Integer IntegerKind.U8 2) (Ty.path "u8");
+            M.value_with_ty (Value.Integer IntegerKind.U8 1) (Ty.path "u8")
+          ]
         |) in
       let~ _ : Ty.tuple [] :=
         M.write (|
           M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 1 |),
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-            [ M.read (| info |) ]
+          M.value_with_ty
+            (Value.StructTuple "core::option::Option::Some" [ M.read (| info |) ])
+            (Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])
         |) in
       let~ val : Ty.path "u8" := Value.Integer IntegerKind.U8 49 in
       let~ _ : Ty.tuple [] :=
@@ -4613,33 +5222,45 @@ Module opcode.
                     Ty.path "never",
                     M.get_function (| "core::panicking::panic_fmt", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "opcodes must be sorted in ascending order" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "opcodes must be sorted in ascending order" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)
                 |)));
@@ -4656,22 +5277,27 @@ Module opcode.
             [],
             []
           |),
-          [ mk_str (| "BALANCE" |) ]
+          [ M.value_with_ty (mk_str (| "BALANCE" |)) (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]) ]
         |) in
       let~ info : Ty.path "revm_bytecode::opcode::OpCodeInfo" :=
         M.call_closure (|
           Ty.path "revm_bytecode::opcode::OpCodeInfo",
           M.get_function (| "revm_bytecode::opcode::stack_io", [], [] |),
-          [ M.read (| info |); Value.Integer IntegerKind.U8 1; Value.Integer IntegerKind.U8 1 ]
+          [
+            M.value_with_ty (M.read (| info |)) (Ty.path "revm_bytecode::opcode::OpCodeInfo");
+            M.value_with_ty (Value.Integer IntegerKind.U8 1) (Ty.path "u8");
+            M.value_with_ty (Value.Integer IntegerKind.U8 1) (Ty.path "u8")
+          ]
         |) in
       let~ _ : Ty.tuple [] :=
         M.write (|
           M.SubPointer.get_array_field (| map, Value.Integer IntegerKind.Usize 49 |),
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ]
-            [ M.read (| info |) ]
+          M.value_with_ty
+            (Value.StructTuple "core::option::Option::Some" [ M.read (| info |) ])
+            (Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.path "revm_bytecode::opcode::OpCodeInfo" ])
         |) in
       M.alloc (|
         Ty.apply
@@ -4716,92 +5342,66 @@ Module opcode.
             []
             [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]; Ty.path "revm_bytecode::opcode::OpCode"
             ],
-          Value.mkStructRecord
-            "phf::map::Map"
-            []
-            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]; Ty.path "revm_bytecode::opcode::OpCode" ]
-            [
-              ("key", Value.Integer IntegerKind.U64 15467950696543387533);
-              ("disps",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "slice") [] [ Ty.tuple [ Ty.path "u32"; Ty.path "u32" ] ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.tuple [ Ty.path "u32"; Ty.path "u32" ] ]
-                      ])
-                    (Ty.apply
+          M.value_with_ty
+            (Value.mkStructRecord
+              "phf::map::Map"
+              [
+                ("key", Value.Integer IntegerKind.U64 15467950696543387533);
+                ("disps",
+                  M.call_closure (|
+                    Ty.apply
                       (Ty.path "&")
                       []
                       [ Ty.apply (Ty.path "slice") [] [ Ty.tuple [ Ty.path "u32"; Ty.path "u32" ] ]
-                      ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.tuple [ Ty.path "u32"; Ty.path "u32" ] ],
-                            Value.Array
-                              [
-                                Value.Tuple
-                                  [ Value.Integer IntegerKind.U32 0; Value.Integer IntegerKind.U32 0
-                                  ]
-                              ]
+                      ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 1 ]
+                            [ Ty.tuple [ Ty.path "u32"; Ty.path "u32" ] ]
+                        ])
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.tuple [ Ty.path "u32"; Ty.path "u32" ] ]
+                        ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.tuple [ Ty.path "u32"; Ty.path "u32" ] ],
+                              Value.Array
+                                [
+                                  Value.Tuple
+                                    [
+                                      Value.Integer IntegerKind.U32 0;
+                                      Value.Integer IntegerKind.U32 0
+                                    ]
+                                ]
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |));
-              ("entries",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "slice")
-                        []
-                        [
-                          Ty.tuple
-                            [
-                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                              Ty.path "revm_bytecode::opcode::OpCode"
-                            ]
-                        ]
-                    ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 3 ]
-                          [
-                            Ty.tuple
-                              [
-                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                                Ty.path "revm_bytecode::opcode::OpCode"
-                              ]
-                          ]
-                      ])
-                    (Ty.apply
+                    ]
+                  |));
+                ("entries",
+                  M.call_closure (|
+                    Ty.apply
                       (Ty.path "&")
                       []
                       [
@@ -4815,76 +5415,113 @@ Module opcode.
                                 Ty.path "revm_bytecode::opcode::OpCode"
                               ]
                           ]
-                      ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 3 ]
-                              [
-                                Ty.tuple
-                                  [
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                                    Ty.path "revm_bytecode::opcode::OpCode"
-                                  ]
-                              ],
-                            Value.Array
-                              [
-                                Value.Tuple
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| mk_str (| "STOP" |) |)
-                                    |);
-                                    M.read (|
-                                      get_associated_constant (|
-                                        Ty.path "revm_bytecode::opcode::OpCode",
-                                        "STOP",
-                                        Ty.path "revm_bytecode::opcode::OpCode"
+                      ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 3 ]
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                  Ty.path "revm_bytecode::opcode::OpCode"
+                                ]
+                            ]
+                        ])
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                  Ty.path "revm_bytecode::opcode::OpCode"
+                                ]
+                            ]
+                        ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 3 ]
+                                [
+                                  Ty.tuple
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                      Ty.path "revm_bytecode::opcode::OpCode"
+                                    ]
+                                ],
+                              Value.Array
+                                [
+                                  Value.Tuple
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "STOP" |) |)
+                                      |);
+                                      M.read (|
+                                        get_associated_constant (|
+                                          Ty.path "revm_bytecode::opcode::OpCode",
+                                          "STOP",
+                                          Ty.path "revm_bytecode::opcode::OpCode"
+                                        |)
                                       |)
-                                    |)
-                                  ];
-                                Value.Tuple
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| mk_str (| "ADD" |) |)
-                                    |);
-                                    M.read (|
-                                      get_associated_constant (|
-                                        Ty.path "revm_bytecode::opcode::OpCode",
-                                        "ADD",
-                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                    ];
+                                  Value.Tuple
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "ADD" |) |)
+                                      |);
+                                      M.read (|
+                                        get_associated_constant (|
+                                          Ty.path "revm_bytecode::opcode::OpCode",
+                                          "ADD",
+                                          Ty.path "revm_bytecode::opcode::OpCode"
+                                        |)
                                       |)
-                                    |)
-                                  ];
-                                Value.Tuple
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| mk_str (| "BALANCE" |) |)
-                                    |);
-                                    M.read (|
-                                      get_associated_constant (|
-                                        Ty.path "revm_bytecode::opcode::OpCode",
-                                        "BALANCE",
-                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                    ];
+                                  Value.Tuple
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "BALANCE" |) |)
+                                      |);
+                                      M.read (|
+                                        get_associated_constant (|
+                                          Ty.path "revm_bytecode::opcode::OpCode",
+                                          "BALANCE",
+                                          Ty.path "revm_bytecode::opcode::OpCode"
+                                        |)
                                       |)
-                                    |)
-                                  ]
-                              ]
+                                    ]
+                                ]
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |))
-            ]
+                    ]
+                  |))
+              ])
+            (Ty.apply
+              (Ty.path "phf::map::Map")
+              []
+              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]; Ty.path "revm_bytecode::opcode::OpCode"
+              ])
         |)
       |))).
   

@@ -78,11 +78,14 @@ Module collections.
                           0
                         |) in
                       let t := M.copy (| T, γ0_0 |) in
-                      Value.StructTuple
-                        "alloc::collections::btree::search::SearchBound::Included"
-                        []
-                        [ T ]
-                        [ M.read (| t |) ]));
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "alloc::collections::btree::search::SearchBound::Included"
+                          [ M.read (| t |) ])
+                        (Ty.apply
+                          (Ty.path "alloc::collections::btree::search::SearchBound")
+                          []
+                          [ T ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ0_0 :=
@@ -92,19 +95,25 @@ Module collections.
                           0
                         |) in
                       let t := M.copy (| T, γ0_0 |) in
-                      Value.StructTuple
-                        "alloc::collections::btree::search::SearchBound::Excluded"
-                        []
-                        [ T ]
-                        [ M.read (| t |) ]));
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "alloc::collections::btree::search::SearchBound::Excluded"
+                          [ M.read (| t |) ])
+                        (Ty.apply
+                          (Ty.path "alloc::collections::btree::search::SearchBound")
+                          []
+                          [ T ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ := M.is_struct_tuple (| γ, "core::ops::range::Bound::Unbounded" |) in
-                      Value.StructTuple
-                        "alloc::collections::btree::search::SearchBound::AllIncluded"
-                        []
-                        [ T ]
-                        []))
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "alloc::collections::btree::search::SearchBound::AllIncluded"
+                          [])
+                        (Ty.apply
+                          (Ty.path "alloc::collections::btree::search::SearchBound")
+                          []
+                          [ T ])))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -316,11 +325,24 @@ Module collections.
                                       [ Q ]
                                     |),
                                     [
-                                      M.read (| self |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| key |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.read (| self |))
+                                        (Ty.apply
+                                          (Ty.path "alloc::collections::btree::node::NodeRef")
+                                          []
+                                          [
+                                            BorrowType;
+                                            K;
+                                            V;
+                                            Ty.path
+                                              "alloc::collections::btree::node::marker::LeafOrInternal"
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| key |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Q ])
                                     ]
                                   |)
                                 |),
@@ -356,19 +378,23 @@ Module collections.
                                       M.never_to_any (|
                                         M.read (|
                                           M.return_ (|
-                                            Value.StructTuple
-                                              "alloc::collections::btree::search::SearchResult::Found"
-                                              []
-                                              [
-                                                BorrowType;
-                                                K;
-                                                V;
-                                                Ty.path
-                                                  "alloc::collections::btree::node::marker::LeafOrInternal";
-                                                Ty.path
-                                                  "alloc::collections::btree::node::marker::Leaf"
-                                              ]
-                                              [ M.read (| handle |) ]
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "alloc::collections::btree::search::SearchResult::Found"
+                                                [ M.read (| handle |) ])
+                                              (Ty.apply
+                                                (Ty.path
+                                                  "alloc::collections::btree::search::SearchResult")
+                                                []
+                                                [
+                                                  BorrowType;
+                                                  K;
+                                                  V;
+                                                  Ty.path
+                                                    "alloc::collections::btree::node::marker::LeafOrInternal";
+                                                  Ty.path
+                                                    "alloc::collections::btree::node::marker::Leaf"
+                                                ])
                                           |)
                                         |)
                                       |)));
@@ -522,7 +548,29 @@ Module collections.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| handle |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| handle |))
+                                                (Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::btree::node::Handle")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::btree::node::NodeRef")
+                                                      []
+                                                      [
+                                                        BorrowType;
+                                                        K;
+                                                        V;
+                                                        Ty.path
+                                                          "alloc::collections::btree::node::marker::LeafOrInternal"
+                                                      ];
+                                                    Ty.path
+                                                      "alloc::collections::btree::node::marker::Edge"
+                                                  ])
+                                            ]
                                           |)
                                         |),
                                         [
@@ -560,19 +608,23 @@ Module collections.
                                               M.never_to_any (|
                                                 M.read (|
                                                   M.return_ (|
-                                                    Value.StructTuple
-                                                      "alloc::collections::btree::search::SearchResult::GoDown"
-                                                      []
-                                                      [
-                                                        BorrowType;
-                                                        K;
-                                                        V;
-                                                        Ty.path
-                                                          "alloc::collections::btree::node::marker::LeafOrInternal";
-                                                        Ty.path
-                                                          "alloc::collections::btree::node::marker::Leaf"
-                                                      ]
-                                                      [ M.read (| leaf |) ]
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "alloc::collections::btree::search::SearchResult::GoDown"
+                                                        [ M.read (| leaf |) ])
+                                                      (Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::btree::search::SearchResult")
+                                                        []
+                                                        [
+                                                          BorrowType;
+                                                          K;
+                                                          V;
+                                                          Ty.path
+                                                            "alloc::collections::btree::node::marker::LeafOrInternal";
+                                                          Ty.path
+                                                            "alloc::collections::btree::node::marker::Leaf"
+                                                        ])
                                                   |)
                                                 |)
                                               |)));
@@ -643,7 +695,29 @@ Module collections.
                                                   [],
                                                   []
                                                 |),
-                                                [ M.read (| internal |) ]
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| internal |))
+                                                    (Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::btree::node::Handle")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::btree::node::NodeRef")
+                                                          []
+                                                          [
+                                                            BorrowType;
+                                                            K;
+                                                            V;
+                                                            Ty.path
+                                                              "alloc::collections::btree::node::marker::Internal"
+                                                          ];
+                                                        Ty.path
+                                                          "alloc::collections::btree::node::marker::Edge"
+                                                      ])
+                                                ]
                                               |)))
                                         ]
                                       |)))
@@ -934,7 +1008,13 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| range |) |) |)
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| range |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ R ])
                                 ]
                               |);
                               M.call_closure (|
@@ -951,7 +1031,13 @@ Module collections.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| range |) |) |)
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| range |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ R ])
                                 ]
                               |)
                             ]
@@ -1031,8 +1117,18 @@ Module collections.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.Ref, s |);
-                                                  M.borrow (| Pointer.Kind.Ref, e |)
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.Ref, s |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Q ] ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.Ref, e |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Q ] ])
                                                 ]
                                               |)
                                             |) in
@@ -1062,21 +1158,50 @@ Module collections.
                                                         []
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.path "core::fmt::Arguments",
-                                                          M.get_associated_function (|
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
                                                             Ty.path "core::fmt::Arguments",
-                                                            "new_const",
-                                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::Arguments",
+                                                              "new_const",
+                                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
                                                                   Pointer.Kind.Ref,
-                                                                  M.alloc (|
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.alloc (|
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Ty.path "str" ]
+                                                                          ],
+                                                                        Value.Array
+                                                                          [
+                                                                            mk_str (|
+                                                                              "range start and end are equal and excluded in BTreeSet"
+                                                                            |)
+                                                                          ]
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
                                                                     Ty.apply
                                                                       (Ty.path "array")
                                                                       [
@@ -1089,19 +1214,11 @@ Module collections.
                                                                           (Ty.path "&")
                                                                           []
                                                                           [ Ty.path "str" ]
-                                                                      ],
-                                                                    Value.Array
-                                                                      [
-                                                                        mk_str (|
-                                                                          "range start and end are equal and excluded in BTreeSet"
-                                                                        |)
                                                                       ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                                  ])
+                                                            ]
+                                                          |))
+                                                          (Ty.path "core::fmt::Arguments")
                                                       ]
                                                     |)
                                                   |)));
@@ -1116,21 +1233,50 @@ Module collections.
                                                         []
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.path "core::fmt::Arguments",
-                                                          M.get_associated_function (|
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
                                                             Ty.path "core::fmt::Arguments",
-                                                            "new_const",
-                                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::Arguments",
+                                                              "new_const",
+                                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
                                                                   Pointer.Kind.Ref,
-                                                                  M.alloc (|
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.alloc (|
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Ty.path "str" ]
+                                                                          ],
+                                                                        Value.Array
+                                                                          [
+                                                                            mk_str (|
+                                                                              "range start and end are equal and excluded in BTreeMap"
+                                                                            |)
+                                                                          ]
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
                                                                     Ty.apply
                                                                       (Ty.path "array")
                                                                       [
@@ -1143,19 +1289,11 @@ Module collections.
                                                                           (Ty.path "&")
                                                                           []
                                                                           [ Ty.path "str" ]
-                                                                      ],
-                                                                    Value.Array
-                                                                      [
-                                                                        mk_str (|
-                                                                          "range start and end are equal and excluded in BTreeMap"
-                                                                        |)
                                                                       ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                                  ])
+                                                            ]
+                                                          |))
+                                                          (Ty.path "core::fmt::Arguments")
                                                       ]
                                                     |)
                                                   |)))
@@ -1265,25 +1403,45 @@ Module collections.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        s
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.alloc (|
-                                                                          Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [ Q ],
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            M.deref (|
-                                                                              M.read (| e |)
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          s
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Q ]
+                                                                          ]);
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.alloc (|
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Q ],
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.read (| e |)
+                                                                              |)
                                                                             |)
                                                                           |)
-                                                                        |)
-                                                                      |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Q ]
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |) in
@@ -1316,27 +1474,61 @@ Module collections.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.call_closure (|
-                                                                              Ty.path
-                                                                                "core::fmt::Arguments",
-                                                                              M.get_associated_function (|
+                                                                            M.value_with_ty
+                                                                              (M.call_closure (|
                                                                                 Ty.path
                                                                                   "core::fmt::Arguments",
-                                                                                "new_const",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::Arguments",
+                                                                                  "new_const",
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      1
+                                                                                  ],
+                                                                                  []
+                                                                                |),
                                                                                 [
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1
-                                                                                ],
-                                                                                []
-                                                                              |),
-                                                                              [
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
-                                                                                    M.borrow (|
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
                                                                                       Pointer.Kind.Ref,
-                                                                                      M.alloc (|
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.alloc (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "array")
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.Usize
+                                                                                                  1
+                                                                                              ]
+                                                                                              [
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "str"
+                                                                                                  ]
+                                                                                              ],
+                                                                                            Value.Array
+                                                                                              [
+                                                                                                mk_str (|
+                                                                                                  "range start is greater than range end in BTreeSet"
+                                                                                                |)
+                                                                                              ]
+                                                                                          |)
+                                                                                        |)
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
                                                                                         Ty.apply
                                                                                           (Ty.path
                                                                                             "array")
@@ -1354,19 +1546,12 @@ Module collections.
                                                                                                 Ty.path
                                                                                                   "str"
                                                                                               ]
-                                                                                          ],
-                                                                                        Value.Array
-                                                                                          [
-                                                                                            mk_str (|
-                                                                                              "range start is greater than range end in BTreeSet"
-                                                                                            |)
                                                                                           ]
-                                                                                      |)
-                                                                                    |)
-                                                                                  |)
-                                                                                |)
-                                                                              ]
-                                                                            |)
+                                                                                      ])
+                                                                                ]
+                                                                              |))
+                                                                              (Ty.path
+                                                                                "core::fmt::Arguments")
                                                                           ]
                                                                         |)
                                                                       |)));
@@ -1381,27 +1566,61 @@ Module collections.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.call_closure (|
-                                                                              Ty.path
-                                                                                "core::fmt::Arguments",
-                                                                              M.get_associated_function (|
+                                                                            M.value_with_ty
+                                                                              (M.call_closure (|
                                                                                 Ty.path
                                                                                   "core::fmt::Arguments",
-                                                                                "new_const",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::Arguments",
+                                                                                  "new_const",
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      1
+                                                                                  ],
+                                                                                  []
+                                                                                |),
                                                                                 [
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1
-                                                                                ],
-                                                                                []
-                                                                              |),
-                                                                              [
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
-                                                                                    M.borrow (|
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
                                                                                       Pointer.Kind.Ref,
-                                                                                      M.alloc (|
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.alloc (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "array")
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.Usize
+                                                                                                  1
+                                                                                              ]
+                                                                                              [
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "str"
+                                                                                                  ]
+                                                                                              ],
+                                                                                            Value.Array
+                                                                                              [
+                                                                                                mk_str (|
+                                                                                                  "range start is greater than range end in BTreeMap"
+                                                                                                |)
+                                                                                              ]
+                                                                                          |)
+                                                                                        |)
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
                                                                                         Ty.apply
                                                                                           (Ty.path
                                                                                             "array")
@@ -1419,19 +1638,12 @@ Module collections.
                                                                                                 Ty.path
                                                                                                   "str"
                                                                                               ]
-                                                                                          ],
-                                                                                        Value.Array
-                                                                                          [
-                                                                                            mk_str (|
-                                                                                              "range start is greater than range end in BTreeMap"
-                                                                                            |)
                                                                                           ]
-                                                                                      |)
-                                                                                    |)
-                                                                                  |)
-                                                                                |)
-                                                                              ]
-                                                                            |)
+                                                                                      ])
+                                                                                ]
+                                                                              |))
+                                                                              (Ty.path
+                                                                                "core::fmt::Arguments")
                                                                           ]
                                                                         |)
                                                                       |)))
@@ -1466,7 +1678,14 @@ Module collections.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| start |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| start |))
+                                        (Ty.apply
+                                          (Ty.path "core::ops::range::Bound")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Q ] ])
+                                    ]
                                   |) in
                                 let~ upper_bound :
                                     Ty.apply
@@ -1487,7 +1706,14 @@ Module collections.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| end_ |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| end_ |))
+                                        (Ty.apply
+                                          (Ty.path "core::ops::range::Bound")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Q ] ])
+                                    ]
                                   |) in
                                 M.alloc (|
                                   Ty.apply
@@ -1582,8 +1808,31 @@ Module collections.
                                                     [ Q ]
                                                   |),
                                                   [
-                                                    M.borrow (| Pointer.Kind.Ref, self |);
-                                                    M.read (| lower_bound |)
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, self |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "alloc::collections::btree::node::NodeRef")
+                                                            []
+                                                            [
+                                                              BorrowType;
+                                                              K;
+                                                              V;
+                                                              Ty.path
+                                                                "alloc::collections::btree::node::marker::LeafOrInternal"
+                                                            ]
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.read (| lower_bound |))
+                                                      (Ty.apply
+                                                        (Ty.path
+                                                          "alloc::collections::btree::search::SearchBound")
+                                                        []
+                                                        [ Ty.apply (Ty.path "&") [] [ Q ] ])
                                                   ]
                                                 |)
                                               |),
@@ -1644,9 +1893,38 @@ Module collections.
                                                             [ Q ]
                                                           |),
                                                           [
-                                                            M.borrow (| Pointer.Kind.Ref, self |);
-                                                            M.read (| upper_bound |);
-                                                            M.read (| lower_edge_idx |)
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                self
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloc::collections::btree::node::NodeRef")
+                                                                    []
+                                                                    [
+                                                                      BorrowType;
+                                                                      K;
+                                                                      V;
+                                                                      Ty.path
+                                                                        "alloc::collections::btree::node::marker::LeafOrInternal"
+                                                                    ]
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.read (| upper_bound |))
+                                                              (Ty.apply
+                                                                (Ty.path
+                                                                  "alloc::collections::btree::search::SearchBound")
+                                                                []
+                                                                [ Ty.apply (Ty.path "&") [] [ Q ]
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.read (| lower_edge_idx |))
+                                                              (Ty.path "usize")
                                                           ]
                                                         |)
                                                       |),
@@ -1711,90 +1989,94 @@ Module collections.
                                                                         M.never_to_any (|
                                                                           M.read (|
                                                                             M.return_ (|
-                                                                              Value.StructTuple
-                                                                                "core::result::Result::Ok"
-                                                                                []
-                                                                                [
-                                                                                  Ty.tuple
-                                                                                    [
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "alloc::collections::btree::node::NodeRef")
-                                                                                        []
-                                                                                        [
-                                                                                          BorrowType;
-                                                                                          K;
-                                                                                          V;
-                                                                                          Ty.path
-                                                                                            "alloc::collections::btree::node::marker::LeafOrInternal"
-                                                                                        ];
-                                                                                      Ty.path
-                                                                                        "usize";
-                                                                                      Ty.path
-                                                                                        "usize";
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "alloc::collections::btree::search::SearchBound")
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "&")
-                                                                                            []
-                                                                                            [ Q ]
-                                                                                        ];
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "alloc::collections::btree::search::SearchBound")
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "&")
-                                                                                            []
-                                                                                            [ Q ]
-                                                                                        ]
-                                                                                    ];
-                                                                                  Ty.apply
-                                                                                    (Ty.path
-                                                                                      "alloc::collections::btree::node::Handle")
-                                                                                    []
-                                                                                    [
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "alloc::collections::btree::node::NodeRef")
-                                                                                        []
-                                                                                        [
-                                                                                          BorrowType;
-                                                                                          K;
-                                                                                          V;
-                                                                                          Ty.path
-                                                                                            "alloc::collections::btree::node::marker::Leaf"
-                                                                                        ];
-                                                                                      Ty.path
-                                                                                        "alloc::collections::btree::node::marker::Edge"
-                                                                                    ]
-                                                                                ]
-                                                                                [
-                                                                                  Value.Tuple
-                                                                                    [
-                                                                                      M.read (|
-                                                                                        self
-                                                                                      |);
-                                                                                      M.read (|
-                                                                                        lower_edge_idx
-                                                                                      |);
-                                                                                      M.read (|
-                                                                                        upper_edge_idx
-                                                                                      |);
-                                                                                      M.read (|
-                                                                                        lower_child_bound
-                                                                                      |);
-                                                                                      M.read (|
-                                                                                        upper_child_bound
-                                                                                      |)
-                                                                                    ]
-                                                                                ]
+                                                                              M.value_with_ty
+                                                                                (Value.StructTuple
+                                                                                  "core::result::Result::Ok"
+                                                                                  [
+                                                                                    Value.Tuple
+                                                                                      [
+                                                                                        M.read (|
+                                                                                          self
+                                                                                        |);
+                                                                                        M.read (|
+                                                                                          lower_edge_idx
+                                                                                        |);
+                                                                                        M.read (|
+                                                                                          upper_edge_idx
+                                                                                        |);
+                                                                                        M.read (|
+                                                                                          lower_child_bound
+                                                                                        |);
+                                                                                        M.read (|
+                                                                                          upper_child_bound
+                                                                                        |)
+                                                                                      ]
+                                                                                  ])
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::result::Result")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.tuple
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::btree::node::NodeRef")
+                                                                                          []
+                                                                                          [
+                                                                                            BorrowType;
+                                                                                            K;
+                                                                                            V;
+                                                                                            Ty.path
+                                                                                              "alloc::collections::btree::node::marker::LeafOrInternal"
+                                                                                          ];
+                                                                                        Ty.path
+                                                                                          "usize";
+                                                                                        Ty.path
+                                                                                          "usize";
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::btree::search::SearchBound")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [ Q ]
+                                                                                          ];
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::btree::search::SearchBound")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [ Q ]
+                                                                                          ]
+                                                                                      ];
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "alloc::collections::btree::node::Handle")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::btree::node::NodeRef")
+                                                                                          []
+                                                                                          [
+                                                                                            BorrowType;
+                                                                                            K;
+                                                                                            V;
+                                                                                            Ty.path
+                                                                                              "alloc::collections::btree::node::marker::Leaf"
+                                                                                          ];
+                                                                                        Ty.path
+                                                                                          "alloc::collections::btree::node::marker::Edge"
+                                                                                      ]
+                                                                                  ])
                                                                             |)
                                                                           |)
                                                                         |)));
@@ -1954,11 +2236,12 @@ Module collections.
                                                                                                       kind :
                                                                                                     Ty.path
                                                                                                       "core::panicking::AssertKind" :=
-                                                                                                  Value.StructTuple
-                                                                                                    "core::panicking::AssertKind::Eq"
-                                                                                                    []
-                                                                                                    []
-                                                                                                    [] in
+                                                                                                  M.value_with_ty
+                                                                                                    (Value.StructTuple
+                                                                                                      "core::panicking::AssertKind::Eq"
+                                                                                                      [])
+                                                                                                    (Ty.path
+                                                                                                      "core::panicking::AssertKind") in
                                                                                                 M.alloc (|
                                                                                                   Ty.path
                                                                                                     "never",
@@ -1976,43 +2259,77 @@ Module collections.
                                                                                                       ]
                                                                                                     |),
                                                                                                     [
-                                                                                                      M.read (|
-                                                                                                        kind
-                                                                                                      |);
-                                                                                                      M.borrow (|
-                                                                                                        Pointer.Kind.Ref,
-                                                                                                        M.deref (|
-                                                                                                          M.borrow (|
-                                                                                                            Pointer.Kind.Ref,
-                                                                                                            M.deref (|
-                                                                                                              M.read (|
-                                                                                                                left_val
+                                                                                                      M.value_with_ty
+                                                                                                        (M.read (|
+                                                                                                          kind
+                                                                                                        |))
+                                                                                                        (Ty.path
+                                                                                                          "core::panicking::AssertKind");
+                                                                                                      M.value_with_ty
+                                                                                                        (M.borrow (|
+                                                                                                          Pointer.Kind.Ref,
+                                                                                                          M.deref (|
+                                                                                                            M.borrow (|
+                                                                                                              Pointer.Kind.Ref,
+                                                                                                              M.deref (|
+                                                                                                                M.read (|
+                                                                                                                  left_val
+                                                                                                                |)
                                                                                                               |)
                                                                                                             |)
                                                                                                           |)
-                                                                                                        |)
-                                                                                                      |);
-                                                                                                      M.borrow (|
-                                                                                                        Pointer.Kind.Ref,
-                                                                                                        M.deref (|
-                                                                                                          M.borrow (|
-                                                                                                            Pointer.Kind.Ref,
-                                                                                                            M.deref (|
-                                                                                                              M.read (|
-                                                                                                                right_val
+                                                                                                        |))
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "&")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.path
+                                                                                                              "usize"
+                                                                                                          ]);
+                                                                                                      M.value_with_ty
+                                                                                                        (M.borrow (|
+                                                                                                          Pointer.Kind.Ref,
+                                                                                                          M.deref (|
+                                                                                                            M.borrow (|
+                                                                                                              Pointer.Kind.Ref,
+                                                                                                              M.deref (|
+                                                                                                                M.read (|
+                                                                                                                  right_val
+                                                                                                                |)
                                                                                                               |)
                                                                                                             |)
                                                                                                           |)
-                                                                                                        |)
-                                                                                                      |);
-                                                                                                      Value.StructTuple
-                                                                                                        "core::option::Option::None"
-                                                                                                        []
-                                                                                                        [
-                                                                                                          Ty.path
-                                                                                                            "core::fmt::Arguments"
-                                                                                                        ]
-                                                                                                        []
+                                                                                                        |))
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "&")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.path
+                                                                                                              "usize"
+                                                                                                          ]);
+                                                                                                      M.value_with_ty
+                                                                                                        (M.value_with_ty
+                                                                                                          (Value.StructTuple
+                                                                                                            "core::option::Option::None"
+                                                                                                            [])
+                                                                                                          (Ty.apply
+                                                                                                            (Ty.path
+                                                                                                              "core::option::Option")
+                                                                                                            []
+                                                                                                            [
+                                                                                                              Ty.path
+                                                                                                                "core::fmt::Arguments"
+                                                                                                            ]))
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "core::option::Option")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.path
+                                                                                                              "core::fmt::Arguments"
+                                                                                                          ])
                                                                                                     ]
                                                                                                   |)
                                                                                                 |)
@@ -2101,8 +2418,22 @@ Module collections.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.read (| self |);
-                                                                    M.read (| lower_edge_idx |)
+                                                                    M.value_with_ty
+                                                                      (M.read (| self |))
+                                                                      (Ty.apply
+                                                                        (Ty.path
+                                                                          "alloc::collections::btree::node::NodeRef")
+                                                                        []
+                                                                        [
+                                                                          BorrowType;
+                                                                          K;
+                                                                          V;
+                                                                          Ty.path
+                                                                            "alloc::collections::btree::node::marker::LeafOrInternal"
+                                                                        ]);
+                                                                    M.value_with_ty
+                                                                      (M.read (| lower_edge_idx |))
+                                                                      (Ty.path "usize")
                                                                   ]
                                                                 |) in
                                                               M.alloc (|
@@ -2223,7 +2554,29 @@ Module collections.
                                                                         [],
                                                                         []
                                                                       |),
-                                                                      [ M.read (| common_edge |) ]
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.read (| common_edge |))
+                                                                          (Ty.apply
+                                                                            (Ty.path
+                                                                              "alloc::collections::btree::node::Handle")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "alloc::collections::btree::node::NodeRef")
+                                                                                []
+                                                                                [
+                                                                                  BorrowType;
+                                                                                  K;
+                                                                                  V;
+                                                                                  Ty.path
+                                                                                    "alloc::collections::btree::node::marker::LeafOrInternal"
+                                                                                ];
+                                                                              Ty.path
+                                                                                "alloc::collections::btree::node::marker::Edge"
+                                                                            ])
+                                                                      ]
                                                                     |)
                                                                   |),
                                                                   [
@@ -2261,75 +2614,79 @@ Module collections.
                                                                         M.never_to_any (|
                                                                           M.read (|
                                                                             M.return_ (|
-                                                                              Value.StructTuple
-                                                                                "core::result::Result::Err"
-                                                                                []
-                                                                                [
-                                                                                  Ty.tuple
-                                                                                    [
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "alloc::collections::btree::node::NodeRef")
-                                                                                        []
-                                                                                        [
-                                                                                          BorrowType;
-                                                                                          K;
-                                                                                          V;
-                                                                                          Ty.path
-                                                                                            "alloc::collections::btree::node::marker::LeafOrInternal"
-                                                                                        ];
-                                                                                      Ty.path
-                                                                                        "usize";
-                                                                                      Ty.path
-                                                                                        "usize";
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "alloc::collections::btree::search::SearchBound")
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "&")
-                                                                                            []
-                                                                                            [ Q ]
-                                                                                        ];
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "alloc::collections::btree::search::SearchBound")
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "&")
-                                                                                            []
-                                                                                            [ Q ]
-                                                                                        ]
-                                                                                    ];
-                                                                                  Ty.apply
-                                                                                    (Ty.path
-                                                                                      "alloc::collections::btree::node::Handle")
-                                                                                    []
-                                                                                    [
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "alloc::collections::btree::node::NodeRef")
-                                                                                        []
-                                                                                        [
-                                                                                          BorrowType;
-                                                                                          K;
-                                                                                          V;
-                                                                                          Ty.path
-                                                                                            "alloc::collections::btree::node::marker::Leaf"
-                                                                                        ];
-                                                                                      Ty.path
-                                                                                        "alloc::collections::btree::node::marker::Edge"
-                                                                                    ]
-                                                                                ]
-                                                                                [
-                                                                                  M.read (|
-                                                                                    common_edge
-                                                                                  |)
-                                                                                ]
+                                                                              M.value_with_ty
+                                                                                (Value.StructTuple
+                                                                                  "core::result::Result::Err"
+                                                                                  [
+                                                                                    M.read (|
+                                                                                      common_edge
+                                                                                    |)
+                                                                                  ])
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::result::Result")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.tuple
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::btree::node::NodeRef")
+                                                                                          []
+                                                                                          [
+                                                                                            BorrowType;
+                                                                                            K;
+                                                                                            V;
+                                                                                            Ty.path
+                                                                                              "alloc::collections::btree::node::marker::LeafOrInternal"
+                                                                                          ];
+                                                                                        Ty.path
+                                                                                          "usize";
+                                                                                        Ty.path
+                                                                                          "usize";
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::btree::search::SearchBound")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [ Q ]
+                                                                                          ];
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::btree::search::SearchBound")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [ Q ]
+                                                                                          ]
+                                                                                      ];
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "alloc::collections::btree::node::Handle")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::btree::node::NodeRef")
+                                                                                          []
+                                                                                          [
+                                                                                            BorrowType;
+                                                                                            K;
+                                                                                            V;
+                                                                                            Ty.path
+                                                                                              "alloc::collections::btree::node::marker::Leaf"
+                                                                                          ];
+                                                                                        Ty.path
+                                                                                          "alloc::collections::btree::node::marker::Edge"
+                                                                                      ]
+                                                                                  ])
                                                                             |)
                                                                           |)
                                                                         |)));
@@ -2405,9 +2762,29 @@ Module collections.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.read (|
-                                                                                    common_edge
-                                                                                  |)
+                                                                                  M.value_with_ty
+                                                                                    (M.read (|
+                                                                                      common_edge
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "alloc::collections::btree::node::Handle")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::collections::btree::node::NodeRef")
+                                                                                          []
+                                                                                          [
+                                                                                            BorrowType;
+                                                                                            K;
+                                                                                            V;
+                                                                                            Ty.path
+                                                                                              "alloc::collections::btree::node::marker::Internal"
+                                                                                          ];
+                                                                                        Ty.path
+                                                                                          "alloc::collections::btree::node::marker::Edge"
+                                                                                      ])
                                                                                 ]
                                                                               |)
                                                                             |) in
@@ -2561,7 +2938,30 @@ Module collections.
                       [],
                       [ Q ]
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, self |); M.read (| bound |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, self |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::btree::node::NodeRef")
+                              []
+                              [
+                                BorrowType;
+                                K;
+                                V;
+                                Ty.path "alloc::collections::btree::node::marker::LeafOrInternal"
+                              ]
+                          ]);
+                      M.value_with_ty
+                        (M.read (| bound |))
+                        (Ty.apply
+                          (Ty.path "alloc::collections::btree::search::SearchBound")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Q ] ])
+                    ]
                   |)
                 |),
                 [
@@ -2634,7 +3034,21 @@ Module collections.
                               [],
                               []
                             |),
-                            [ M.read (| self |); M.read (| edge_idx |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "alloc::collections::btree::node::NodeRef")
+                                  []
+                                  [
+                                    BorrowType;
+                                    K;
+                                    V;
+                                    Ty.path
+                                      "alloc::collections::btree::node::marker::LeafOrInternal"
+                                  ]);
+                              M.value_with_ty (M.read (| edge_idx |)) (Ty.path "usize")
+                            ]
                           |) in
                         M.alloc (|
                           Ty.tuple
@@ -2778,9 +3192,29 @@ Module collections.
                       [ Q ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, self |);
-                      M.read (| bound |);
-                      Value.Integer IntegerKind.Usize 0
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, self |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::btree::node::NodeRef")
+                              []
+                              [
+                                BorrowType;
+                                K;
+                                V;
+                                Ty.path "alloc::collections::btree::node::marker::LeafOrInternal"
+                              ]
+                          ]);
+                      M.value_with_ty
+                        (M.read (| bound |))
+                        (Ty.apply
+                          (Ty.path "alloc::collections::btree::search::SearchBound")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Q ] ]);
+                      M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -2854,7 +3288,21 @@ Module collections.
                               [],
                               []
                             |),
-                            [ M.read (| self |); M.read (| edge_idx |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "alloc::collections::btree::node::NodeRef")
+                                  []
+                                  [
+                                    BorrowType;
+                                    K;
+                                    V;
+                                    Ty.path
+                                      "alloc::collections::btree::node::marker::LeafOrInternal"
+                                  ]);
+                              M.value_with_ty (M.read (| edge_idx |)) (Ty.path "usize")
+                            ]
                           |) in
                         M.alloc (|
                           Ty.tuple
@@ -2955,9 +3403,21 @@ Module collections.
                       [ Q ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, self |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |);
-                      Value.Integer IntegerKind.Usize 0
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, self |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::btree::node::NodeRef")
+                              []
+                              [ BorrowType; K; V; Type_ ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Q ]);
+                      M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -2971,23 +3431,11 @@ Module collections.
                           0
                         |) in
                       let idx := M.copy (| Ty.path "usize", γ0_0 |) in
-                      Value.StructTuple
-                        "alloc::collections::btree::search::SearchResult::Found"
-                        []
-                        [ BorrowType; K; V; Type_; Type_ ]
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "alloc::collections::btree::node::Handle")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "alloc::collections::btree::node::NodeRef")
-                                  []
-                                  [ BorrowType; K; V; Type_ ];
-                                Ty.path "alloc::collections::btree::node::marker::KV"
-                              ],
-                            M.get_associated_function (|
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "alloc::collections::btree::search::SearchResult::Found"
+                          [
+                            M.call_closure (|
                               Ty.apply
                                 (Ty.path "alloc::collections::btree::node::Handle")
                                 []
@@ -2998,13 +3446,36 @@ Module collections.
                                     [ BorrowType; K; V; Type_ ];
                                   Ty.path "alloc::collections::btree::node::marker::KV"
                                 ],
-                              "new_kv",
-                              [],
-                              []
-                            |),
-                            [ M.read (| self |); M.read (| idx |) ]
-                          |)
-                        ]));
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::collections::btree::node::Handle")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::node::NodeRef")
+                                      []
+                                      [ BorrowType; K; V; Type_ ];
+                                    Ty.path "alloc::collections::btree::node::marker::KV"
+                                  ],
+                                "new_kv",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| self |))
+                                  (Ty.apply
+                                    (Ty.path "alloc::collections::btree::node::NodeRef")
+                                    []
+                                    [ BorrowType; K; V; Type_ ]);
+                                M.value_with_ty (M.read (| idx |)) (Ty.path "usize")
+                              ]
+                            |)
+                          ])
+                        (Ty.apply
+                          (Ty.path "alloc::collections::btree::search::SearchResult")
+                          []
+                          [ BorrowType; K; V; Type_; Type_ ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ0_0 :=
@@ -3014,23 +3485,11 @@ Module collections.
                           0
                         |) in
                       let idx := M.copy (| Ty.path "usize", γ0_0 |) in
-                      Value.StructTuple
-                        "alloc::collections::btree::search::SearchResult::GoDown"
-                        []
-                        [ BorrowType; K; V; Type_; Type_ ]
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "alloc::collections::btree::node::Handle")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "alloc::collections::btree::node::NodeRef")
-                                  []
-                                  [ BorrowType; K; V; Type_ ];
-                                Ty.path "alloc::collections::btree::node::marker::Edge"
-                              ],
-                            M.get_associated_function (|
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "alloc::collections::btree::search::SearchResult::GoDown"
+                          [
+                            M.call_closure (|
                               Ty.apply
                                 (Ty.path "alloc::collections::btree::node::Handle")
                                 []
@@ -3041,13 +3500,36 @@ Module collections.
                                     [ BorrowType; K; V; Type_ ];
                                   Ty.path "alloc::collections::btree::node::marker::Edge"
                                 ],
-                              "new_edge",
-                              [],
-                              []
-                            |),
-                            [ M.read (| self |); M.read (| idx |) ]
-                          |)
-                        ]))
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::collections::btree::node::Handle")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::node::NodeRef")
+                                      []
+                                      [ BorrowType; K; V; Type_ ];
+                                    Ty.path "alloc::collections::btree::node::marker::Edge"
+                                  ],
+                                "new_edge",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| self |))
+                                  (Ty.apply
+                                    (Ty.path "alloc::collections::btree::node::NodeRef")
+                                    []
+                                    [ BorrowType; K; V; Type_ ]);
+                                M.value_with_ty (M.read (| idx |)) (Ty.path "usize")
+                              ]
+                            |)
+                          ])
+                        (Ty.apply
+                          (Ty.path "alloc::collections::btree::search::SearchResult")
+                          []
+                          [ BorrowType; K; V; Type_; Type_ ])))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3129,7 +3611,19 @@ Module collections.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::btree::node::NodeRef")
+                                  []
+                                  [ BorrowType; K; V; Type_ ]
+                              ])
+                        ]
                       |) in
                     let~ keys : Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ K ] ] :=
                       M.call_closure (|
@@ -3144,7 +3638,24 @@ Module collections.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, node |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, node |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::btree::node::NodeRef")
+                                  []
+                                  [
+                                    Ty.path "alloc::collections::btree::node::marker::Immut";
+                                    K;
+                                    V;
+                                    Type_
+                                  ]
+                              ])
+                        ]
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.match_operator (|
@@ -3186,10 +3697,20 @@ Module collections.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| keys |) |)
-                                                            |)
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| keys |) |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ K ]
+                                                                ])
                                                           ]
                                                         |)
                                                       ]
@@ -3207,9 +3728,11 @@ Module collections.
                                               Ty.path "never",
                                               M.get_function (| "core::panicking::panic", [], [] |),
                                               [
-                                                mk_str (|
-                                                  "assertion failed: start_index <= keys.len()"
-                                                |)
+                                                M.value_with_ty
+                                                  (mk_str (|
+                                                    "assertion failed: start_index <= keys.len()"
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                               ]
                                             |)
                                           |)));
@@ -3251,67 +3774,99 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::iter::adapters::enumerate::Enumerate")
-                                        []
-                                        [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ K ] ],
-                                      M.get_trait_method (|
-                                        "core::iter::traits::iterator::Iterator",
-                                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ K ],
-                                        [],
-                                        [],
-                                        "enumerate",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                          []
+                                          [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ K ] ],
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
                                           Ty.apply (Ty.path "core::slice::iter::Iter") [] [ K ],
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "slice") [] [ K ],
-                                            "iter",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.call_closure (|
-                                                  Ty.apply
+                                          [],
+                                          [],
+                                          "enumerate",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply (Ty.path "core::slice::iter::Iter") [] [ K ],
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "slice") [] [ K ],
+                                                "iter",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.apply (Ty.path "slice") [] [ K ] ],
+                                                        M.get_associated_function (|
+                                                          Ty.apply (Ty.path "slice") [] [ K ],
+                                                          "get_unchecked",
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::ops::range::RangeFrom")
+                                                              []
+                                                              [ Ty.path "usize" ]
+                                                          ]
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| keys |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.apply (Ty.path "slice") [] [ K ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.value_with_ty
+                                                              (Value.mkStructRecord
+                                                                "core::ops::range::RangeFrom"
+                                                                [
+                                                                  ("start",
+                                                                    M.read (| start_index |))
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path
+                                                                  "core::ops::range::RangeFrom")
+                                                                []
+                                                                [ Ty.path "usize" ]))
+                                                            (Ty.apply
+                                                              (Ty.path
+                                                                "core::ops::range::RangeFrom")
+                                                              []
+                                                              [ Ty.path "usize" ])
+                                                        ]
+                                                      |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
                                                     (Ty.path "&")
                                                     []
-                                                    [ Ty.apply (Ty.path "slice") [] [ K ] ],
-                                                  M.get_associated_function (|
-                                                    Ty.apply (Ty.path "slice") [] [ K ],
-                                                    "get_unchecked",
-                                                    [],
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "core::ops::range::RangeFrom")
-                                                        []
-                                                        [ Ty.path "usize" ]
-                                                    ]
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| keys |) |)
-                                                    |);
-                                                    Value.mkStructRecord
-                                                      "core::ops::range::RangeFrom"
-                                                      []
-                                                      [ Ty.path "usize" ]
-                                                      [ ("start", M.read (| start_index |)) ]
-                                                  ]
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                                    [ Ty.apply (Ty.path "slice") [] [ K ] ])
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "core::slice::iter::Iter") [] [ K ])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                        []
+                                        [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ K ] ])
                                   ]
                                 |)
                               |),
@@ -3373,12 +3928,28 @@ Module collections.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.deref (|
-                                                        M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                      |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (|
+                                                          M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::iter::adapters::enumerate::Enumerate")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::slice::iter::Iter")
+                                                                []
+                                                                [ K ]
+                                                            ]
+                                                        ])
                                                   ]
                                                 |)
                                               |),
@@ -3428,33 +3999,44 @@ Module collections.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| key |) |)
-                                                            |);
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.call_closure (|
-                                                                  Ty.apply (Ty.path "&") [] [ Q ],
-                                                                  M.get_trait_method (|
-                                                                    "core::borrow::Borrow",
-                                                                    K,
-                                                                    [],
-                                                                    [ Q ],
-                                                                    "borrow",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (| M.read (| k |) |)
-                                                                    |)
-                                                                  ]
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| key |) |)
+                                                              |))
+                                                              (Ty.apply (Ty.path "&") [] [ Q ]);
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
+                                                                    Ty.apply (Ty.path "&") [] [ Q ],
+                                                                    M.get_trait_method (|
+                                                                      "core::borrow::Borrow",
+                                                                      K,
+                                                                      [],
+                                                                      [ Q ],
+                                                                      "borrow",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| k |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [ K ])
+                                                                    ]
+                                                                  |)
                                                                 |)
-                                                              |)
-                                                            |)
+                                                              |))
+                                                              (Ty.apply (Ty.path "&") [] [ Q ])
                                                           ]
                                                         |)
                                                       |),
@@ -3477,20 +4059,23 @@ Module collections.
                                                             M.never_to_any (|
                                                               M.read (|
                                                                 M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "alloc::collections::btree::search::IndexResult::KV"
-                                                                    []
-                                                                    []
-                                                                    [
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.add,
-                                                                        [
-                                                                          M.read (| start_index |);
-                                                                          M.read (| offset |)
-                                                                        ]
-                                                                      |)
-                                                                    ]
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "alloc::collections::btree::search::IndexResult::KV"
+                                                                      [
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.add,
+                                                                          [
+                                                                            M.read (|
+                                                                              start_index
+                                                                            |);
+                                                                            M.read (| offset |)
+                                                                          ]
+                                                                        |)
+                                                                      ])
+                                                                    (Ty.path
+                                                                      "alloc::collections::btree::search::IndexResult")
                                                                 |)
                                                               |)
                                                             |)));
@@ -3504,20 +4089,23 @@ Module collections.
                                                             M.never_to_any (|
                                                               M.read (|
                                                                 M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "alloc::collections::btree::search::IndexResult::Edge"
-                                                                    []
-                                                                    []
-                                                                    [
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.add,
-                                                                        [
-                                                                          M.read (| start_index |);
-                                                                          M.read (| offset |)
-                                                                        ]
-                                                                      |)
-                                                                    ]
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "alloc::collections::btree::search::IndexResult::Edge"
+                                                                      [
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.add,
+                                                                          [
+                                                                            M.read (|
+                                                                              start_index
+                                                                            |);
+                                                                            M.read (| offset |)
+                                                                          ]
+                                                                        |)
+                                                                      ])
+                                                                    (Ty.path
+                                                                      "alloc::collections::btree::search::IndexResult")
                                                                 |)
                                                               |)
                                                             |)))
@@ -3534,22 +4122,29 @@ Module collections.
                       |) in
                     M.alloc (|
                       Ty.path "alloc::collections::btree::search::IndexResult",
-                      Value.StructTuple
-                        "alloc::collections::btree::search::IndexResult::Edge"
-                        []
-                        []
-                        [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ K ],
-                              "len",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| keys |) |) |) ]
-                          |)
-                        ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "alloc::collections::btree::search::IndexResult::Edge"
+                          [
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ K ],
+                                "len",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| keys |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ K ] ])
+                              ]
+                            |)
+                          ])
+                        (Ty.path "alloc::collections::btree::search::IndexResult")
                     |)
                   |)))
               |)))
@@ -3662,9 +4257,21 @@ Module collections.
                               [ Q ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |);
-                              Value.Integer IntegerKind.Usize 0
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::node::NodeRef")
+                                      []
+                                      [ BorrowType; K; V; Type_ ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Q ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
                             ]
                           |)
                         |),
@@ -3681,11 +4288,14 @@ Module collections.
                               Value.Tuple
                                 [
                                   M.read (| idx |);
-                                  Value.StructTuple
-                                    "alloc::collections::btree::search::SearchBound::AllExcluded"
-                                    []
-                                    [ Ty.apply (Ty.path "&") [] [ Q ] ]
-                                    []
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "alloc::collections::btree::search::SearchBound::AllExcluded"
+                                      [])
+                                    (Ty.apply
+                                      (Ty.path "alloc::collections::btree::search::SearchBound")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Q ] ])
                                 ]));
                           fun γ =>
                             ltac:(M.monadic
@@ -3731,9 +4341,21 @@ Module collections.
                               [ Q ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |);
-                              Value.Integer IntegerKind.Usize 0
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::node::NodeRef")
+                                      []
+                                      [ BorrowType; K; V; Type_ ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Q ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize")
                             ]
                           |)
                         |),
@@ -3754,11 +4376,14 @@ Module collections.
                                     BinOp.Wrap.add,
                                     [ M.read (| idx |); Value.Integer IntegerKind.Usize 1 ]
                                   |);
-                                  Value.StructTuple
-                                    "alloc::collections::btree::search::SearchBound::AllIncluded"
-                                    []
-                                    [ Ty.apply (Ty.path "&") [] [ Q ] ]
-                                    []
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "alloc::collections::btree::search::SearchBound::AllIncluded"
+                                      [])
+                                    (Ty.apply
+                                      (Ty.path "alloc::collections::btree::search::SearchBound")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Q ] ])
                                 ]));
                           fun γ =>
                             ltac:(M.monadic
@@ -3782,11 +4407,14 @@ Module collections.
                       Value.Tuple
                         [
                           Value.Integer IntegerKind.Usize 0;
-                          Value.StructTuple
-                            "alloc::collections::btree::search::SearchBound::AllIncluded"
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Q ] ]
-                            []
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "alloc::collections::btree::search::SearchBound::AllIncluded"
+                              [])
+                            (Ty.apply
+                              (Ty.path "alloc::collections::btree::search::SearchBound")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Q ] ])
                         ]));
                   fun γ =>
                     ltac:(M.monadic
@@ -3808,13 +4436,28 @@ Module collections.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::node::NodeRef")
+                                      []
+                                      [ BorrowType; K; V; Type_ ]
+                                  ])
+                            ]
                           |);
-                          Value.StructTuple
-                            "alloc::collections::btree::search::SearchBound::AllExcluded"
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Q ] ]
-                            []
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "alloc::collections::btree::search::SearchBound::AllExcluded"
+                              [])
+                            (Ty.apply
+                              (Ty.path "alloc::collections::btree::search::SearchBound")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Q ] ])
                         ]))
                 ]
               |)))
@@ -3929,9 +4572,21 @@ Module collections.
                               [ Q ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |);
-                              M.read (| start_index |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::node::NodeRef")
+                                      []
+                                      [ BorrowType; K; V; Type_ ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Q ]);
+                              M.value_with_ty (M.read (| start_index |)) (Ty.path "usize")
                             ]
                           |)
                         |),
@@ -3952,11 +4607,14 @@ Module collections.
                                     BinOp.Wrap.add,
                                     [ M.read (| idx |); Value.Integer IntegerKind.Usize 1 ]
                                   |);
-                                  Value.StructTuple
-                                    "alloc::collections::btree::search::SearchBound::AllExcluded"
-                                    []
-                                    [ Ty.apply (Ty.path "&") [] [ Q ] ]
-                                    []
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "alloc::collections::btree::search::SearchBound::AllExcluded"
+                                      [])
+                                    (Ty.apply
+                                      (Ty.path "alloc::collections::btree::search::SearchBound")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Q ] ])
                                 ]));
                           fun γ =>
                             ltac:(M.monadic
@@ -4002,9 +4660,21 @@ Module collections.
                               [ Q ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |);
-                              M.read (| start_index |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::node::NodeRef")
+                                      []
+                                      [ BorrowType; K; V; Type_ ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| key |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Q ]);
+                              M.value_with_ty (M.read (| start_index |)) (Ty.path "usize")
                             ]
                           |)
                         |),
@@ -4021,11 +4691,14 @@ Module collections.
                               Value.Tuple
                                 [
                                   M.read (| idx |);
-                                  Value.StructTuple
-                                    "alloc::collections::btree::search::SearchBound::AllIncluded"
-                                    []
-                                    [ Ty.apply (Ty.path "&") [] [ Q ] ]
-                                    []
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "alloc::collections::btree::search::SearchBound::AllIncluded"
+                                      [])
+                                    (Ty.apply
+                                      (Ty.path "alloc::collections::btree::search::SearchBound")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Q ] ])
                                 ]));
                           fun γ =>
                             ltac:(M.monadic
@@ -4059,13 +4732,28 @@ Module collections.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::btree::node::NodeRef")
+                                      []
+                                      [ BorrowType; K; V; Type_ ]
+                                  ])
+                            ]
                           |);
-                          Value.StructTuple
-                            "alloc::collections::btree::search::SearchBound::AllIncluded"
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Q ] ]
-                            []
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "alloc::collections::btree::search::SearchBound::AllIncluded"
+                              [])
+                            (Ty.apply
+                              (Ty.path "alloc::collections::btree::search::SearchBound")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Q ] ])
                         ]));
                   fun γ =>
                     ltac:(M.monadic
@@ -4077,11 +4765,14 @@ Module collections.
                       Value.Tuple
                         [
                           M.read (| start_index |);
-                          Value.StructTuple
-                            "alloc::collections::btree::search::SearchBound::AllExcluded"
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Q ] ]
-                            []
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "alloc::collections::btree::search::SearchBound::AllExcluded"
+                              [])
+                            (Ty.apply
+                              (Ty.path "alloc::collections::btree::search::SearchBound")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Q ] ])
                         ]))
                 ]
               |)))

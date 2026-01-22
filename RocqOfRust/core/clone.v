@@ -15,7 +15,11 @@ Module clone.
             M.call_closure (|
               Self,
               M.get_trait_method (| "core::clone::Clone", Self, [], [], "clone", [], [] |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Self ])
+              ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -77,17 +81,25 @@ Module clone.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "*mut") [] [ T ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  "cast",
-                  [],
-                  [ T ]
-                |),
-                [ M.read (| dst |) ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "*mut") [] [ T ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    "cast",
+                    [],
+                    [ T ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| dst |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "*mut") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -137,8 +149,12 @@ Module clone.
                   [ Ty.apply (Ty.path "slice") [] [ T ] ]
                 |),
                 [
-                  M.read (| dst |);
-                  M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |)
+                  M.value_with_ty
+                    (M.read (| dst |))
+                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
                 ]
               |) in
             M.alloc (|
@@ -154,7 +170,13 @@ Module clone.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| dst |)
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty
+                    (M.read (| dst |))
+                    (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
                 ]
               |)
             |)
@@ -199,17 +221,23 @@ Module clone.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.read (| dst |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -255,22 +283,28 @@ Module clone.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (|
-                      Ty.path "core::ffi::c_str::CStr",
-                      "to_bytes_with_nul",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (|
+                        Ty.path "core::ffi::c_str::CStr",
+                        "to_bytes_with_nul",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::ffi::c_str::CStr" ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.read (| dst |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

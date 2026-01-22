@@ -43,7 +43,7 @@ Module sync.
                 [],
                 []
               |),
-              [ Value.Bool false ]
+              [ M.value_with_ty (Value.Bool false) (Ty.path "bool") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -104,11 +104,13 @@ Module sync.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ T ],
-                  M.get_function (| "core::ptr::null_mut", [], [ T ] |),
-                  []
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ T ],
+                    M.get_function (| "core::ptr::null_mut", [], [ T ] |),
+                    []
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -254,43 +256,47 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.match_operator (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                  self,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Relaxed" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Release" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Acquire" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AcqRel" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SeqCst" |) |) |)))
-                  ]
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.match_operator (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    self,
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Relaxed" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Release" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Acquire" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AcqRel" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SeqCst" |) |) |)))
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -375,7 +381,11 @@ Module sync.
                     [],
                     [ Ty.path "core::sync::atomic::Ordering" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::Ordering" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -385,7 +395,11 @@ Module sync.
                     [],
                     [ Ty.path "core::sync::atomic::Ordering" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::Ordering" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -431,7 +445,11 @@ Module sync.
                     [],
                     [ Ty.path "core::sync::atomic::Ordering" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::Ordering" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.tuple [],
@@ -447,11 +465,15 @@ Module sync.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -475,7 +497,7 @@ Module sync.
           M.call_closure (|
             Ty.path "core::sync::atomic::AtomicBool",
             M.get_associated_function (| Ty.path "core::sync::atomic::AtomicBool", "new", [], [] |),
-            [ Value.Bool false ]
+            [ M.value_with_ty (Value.Bool false) (Ty.path "bool") ]
           |)
         |))).
     
@@ -497,23 +519,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "bool", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicBool"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicBool"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.cast (Ty.path "u8") (M.read (| v |)) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.cast (Ty.path "u8") (M.read (| v |))) (Ty.path "u8") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicBool")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -546,7 +568,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicBool" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "bool" ])
+                      ]
                     |)
                   |)
                 |)
@@ -598,14 +624,24 @@ Module sync.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::sync::atomic::AtomicBool",
-                                      "v"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::sync::atomic::AtomicBool",
+                                        "v"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::cell::UnsafeCell")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ])
                                 ]
                               |))
                           |)
@@ -837,13 +873,15 @@ Module sync.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::sync::atomic::AtomicBool",
-                        "v"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::sync::atomic::AtomicBool",
+                          "v"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ])
                   ]
                 |);
                 Value.Integer IntegerKind.U8 0
@@ -882,35 +920,43 @@ Module sync.
                   Ty.path "u8",
                   M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "u8" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                      M.pointer_coercion
-                        M.PointerCoercion.MutToConstPointer
-                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                            "get",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::sync::atomic::AtomicBool",
-                                "v"
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
-                    |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                        M.pointer_coercion
+                          M.PointerCoercion.MutToConstPointer
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                          (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                        [
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                              "get",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::sync::atomic::AtomicBool",
+                                    "v"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ]
+                                  ])
+                            ]
+                          |)
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |);
                 Value.Integer IntegerKind.U8 0
@@ -949,27 +995,34 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "u8" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicBool",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.cast (Ty.path "u8") (M.read (| val |));
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicBool",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                    M.value_with_ty (M.cast (Ty.path "u8") (M.read (| val |))) (Ty.path "u8");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1033,9 +1086,16 @@ Module sync.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                Value.Bool true;
-                                M.read (| order |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                                M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                                M.value_with_ty
+                                  (M.read (| order |))
+                                  (Ty.path "core::sync::atomic::Ordering")
                               ]
                             |)));
                         fun γ =>
@@ -1049,9 +1109,16 @@ Module sync.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                Value.Bool false;
-                                M.read (| order |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                                M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                                M.value_with_ty
+                                  (M.read (| order |))
+                                  (Ty.path "core::sync::atomic::Ordering")
                               ]
                             |)))
                       ]
@@ -1070,27 +1137,43 @@ Module sync.
                             [ Ty.path "u8" ]
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                                "get",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::sync::atomic::AtomicBool",
-                                    "v"
-                                  |)
-                                |)
-                              ]
-                            |);
-                            M.cast (Ty.path "u8") (M.read (| val |));
-                            M.read (| order |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                                  "get",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::sync::atomic::AtomicBool",
+                                        "v"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::cell::UnsafeCell")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                            M.value_with_ty
+                              (M.cast (Ty.path "u8") (M.read (| val |)))
+                              (Ty.path "u8");
+                            M.value_with_ty
+                              (M.read (| order |))
+                              (Ty.path "core::sync::atomic::Ordering")
                           ]
                         |);
                         Value.Integer IntegerKind.U8 0
@@ -1138,15 +1221,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "bool");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "bool");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -1265,7 +1360,9 @@ Module sync.
                                     γ0_0,
                                     "core::sync::atomic::Ordering::SeqCst"
                                   |) in
-                                Value.StructTuple "core::sync::atomic::Ordering::SeqCst" [] [] []));
+                                M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::SeqCst" [])
+                                  (Ty.path "core::sync::atomic::Ordering")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -1275,7 +1372,9 @@ Module sync.
                                     γ0_1,
                                     "core::sync::atomic::Ordering::SeqCst"
                                   |) in
-                                Value.StructTuple "core::sync::atomic::Ordering::SeqCst" [] [] []));
+                                M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::SeqCst" [])
+                                  (Ty.path "core::sync::atomic::Ordering")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -1285,7 +1384,9 @@ Module sync.
                                     γ0_0,
                                     "core::sync::atomic::Ordering::AcqRel"
                                   |) in
-                                Value.StructTuple "core::sync::atomic::Ordering::AcqRel" [] [] []));
+                                M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::AcqRel" [])
+                                  (Ty.path "core::sync::atomic::Ordering")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -1300,37 +1401,54 @@ Module sync.
                                     Ty.path "never",
                                     M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::Arguments",
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.path "core::fmt::Arguments",
-                                          "new_const",
-                                          [ Value.Integer IntegerKind.Usize 1 ],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::Arguments",
+                                            "new_const",
+                                            [ Value.Integer IntegerKind.Usize 1 ],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
                                                 Pointer.Kind.Ref,
-                                                M.alloc (|
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "str" ]
+                                                        ],
+                                                      Value.Array
+                                                        [
+                                                          mk_str (|
+                                                            "there is no such thing as an acquire-release failure ordering"
+                                                          |)
+                                                        ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
                                                   Ty.apply
                                                     (Ty.path "array")
                                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                  Value.Array
-                                                    [
-                                                      mk_str (|
-                                                        "there is no such thing as an acquire-release failure ordering"
-                                                      |)
-                                                    ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.path "core::fmt::Arguments")
                                     ]
                                   |)
                                 |)));
@@ -1348,7 +1466,9 @@ Module sync.
                                     γ0_1,
                                     "core::sync::atomic::Ordering::Acquire"
                                   |) in
-                                Value.StructTuple "core::sync::atomic::Ordering::AcqRel" [] [] []));
+                                M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::AcqRel" [])
+                                  (Ty.path "core::sync::atomic::Ordering")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -1358,11 +1478,9 @@ Module sync.
                                     γ0_0,
                                     "core::sync::atomic::Ordering::Acquire"
                                   |) in
-                                Value.StructTuple
-                                  "core::sync::atomic::Ordering::Acquire"
-                                  []
-                                  []
-                                  []));
+                                M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Acquire" [])
+                                  (Ty.path "core::sync::atomic::Ordering")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -1372,11 +1490,9 @@ Module sync.
                                     γ0_1,
                                     "core::sync::atomic::Ordering::Acquire"
                                   |) in
-                                Value.StructTuple
-                                  "core::sync::atomic::Ordering::Acquire"
-                                  []
-                                  []
-                                  []));
+                                M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Acquire" [])
+                                  (Ty.path "core::sync::atomic::Ordering")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -1391,11 +1507,9 @@ Module sync.
                                     γ0_1,
                                     "core::sync::atomic::Ordering::Relaxed"
                                   |) in
-                                Value.StructTuple
-                                  "core::sync::atomic::Ordering::Release"
-                                  []
-                                  []
-                                  []));
+                                M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Release" [])
+                                  (Ty.path "core::sync::atomic::Ordering")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -1410,37 +1524,54 @@ Module sync.
                                     Ty.path "never",
                                     M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::Arguments",
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.path "core::fmt::Arguments",
-                                          "new_const",
-                                          [ Value.Integer IntegerKind.Usize 1 ],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::Arguments",
+                                            "new_const",
+                                            [ Value.Integer IntegerKind.Usize 1 ],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
                                                 Pointer.Kind.Ref,
-                                                M.alloc (|
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "str" ]
+                                                        ],
+                                                      Value.Array
+                                                        [
+                                                          mk_str (|
+                                                            "there is no such thing as a release failure ordering"
+                                                          |)
+                                                        ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
                                                   Ty.apply
                                                     (Ty.path "array")
                                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                  Value.Array
-                                                    [
-                                                      mk_str (|
-                                                        "there is no such thing as a release failure ordering"
-                                                      |)
-                                                    ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.path "core::fmt::Arguments")
                                     ]
                                   |)
                                 |)));
@@ -1458,7 +1589,9 @@ Module sync.
                                     γ0_1,
                                     "core::sync::atomic::Ordering::Relaxed"
                                   |) in
-                                Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []))
+                                M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering")))
                           ]
                         |) in
                       let~ old : Ty.path "bool" :=
@@ -1492,12 +1625,19 @@ Module sync.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| self |) |)
-                                    |);
-                                    Value.Bool false;
-                                    M.read (| order |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                                    M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                                    M.value_with_ty
+                                      (M.read (| order |))
+                                      (Ty.path "core::sync::atomic::Ordering")
                                   ]
                                 |)));
                             fun γ =>
@@ -1511,12 +1651,19 @@ Module sync.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| self |) |)
-                                    |);
-                                    M.read (| new |);
-                                    M.read (| order |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                                    M.value_with_ty (M.read (| new |)) (Ty.path "bool");
+                                    M.value_with_ty
+                                      (M.read (| order |))
+                                      (Ty.path "core::sync::atomic::Ordering")
                                   ]
                                 |)))
                           ]
@@ -1550,18 +1697,24 @@ Module sync.
                                     M.read (| γ |),
                                     Value.Bool true
                                   |) in
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [ Ty.path "bool"; Ty.path "bool" ]
-                                  [ M.read (| old |) ]));
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ M.read (| old |) ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.path "bool"; Ty.path "bool" ])));
                             fun γ =>
                               ltac:(M.monadic
-                                (Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ Ty.path "bool"; Ty.path "bool" ]
-                                  [ M.read (| old |) ]))
+                                (M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [ M.read (| old |) ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.path "bool"; Ty.path "bool" ])))
                           ]
                         |)
                       |)
@@ -1586,29 +1739,49 @@ Module sync.
                             [ Ty.path "u8" ]
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                                "get",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::sync::atomic::AtomicBool",
-                                    "v"
-                                  |)
-                                |)
-                              ]
-                            |);
-                            M.cast (Ty.path "u8") (M.read (| current |));
-                            M.cast (Ty.path "u8") (M.read (| new |));
-                            M.read (| success |);
-                            M.read (| failure |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                                  "get",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::sync::atomic::AtomicBool",
+                                        "v"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::cell::UnsafeCell")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                            M.value_with_ty
+                              (M.cast (Ty.path "u8") (M.read (| current |)))
+                              (Ty.path "u8");
+                            M.value_with_ty
+                              (M.cast (Ty.path "u8") (M.read (| new |)))
+                              (Ty.path "u8");
+                            M.value_with_ty
+                              (M.read (| success |))
+                              (Ty.path "core::sync::atomic::Ordering");
+                            M.value_with_ty
+                              (M.read (| failure |))
+                              (Ty.path "core::sync::atomic::Ordering")
                           ]
                         |)
                       |),
@@ -1622,17 +1795,20 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "u8", γ0_0 |) in
-                            Value.StructTuple
-                              "core::result::Result::Ok"
-                              []
-                              [ Ty.path "bool"; Ty.path "bool" ]
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ne,
-                                  [ M.read (| x |); Value.Integer IntegerKind.U8 0 ]
-                                |)
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::result::Result::Ok"
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.ne,
+                                    [ M.read (| x |); Value.Integer IntegerKind.U8 0 ]
+                                  |)
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "bool"; Ty.path "bool" ])));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -1642,17 +1818,20 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "u8", γ0_0 |) in
-                            Value.StructTuple
-                              "core::result::Result::Err"
-                              []
-                              [ Ty.path "bool"; Ty.path "bool" ]
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ne,
-                                  [ M.read (| x |); Value.Integer IntegerKind.U8 0 ]
-                                |)
-                              ]))
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::result::Result::Err"
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.ne,
+                                    [ M.read (| x |); Value.Integer IntegerKind.U8 0 ]
+                                  |)
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "bool"; Ty.path "bool" ])))
                       ]
                     |)))
               ]
@@ -1733,14 +1912,23 @@ Module sync.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      M.read (| current |);
-                                      M.read (| new |);
-                                      M.read (| success |);
-                                      M.read (| failure |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                                      M.value_with_ty (M.read (| current |)) (Ty.path "bool");
+                                      M.value_with_ty (M.read (| new |)) (Ty.path "bool");
+                                      M.value_with_ty
+                                        (M.read (| success |))
+                                        (Ty.path "core::sync::atomic::Ordering");
+                                      M.value_with_ty
+                                        (M.read (| failure |))
+                                        (Ty.path "core::sync::atomic::Ordering")
                                     ]
                                   |)
                                 |)
@@ -1769,29 +1957,49 @@ Module sync.
                             [ Ty.path "u8" ]
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                                "get",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::sync::atomic::AtomicBool",
-                                    "v"
-                                  |)
-                                |)
-                              ]
-                            |);
-                            M.cast (Ty.path "u8") (M.read (| current |));
-                            M.cast (Ty.path "u8") (M.read (| new |));
-                            M.read (| success |);
-                            M.read (| failure |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                                  "get",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::sync::atomic::AtomicBool",
+                                        "v"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::cell::UnsafeCell")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                            M.value_with_ty
+                              (M.cast (Ty.path "u8") (M.read (| current |)))
+                              (Ty.path "u8");
+                            M.value_with_ty
+                              (M.cast (Ty.path "u8") (M.read (| new |)))
+                              (Ty.path "u8");
+                            M.value_with_ty
+                              (M.read (| success |))
+                              (Ty.path "core::sync::atomic::Ordering");
+                            M.value_with_ty
+                              (M.read (| failure |))
+                              (Ty.path "core::sync::atomic::Ordering")
                           ]
                         |)
                       |),
@@ -1805,17 +2013,20 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "u8", γ0_0 |) in
-                            Value.StructTuple
-                              "core::result::Result::Ok"
-                              []
-                              [ Ty.path "bool"; Ty.path "bool" ]
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ne,
-                                  [ M.read (| x |); Value.Integer IntegerKind.U8 0 ]
-                                |)
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::result::Result::Ok"
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.ne,
+                                    [ M.read (| x |); Value.Integer IntegerKind.U8 0 ]
+                                  |)
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "bool"; Ty.path "bool" ])));
                         fun γ =>
                           ltac:(M.monadic
                             (let γ0_0 :=
@@ -1825,17 +2036,20 @@ Module sync.
                                 0
                               |) in
                             let x := M.copy (| Ty.path "u8", γ0_0 |) in
-                            Value.StructTuple
-                              "core::result::Result::Err"
-                              []
-                              [ Ty.path "bool"; Ty.path "bool" ]
-                              [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.ne,
-                                  [ M.read (| x |); Value.Integer IntegerKind.U8 0 ]
-                                |)
-                              ]))
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::result::Result::Err"
+                                [
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.ne,
+                                    [ M.read (| x |); Value.Integer IntegerKind.U8 0 ]
+                                  |)
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "bool"; Ty.path "bool" ])))
                       ]
                     |)
                   |)
@@ -1874,27 +2088,34 @@ Module sync.
                   Ty.path "u8",
                   M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u8" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicBool",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.cast (Ty.path "u8") (M.read (| val |));
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicBool",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                    M.value_with_ty (M.cast (Ty.path "u8") (M.read (| val |))) (Ty.path "u8");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |);
                 Value.Integer IntegerKind.U8 0
@@ -1953,9 +2174,13 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        Value.Bool true;
-                        M.read (| order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                        M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                        M.value_with_ty
+                          (M.read (| order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |)));
                 fun γ =>
@@ -1969,9 +2194,13 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        Value.Bool true;
-                        M.read (| order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                        M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                        M.value_with_ty
+                          (M.read (| order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |)))
               ]
@@ -2009,27 +2238,34 @@ Module sync.
                   Ty.path "u8",
                   M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u8" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicBool",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.cast (Ty.path "u8") (M.read (| val |));
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicBool",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                    M.value_with_ty (M.cast (Ty.path "u8") (M.read (| val |))) (Ty.path "u8");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |);
                 Value.Integer IntegerKind.U8 0
@@ -2068,27 +2304,34 @@ Module sync.
                   Ty.path "u8",
                   M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u8" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicBool",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.cast (Ty.path "u8") (M.read (| val |));
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicBool",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                    M.value_with_ty (M.cast (Ty.path "u8") (M.read (| val |))) (Ty.path "u8");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |);
                 Value.Integer IntegerKind.U8 0
@@ -2126,9 +2369,11 @@ Module sync.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                Value.Bool true;
-                M.read (| order |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2162,25 +2407,32 @@ Module sync.
                 [ Ty.path "bool" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicBool",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicBool",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2236,8 +2488,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -2274,8 +2530,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "bool" ])
                                           ]
                                         |)
                                       |) in
@@ -2305,14 +2565,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "bool");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "bool");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -2364,11 +2633,12 @@ Module sync.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "bool"; Ty.path "bool" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "bool"; Ty.path "bool" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "bool"; Ty.path "bool" ])
                   |)
                 |)))
             |)))
@@ -2396,29 +2666,29 @@ Module sync.
         | [], [], [ p ] =>
           ltac:(M.monadic
             (let p := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], p |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicPtr"
-              []
-              [ T ]
-              [
-                ("p",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::cell::UnsafeCell")
-                      []
-                      [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicPtr"
+                [
+                  ("p",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::cell::UnsafeCell")
                         []
                         [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| p |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::cell::UnsafeCell")
+                          []
+                          [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| p |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
+                    |))
+                ])
+              (Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2461,7 +2731,11 @@ Module sync.
                         [],
                         [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ])
+                      ]
                     |)
                   |)
                 |)
@@ -2512,14 +2786,24 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicPtr",
-                            "p"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicPtr",
+                              "p"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::cell::UnsafeCell")
+                                []
+                                [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                            ])
                       ]
                     |)
                   |)
@@ -2823,13 +3107,18 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicPtr",
-                    "p"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicPtr",
+                      "p"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::cell::UnsafeCell")
+                    []
+                    [ Ty.apply (Ty.path "*mut") [] [ T ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2869,38 +3158,50 @@ Module sync.
                 [ Ty.apply (Ty.path "*mut") [] [ T ] ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::cell::UnsafeCell")
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::cell::UnsafeCell")
+                            []
+                            [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                          "get",
+                          [],
                           []
-                          [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicPtr",
-                            "p"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicPtr",
+                                "p"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::UnsafeCell")
+                                  []
+                                  [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                              ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2945,30 +3246,42 @@ Module sync.
                     [ Ty.apply (Ty.path "*mut") [] [ T ] ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::cell::UnsafeCell")
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::cell::UnsafeCell")
+                            []
+                            [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                          "get",
+                          [],
                           []
-                          [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicPtr",
-                            "p"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| ptr |);
-                    M.read (| order |)
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicPtr",
+                                "p"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::cell::UnsafeCell")
+                                  []
+                                  [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                    M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3011,30 +3324,42 @@ Module sync.
                 [ Ty.apply (Ty.path "*mut") [] [ T ] ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::cell::UnsafeCell")
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::cell::UnsafeCell")
+                        []
+                        [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                      "get",
+                      [],
                       []
-                      [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicPtr",
-                        "p"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| ptr |);
-                M.read (| order |)
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicPtr",
+                            "p"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::cell::UnsafeCell")
+                              []
+                              [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3094,15 +3419,30 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (M.read (| new |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -3175,32 +3515,44 @@ Module sync.
                 [ Ty.apply (Ty.path "*mut") [] [ T ] ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::cell::UnsafeCell")
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::cell::UnsafeCell")
+                        []
+                        [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                      "get",
+                      [],
                       []
-                      [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicPtr",
-                        "p"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicPtr",
+                            "p"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::cell::UnsafeCell")
+                              []
+                              [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                M.value_with_ty (M.read (| current |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| new |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3260,32 +3612,44 @@ Module sync.
                 [ Ty.apply (Ty.path "*mut") [] [ T ] ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::cell::UnsafeCell")
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::cell::UnsafeCell")
+                        []
+                        [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                      "get",
+                      [],
                       []
-                      [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicPtr",
-                        "p"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicPtr",
+                            "p"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::cell::UnsafeCell")
+                              []
+                              [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                M.value_with_ty (M.read (| current |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| new |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3355,8 +3719,15 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -3393,8 +3764,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.apply (Ty.path "*mut") [] [ T ] ])
                                           ]
                                         |)
                                       |) in
@@ -3434,14 +3809,32 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::sync::atomic::AtomicPtr")
+                                                    []
+                                                    [ T ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.read (| prev |))
+                                              (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                            M.value_with_ty
+                                              (M.read (| next |))
+                                              (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -3503,11 +3896,12 @@ Module sync.
                       (Ty.path "core::result::Result")
                       []
                       [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.apply (Ty.path "*mut") [] [ T ] ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.apply (Ty.path "*mut") [] [ T ] ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.apply (Ty.path "*mut") [] [ T ]; Ty.apply (Ty.path "*mut") [] [ T ] ])
                   |)
                 |)))
             |)))
@@ -3554,20 +3948,29 @@ Module sync.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_mul", [], [] |),
-                  [
-                    M.read (| val |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_function (| "core::mem::size_of", [], [ T ] |),
-                      []
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_function (| "core::mem::size_of", [], [ T ] |),
+                          []
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |))
+                  (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3613,20 +4016,29 @@ Module sync.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_mul", [], [] |),
-                  [
-                    M.read (| val |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_function (| "core::mem::size_of", [], [ T ] |),
-                      []
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_function (| "core::mem::size_of", [], [ T ] |),
+                          []
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |))
+                  (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3668,44 +4080,60 @@ Module sync.
               Ty.apply (Ty.path "*mut") [] [ T ],
               M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "cast", [], [ T ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ T ],
-                  M.get_function (|
-                    "core::sync::atomic::atomic_add",
-                    [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::cell::UnsafeCell")
-                          []
-                          [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicPtr",
-                            "p"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
-                    M.read (| order |)
-                  ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ T ],
+                    M.get_function (|
+                      "core::sync::atomic::atomic_add",
+                      [],
+                      [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::cell::UnsafeCell")
+                              []
+                              [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                            "get",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::sync::atomic::AtomicPtr",
+                                  "p"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::cell::UnsafeCell")
+                                    []
+                                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ T ],
+                          M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
+                          [ M.value_with_ty (M.read (| val |)) (Ty.path "usize") ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3747,44 +4175,60 @@ Module sync.
               Ty.apply (Ty.path "*mut") [] [ T ],
               M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "cast", [], [ T ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ T ],
-                  M.get_function (|
-                    "core::sync::atomic::atomic_sub",
-                    [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::cell::UnsafeCell")
-                          []
-                          [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicPtr",
-                            "p"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
-                    M.read (| order |)
-                  ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ T ],
+                    M.get_function (|
+                      "core::sync::atomic::atomic_sub",
+                      [],
+                      [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::cell::UnsafeCell")
+                              []
+                              [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                            "get",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::sync::atomic::AtomicPtr",
+                                  "p"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::cell::UnsafeCell")
+                                    []
+                                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ T ],
+                          M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
+                          [ M.value_with_ty (M.read (| val |)) (Ty.path "usize") ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3821,44 +4265,60 @@ Module sync.
               Ty.apply (Ty.path "*mut") [] [ T ],
               M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "cast", [], [ T ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ T ],
-                  M.get_function (|
-                    "core::sync::atomic::atomic_or",
-                    [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::cell::UnsafeCell")
-                          []
-                          [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicPtr",
-                            "p"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
-                    M.read (| order |)
-                  ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ T ],
+                    M.get_function (|
+                      "core::sync::atomic::atomic_or",
+                      [],
+                      [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::cell::UnsafeCell")
+                              []
+                              [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                            "get",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::sync::atomic::AtomicPtr",
+                                  "p"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::cell::UnsafeCell")
+                                    []
+                                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ T ],
+                          M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
+                          [ M.value_with_ty (M.read (| val |)) (Ty.path "usize") ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3895,44 +4355,60 @@ Module sync.
               Ty.apply (Ty.path "*mut") [] [ T ],
               M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "cast", [], [ T ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ T ],
-                  M.get_function (|
-                    "core::sync::atomic::atomic_and",
-                    [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::cell::UnsafeCell")
-                          []
-                          [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicPtr",
-                            "p"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
-                    M.read (| order |)
-                  ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ T ],
+                    M.get_function (|
+                      "core::sync::atomic::atomic_and",
+                      [],
+                      [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::cell::UnsafeCell")
+                              []
+                              [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                            "get",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::sync::atomic::AtomicPtr",
+                                  "p"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::cell::UnsafeCell")
+                                    []
+                                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ T ],
+                          M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
+                          [ M.value_with_ty (M.read (| val |)) (Ty.path "usize") ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3969,44 +4445,60 @@ Module sync.
               Ty.apply (Ty.path "*mut") [] [ T ],
               M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "cast", [], [ T ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ T ],
-                  M.get_function (|
-                    "core::sync::atomic::atomic_xor",
-                    [],
-                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::cell::UnsafeCell")
-                          []
-                          [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicPtr",
-                            "p"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
-                      [ M.read (| val |) ]
-                    |);
-                    M.read (| order |)
-                  ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ T ],
+                    M.get_function (|
+                      "core::sync::atomic::atomic_xor",
+                      [],
+                      [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::cell::UnsafeCell")
+                              []
+                              [ Ty.apply (Ty.path "*mut") [] [ T ] ],
+                            "get",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::sync::atomic::AtomicPtr",
+                                  "p"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::cell::UnsafeCell")
+                                    []
+                                    [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ T ],
+                          M.get_function (| "core::ptr::without_provenance_mut", [], [ T ] |),
+                          [ M.value_with_ty (M.read (| val |)) (Ty.path "usize") ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4048,14 +4540,24 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicPtr",
-                    "p"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicPtr",
+                      "p"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::cell::UnsafeCell")
+                        []
+                        [ Ty.apply (Ty.path "*mut") [] [ T ] ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4089,7 +4591,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| b |) ]
+              [ M.value_with_ty (M.read (| b |)) (Ty.path "bool") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -4126,7 +4628,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| p |) ]
+              [ M.value_with_ty (M.read (| p |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -4165,19 +4667,21 @@ Module sync.
               Ty.path "core::sync::atomic::AtomicI8",
               M.get_associated_function (| Ty.path "core::sync::atomic::AtomicI8", "new", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "i8",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "i8",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "i8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4204,7 +4708,7 @@ Module sync.
             M.call_closure (|
               Ty.path "core::sync::atomic::AtomicI8",
               M.get_associated_function (| Ty.path "core::sync::atomic::AtomicI8", "new", [], [] |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "i8") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -4244,31 +4748,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "i8", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "i8",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "i8",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicI8",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "i8",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicI8",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicI8" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4308,23 +4825,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "i8", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicI8"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicI8"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "i8") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicI8")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4357,7 +4874,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicI8" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ])
+                      ]
                     |)
                   |)
                 |)
@@ -4400,14 +4921,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI8",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicI8",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
                       ]
                     |)
                   |)
@@ -4668,13 +5194,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicI8",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicI8",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4705,35 +5233,42 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "i8" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "i8" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI8",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "i8" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "i8" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicI8",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4766,27 +5301,34 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "i8" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI8",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicI8",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4819,27 +5361,34 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4888,15 +5437,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI8" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "i8");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "i8");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -4954,29 +5515,36 @@ Module sync.
                 [ Ty.path "i8" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| new |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5020,29 +5588,36 @@ Module sync.
                 [ Ty.path "i8" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| new |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5074,27 +5649,34 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5126,27 +5708,34 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5178,27 +5767,34 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5230,27 +5826,34 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5282,27 +5885,34 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5334,27 +5944,34 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5407,8 +6024,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI8" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -5445,8 +6066,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "i8" ])
                                           ]
                                         |)
                                       |) in
@@ -5476,14 +6101,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicI8" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "i8");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "i8");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -5535,11 +6169,9 @@ Module sync.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i8"; Ty.path "i8" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "i8"; Ty.path "i8" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i8"; Ty.path "i8" ])
                   |)
                 |)))
             |)))
@@ -5572,27 +6204,34 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_max", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5624,27 +6263,34 @@ Module sync.
               Ty.path "i8",
               M.get_function (| "core::sync::atomic::atomic_min", [], [ Ty.path "i8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5678,14 +6324,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicI8",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicI8",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i8" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5720,19 +6371,21 @@ Module sync.
               Ty.path "core::sync::atomic::AtomicU8",
               M.get_associated_function (| Ty.path "core::sync::atomic::AtomicU8", "new", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "u8",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u8",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "u8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5759,7 +6412,7 @@ Module sync.
             M.call_closure (|
               Ty.path "core::sync::atomic::AtomicU8",
               M.get_associated_function (| Ty.path "core::sync::atomic::AtomicU8", "new", [], [] |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "u8") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -5799,31 +6452,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "u8", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "u8",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "u8",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicU8",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "u8",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicU8",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicU8" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5863,23 +6529,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "u8", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicU8"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicU8"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "u8") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicU8")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5912,7 +6578,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicU8" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                      ]
                     |)
                   |)
                 |)
@@ -5955,14 +6625,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU8",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicU8",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
                       ]
                     |)
                   |)
@@ -6223,13 +6898,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicU8",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicU8",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6260,35 +6937,42 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU8",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicU8",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6321,27 +7005,34 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "u8" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU8",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicU8",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6374,27 +7065,34 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6443,15 +7141,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU8" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "u8");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "u8");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -6509,29 +7219,36 @@ Module sync.
                 [ Ty.path "u8" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| new |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6575,29 +7292,36 @@ Module sync.
                 [ Ty.path "u8" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| new |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6629,27 +7353,34 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6681,27 +7412,34 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6733,27 +7471,34 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6785,27 +7530,34 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6837,27 +7589,34 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6889,27 +7648,34 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6962,8 +7728,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU8" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -7000,8 +7770,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "u8" ])
                                           ]
                                         |)
                                       |) in
@@ -7031,14 +7805,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicU8" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "u8");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "u8");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -7090,11 +7873,9 @@ Module sync.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u8"; Ty.path "u8" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "u8"; Ty.path "u8" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u8"; Ty.path "u8" ])
                   |)
                 |)))
             |)))
@@ -7127,27 +7908,34 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_umax", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7179,27 +7967,34 @@ Module sync.
               Ty.path "u8",
               M.get_function (| "core::sync::atomic::atomic_umin", [], [ Ty.path "u8" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU8",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU8",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7233,14 +8028,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicU8",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicU8",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u8" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7280,19 +8080,21 @@ Module sync.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "i16",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "i16",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "i16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7324,7 +8126,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "i16") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -7364,31 +8166,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "i16", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "i16",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "i16",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicI16",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "i16",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicI16",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicI16" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7428,23 +8243,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "i16", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicI16"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicI16"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "i16") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicI16")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -7477,7 +8292,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicI16" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ])
+                      ]
                     |)
                   |)
                 |)
@@ -7520,14 +8339,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI16",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicI16",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
                       ]
                     |)
                   |)
@@ -7788,13 +8612,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicI16",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicI16",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7825,35 +8651,42 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "i16" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "i16" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI16",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "i16" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "i16" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicI16",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7886,27 +8719,34 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "i16" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI16",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicI16",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7939,27 +8779,34 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8008,15 +8855,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI16" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "i16");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "i16");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -8074,29 +8933,36 @@ Module sync.
                 [ Ty.path "i16" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| new |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8140,29 +9006,36 @@ Module sync.
                 [ Ty.path "i16" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| new |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8194,27 +9067,34 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8246,27 +9126,34 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8298,27 +9185,34 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8350,27 +9244,34 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8402,27 +9303,34 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8454,27 +9362,34 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8527,8 +9442,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI16" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -8565,8 +9484,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "i16" ])
                                           ]
                                         |)
                                       |) in
@@ -8596,14 +9519,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicI16" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "i16");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "i16");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -8655,11 +9587,12 @@ Module sync.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i16"; Ty.path "i16" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "i16"; Ty.path "i16" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "i16"; Ty.path "i16" ])
                   |)
                 |)))
             |)))
@@ -8692,27 +9625,34 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_max", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8744,27 +9684,34 @@ Module sync.
               Ty.path "i16",
               M.get_function (| "core::sync::atomic::atomic_min", [], [ Ty.path "i16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8798,14 +9745,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicI16",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicI16",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i16" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8845,19 +9797,21 @@ Module sync.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "u16",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u16",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "u16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8889,7 +9843,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "u16") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -8929,31 +9883,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "u16", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "u16",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "u16",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicU16",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "u16",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicU16",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicU16" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8993,23 +9960,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "u16", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicU16"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicU16"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "u16") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicU16")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -9042,7 +10009,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicU16" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ])
+                      ]
                     |)
                   |)
                 |)
@@ -9085,14 +10056,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU16",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicU16",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
                       ]
                     |)
                   |)
@@ -9353,13 +10329,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicU16",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicU16",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9390,35 +10368,42 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "u16" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u16" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU16",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "u16" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u16" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicU16",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9451,27 +10436,34 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "u16" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU16",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicU16",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9504,27 +10496,34 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9573,15 +10572,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU16" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "u16");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "u16");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -9639,29 +10650,36 @@ Module sync.
                 [ Ty.path "u16" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| new |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9705,29 +10723,36 @@ Module sync.
                 [ Ty.path "u16" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| new |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9759,27 +10784,34 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9811,27 +10843,34 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9863,27 +10902,34 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9915,27 +10961,34 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9967,27 +11020,34 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10019,27 +11079,34 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10092,8 +11159,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU16" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -10130,8 +11201,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "u16" ])
                                           ]
                                         |)
                                       |) in
@@ -10161,14 +11236,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicU16" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "u16");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "u16");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -10220,11 +11304,12 @@ Module sync.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u16"; Ty.path "u16" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "u16"; Ty.path "u16" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "u16"; Ty.path "u16" ])
                   |)
                 |)))
             |)))
@@ -10257,27 +11342,34 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_umax", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10309,27 +11401,34 @@ Module sync.
               Ty.path "u16",
               M.get_function (| "core::sync::atomic::atomic_umin", [], [ Ty.path "u16" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU16",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU16",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u16");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10363,14 +11462,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicU16",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicU16",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u16" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10410,19 +11514,21 @@ Module sync.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "i32",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "i32",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "i32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10454,7 +11560,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "i32") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -10494,31 +11600,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "i32", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "i32",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "i32",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicI32",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "i32",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicI32",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicI32" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10558,23 +11677,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "i32", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicI32"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicI32"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "i32") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicI32")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10607,7 +11726,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicI32" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ])
+                      ]
                     |)
                   |)
                 |)
@@ -10650,14 +11773,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI32",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicI32",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
                       ]
                     |)
                   |)
@@ -10918,13 +12046,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicI32",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicI32",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10955,35 +12085,42 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "i32" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "i32" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI32",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "i32" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "i32" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicI32",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11016,27 +12153,34 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "i32" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI32",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicI32",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11069,27 +12213,34 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11138,15 +12289,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI32" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "i32");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "i32");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -11204,29 +12367,36 @@ Module sync.
                 [ Ty.path "i32" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| new |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11270,29 +12440,36 @@ Module sync.
                 [ Ty.path "i32" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| new |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11324,27 +12501,34 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11376,27 +12560,34 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11428,27 +12619,34 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11480,27 +12678,34 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11532,27 +12737,34 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11584,27 +12796,34 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11657,8 +12876,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI32" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -11695,8 +12918,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "i32" ])
                                           ]
                                         |)
                                       |) in
@@ -11726,14 +12953,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicI32" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "i32");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "i32");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -11785,11 +13021,12 @@ Module sync.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i32"; Ty.path "i32" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "i32"; Ty.path "i32" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "i32"; Ty.path "i32" ])
                   |)
                 |)))
             |)))
@@ -11822,27 +13059,34 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_max", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11874,27 +13118,34 @@ Module sync.
               Ty.path "i32",
               M.get_function (| "core::sync::atomic::atomic_min", [], [ Ty.path "i32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11928,14 +13179,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicI32",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicI32",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i32" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11975,19 +13231,21 @@ Module sync.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "u32",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u32",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "u32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12019,7 +13277,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "u32") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -12059,31 +13317,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "u32", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "u32",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "u32",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicU32",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "u32",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicU32",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicU32" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12123,23 +13394,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "u32", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicU32"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicU32"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "u32") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicU32")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -12172,7 +13443,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicU32" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ])
+                      ]
                     |)
                   |)
                 |)
@@ -12215,14 +13490,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU32",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicU32",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
                       ]
                     |)
                   |)
@@ -12483,13 +13763,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicU32",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicU32",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12520,35 +13802,42 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "u32" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u32" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU32",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "u32" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u32" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicU32",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12581,27 +13870,34 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "u32" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU32",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicU32",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12634,27 +13930,34 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12703,15 +14006,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU32" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "u32");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "u32");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -12769,29 +14084,36 @@ Module sync.
                 [ Ty.path "u32" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| new |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12835,29 +14157,36 @@ Module sync.
                 [ Ty.path "u32" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| new |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12889,27 +14218,34 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12941,27 +14277,34 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -12993,27 +14336,34 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13045,27 +14395,34 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13097,27 +14454,34 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13149,27 +14513,34 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13222,8 +14593,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU32" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -13260,8 +14635,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "u32" ])
                                           ]
                                         |)
                                       |) in
@@ -13291,14 +14670,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicU32" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "u32");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "u32");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -13350,11 +14738,12 @@ Module sync.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u32"; Ty.path "u32" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "u32"; Ty.path "u32" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "u32"; Ty.path "u32" ])
                   |)
                 |)))
             |)))
@@ -13387,27 +14776,34 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_umax", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13439,27 +14835,34 @@ Module sync.
               Ty.path "u32",
               M.get_function (| "core::sync::atomic::atomic_umin", [], [ Ty.path "u32" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU32",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU32",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u32");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13493,14 +14896,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicU32",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicU32",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u32" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13540,19 +14948,21 @@ Module sync.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "i64",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "i64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "i64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13584,7 +14994,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "i64") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -13624,31 +15034,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "i64", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "i64",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "i64",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicI64",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "i64",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicI64",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicI64" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13688,23 +15111,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "i64", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicI64"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicI64"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "i64") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicI64")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -13737,7 +15160,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicI64" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ])
+                      ]
                     |)
                   |)
                 |)
@@ -13780,14 +15207,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI64",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicI64",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
                       ]
                     |)
                   |)
@@ -14048,13 +15480,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicI64",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicI64",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14085,35 +15519,42 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "i64" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "i64" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI64",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "i64" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "i64" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicI64",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14146,27 +15587,34 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "i64" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicI64",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicI64",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -14199,27 +15647,34 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14268,15 +15723,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI64" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "i64");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "i64");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -14334,29 +15801,36 @@ Module sync.
                 [ Ty.path "i64" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| new |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14400,29 +15874,36 @@ Module sync.
                 [ Ty.path "i64" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| new |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14454,27 +15935,34 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14506,27 +15994,34 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14558,27 +16053,34 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14610,27 +16112,34 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14662,27 +16171,34 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14714,27 +16230,34 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -14787,8 +16310,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicI64" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -14825,8 +16352,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "i64" ])
                                           ]
                                         |)
                                       |) in
@@ -14856,14 +16387,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicI64" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "i64");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "i64");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -14915,11 +16455,12 @@ Module sync.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "i64"; Ty.path "i64" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "i64"; Ty.path "i64" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "i64"; Ty.path "i64" ])
                   |)
                 |)))
             |)))
@@ -14952,27 +16493,34 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_max", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15004,27 +16552,34 @@ Module sync.
               Ty.path "i64",
               M.get_function (| "core::sync::atomic::atomic_min", [], [ Ty.path "i64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicI64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicI64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "i64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "i64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15058,14 +16613,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicI64",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicI64",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "i64" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15105,19 +16665,21 @@ Module sync.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "u64",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "u64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15149,7 +16711,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "u64") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -15189,31 +16751,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "u64", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "u64",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "u64",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicU64",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "u64",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicU64",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicU64" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15253,23 +16828,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "u64", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicU64"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicU64"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "u64") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicU64")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -15302,7 +16877,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicU64" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ])
+                      ]
                     |)
                   |)
                 |)
@@ -15345,14 +16924,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU64",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicU64",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
                       ]
                     |)
                   |)
@@ -15613,13 +17197,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicU64",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicU64",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15650,35 +17236,42 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "u64" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u64" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU64",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "u64" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u64" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicU64",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15711,27 +17304,34 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "u64" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicU64",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicU64",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -15764,27 +17364,34 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15833,15 +17440,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU64" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "u64");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "u64");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -15899,29 +17518,36 @@ Module sync.
                 [ Ty.path "u64" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| new |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15965,29 +17591,36 @@ Module sync.
                 [ Ty.path "u64" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| new |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16019,27 +17652,34 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16071,27 +17711,34 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16123,27 +17770,34 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16175,27 +17829,34 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16227,27 +17888,34 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16279,27 +17947,34 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16352,8 +18027,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicU64" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -16390,8 +18069,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "u64" ])
                                           ]
                                         |)
                                       |) in
@@ -16421,14 +18104,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicU64" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "u64");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "u64");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -16480,11 +18172,12 @@ Module sync.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "u64"; Ty.path "u64" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "u64"; Ty.path "u64" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "u64"; Ty.path "u64" ])
                   |)
                 |)))
             |)))
@@ -16517,27 +18210,34 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_umax", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16569,27 +18269,34 @@ Module sync.
               Ty.path "u64",
               M.get_function (| "core::sync::atomic::atomic_umin", [], [ Ty.path "u64" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicU64",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicU64",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u64");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16623,14 +18330,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicU64",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicU64",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "u64" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16670,19 +18382,21 @@ Module sync.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "isize",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "isize",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "isize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16714,7 +18428,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "isize") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -16754,31 +18468,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "isize", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "isize",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "isize",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicIsize",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "isize",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicIsize",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicIsize" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16818,23 +18545,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "isize", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicIsize"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicIsize"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "isize") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicIsize")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -16867,7 +18594,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicIsize" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ])
+                      ]
                     |)
                   |)
                 |)
@@ -16910,14 +18641,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicIsize",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicIsize",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
                       ]
                     |)
                   |)
@@ -17178,13 +18914,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicIsize",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicIsize",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17215,35 +18953,43 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "isize" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "isize" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicIsize",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "isize" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "isize" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicIsize",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ]
+                              ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17276,27 +19022,35 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "isize" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicIsize",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicIsize",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17329,27 +19083,34 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17398,15 +19159,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicIsize" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "isize");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "isize");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -17464,29 +19237,36 @@ Module sync.
                 [ Ty.path "isize" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| new |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17530,29 +19310,36 @@ Module sync.
                 [ Ty.path "isize" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| new |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17584,27 +19371,34 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17636,27 +19430,34 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17688,27 +19489,34 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17740,27 +19548,34 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17792,27 +19607,34 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17844,27 +19666,34 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -17917,8 +19746,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicIsize" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -17955,8 +19788,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "isize" ])
                                           ]
                                         |)
                                       |) in
@@ -17986,14 +19823,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicIsize" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "isize");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "isize");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -18048,11 +19894,12 @@ Module sync.
                       (Ty.path "core::result::Result")
                       []
                       [ Ty.path "isize"; Ty.path "isize" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "isize"; Ty.path "isize" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "isize"; Ty.path "isize" ])
                   |)
                 |)))
             |)))
@@ -18085,27 +19932,34 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_max", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18137,27 +19991,34 @@ Module sync.
               Ty.path "isize",
               M.get_function (| "core::sync::atomic::atomic_min", [], [ Ty.path "isize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicIsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicIsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "isize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "isize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18191,14 +20052,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicIsize",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicIsize",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "isize" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18238,19 +20104,21 @@ Module sync.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "usize",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "usize",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18282,7 +20150,7 @@ Module sync.
                 [],
                 []
               |),
-              [ M.read (| v |) ]
+              [ M.value_with_ty (M.read (| v |)) (Ty.path "usize") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -18322,31 +20190,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "usize", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "usize",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "usize",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicUsize",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicUsize",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicUsize" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18386,23 +20267,23 @@ Module sync.
         | [], [], [ v ] =>
           ltac:(M.monadic
             (let v := M.alloc (| Ty.path "usize", v |) in
-            Value.mkStructRecord
-              "core::sync::atomic::AtomicUsize"
-              []
-              []
-              [
-                ("v",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::sync::atomic::AtomicUsize"
+                [
+                  ("v",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| v |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| v |)) (Ty.path "usize") ]
+                    |))
+                ])
+              (Ty.path "core::sync::atomic::AtomicUsize")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -18435,7 +20316,11 @@ Module sync.
                         [],
                         [ Ty.path "core::sync::atomic::AtomicUsize" ]
                       |),
-                      [ M.read (| ptr |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ])
+                      ]
                     |)
                   |)
                 |)
@@ -18478,14 +20363,19 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicUsize",
-                            "v"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::sync::atomic::AtomicUsize",
+                              "v"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
                       ]
                     |)
                   |)
@@ -18746,13 +20636,15 @@ Module sync.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::sync::atomic::AtomicUsize",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::sync::atomic::AtomicUsize",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18783,35 +20675,43 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_load", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ])
-                    (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ]),
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicUsize",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ])
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ]),
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicUsize",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ]
+                              ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18844,27 +20744,35 @@ Module sync.
                   Ty.tuple [],
                   M.get_function (| "core::sync::atomic::atomic_store", [], [ Ty.path "usize" ] |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::sync::atomic::AtomicUsize",
-                            "v"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.read (| val |);
-                    M.read (| order |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::sync::atomic::AtomicUsize",
+                                "v"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                    M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18897,27 +20805,34 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_swap", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18966,15 +20881,27 @@ Module sync.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.read (| current |);
-                    M.read (| new |);
-                    M.read (| order |);
-                    M.call_closure (|
-                      Ty.path "core::sync::atomic::Ordering",
-                      M.get_function (| "core::sync::atomic::strongest_failure_ordering", [], [] |),
-                      [ M.read (| order |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicUsize" ]);
+                    M.value_with_ty (M.read (| current |)) (Ty.path "usize");
+                    M.value_with_ty (M.read (| new |)) (Ty.path "usize");
+                    M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::sync::atomic::Ordering",
+                        M.get_function (|
+                          "core::sync::atomic::strongest_failure_ordering",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| order |))
+                            (Ty.path "core::sync::atomic::Ordering")
+                        ]
+                      |))
+                      (Ty.path "core::sync::atomic::Ordering")
                   ]
                 |)
               |),
@@ -19032,29 +20959,36 @@ Module sync.
                 [ Ty.path "usize" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| new |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19098,29 +21032,36 @@ Module sync.
                 [ Ty.path "usize" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| current |);
-                M.read (| new |);
-                M.read (| success |);
-                M.read (| failure |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| current |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| new |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| success |)) (Ty.path "core::sync::atomic::Ordering");
+                M.value_with_ty (M.read (| failure |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19152,27 +21093,34 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_add", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19204,27 +21152,34 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_sub", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19256,27 +21211,34 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_and", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19308,27 +21270,34 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_nand", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19360,27 +21329,34 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_or", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19412,27 +21388,34 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_xor", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19485,8 +21468,12 @@ Module sync.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| fetch_order |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::sync::atomic::AtomicUsize" ]);
+                        M.value_with_ty
+                          (M.read (| fetch_order |))
+                          (Ty.path "core::sync::atomic::Ordering")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -19523,8 +21510,12 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple [ M.read (| prev |) ]
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, f |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| prev |) ])
+                                              (Ty.tuple [ Ty.path "usize" ])
                                           ]
                                         |)
                                       |) in
@@ -19554,14 +21545,23 @@ Module sync.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            M.read (| prev |);
-                                            M.read (| next |);
-                                            M.read (| set_order |);
-                                            M.read (| fetch_order |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::sync::atomic::AtomicUsize" ]);
+                                            M.value_with_ty (M.read (| prev |)) (Ty.path "usize");
+                                            M.value_with_ty (M.read (| next |)) (Ty.path "usize");
+                                            M.value_with_ty
+                                              (M.read (| set_order |))
+                                              (Ty.path "core::sync::atomic::Ordering");
+                                            M.value_with_ty
+                                              (M.read (| fetch_order |))
+                                              (Ty.path "core::sync::atomic::Ordering")
                                           ]
                                         |)
                                       |),
@@ -19616,11 +21616,12 @@ Module sync.
                       (Ty.path "core::result::Result")
                       []
                       [ Ty.path "usize"; Ty.path "usize" ],
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "usize"; Ty.path "usize" ]
-                      [ M.read (| prev |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Err" [ M.read (| prev |) ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "usize"; Ty.path "usize" ])
                   |)
                 |)))
             |)))
@@ -19653,27 +21654,34 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_umax", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19705,27 +21713,34 @@ Module sync.
               Ty.path "usize",
               M.get_function (| "core::sync::atomic::atomic_umin", [], [ Ty.path "usize" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::sync::atomic::AtomicUsize",
-                        "v"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| val |);
-                M.read (| order |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::sync::atomic::AtomicUsize",
+                            "v"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "usize");
+                M.value_with_ty (M.read (| order |)) (Ty.path "core::sync::atomic::Ordering")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19759,14 +21774,19 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::sync::atomic::AtomicUsize",
-                    "v"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::sync::atomic::AtomicUsize",
+                      "v"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::cell::UnsafeCell") [] [ Ty.path "usize" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19789,7 +21809,7 @@ Module sync.
               [],
               []
             |),
-            [ Value.Integer IntegerKind.Isize 0 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.Isize 0) (Ty.path "isize") ]
           |)
         |))).
     
@@ -19810,7 +21830,7 @@ Module sync.
               [],
               []
             |),
-            [ Value.Integer IntegerKind.Usize 0 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize") ]
           |)
         |))).
     
@@ -19846,23 +21866,33 @@ Module sync.
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Release" |) in
-                  Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                    (Ty.path "core::sync::atomic::Ordering")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Relaxed" |) in
-                  Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                    (Ty.path "core::sync::atomic::Ordering")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::SeqCst" |) in
-                  Value.StructTuple "core::sync::atomic::Ordering::SeqCst" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::sync::atomic::Ordering::SeqCst" [])
+                    (Ty.path "core::sync::atomic::Ordering")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::Acquire" |) in
-                  Value.StructTuple "core::sync::atomic::Ordering::Acquire" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::sync::atomic::Ordering::Acquire" [])
+                    (Ty.path "core::sync::atomic::Ordering")));
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::sync::atomic::Ordering::AcqRel" |) in
-                  Value.StructTuple "core::sync::atomic::Ordering::Acquire" [] [] []))
+                  M.value_with_ty
+                    (Value.StructTuple "core::sync::atomic::Ordering::Acquire" [])
+                    (Ty.path "core::sync::atomic::Ordering")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -19904,7 +21934,10 @@ Module sync.
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_function (| "core::intrinsics::atomic_store_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -19912,7 +21945,10 @@ Module sync.
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_function (| "core::intrinsics::atomic_store_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -19920,7 +21956,10 @@ Module sync.
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_function (| "core::intrinsics::atomic_store_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -19930,33 +21969,49 @@ Module sync.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [
+                                            mk_str (|
+                                              "there is no such thing as an acquire store"
+                                            |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "there is no such thing as an acquire store" |) ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)));
@@ -19968,37 +22023,49 @@ Module sync.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [
+                                            mk_str (|
+                                              "there is no such thing as an acquire-release store"
+                                            |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (|
-                                          "there is no such thing as an acquire-release store"
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)))
@@ -20042,7 +22109,7 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_load_relaxed", [], [ T ] |),
-                    [ M.read (| dst |) ]
+                    [ M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20050,7 +22117,7 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_load_acquire", [], [ T ] |),
-                    [ M.read (| dst |) ]
+                    [ M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20058,7 +22125,7 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_load_seqcst", [], [ T ] |),
-                    [ M.read (| dst |) ]
+                    [ M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20068,33 +22135,46 @@ Module sync.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [ mk_str (| "there is no such thing as a release load" |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "there is no such thing as a release load" |) ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)));
@@ -20106,37 +22186,49 @@ Module sync.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [
+                                            mk_str (|
+                                              "there is no such thing as an acquire-release load"
+                                            |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (|
-                                          "there is no such thing as an acquire-release load"
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)))
@@ -20181,7 +22273,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xchg_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20189,7 +22284,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xchg_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20197,7 +22295,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xchg_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20205,7 +22306,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xchg_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20213,7 +22317,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xchg_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -20256,7 +22363,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xadd_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20264,7 +22374,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xadd_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20272,7 +22385,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xadd_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20280,7 +22396,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xadd_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20288,7 +22407,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xadd_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -20331,7 +22453,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xsub_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20339,7 +22464,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xsub_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20347,7 +22475,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xsub_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20355,7 +22486,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xsub_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -20363,7 +22497,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xsub_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -20445,7 +22582,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20462,7 +22603,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20479,7 +22624,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20496,7 +22645,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20513,7 +22666,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20530,7 +22687,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20547,7 +22708,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20564,7 +22729,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20581,7 +22750,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20598,7 +22771,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20615,7 +22792,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20632,7 +22813,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20649,7 +22834,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20666,7 +22855,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20683,7 +22876,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20696,37 +22893,49 @@ Module sync.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "there is no such thing as an acquire-release failure ordering"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "there is no such thing as an acquire-release failure ordering"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -20741,37 +22950,49 @@ Module sync.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "there is no such thing as a release failure ordering"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "there is no such thing as a release failure ordering"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)))
@@ -20794,18 +23015,14 @@ Module sync.
                           (let γ := M.use ok in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [ T; T ]
-                            [ M.read (| val |) ]));
+                          M.value_with_ty
+                            (Value.StructTuple "core::result::Result::Ok" [ M.read (| val |) ])
+                            (Ty.apply (Ty.path "core::result::Result") [] [ T; T ])));
                       fun γ =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "core::result::Result::Err"
-                            []
-                            [ T; T ]
-                            [ M.read (| val |) ]))
+                          (M.value_with_ty
+                            (Value.StructTuple "core::result::Result::Err" [ M.read (| val |) ])
+                            (Ty.apply (Ty.path "core::result::Result") [] [ T; T ])))
                     ]
                   |)))
             ]
@@ -20892,7 +23109,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20909,7 +23130,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20926,7 +23151,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20943,7 +23172,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20960,7 +23193,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20977,7 +23214,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -20994,7 +23235,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -21011,7 +23256,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -21028,7 +23277,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -21045,7 +23298,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -21062,7 +23319,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -21079,7 +23340,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -21096,7 +23361,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -21113,7 +23382,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -21130,7 +23403,11 @@ Module sync.
                           [],
                           [ T ]
                         |),
-                        [ M.read (| dst |); M.read (| old |); M.read (| new |) ]
+                        [
+                          M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| old |)) T;
+                          M.value_with_ty (M.read (| new |)) T
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -21143,37 +23420,49 @@ Module sync.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "there is no such thing as an acquire-release failure ordering"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "there is no such thing as an acquire-release failure ordering"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -21188,37 +23477,49 @@ Module sync.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "there is no such thing as a release failure ordering"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "there is no such thing as a release failure ordering"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)))
@@ -21241,18 +23542,14 @@ Module sync.
                           (let γ := M.use ok in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [ T; T ]
-                            [ M.read (| val |) ]));
+                          M.value_with_ty
+                            (Value.StructTuple "core::result::Result::Ok" [ M.read (| val |) ])
+                            (Ty.apply (Ty.path "core::result::Result") [] [ T; T ])));
                       fun γ =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "core::result::Result::Err"
-                            []
-                            [ T; T ]
-                            [ M.read (| val |) ]))
+                          (M.value_with_ty
+                            (Value.StructTuple "core::result::Result::Err" [ M.read (| val |) ])
+                            (Ty.apply (Ty.path "core::result::Result") [] [ T; T ])))
                     ]
                   |)))
             ]
@@ -21298,7 +23595,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_and_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21306,7 +23606,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_and_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21314,7 +23617,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_and_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21322,7 +23628,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_and_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21330,7 +23639,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_and_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -21373,7 +23685,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_nand_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21381,7 +23696,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_nand_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21389,7 +23707,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_nand_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21397,7 +23718,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_nand_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21405,7 +23729,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_nand_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -21448,7 +23775,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_or_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21456,7 +23786,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_or_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21464,7 +23797,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_or_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21472,7 +23808,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_or_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21480,7 +23819,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_or_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -21523,7 +23865,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xor_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21531,7 +23876,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xor_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21539,7 +23887,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xor_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21547,7 +23898,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xor_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21555,7 +23909,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_xor_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -21598,7 +23955,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_max_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21606,7 +23966,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_max_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21614,7 +23977,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_max_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21622,7 +23988,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_max_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21630,7 +23999,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_max_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -21673,7 +24045,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_min_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21681,7 +24056,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_min_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21689,7 +24067,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_min_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21697,7 +24078,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_min_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21705,7 +24089,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_min_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -21748,7 +24135,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umax_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21756,7 +24146,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umax_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21764,7 +24157,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umax_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21772,7 +24168,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umax_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21780,7 +24179,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umax_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -21823,7 +24225,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umin_relaxed", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21831,7 +24236,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umin_acquire", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21839,7 +24247,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umin_release", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21847,7 +24258,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umin_acqrel", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -21855,7 +24269,10 @@ Module sync.
                   M.call_closure (|
                     T,
                     M.get_function (| "core::intrinsics::atomic_umin_seqcst", [], [ T ] |),
-                    [ M.read (| dst |); M.read (| val |) ]
+                    [
+                      M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| val |)) T
+                    ]
                   |)))
             ]
           |)))
@@ -21930,33 +24347,46 @@ Module sync.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [ mk_str (| "there is no such thing as a relaxed fence" |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "there is no such thing as a relaxed fence" |) ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)))
@@ -22048,37 +24478,49 @@ Module sync.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [
+                                            mk_str (|
+                                              "there is no such thing as a relaxed compiler fence"
+                                            |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (|
-                                          "there is no such thing as a relaxed compiler fence"
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)))
@@ -22118,31 +24560,44 @@ Module sync.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", Ty.path "bool", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "bool",
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "bool",
-                          M.get_associated_function (|
-                            Ty.path "core::sync::atomic::AtomicBool",
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.path "bool",
+                            M.get_associated_function (|
+                              Ty.path "core::sync::atomic::AtomicBool",
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::sync::atomic::AtomicBool" ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -22196,31 +24651,44 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "*mut") [] [ T ],
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply (Ty.path "*mut") [] [ T ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ],
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*mut") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ],
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -22275,31 +24743,44 @@ Module sync.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "*mut") [] [ T ],
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply (Ty.path "*mut") [] [ T ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ],
-                            "load",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [] [] []
-                          ]
+                          M.call_closure (|
+                            Ty.apply (Ty.path "*mut") [] [ T ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ],
+                              "load",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "core::sync::atomic::AtomicPtr") [] [ T ] ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::sync::atomic::Ordering::Relaxed" [])
+                                  (Ty.path "core::sync::atomic::Ordering"))
+                                (Ty.path "core::sync::atomic::Ordering")
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "*mut") [] [ T ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

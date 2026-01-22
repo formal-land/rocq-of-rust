@@ -211,10 +211,15 @@ Module processor.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| instruction_data |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| instruction_data |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                       ]
                                     |);
                                     Value.Integer IntegerKind.Usize 2
@@ -275,48 +280,76 @@ Module processor.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path
+                                                "pinocchio_token_interface::instruction::AuthorityType";
+                                              Ty.path "pinocchio::program_error::ProgramError"
+                                            ],
+                                          M.get_trait_method (|
+                                            "core::convert::TryFrom",
+                                            Ty.path
+                                              "pinocchio_token_interface::instruction::AuthorityType",
+                                            [],
+                                            [ Ty.path "u8" ],
+                                            "try_from",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (|
+                                                M.deref (|
+                                                  M.call_closure (|
+                                                    Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "slice")
+                                                        []
+                                                        [ Ty.path "u8" ],
+                                                      "get_unchecked",
+                                                      [],
+                                                      [ Ty.path "usize" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (| instruction_data |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "slice")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 0)
+                                                        (Ty.path "usize")
+                                                    ]
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.path "u8")
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
                                             Ty.path
                                               "pinocchio_token_interface::instruction::AuthorityType";
                                             Ty.path "pinocchio::program_error::ProgramError"
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::convert::TryFrom",
-                                          Ty.path
-                                            "pinocchio_token_interface::instruction::AuthorityType",
-                                          [],
-                                          [ Ty.path "u8" ],
-                                          "try_from",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.read (|
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                  "get_unchecked",
-                                                  [],
-                                                  [ Ty.path "usize" ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| instruction_data |) |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 0
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -375,7 +408,18 @@ Module processor.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| residual |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path
+                                                        "pinocchio::program_error::ProgramError"
+                                                    ])
+                                              ]
                                             |)
                                           |)
                                         |)
@@ -453,13 +497,25 @@ Module processor.
                                                         [ Ty.path "usize" ]
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.read (| instruction_data |)
-                                                          |)
-                                                        |);
-                                                        Value.Integer IntegerKind.Usize 1
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.read (| instruction_data |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (Value.Integer IntegerKind.Usize 1)
+                                                          (Ty.path "usize")
                                                       ]
                                                     |)
                                                   |)
@@ -473,21 +529,22 @@ Module processor.
                                           M.read (| γ |),
                                           Value.Bool true
                                         |) in
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 32 ]
-                                                [ Ty.path "u8" ]
-                                            ]
-                                        ]
-                                        []));
+                                      M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ])));
                                   fun γ =>
                                     ltac:(M.monadic
                                       (M.match_operator (|
@@ -522,45 +579,59 @@ Module processor.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.eq,
-                                                            [
-                                                              M.read (|
-                                                                M.deref (|
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [ Ty.path "u8" ],
-                                                                    M.get_associated_function (|
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "bool",
+                                                              BinOp.eq,
+                                                              [
+                                                                M.read (|
+                                                                  M.deref (|
+                                                                    M.call_closure (|
                                                                       Ty.apply
-                                                                        (Ty.path "slice")
+                                                                        (Ty.path "&")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      "get_unchecked",
-                                                                      [],
-                                                                      [ Ty.path "usize" ]
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (|
-                                                                            instruction_data
-                                                                          |)
-                                                                        |)
-                                                                      |);
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        1
-                                                                    ]
+                                                                      M.get_associated_function (|
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ Ty.path "u8" ],
+                                                                        "get_unchecked",
+                                                                        [],
+                                                                        [ Ty.path "usize" ]
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                instruction_data
+                                                                              |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "slice")
+                                                                                []
+                                                                                [ Ty.path "u8" ]
+                                                                            ]);
+                                                                        M.value_with_ty
+                                                                          (Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            1)
+                                                                          (Ty.path "usize")
+                                                                      ]
+                                                                    |)
                                                                   |)
-                                                                |)
-                                                              |);
-                                                              Value.Integer IntegerKind.U8 1
-                                                            ]
-                                                          |)
+                                                                |);
+                                                                Value.Integer IntegerKind.U8 1
+                                                              ]
+                                                            |))
+                                                            (Ty.path "bool")
                                                         ]
                                                       |),
                                                       ltac:(M.monadic
@@ -580,12 +651,22 @@ Module processor.
                                                                 []
                                                               |),
                                                               [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.read (| instruction_data |)
-                                                                  |)
-                                                                |)
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.read (| instruction_data |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ Ty.path "u8" ]
+                                                                    ])
                                                               ]
                                                             |);
                                                             Value.Integer IntegerKind.Usize 34
@@ -598,117 +679,147 @@ Module processor.
                                                   M.read (| γ |),
                                                   Value.Bool true
                                                 |) in
-                                              Value.StructTuple
-                                                "core::option::Option::Some"
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 32 ]
-                                                        [ Ty.path "u8" ]
-                                                    ]
-                                                ]
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.cast
-                                                        (Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "array")
-                                                              [ Value.Integer IntegerKind.Usize 32 ]
-                                                              [ Ty.path "u8" ]
-                                                          ])
-                                                        (M.call_closure (|
-                                                          Ty.apply
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.cast
+                                                          (Ty.apply
                                                             (Ty.path "*const")
                                                             []
-                                                            [ Ty.path "u8" ],
-                                                          M.get_associated_function (|
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "array")
+                                                                [ Value.Integer IntegerKind.Usize 32
+                                                                ]
+                                                                [ Ty.path "u8" ]
+                                                            ])
+                                                          (M.call_closure (|
                                                             Ty.apply
                                                               (Ty.path "*const")
                                                               []
                                                               [ Ty.path "u8" ],
-                                                            "add",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.call_closure (|
+                                                            M.get_associated_function (|
                                                               Ty.apply
                                                                 (Ty.path "*const")
                                                                 []
                                                                 [ Ty.path "u8" ],
-                                                              M.get_associated_function (|
-                                                                Ty.apply
-                                                                  (Ty.path "slice")
+                                                              "add",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.call_closure (|
+                                                                  Ty.apply
+                                                                    (Ty.path "*const")
+                                                                    []
+                                                                    [ Ty.path "u8" ],
+                                                                  M.get_associated_function (|
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [ Ty.path "u8" ],
+                                                                    "as_ptr",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.read (|
+                                                                            instruction_data
+                                                                          |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "slice")
+                                                                            []
+                                                                            [ Ty.path "u8" ]
+                                                                        ])
+                                                                  ]
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "*const")
                                                                   []
-                                                                  [ Ty.path "u8" ],
-                                                                "as_ptr",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.read (| instruction_data |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            Value.Integer IntegerKind.Usize 2
-                                                          ]
-                                                        |))
+                                                                  [ Ty.path "u8" ]);
+                                                              M.value_with_ty
+                                                                (Value.Integer IntegerKind.Usize 2)
+                                                                (Ty.path "usize")
+                                                            ]
+                                                          |))
+                                                      |)
                                                     |)
-                                                  |)
-                                                ]));
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 32 ]
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ])));
                                           fun γ =>
                                             ltac:(M.monadic
                                               (M.never_to_any (|
                                                 M.read (|
                                                   M.return_ (|
-                                                    Value.StructTuple
-                                                      "core::result::Result::Err"
-                                                      []
-                                                      [
-                                                        Ty.tuple [];
-                                                        Ty.path
-                                                          "pinocchio::program_error::ProgramError"
-                                                      ]
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path
-                                                            "pinocchio::program_error::ProgramError",
-                                                          M.get_trait_method (|
-                                                            "core::convert::Into",
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::result::Result::Err"
+                                                        [
+                                                          M.call_closure (|
                                                             Ty.path
-                                                              "pinocchio_token_interface::error::TokenError",
-                                                            [],
-                                                            [
+                                                              "pinocchio::program_error::ProgramError",
+                                                            M.get_trait_method (|
+                                                              "core::convert::Into",
                                                               Ty.path
-                                                                "pinocchio::program_error::ProgramError"
-                                                            ],
-                                                            "into",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            Value.StructTuple
-                                                              "pinocchio_token_interface::error::TokenError::InvalidInstruction"
+                                                                "pinocchio_token_interface::error::TokenError",
+                                                              [],
+                                                              [
+                                                                Ty.path
+                                                                  "pinocchio::program_error::ProgramError"
+                                                              ],
+                                                              "into",
+                                                              [],
                                                               []
-                                                              []
-                                                              []
-                                                          ]
-                                                        |)
-                                                      ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.value_with_ty
+                                                                  (Value.StructTuple
+                                                                    "pinocchio_token_interface::error::TokenError::InvalidInstruction"
+                                                                    [])
+                                                                  (Ty.path
+                                                                    "pinocchio_token_interface::error::TokenError"))
+                                                                (Ty.path
+                                                                  "pinocchio_token_interface::error::TokenError")
+                                                            ]
+                                                          |)
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.tuple [];
+                                                          Ty.path
+                                                            "pinocchio::program_error::ProgramError"
+                                                        ])
                                                   |)
                                                 |)
                                               |)))
@@ -744,31 +855,38 @@ Module processor.
                           (M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ Ty.tuple []; Ty.path "pinocchio::program_error::ProgramError" ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "pinocchio::program_error::ProgramError",
-                                      M.get_trait_method (|
-                                        "core::convert::Into",
-                                        Ty.path "pinocchio_token_interface::error::TokenError",
-                                        [],
-                                        [ Ty.path "pinocchio::program_error::ProgramError" ],
-                                        "into",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.StructTuple
-                                          "pinocchio_token_interface::error::TokenError::InvalidInstruction"
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "pinocchio::program_error::ProgramError",
+                                        M.get_trait_method (|
+                                          "core::convert::Into",
+                                          Ty.path "pinocchio_token_interface::error::TokenError",
+                                          [],
+                                          [ Ty.path "pinocchio::program_error::ProgramError" ],
+                                          "into",
+                                          [],
                                           []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.StructTuple
+                                                "pinocchio_token_interface::error::TokenError::InvalidInstruction"
+                                                [])
+                                              (Ty.path
+                                                "pinocchio_token_interface::error::TokenError"))
+                                            (Ty.path "pinocchio_token_interface::error::TokenError")
+                                        ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "pinocchio::program_error::ProgramError"
+                                    ])
                               |)
                             |)
                           |)))
@@ -871,10 +989,18 @@ Module processor.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| account_info |) |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| account_info |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "pinocchio::account_info::AccountInfo"
+                                                            ])
                                                       ]
                                                     |);
                                                     M.read (|
@@ -978,8 +1104,85 @@ Module processor.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.apply
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "pinocchio_token_interface::state::account::Account"
+                                                                    ];
+                                                                  Ty.path
+                                                                    "pinocchio::program_error::ProgramError"
+                                                                ],
+                                                              M.get_function (|
+                                                                "pinocchio_token_interface::state::load_mut",
+                                                                [],
+                                                                [
+                                                                  Ty.path
+                                                                    "pinocchio_token_interface::state::account::Account"
+                                                                ]
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.deref (|
+                                                                      M.call_closure (|
+                                                                        Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "slice")
+                                                                              []
+                                                                              [ Ty.path "u8" ]
+                                                                          ],
+                                                                        M.get_associated_function (|
+                                                                          Ty.path
+                                                                            "pinocchio::account_info::AccountInfo",
+                                                                          "borrow_mut_data_unchecked",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.read (|
+                                                                                  account_info
+                                                                                |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "pinocchio::account_info::AccountInfo"
+                                                                              ])
+                                                                        ]
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ Ty.path "u8" ]
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
                                                               (Ty.path "core::result::Result")
                                                               []
                                                               [
@@ -992,49 +1195,7 @@ Module processor.
                                                                   ];
                                                                 Ty.path
                                                                   "pinocchio::program_error::ProgramError"
-                                                              ],
-                                                            M.get_function (|
-                                                              "pinocchio_token_interface::state::load_mut",
-                                                              [],
-                                                              [
-                                                                Ty.path
-                                                                  "pinocchio_token_interface::state::account::Account"
-                                                              ]
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&mut")
-                                                                      []
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path "slice")
-                                                                          []
-                                                                          [ Ty.path "u8" ]
-                                                                      ],
-                                                                    M.get_associated_function (|
-                                                                      Ty.path
-                                                                        "pinocchio::account_info::AccountInfo",
-                                                                      "borrow_mut_data_unchecked",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| account_info |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |)
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -1100,7 +1261,20 @@ Module processor.
                                                                     [],
                                                                     []
                                                                   |),
-                                                                  [ M.read (| residual |) ]
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.read (| residual |))
+                                                                      (Ty.apply
+                                                                        (Ty.path
+                                                                          "core::result::Result")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "core::convert::Infallible";
+                                                                          Ty.path
+                                                                            "pinocchio::program_error::ProgramError"
+                                                                        ])
+                                                                  ]
                                                                 |)
                                                               |)
                                                             |)
@@ -1196,8 +1370,42 @@ Module processor.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.call_closure (|
-                                                                      Ty.apply
+                                                                    M.value_with_ty
+                                                                      (M.call_closure (|
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.path "bool";
+                                                                            Ty.path
+                                                                              "pinocchio::program_error::ProgramError"
+                                                                          ],
+                                                                        M.get_associated_function (|
+                                                                          Ty.path
+                                                                            "pinocchio_token_interface::state::account::Account",
+                                                                          "is_frozen",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.read (| account |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "pinocchio_token_interface::state::account::Account"
+                                                                              ])
+                                                                        ]
+                                                                      |))
+                                                                      (Ty.apply
                                                                         (Ty.path
                                                                           "core::result::Result")
                                                                         []
@@ -1205,23 +1413,7 @@ Module processor.
                                                                           Ty.path "bool";
                                                                           Ty.path
                                                                             "pinocchio::program_error::ProgramError"
-                                                                        ],
-                                                                      M.get_associated_function (|
-                                                                        Ty.path
-                                                                          "pinocchio_token_interface::state::account::Account",
-                                                                        "is_frozen",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.read (| account |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
-                                                                    |)
+                                                                        ])
                                                                   ]
                                                                 |)
                                                               |),
@@ -1289,7 +1481,21 @@ Module processor.
                                                                               [],
                                                                               []
                                                                             |),
-                                                                            [ M.read (| residual |)
+                                                                            [
+                                                                              M.value_with_ty
+                                                                                (M.read (|
+                                                                                  residual
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::result::Result")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "core::convert::Infallible";
+                                                                                    Ty.path
+                                                                                      "pinocchio::program_error::ProgramError"
+                                                                                  ])
                                                                             ]
                                                                           |)
                                                                         |)
@@ -1320,40 +1526,47 @@ Module processor.
                                                       M.never_to_any (|
                                                         M.read (|
                                                           M.return_ (|
-                                                            Value.StructTuple
-                                                              "core::result::Result::Err"
-                                                              []
-                                                              [
-                                                                Ty.tuple [];
-                                                                Ty.path
-                                                                  "pinocchio::program_error::ProgramError"
-                                                              ]
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path
-                                                                    "pinocchio::program_error::ProgramError",
-                                                                  M.get_trait_method (|
-                                                                    "core::convert::Into",
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::result::Result::Err"
+                                                                [
+                                                                  M.call_closure (|
                                                                     Ty.path
-                                                                      "pinocchio_token_interface::error::TokenError",
-                                                                    [],
-                                                                    [
+                                                                      "pinocchio::program_error::ProgramError",
+                                                                    M.get_trait_method (|
+                                                                      "core::convert::Into",
                                                                       Ty.path
-                                                                        "pinocchio::program_error::ProgramError"
-                                                                    ],
-                                                                    "into",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    Value.StructTuple
-                                                                      "pinocchio_token_interface::error::TokenError::AccountFrozen"
+                                                                        "pinocchio_token_interface::error::TokenError",
+                                                                      [],
+                                                                      [
+                                                                        Ty.path
+                                                                          "pinocchio::program_error::ProgramError"
+                                                                      ],
+                                                                      "into",
+                                                                      [],
                                                                       []
-                                                                      []
-                                                                      []
-                                                                  ]
-                                                                |)
-                                                              ]
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "pinocchio_token_interface::error::TokenError::AccountFrozen"
+                                                                            [])
+                                                                          (Ty.path
+                                                                            "pinocchio_token_interface::error::TokenError"))
+                                                                        (Ty.path
+                                                                          "pinocchio_token_interface::error::TokenError")
+                                                                    ]
+                                                                  |)
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.tuple [];
+                                                                  Ty.path
+                                                                    "pinocchio::program_error::ProgramError"
+                                                                ])
                                                           |)
                                                         |)
                                                       |)));
@@ -1429,8 +1642,92 @@ Module processor.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::result::Result")
+                                                                        []
+                                                                        [
+                                                                          Ty.tuple [];
+                                                                          Ty.path
+                                                                            "pinocchio::program_error::ProgramError"
+                                                                        ],
+                                                                      M.get_function (|
+                                                                        "pinocchio_token_program::processor::validate_owner",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      account
+                                                                                    |)
+                                                                                  |),
+                                                                                  "pinocchio_token_interface::state::account::Account",
+                                                                                  "owner"
+                                                                                |)
+                                                                              |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "array")
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    32
+                                                                                ]
+                                                                                [ Ty.path "u8" ]
+                                                                            ]);
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                authority_info
+                                                                              |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "pinocchio::account_info::AccountInfo"
+                                                                            ]);
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| remaining |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "slice")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "pinocchio::account_info::AccountInfo"
+                                                                                ]
+                                                                            ])
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.apply
                                                                       (Ty.path
                                                                         "core::result::Result")
                                                                       []
@@ -1438,44 +1735,7 @@ Module processor.
                                                                         Ty.tuple [];
                                                                         Ty.path
                                                                           "pinocchio::program_error::ProgramError"
-                                                                      ],
-                                                                    M.get_function (|
-                                                                      "pinocchio_token_program::processor::validate_owner",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              M.deref (|
-                                                                                M.read (| account |)
-                                                                              |),
-                                                                              "pinocchio_token_interface::state::account::Account",
-                                                                              "owner"
-                                                                            |)
-                                                                          |)
-                                                                        |)
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (|
-                                                                            authority_info
-                                                                          |)
-                                                                        |)
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| remaining |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
+                                                                      ])
                                                                 ]
                                                               |)
                                                             |),
@@ -1543,7 +1803,22 @@ Module processor.
                                                                             [],
                                                                             []
                                                                           |),
-                                                                          [ M.read (| residual |) ]
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.read (|
+                                                                                residual
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "core::convert::Infallible";
+                                                                                  Ty.path
+                                                                                    "pinocchio::program_error::ProgramError"
+                                                                                ])
+                                                                          ]
                                                                         |)
                                                                       |)
                                                                     |)
@@ -1624,40 +1899,48 @@ Module processor.
                                                                   (M.never_to_any (|
                                                                     M.read (|
                                                                       M.return_ (|
-                                                                        Value.StructTuple
-                                                                          "core::result::Result::Err"
-                                                                          []
-                                                                          [
-                                                                            Ty.tuple [];
-                                                                            Ty.path
-                                                                              "pinocchio::program_error::ProgramError"
-                                                                          ]
-                                                                          [
-                                                                            M.call_closure (|
-                                                                              Ty.path
-                                                                                "pinocchio::program_error::ProgramError",
-                                                                              M.get_trait_method (|
-                                                                                "core::convert::Into",
+                                                                        M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "core::result::Result::Err"
+                                                                            [
+                                                                              M.call_closure (|
                                                                                 Ty.path
-                                                                                  "pinocchio_token_interface::error::TokenError",
-                                                                                [],
-                                                                                [
+                                                                                  "pinocchio::program_error::ProgramError",
+                                                                                M.get_trait_method (|
+                                                                                  "core::convert::Into",
                                                                                   Ty.path
-                                                                                    "pinocchio::program_error::ProgramError"
-                                                                                ],
-                                                                                "into",
-                                                                                [],
-                                                                                []
-                                                                              |),
-                                                                              [
-                                                                                Value.StructTuple
-                                                                                  "pinocchio_token_interface::error::TokenError::InvalidInstruction"
+                                                                                    "pinocchio_token_interface::error::TokenError",
+                                                                                  [],
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "pinocchio::program_error::ProgramError"
+                                                                                  ],
+                                                                                  "into",
+                                                                                  [],
                                                                                   []
-                                                                                  []
-                                                                                  []
-                                                                              ]
-                                                                            |)
-                                                                          ]
+                                                                                |),
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (M.value_with_ty
+                                                                                      (Value.StructTuple
+                                                                                        "pinocchio_token_interface::error::TokenError::InvalidInstruction"
+                                                                                        [])
+                                                                                      (Ty.path
+                                                                                        "pinocchio_token_interface::error::TokenError"))
+                                                                                    (Ty.path
+                                                                                      "pinocchio_token_interface::error::TokenError")
+                                                                                ]
+                                                                              |)
+                                                                            ])
+                                                                          (Ty.apply
+                                                                            (Ty.path
+                                                                              "core::result::Result")
+                                                                            []
+                                                                            [
+                                                                              Ty.tuple [];
+                                                                              Ty.path
+                                                                                "pinocchio::program_error::ProgramError"
+                                                                            ])
                                                                       |)
                                                                     |)
                                                                   |)))
@@ -1674,10 +1957,18 @@ Module processor.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (| M.read (| account |) |)
-                                                              |)
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  M.deref (| M.read (| account |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "pinocchio_token_interface::state::account::Account"
+                                                                  ])
                                                             ]
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
@@ -1691,11 +1982,21 @@ Module processor.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (| M.read (| account |) |)
-                                                              |);
-                                                              Value.Integer IntegerKind.U64 0
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  M.deref (| M.read (| account |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "pinocchio_token_interface::state::account::Account"
+                                                                  ]);
+                                                              M.value_with_ty
+                                                                (Value.Integer IntegerKind.U64 0)
+                                                                (Ty.path "u64")
                                                             ]
                                                           |) in
                                                         M.alloc (|
@@ -1723,12 +2024,22 @@ Module processor.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (| account |)
-                                                                              |)
-                                                                            |)
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    account
+                                                                                  |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "pinocchio_token_interface::state::account::Account"
+                                                                                ])
                                                                           ]
                                                                         |)
                                                                       |)) in
@@ -1749,12 +2060,20 @@ Module processor.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            M.deref (|
-                                                                              M.read (| account |)
-                                                                            |)
-                                                                          |)
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              M.deref (|
+                                                                                M.read (| account |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&mut")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "pinocchio_token_interface::state::account::Account"
+                                                                              ])
                                                                         ]
                                                                       |) in
                                                                     M.alloc (|
@@ -1828,8 +2147,51 @@ Module processor.
                                                               []
                                                             |),
                                                             [
-                                                              M.call_closure (|
-                                                                Ty.apply
+                                                              M.value_with_ty
+                                                                (M.call_closure (|
+                                                                  Ty.apply
+                                                                    (Ty.path "core::option::Option")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "array")
+                                                                            [
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                32
+                                                                            ]
+                                                                            [ Ty.path "u8" ]
+                                                                        ]
+                                                                    ],
+                                                                  M.get_associated_function (|
+                                                                    Ty.path
+                                                                      "pinocchio_token_interface::state::account::Account",
+                                                                    "close_authority",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.read (| account |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "pinocchio_token_interface::state::account::Account"
+                                                                        ])
+                                                                  ]
+                                                                |))
+                                                                (Ty.apply
                                                                   (Ty.path "core::option::Option")
                                                                   []
                                                                   [
@@ -1846,38 +2208,36 @@ Module processor.
                                                                           ]
                                                                           [ Ty.path "u8" ]
                                                                       ]
-                                                                  ],
-                                                                M.get_associated_function (|
-                                                                  Ty.path
-                                                                    "pinocchio_token_interface::state::account::Account",
-                                                                  "close_authority",
-                                                                  [],
+                                                                  ]);
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| account |)
+                                                                        |),
+                                                                        "pinocchio_token_interface::state::account::Account",
+                                                                        "owner"
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
                                                                   []
-                                                                |),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.read (| account |)
-                                                                    |)
-                                                                  |)
-                                                                ]
-                                                              |);
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      M.deref (|
-                                                                        M.read (| account |)
-                                                                      |),
-                                                                      "pinocchio_token_interface::state::account::Account",
-                                                                      "owner"
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              |)
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "array")
+                                                                      [
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          32
+                                                                      ]
+                                                                      [ Ty.path "u8" ]
+                                                                  ])
                                                             ]
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
@@ -1935,8 +2295,81 @@ Module processor.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::result::Result")
+                                                                        []
+                                                                        [
+                                                                          Ty.tuple [];
+                                                                          Ty.path
+                                                                            "pinocchio::program_error::ProgramError"
+                                                                        ],
+                                                                      M.get_function (|
+                                                                        "pinocchio_token_program::processor::validate_owner",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| authority |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "array")
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    32
+                                                                                ]
+                                                                                [ Ty.path "u8" ]
+                                                                            ]);
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                authority_info
+                                                                              |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "pinocchio::account_info::AccountInfo"
+                                                                            ]);
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| remaining |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "slice")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "pinocchio::account_info::AccountInfo"
+                                                                                ]
+                                                                            ])
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.apply
                                                                       (Ty.path
                                                                         "core::result::Result")
                                                                       []
@@ -1944,35 +2377,7 @@ Module processor.
                                                                         Ty.tuple [];
                                                                         Ty.path
                                                                           "pinocchio::program_error::ProgramError"
-                                                                      ],
-                                                                    M.get_function (|
-                                                                      "pinocchio_token_program::processor::validate_owner",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| authority |)
-                                                                        |)
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (|
-                                                                            authority_info
-                                                                          |)
-                                                                        |)
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| remaining |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
+                                                                      ])
                                                                 ]
                                                               |)
                                                             |),
@@ -2040,7 +2445,22 @@ Module processor.
                                                                             [],
                                                                             []
                                                                           |),
-                                                                          [ M.read (| residual |) ]
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.read (|
+                                                                                residual
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "core::convert::Infallible";
+                                                                                  Ty.path
+                                                                                    "pinocchio::program_error::ProgramError"
+                                                                                ])
+                                                                          ]
                                                                         |)
                                                                       |)
                                                                     |)
@@ -2108,18 +2528,42 @@ Module processor.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            M.deref (|
-                                                                              M.read (| account |)
-                                                                            |)
-                                                                          |);
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            M.deref (|
-                                                                              M.read (| authority |)
-                                                                            |)
-                                                                          |)
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              M.deref (|
+                                                                                M.read (| account |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&mut")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "pinocchio_token_interface::state::account::Account"
+                                                                              ]);
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.read (|
+                                                                                  authority
+                                                                                |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "array")
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      32
+                                                                                  ]
+                                                                                  [ Ty.path "u8" ]
+                                                                              ])
                                                                         ]
                                                                       |) in
                                                                     M.alloc (|
@@ -2141,12 +2585,20 @@ Module processor.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            M.deref (|
-                                                                              M.read (| account |)
-                                                                            |)
-                                                                          |)
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              M.deref (|
+                                                                                M.read (| account |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&mut")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "pinocchio_token_interface::state::account::Account"
+                                                                              ])
                                                                         ]
                                                                       |) in
                                                                     M.alloc (|
@@ -2163,40 +2615,47 @@ Module processor.
                                                       (M.never_to_any (|
                                                         M.read (|
                                                           M.return_ (|
-                                                            Value.StructTuple
-                                                              "core::result::Result::Err"
-                                                              []
-                                                              [
-                                                                Ty.tuple [];
-                                                                Ty.path
-                                                                  "pinocchio::program_error::ProgramError"
-                                                              ]
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path
-                                                                    "pinocchio::program_error::ProgramError",
-                                                                  M.get_trait_method (|
-                                                                    "core::convert::Into",
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::result::Result::Err"
+                                                                [
+                                                                  M.call_closure (|
                                                                     Ty.path
-                                                                      "pinocchio_token_interface::error::TokenError",
-                                                                    [],
-                                                                    [
+                                                                      "pinocchio::program_error::ProgramError",
+                                                                    M.get_trait_method (|
+                                                                      "core::convert::Into",
                                                                       Ty.path
-                                                                        "pinocchio::program_error::ProgramError"
-                                                                    ],
-                                                                    "into",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    Value.StructTuple
-                                                                      "pinocchio_token_interface::error::TokenError::AuthorityTypeNotSupported"
+                                                                        "pinocchio_token_interface::error::TokenError",
+                                                                      [],
+                                                                      [
+                                                                        Ty.path
+                                                                          "pinocchio::program_error::ProgramError"
+                                                                      ],
+                                                                      "into",
+                                                                      [],
                                                                       []
-                                                                      []
-                                                                      []
-                                                                  ]
-                                                                |)
-                                                              ]
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "pinocchio_token_interface::error::TokenError::AuthorityTypeNotSupported"
+                                                                            [])
+                                                                          (Ty.path
+                                                                            "pinocchio_token_interface::error::TokenError"))
+                                                                        (Ty.path
+                                                                          "pinocchio_token_interface::error::TokenError")
+                                                                    ]
+                                                                  |)
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.tuple [];
+                                                                  Ty.path
+                                                                    "pinocchio::program_error::ProgramError"
+                                                                ])
                                                           |)
                                                         |)
                                                       |)))
@@ -2230,12 +2689,20 @@ Module processor.
                                                                 []
                                                               |),
                                                               [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.read (| account_info |)
-                                                                  |)
-                                                                |)
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.read (| account_info |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "pinocchio::account_info::AccountInfo"
+                                                                    ])
                                                               ]
                                                             |);
                                                             M.read (|
@@ -2342,8 +2809,88 @@ Module processor.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::result::Result")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "&mut")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "pinocchio_token_interface::state::mint::Mint"
+                                                                            ];
+                                                                          Ty.path
+                                                                            "pinocchio::program_error::ProgramError"
+                                                                        ],
+                                                                      M.get_function (|
+                                                                        "pinocchio_token_interface::state::load_mut",
+                                                                        [],
+                                                                        [
+                                                                          Ty.path
+                                                                            "pinocchio_token_interface::state::mint::Mint"
+                                                                        ]
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.MutRef,
+                                                                            M.deref (|
+                                                                              M.call_closure (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "&mut")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "slice")
+                                                                                      []
+                                                                                      [ Ty.path "u8"
+                                                                                      ]
+                                                                                  ],
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "pinocchio::account_info::AccountInfo",
+                                                                                  "borrow_mut_data_unchecked",
+                                                                                  [],
+                                                                                  []
+                                                                                |),
+                                                                                [
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          account_info
+                                                                                        |)
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "pinocchio::account_info::AccountInfo"
+                                                                                      ])
+                                                                                ]
+                                                                              |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&mut")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "slice")
+                                                                                []
+                                                                                [ Ty.path "u8" ]
+                                                                            ])
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.apply
                                                                       (Ty.path
                                                                         "core::result::Result")
                                                                       []
@@ -2357,51 +2904,7 @@ Module processor.
                                                                           ];
                                                                         Ty.path
                                                                           "pinocchio::program_error::ProgramError"
-                                                                      ],
-                                                                    M.get_function (|
-                                                                      "pinocchio_token_interface::state::load_mut",
-                                                                      [],
-                                                                      [
-                                                                        Ty.path
-                                                                          "pinocchio_token_interface::state::mint::Mint"
-                                                                      ]
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        M.deref (|
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path "&mut")
-                                                                              []
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path "slice")
-                                                                                  []
-                                                                                  [ Ty.path "u8" ]
-                                                                              ],
-                                                                            M.get_associated_function (|
-                                                                              Ty.path
-                                                                                "pinocchio::account_info::AccountInfo",
-                                                                              "borrow_mut_data_unchecked",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (|
-                                                                                    account_info
-                                                                                  |)
-                                                                                |)
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
+                                                                      ])
                                                                 ]
                                                               |)
                                                             |),
@@ -2469,7 +2972,22 @@ Module processor.
                                                                             [],
                                                                             []
                                                                           |),
-                                                                          [ M.read (| residual |) ]
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.read (|
+                                                                                residual
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "core::convert::Infallible";
+                                                                                  Ty.path
+                                                                                    "pinocchio::program_error::ProgramError"
+                                                                                ])
+                                                                          ]
                                                                         |)
                                                                       |)
                                                                     |)
@@ -2631,34 +3149,11 @@ Module processor.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::result::Result")
-                                                                              []
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path "&")
-                                                                                  []
-                                                                                  [
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "array")
-                                                                                      [
-                                                                                        Value.Integer
-                                                                                          IntegerKind.Usize
-                                                                                          32
-                                                                                      ]
-                                                                                      [ Ty.path "u8"
-                                                                                      ]
-                                                                                  ];
-                                                                                Ty.path
-                                                                                  "pinocchio_token_interface::error::TokenError"
-                                                                              ],
-                                                                            M.get_associated_function (|
+                                                                          M.value_with_ty
+                                                                            (M.call_closure (|
                                                                               Ty.apply
                                                                                 (Ty.path
-                                                                                  "core::option::Option")
+                                                                                  "core::result::Result")
                                                                                 []
                                                                                 [
                                                                                   Ty.apply
@@ -2677,17 +3172,11 @@ Module processor.
                                                                                           Ty.path
                                                                                             "u8"
                                                                                         ]
-                                                                                    ]
+                                                                                    ];
+                                                                                  Ty.path
+                                                                                    "pinocchio_token_interface::error::TokenError"
                                                                                 ],
-                                                                              "ok_or",
-                                                                              [],
-                                                                              [
-                                                                                Ty.path
-                                                                                  "pinocchio_token_interface::error::TokenError"
-                                                                              ]
-                                                                            |),
-                                                                            [
-                                                                              M.call_closure (|
+                                                                              M.get_associated_function (|
                                                                                 Ty.apply
                                                                                   (Ty.path
                                                                                     "core::option::Option")
@@ -2711,31 +3200,125 @@ Module processor.
                                                                                           ]
                                                                                       ]
                                                                                   ],
-                                                                                M.get_associated_function (|
-                                                                                  Ty.path
-                                                                                    "pinocchio_token_interface::state::mint::Mint",
-                                                                                  "mint_authority",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
+                                                                                "ok_or",
+                                                                                [],
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        mint
-                                                                                      |)
-                                                                                    |)
-                                                                                  |)
+                                                                                  Ty.path
+                                                                                    "pinocchio_token_interface::error::TokenError"
                                                                                 ]
-                                                                              |);
-                                                                              Value.StructTuple
-                                                                                "pinocchio_token_interface::error::TokenError::FixedSupply"
-                                                                                []
-                                                                                []
-                                                                                []
-                                                                            ]
-                                                                          |)
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.call_closure (|
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::option::Option")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "array")
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.Usize
+                                                                                                  32
+                                                                                              ]
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u8"
+                                                                                              ]
+                                                                                          ]
+                                                                                      ],
+                                                                                    M.get_associated_function (|
+                                                                                      Ty.path
+                                                                                        "pinocchio_token_interface::state::mint::Mint",
+                                                                                      "mint_authority",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              mint
+                                                                                            |)
+                                                                                          |)
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "pinocchio_token_interface::state::mint::Mint"
+                                                                                          ])
+                                                                                    ]
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::option::Option")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "array")
+                                                                                            [
+                                                                                              Value.Integer
+                                                                                                IntegerKind.Usize
+                                                                                                32
+                                                                                            ]
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "u8"
+                                                                                            ]
+                                                                                        ]
+                                                                                    ]);
+                                                                                M.value_with_ty
+                                                                                  (M.value_with_ty
+                                                                                    (Value.StructTuple
+                                                                                      "pinocchio_token_interface::error::TokenError::FixedSupply"
+                                                                                      [])
+                                                                                    (Ty.path
+                                                                                      "pinocchio_token_interface::error::TokenError"))
+                                                                                  (Ty.path
+                                                                                    "pinocchio_token_interface::error::TokenError")
+                                                                              ]
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::result::Result")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "array")
+                                                                                      [
+                                                                                        Value.Integer
+                                                                                          IntegerKind.Usize
+                                                                                          32
+                                                                                      ]
+                                                                                      [ Ty.path "u8"
+                                                                                      ]
+                                                                                  ];
+                                                                                Ty.path
+                                                                                  "pinocchio_token_interface::error::TokenError"
+                                                                              ])
                                                                         ]
                                                                       |)
                                                                     |),
@@ -2804,9 +3387,20 @@ Module processor.
                                                                                     []
                                                                                   |),
                                                                                   [
-                                                                                    M.read (|
-                                                                                      residual
-                                                                                    |)
+                                                                                    M.value_with_ty
+                                                                                      (M.read (|
+                                                                                        residual
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "core::result::Result")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "core::convert::Infallible";
+                                                                                          Ty.path
+                                                                                            "pinocchio_token_interface::error::TokenError"
+                                                                                        ])
                                                                                   ]
                                                                                 |)
                                                                               |)
@@ -2898,8 +3492,90 @@ Module processor.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.call_closure (|
-                                                                            Ty.apply
+                                                                          M.value_with_ty
+                                                                            (M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.tuple [];
+                                                                                  Ty.path
+                                                                                    "pinocchio::program_error::ProgramError"
+                                                                                ],
+                                                                              M.get_function (|
+                                                                                "pinocchio_token_program::processor::validate_owner",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        mint_authority
+                                                                                      |)
+                                                                                    |)
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "array")
+                                                                                        [
+                                                                                          Value.Integer
+                                                                                            IntegerKind.Usize
+                                                                                            32
+                                                                                        ]
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "u8"
+                                                                                        ]
+                                                                                    ]);
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        authority_info
+                                                                                      |)
+                                                                                    |)
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "pinocchio::account_info::AccountInfo"
+                                                                                    ]);
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        remaining
+                                                                                      |)
+                                                                                    |)
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "slice")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "pinocchio::account_info::AccountInfo"
+                                                                                        ]
+                                                                                    ])
+                                                                              ]
+                                                                            |))
+                                                                            (Ty.apply
                                                                               (Ty.path
                                                                                 "core::result::Result")
                                                                               []
@@ -2907,39 +3583,7 @@ Module processor.
                                                                                 Ty.tuple [];
                                                                                 Ty.path
                                                                                   "pinocchio::program_error::ProgramError"
-                                                                              ],
-                                                                            M.get_function (|
-                                                                              "pinocchio_token_program::processor::validate_owner",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (|
-                                                                                    mint_authority
-                                                                                  |)
-                                                                                |)
-                                                                              |);
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (|
-                                                                                    authority_info
-                                                                                  |)
-                                                                                |)
-                                                                              |);
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (|
-                                                                                    remaining
-                                                                                  |)
-                                                                                |)
-                                                                              |)
-                                                                            ]
-                                                                          |)
+                                                                              ])
                                                                         ]
                                                                       |)
                                                                     |),
@@ -3008,9 +3652,20 @@ Module processor.
                                                                                     []
                                                                                   |),
                                                                                   [
-                                                                                    M.read (|
-                                                                                      residual
-                                                                                    |)
+                                                                                    M.value_with_ty
+                                                                                      (M.read (|
+                                                                                        residual
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "core::result::Result")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "core::convert::Infallible";
+                                                                                          Ty.path
+                                                                                            "pinocchio::program_error::ProgramError"
+                                                                                        ])
                                                                                   ]
                                                                                 |)
                                                                               |)
@@ -3080,22 +3735,49 @@ Module processor.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.MutRef,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        mint
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.MutRef,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          mint
+                                                                                        |)
                                                                                       |)
-                                                                                    |)
-                                                                                  |);
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        authority
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "&mut")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "pinocchio_token_interface::state::mint::Mint"
+                                                                                      ]);
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          authority
+                                                                                        |)
                                                                                       |)
-                                                                                    |)
-                                                                                  |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "array")
+                                                                                          [
+                                                                                            Value.Integer
+                                                                                              IntegerKind.Usize
+                                                                                              32
+                                                                                          ]
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "u8"
+                                                                                          ]
+                                                                                      ])
                                                                                 ]
                                                                               |) in
                                                                             M.alloc (|
@@ -3117,14 +3799,23 @@ Module processor.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.MutRef,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        mint
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.MutRef,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          mint
+                                                                                        |)
                                                                                       |)
-                                                                                    |)
-                                                                                  |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "&mut")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "pinocchio_token_interface::state::mint::Mint"
+                                                                                      ])
                                                                                 ]
                                                                               |) in
                                                                             M.alloc (|
@@ -3263,34 +3954,11 @@ Module processor.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::result::Result")
-                                                                              []
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path "&")
-                                                                                  []
-                                                                                  [
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "array")
-                                                                                      [
-                                                                                        Value.Integer
-                                                                                          IntegerKind.Usize
-                                                                                          32
-                                                                                      ]
-                                                                                      [ Ty.path "u8"
-                                                                                      ]
-                                                                                  ];
-                                                                                Ty.path
-                                                                                  "pinocchio_token_interface::error::TokenError"
-                                                                              ],
-                                                                            M.get_associated_function (|
+                                                                          M.value_with_ty
+                                                                            (M.call_closure (|
                                                                               Ty.apply
                                                                                 (Ty.path
-                                                                                  "core::option::Option")
+                                                                                  "core::result::Result")
                                                                                 []
                                                                                 [
                                                                                   Ty.apply
@@ -3309,17 +3977,11 @@ Module processor.
                                                                                           Ty.path
                                                                                             "u8"
                                                                                         ]
-                                                                                    ]
+                                                                                    ];
+                                                                                  Ty.path
+                                                                                    "pinocchio_token_interface::error::TokenError"
                                                                                 ],
-                                                                              "ok_or",
-                                                                              [],
-                                                                              [
-                                                                                Ty.path
-                                                                                  "pinocchio_token_interface::error::TokenError"
-                                                                              ]
-                                                                            |),
-                                                                            [
-                                                                              M.call_closure (|
+                                                                              M.get_associated_function (|
                                                                                 Ty.apply
                                                                                   (Ty.path
                                                                                     "core::option::Option")
@@ -3343,31 +4005,125 @@ Module processor.
                                                                                           ]
                                                                                       ]
                                                                                   ],
-                                                                                M.get_associated_function (|
-                                                                                  Ty.path
-                                                                                    "pinocchio_token_interface::state::mint::Mint",
-                                                                                  "freeze_authority",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
+                                                                                "ok_or",
+                                                                                [],
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        mint
-                                                                                      |)
-                                                                                    |)
-                                                                                  |)
+                                                                                  Ty.path
+                                                                                    "pinocchio_token_interface::error::TokenError"
                                                                                 ]
-                                                                              |);
-                                                                              Value.StructTuple
-                                                                                "pinocchio_token_interface::error::TokenError::MintCannotFreeze"
-                                                                                []
-                                                                                []
-                                                                                []
-                                                                            ]
-                                                                          |)
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.call_closure (|
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::option::Option")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "array")
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.Usize
+                                                                                                  32
+                                                                                              ]
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u8"
+                                                                                              ]
+                                                                                          ]
+                                                                                      ],
+                                                                                    M.get_associated_function (|
+                                                                                      Ty.path
+                                                                                        "pinocchio_token_interface::state::mint::Mint",
+                                                                                      "freeze_authority",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              mint
+                                                                                            |)
+                                                                                          |)
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "pinocchio_token_interface::state::mint::Mint"
+                                                                                          ])
+                                                                                    ]
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::option::Option")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "array")
+                                                                                            [
+                                                                                              Value.Integer
+                                                                                                IntegerKind.Usize
+                                                                                                32
+                                                                                            ]
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "u8"
+                                                                                            ]
+                                                                                        ]
+                                                                                    ]);
+                                                                                M.value_with_ty
+                                                                                  (M.value_with_ty
+                                                                                    (Value.StructTuple
+                                                                                      "pinocchio_token_interface::error::TokenError::MintCannotFreeze"
+                                                                                      [])
+                                                                                    (Ty.path
+                                                                                      "pinocchio_token_interface::error::TokenError"))
+                                                                                  (Ty.path
+                                                                                    "pinocchio_token_interface::error::TokenError")
+                                                                              ]
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::result::Result")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "array")
+                                                                                      [
+                                                                                        Value.Integer
+                                                                                          IntegerKind.Usize
+                                                                                          32
+                                                                                      ]
+                                                                                      [ Ty.path "u8"
+                                                                                      ]
+                                                                                  ];
+                                                                                Ty.path
+                                                                                  "pinocchio_token_interface::error::TokenError"
+                                                                              ])
                                                                         ]
                                                                       |)
                                                                     |),
@@ -3436,9 +4192,20 @@ Module processor.
                                                                                     []
                                                                                   |),
                                                                                   [
-                                                                                    M.read (|
-                                                                                      residual
-                                                                                    |)
+                                                                                    M.value_with_ty
+                                                                                      (M.read (|
+                                                                                        residual
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "core::result::Result")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "core::convert::Infallible";
+                                                                                          Ty.path
+                                                                                            "pinocchio_token_interface::error::TokenError"
+                                                                                        ])
                                                                                   ]
                                                                                 |)
                                                                               |)
@@ -3530,8 +4297,90 @@ Module processor.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.call_closure (|
-                                                                            Ty.apply
+                                                                          M.value_with_ty
+                                                                            (M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::result::Result")
+                                                                                []
+                                                                                [
+                                                                                  Ty.tuple [];
+                                                                                  Ty.path
+                                                                                    "pinocchio::program_error::ProgramError"
+                                                                                ],
+                                                                              M.get_function (|
+                                                                                "pinocchio_token_program::processor::validate_owner",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        freeze_authority
+                                                                                      |)
+                                                                                    |)
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "array")
+                                                                                        [
+                                                                                          Value.Integer
+                                                                                            IntegerKind.Usize
+                                                                                            32
+                                                                                        ]
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "u8"
+                                                                                        ]
+                                                                                    ]);
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        authority_info
+                                                                                      |)
+                                                                                    |)
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "pinocchio::account_info::AccountInfo"
+                                                                                    ]);
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        remaining
+                                                                                      |)
+                                                                                    |)
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "slice")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "pinocchio::account_info::AccountInfo"
+                                                                                        ]
+                                                                                    ])
+                                                                              ]
+                                                                            |))
+                                                                            (Ty.apply
                                                                               (Ty.path
                                                                                 "core::result::Result")
                                                                               []
@@ -3539,39 +4388,7 @@ Module processor.
                                                                                 Ty.tuple [];
                                                                                 Ty.path
                                                                                   "pinocchio::program_error::ProgramError"
-                                                                              ],
-                                                                            M.get_function (|
-                                                                              "pinocchio_token_program::processor::validate_owner",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (|
-                                                                                    freeze_authority
-                                                                                  |)
-                                                                                |)
-                                                                              |);
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (|
-                                                                                    authority_info
-                                                                                  |)
-                                                                                |)
-                                                                              |);
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (|
-                                                                                    remaining
-                                                                                  |)
-                                                                                |)
-                                                                              |)
-                                                                            ]
-                                                                          |)
+                                                                              ])
                                                                         ]
                                                                       |)
                                                                     |),
@@ -3640,9 +4457,20 @@ Module processor.
                                                                                     []
                                                                                   |),
                                                                                   [
-                                                                                    M.read (|
-                                                                                      residual
-                                                                                    |)
+                                                                                    M.value_with_ty
+                                                                                      (M.read (|
+                                                                                        residual
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "core::result::Result")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "core::convert::Infallible";
+                                                                                          Ty.path
+                                                                                            "pinocchio::program_error::ProgramError"
+                                                                                        ])
                                                                                   ]
                                                                                 |)
                                                                               |)
@@ -3712,22 +4540,49 @@ Module processor.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.MutRef,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        mint
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.MutRef,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          mint
+                                                                                        |)
                                                                                       |)
-                                                                                    |)
-                                                                                  |);
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        authority
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "&mut")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "pinocchio_token_interface::state::mint::Mint"
+                                                                                      ]);
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          authority
+                                                                                        |)
                                                                                       |)
-                                                                                    |)
-                                                                                  |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "array")
+                                                                                          [
+                                                                                            Value.Integer
+                                                                                              IntegerKind.Usize
+                                                                                              32
+                                                                                          ]
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "u8"
+                                                                                          ]
+                                                                                      ])
                                                                                 ]
                                                                               |) in
                                                                             M.alloc (|
@@ -3749,14 +4604,23 @@ Module processor.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.MutRef,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        mint
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.MutRef,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          mint
+                                                                                        |)
                                                                                       |)
-                                                                                    |)
-                                                                                  |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "&mut")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "pinocchio_token_interface::state::mint::Mint"
+                                                                                      ])
                                                                                 ]
                                                                               |) in
                                                                             M.alloc (|
@@ -3773,40 +4637,48 @@ Module processor.
                                                               (M.never_to_any (|
                                                                 M.read (|
                                                                   M.return_ (|
-                                                                    Value.StructTuple
-                                                                      "core::result::Result::Err"
-                                                                      []
-                                                                      [
-                                                                        Ty.tuple [];
-                                                                        Ty.path
-                                                                          "pinocchio::program_error::ProgramError"
-                                                                      ]
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path
-                                                                            "pinocchio::program_error::ProgramError",
-                                                                          M.get_trait_method (|
-                                                                            "core::convert::Into",
+                                                                    M.value_with_ty
+                                                                      (Value.StructTuple
+                                                                        "core::result::Result::Err"
+                                                                        [
+                                                                          M.call_closure (|
                                                                             Ty.path
-                                                                              "pinocchio_token_interface::error::TokenError",
-                                                                            [],
-                                                                            [
+                                                                              "pinocchio::program_error::ProgramError",
+                                                                            M.get_trait_method (|
+                                                                              "core::convert::Into",
                                                                               Ty.path
-                                                                                "pinocchio::program_error::ProgramError"
-                                                                            ],
-                                                                            "into",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            Value.StructTuple
-                                                                              "pinocchio_token_interface::error::TokenError::AuthorityTypeNotSupported"
+                                                                                "pinocchio_token_interface::error::TokenError",
+                                                                              [],
+                                                                              [
+                                                                                Ty.path
+                                                                                  "pinocchio::program_error::ProgramError"
+                                                                              ],
+                                                                              "into",
+                                                                              [],
                                                                               []
-                                                                              []
-                                                                              []
-                                                                          ]
-                                                                        |)
-                                                                      ]
+                                                                            |),
+                                                                            [
+                                                                              M.value_with_ty
+                                                                                (M.value_with_ty
+                                                                                  (Value.StructTuple
+                                                                                    "pinocchio_token_interface::error::TokenError::AuthorityTypeNotSupported"
+                                                                                    [])
+                                                                                  (Ty.path
+                                                                                    "pinocchio_token_interface::error::TokenError"))
+                                                                                (Ty.path
+                                                                                  "pinocchio_token_interface::error::TokenError")
+                                                                            ]
+                                                                          |)
+                                                                        ])
+                                                                      (Ty.apply
+                                                                        (Ty.path
+                                                                          "core::result::Result")
+                                                                        []
+                                                                        [
+                                                                          Ty.tuple [];
+                                                                          Ty.path
+                                                                            "pinocchio::program_error::ProgramError"
+                                                                        ])
                                                                   |)
                                                                 |)
                                                               |)))
@@ -3819,21 +4691,25 @@ Module processor.
                                                   (M.never_to_any (|
                                                     M.read (|
                                                       M.return_ (|
-                                                        Value.StructTuple
-                                                          "core::result::Result::Err"
-                                                          []
-                                                          [
-                                                            Ty.tuple [];
-                                                            Ty.path
-                                                              "pinocchio::program_error::ProgramError"
-                                                          ]
-                                                          [
-                                                            Value.StructTuple
-                                                              "pinocchio::program_error::ProgramError::InvalidArgument"
-                                                              []
-                                                              []
-                                                              []
-                                                          ]
+                                                        M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::result::Result::Err"
+                                                            [
+                                                              M.value_with_ty
+                                                                (Value.StructTuple
+                                                                  "pinocchio::program_error::ProgramError::InvalidArgument"
+                                                                  [])
+                                                                (Ty.path
+                                                                  "pinocchio::program_error::ProgramError")
+                                                            ])
+                                                          (Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.tuple [];
+                                                              Ty.path
+                                                                "pinocchio::program_error::ProgramError"
+                                                            ])
                                                       |)
                                                     |)
                                                   |)))
@@ -3847,30 +4723,40 @@ Module processor.
                                     []
                                     [ Ty.tuple []; Ty.path "pinocchio::program_error::ProgramError"
                                     ],
-                                  Value.StructTuple
-                                    "core::result::Result::Ok"
-                                    []
-                                    [ Ty.tuple []; Ty.path "pinocchio::program_error::ProgramError"
-                                    ]
-                                    [ Value.Tuple [] ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Ok"
+                                      [ Value.Tuple [] ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.tuple [];
+                                        Ty.path "pinocchio::program_error::ProgramError"
+                                      ])
                                 |)
                               |)));
                           fun γ =>
                             ltac:(M.monadic
                               (M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [ Ty.tuple []; Ty.path "pinocchio::program_error::ProgramError"
-                                    ]
-                                    [
-                                      Value.StructTuple
-                                        "pinocchio::program_error::ProgramError::NotEnoughAccountKeys"
-                                        []
-                                        []
-                                        []
-                                    ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "pinocchio::program_error::ProgramError::NotEnoughAccountKeys"
+                                            [])
+                                          (Ty.path "pinocchio::program_error::ProgramError")
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.tuple [];
+                                        Ty.path "pinocchio::program_error::ProgramError"
+                                      ])
                                 |)
                               |)))
                         ]

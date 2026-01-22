@@ -91,49 +91,69 @@ Module processor.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "u8" ];
+                                  Ty.path "pinocchio_token_interface::error::TokenError"
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                "ok_or",
+                                [],
+                                [ Ty.path "pinocchio_token_interface::error::TokenError" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                      "first",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| instruction_data |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]);
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "pinocchio_token_interface::error::TokenError::InvalidInstruction"
+                                      [])
+                                    (Ty.path "pinocchio_token_interface::error::TokenError"))
+                                  (Ty.path "pinocchio_token_interface::error::TokenError")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.apply (Ty.path "&") [] [ Ty.path "u8" ];
                                 Ty.path "pinocchio_token_interface::error::TokenError"
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                              "ok_or",
-                              [],
-                              [ Ty.path "pinocchio_token_interface::error::TokenError" ]
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                  "first",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| instruction_data |) |)
-                                  |)
-                                ]
-                              |);
-                              Value.StructTuple
-                                "pinocchio_token_interface::error::TokenError::InvalidInstruction"
-                                []
-                                []
-                                []
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -189,7 +209,17 @@ Module processor.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "pinocchio_token_interface::error::TokenError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -223,9 +253,19 @@ Module processor.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |);
-                      M.read (| M.deref (| M.read (| m |) |) |);
-                      Value.Bool false
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.path "pinocchio::account_info::AccountInfo" ]
+                          ]);
+                      M.value_with_ty (M.read (| M.deref (| M.read (| m |) |) |)) (Ty.path "u8");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool")
                     ]
                   |)
                 |)

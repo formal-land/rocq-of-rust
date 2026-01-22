@@ -40,59 +40,79 @@ Module array.
                   [],
                   []
                 |),
-                [ M.read (| array |) ]
+                [ M.value_with_ty (M.read (| array |)) (Ty.apply (Ty.path "array") [ N ] [ T ]) ]
               |) in
             let~ drain : Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ] :=
-              Value.StructTuple
-                "core::array::drain::Drain"
-                []
-                [ T ]
-                [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "iter_mut",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
-                          (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::DerefMut",
-                                  Ty.apply
-                                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                    []
-                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                  [],
-                                  [],
-                                  "deref_mut",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.MutRef, array |) ]
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::array::drain::Drain"
+                  [
+                    M.call_closure (|
+                      Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "iter_mut",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::DerefMut",
+                                      Ty.apply
+                                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                        []
+                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                      [],
+                                      [],
+                                      "deref_mut",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, array |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                              []
+                                              [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                          ])
+                                    ]
+                                  |)
+                                |)
                               |)
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)
-                ] in
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |)
+                  ])
+                (Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ]) in
             M.alloc (|
               R,
               M.call_closure (|
@@ -106,7 +126,12 @@ Module array.
                   [],
                   []
                 |),
-                [ M.read (| func |); Value.Tuple [ M.read (| drain |) ] ]
+                [
+                  M.value_with_ty (M.read (| func |)) impl_for_'a__FnOnce_Drain_'a__T___arrow_R;
+                  M.value_with_ty
+                    (Value.Tuple [ M.read (| drain |) ])
+                    (Ty.tuple [ Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ] ])
+                ]
               |)
             |)
           |)))
@@ -156,30 +181,37 @@ Module array.
                 [ Ty.apply (Ty.path "slice") [] [ T ] ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutPointer,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                        "as_mut_slice",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::array::drain::Drain",
-                            0
-                          |)
-                        |)
-                      ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutPointer,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
+                          "as_mut_slice",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::array::drain::Drain",
+                                0
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -262,31 +294,41 @@ Module array.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
+                                  [],
+                                  [],
+                                  "next",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::array::drain::Drain",
+                                        0
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
+                                ]
+                              |))
+                              (Ty.apply
                                 (Ty.path "core::option::Option")
                                 []
-                                [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                              M.get_trait_method (|
-                                "core::iter::traits::iterator::Iterator",
-                                Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                                [],
-                                [],
-                                "next",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.SubPointer.get_struct_tuple_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::array::drain::Drain",
-                                    0
-                                  |)
-                                |)
-                              ]
-                            |)
+                                [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                           ]
                         |)
                       |),
@@ -326,7 +368,14 @@ Module array.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| residual |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| residual |))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ])
+                                    ]
                                   |)
                                 |)
                               |)
@@ -348,22 +397,26 @@ Module array.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ T ]
-                      [
-                        M.call_closure (|
-                          T,
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "*const") [] [ T ],
-                            "read",
-                            [],
-                            []
-                          |),
-                          [ M.read (| p |) ]
-                        |)
-                      ]
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.call_closure (|
+                            T,
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "*const") [] [ T ],
+                              "read",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| p |))
+                                (Ty.apply (Ty.path "*const") [] [ T ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                   |)
                 |)))
             |)))
@@ -402,7 +455,14 @@ Module array.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::array::drain::Drain") [] [ T ] ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.tuple
@@ -413,11 +473,9 @@ Module array.
                 Value.Tuple
                   [
                     M.read (| n |);
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "usize" ]
-                      [ M.read (| n |) ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::Some" [ M.read (| n |) ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                   ]
               |)
             |)))
@@ -472,14 +530,19 @@ Module array.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::array::drain::Drain",
-                    0
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::array::drain::Drain",
+                      0
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -555,14 +618,19 @@ Module array.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::array::drain::Drain",
-                            0
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::array::drain::Drain",
+                              0
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] ])
                       ]
                     |)
                   |)
@@ -577,7 +645,7 @@ Module array.
                     [],
                     []
                   |),
-                  [ M.read (| p |) ]
+                  [ M.value_with_ty (M.read (| p |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
                 |)
               |)
             |)))

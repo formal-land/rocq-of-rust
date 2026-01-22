@@ -118,8 +118,6 @@ pub(crate) enum Expr {
     Literal(Rc<Literal>),
     ConstructorAsClosure {
         path: Rc<Path>,
-        generic_consts: Vec<Rc<Expr>>,
-        generic_tys: Vec<Rc<RocqType>>,
     },
     Call {
         func: Rc<Expr>,
@@ -133,6 +131,11 @@ pub(crate) enum Expr {
     Alloc {
         ty: Rc<RocqType>,
         expr: Rc<Expr>,
+    },
+    /// Wraps an expression with its type annotation using `M.value_with_ty`.
+    ValueWithTy {
+        expr: Rc<Expr>,
+        ty: Rc<RocqType>,
     },
     /// The logical operators are lazily evaluated, so the second
     /// parameter [rhs] must be in monadic form.
@@ -185,16 +188,14 @@ pub(crate) enum Expr {
     ControlFlow(LoopControlFlow),
     StructStruct {
         path: Rc<Path>,
-        arg_consts: Vec<Rc<Expr>>,
-        arg_tys: Vec<Rc<RocqType>>,
         fields: Vec<(String, Rc<Expr>)>,
         base: Option<Rc<Expr>>,
+        ty: Rc<RocqType>,
     },
     StructTuple {
         path: Rc<Path>,
-        arg_consts: Vec<Rc<Expr>>,
-        arg_tys: Vec<Rc<RocqType>>,
         fields: Vec<Rc<Expr>>,
+        ty: Rc<RocqType>,
     },
     Use(Rc<Expr>),
     InternalString(String),
@@ -281,7 +282,7 @@ impl Expr {
             Expr::GetTraitMethod { .. } => false,
             Expr::GetAssociatedFunction { .. } => false,
             Expr::Literal(_) => false,
-            Expr::ConstructorAsClosure { .. } => false,
+            Expr::ConstructorAsClosure { path: _ } => false,
             Expr::Call {
                 func,
                 args,
@@ -289,6 +290,7 @@ impl Expr {
             } => func.has_return() || args.iter().any(|arg| arg.has_return()),
             Expr::CallTy { func, ty: _ } => func.has_return(),
             Expr::Alloc { ty: _, expr } => expr.has_return(),
+            Expr::ValueWithTy { expr, ty: _ } => expr.has_return(),
             Expr::LogicalOperator { name: _, lhs, rhs } => lhs.has_return() || rhs.has_return(),
             Expr::Cast {
                 target_ty: _,
@@ -326,19 +328,17 @@ impl Expr {
             Expr::ControlFlow(_) => false,
             Expr::StructStruct {
                 path: _,
-                arg_consts: _,
-                arg_tys: _,
                 fields,
                 base,
+                ty: _,
             } => {
                 fields.iter().any(|(_, field)| field.has_return())
                     || base.iter().any(|base| base.has_return())
             }
             Expr::StructTuple {
                 path: _,
-                arg_consts: _,
-                arg_tys: _,
                 fields,
+                ty: _,
             } => fields.iter().any(|field| field.has_return()),
             Expr::Use(expr) => expr.has_return(),
             Expr::InternalString(_) => false,
@@ -636,25 +636,10 @@ impl Expr {
                 }),
             ]),
             Expr::Literal(literal) => literal.to_rocq(),
-            Expr::ConstructorAsClosure {
-                path,
-                generic_consts,
-                generic_tys,
-            } => rocq::Expression::just_name("M.constructor_as_closure").apply_many(&[
-                Rc::new(rocq::Expression::String(path.to_string())),
-                Rc::new(rocq::Expression::List {
-                    exprs: generic_consts
-                        .iter()
-                        .map(|generic_const| generic_const.to_rocq())
-                        .collect_vec(),
-                }),
-                Rc::new(rocq::Expression::List {
-                    exprs: generic_tys
-                        .iter()
-                        .map(|generic_ty| generic_ty.to_rocq())
-                        .collect_vec(),
-                }),
-            ]),
+            Expr::ConstructorAsClosure { path } => {
+                rocq::Expression::just_name("M.constructor_as_closure")
+                    .apply(Rc::new(rocq::Expression::String(path.to_string())))
+            }
             Expr::Call { func, args, kind } => match kind {
                 CallKind::Pure => func
                     .to_rocq()
@@ -674,6 +659,8 @@ impl Expr {
             Expr::CallTy { func, ty } => func.to_rocq().apply(ty.to_rocq()),
             Expr::Alloc { ty, expr } => rocq::Expression::just_name("M.alloc")
                 .monadic_apply_many(&[ty.to_rocq(), expr.to_rocq()]),
+            Expr::ValueWithTy { expr, ty } => rocq::Expression::just_name("M.value_with_ty")
+                .apply_many(&[expr.to_rocq(), ty.to_rocq()]),
             Expr::LogicalOperator { name, lhs, rhs } => rocq::Expression::just_name(name.as_str())
                 .monadic_apply_many(&[lhs.to_rocq(), rocq::Expression::monadic(rhs.to_rocq())]),
             Expr::Cast { target_ty, source } => rocq::Expression::just_name("M.cast")
@@ -793,33 +780,26 @@ impl Expr {
             Expr::ControlFlow(lcf_expression) => lcf_expression.to_rocq(),
             Expr::StructStruct {
                 path,
-                arg_consts,
-                arg_tys,
                 fields,
                 base,
+                ty,
             } => match base {
-                None => rocq::Expression::just_name("Value.mkStructRecord").apply_many(&[
-                    Rc::new(rocq::Expression::String(path.to_string())),
-                    Rc::new(rocq::Expression::List {
-                        exprs: arg_consts
-                            .iter()
-                            .map(|arg_const| arg_const.to_rocq())
-                            .collect_vec(),
-                    }),
-                    Rc::new(rocq::Expression::List {
-                        exprs: arg_tys.iter().map(|arg_ty| arg_ty.to_rocq()).collect_vec(),
-                    }),
-                    Rc::new(rocq::Expression::List {
-                        exprs: fields
-                            .iter()
-                            .map(|(name, expr)| {
-                                Rc::new(rocq::Expression::Tuple(vec![
-                                    Rc::new(rocq::Expression::String(name.to_owned())),
-                                    expr.to_rocq(),
-                                ]))
-                            })
-                            .collect_vec(),
-                    }),
+                None => rocq::Expression::just_name("M.value_with_ty").apply_many(&[
+                    rocq::Expression::just_name("Value.mkStructRecord").apply_many(&[
+                        Rc::new(rocq::Expression::String(path.to_string())),
+                        Rc::new(rocq::Expression::List {
+                            exprs: fields
+                                .iter()
+                                .map(|(name, expr)| {
+                                    Rc::new(rocq::Expression::Tuple(vec![
+                                        Rc::new(rocq::Expression::String(name.to_owned())),
+                                        expr.to_rocq(),
+                                    ]))
+                                })
+                                .collect_vec(),
+                        }),
+                    ]),
+                    ty.to_rocq(),
                 ]),
                 Some(base) => rocq::Expression::just_name("M.struct_record_update").apply_many(&[
                     base.to_rocq(),
@@ -836,26 +816,17 @@ impl Expr {
                     }),
                 ]),
             },
-            Expr::StructTuple {
-                path,
-                arg_consts,
-                arg_tys,
-                fields,
-            } => rocq::Expression::just_name("Value.StructTuple").apply_many(&[
-                Rc::new(rocq::Expression::String(path.to_string())),
-                Rc::new(rocq::Expression::List {
-                    exprs: arg_consts
-                        .iter()
-                        .map(|arg_const| arg_const.to_rocq())
-                        .collect_vec(),
-                }),
-                Rc::new(rocq::Expression::List {
-                    exprs: arg_tys.iter().map(|arg_ty| arg_ty.to_rocq()).collect_vec(),
-                }),
-                Rc::new(rocq::Expression::List {
-                    exprs: fields.iter().map(|expr| expr.to_rocq()).collect(),
-                }),
-            ]),
+            Expr::StructTuple { path, fields, ty } => {
+                rocq::Expression::just_name("M.value_with_ty").apply_many(&[
+                    rocq::Expression::just_name("Value.StructTuple").apply_many(&[
+                        Rc::new(rocq::Expression::String(path.to_string())),
+                        Rc::new(rocq::Expression::List {
+                            exprs: fields.iter().map(|expr| expr.to_rocq()).collect(),
+                        }),
+                    ]),
+                    ty.to_rocq(),
+                ])
+            }
             Expr::Use(expr) => rocq::Expression::just_name("M.use").apply(expr.to_rocq()),
             Expr::InternalString(s) => Rc::new(rocq::Expression::String(s.to_string())),
             Expr::InternalInteger(i) => rocq::Expression::just_name(i.to_string().as_str()),

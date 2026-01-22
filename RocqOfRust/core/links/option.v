@@ -14,8 +14,8 @@ Module Option.
     Φ := Ty.apply (Ty.path "core::option::Option") [] [Φ A];
     φ x :=
       match x with
-      | None => Value.StructTuple "core::option::Option::None" [] [Φ A] []
-      | Some x => Value.StructTuple "core::option::Option::Some" [] [Φ A] [φ x]
+      | None => Value.StructTuple "core::option::Option::None" []
+      | Some x => Value.StructTuple "core::option::Option::Some" [φ x]
       end;
   }.
 
@@ -30,7 +30,7 @@ Module Option.
 
   Lemma of_value_with_None {A : Set} `{Link A} A' :
     A' = Φ A ->
-    Value.StructTuple "core::option::Option::None" [] [A'] [] =
+    Value.StructTuple "core::option::Option::None" [] =
     φ (None (A := A)).
   Proof. now intros; subst. Qed.
   Smpl Add apply of_value_with_None : of_value.
@@ -40,14 +40,14 @@ Module Option.
       value' (value : A) :
     A' = Φ A ->
     value' = φ value ->
-    Value.StructTuple "core::option::Option::Some" [] [A'] [value'] =
+    Value.StructTuple "core::option::Option::Some" [value'] =
     φ (Some value).
   Proof. intros; subst; reflexivity. Qed.
   Smpl Add unshelve eapply of_value_with_Some : of_value.
 
   Definition of_value_None A' :
     OfTy.t A' ->
-    OfValue.t (Value.StructTuple "core::option::Option::None" [] [A'] []).
+    OfValue.t (Value.StructTuple "core::option::Option::None" []).
   Proof.
     intros [A].
     eapply OfValue.Make with (A := option A) (value := None).
@@ -59,7 +59,7 @@ Module Option.
       (H_A' : OfTy.t A')
       (value : OfTy.get_Set H_A') :
       value' = φ value ->
-    OfValue.t (Value.StructTuple "core::option::Option::Some" [] [A'] [value']).
+    OfValue.t (Value.StructTuple "core::option::Option::Some" [value']).
   Proof.
     intros.
     destruct H_A' as [A].
@@ -135,6 +135,25 @@ Module Impl_Option.
   Proof.
     constructor.
     run_symbolic.
+    2: {
+      match goal with
+      | |- ?e = _ => assert (OfValue.C e)
+      end. {
+        cbn in *.
+        Set Typeclasses Debug.
+        Set Typeclasses Dependency Order.
+        Unset Typeclasses Limit Intros.
+        Hint Mode OfValue.IsValueWithTy + + + - : typeclass_instances.
+        (* simple apply OfValue.IsValueWithTy. *)
+        (* eapply OfValue.IsValueWithTy. *)
+        typeclasses eauto best_effort.
+        (* cbn. *)
+        typeclasses eauto.
+        { eapply Result.IsOfTy.
+          { typeclasses eauto. }
+        typeclasses eauto.
+      }
+    }
   Defined.
   Global Opaque run_ok_or.
 

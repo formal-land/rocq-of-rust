@@ -17,7 +17,7 @@ Module Dimensions.
 
   Global Instance IsLink : Link t := {
     Φ := Ty.path "p3_matrix::Dimensions";
-    φ x := Value.StructRecord "p3_matrix::Dimensions" [] [] [
+    φ x := Value.StructRecord "p3_matrix::Dimensions" [
       ("width", φ x.(width));
       ("height", φ x.(height))
     ];

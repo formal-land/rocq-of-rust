@@ -157,7 +157,11 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::IpAddr" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::IpAddr" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -167,7 +171,11 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::IpAddr" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::IpAddr" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -243,8 +251,28 @@ Module net.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
+                                    ])
                               ]
                             |)));
                         fun γ =>
@@ -301,8 +329,28 @@ Module net.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv6Addr" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv6Addr" ]
+                                    ])
                               ]
                             |)));
                         fun γ =>
@@ -354,7 +402,11 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::IpAddr" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::IpAddr" ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -369,11 +421,15 @@ Module net.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -408,8 +464,15 @@ Module net.
                             [ __H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ __H ])
                           ]
                         |)));
                     fun γ =>
@@ -438,8 +501,15 @@ Module net.
                             [ __H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ __H ])
                           ]
                         |)))
                   ]
@@ -485,7 +555,11 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::IpAddr" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::IpAddr" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -495,7 +569,11 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::IpAddr" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::IpAddr" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -553,8 +631,15 @@ Module net.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                           ]
                         |)));
                     fun γ =>
@@ -600,8 +685,15 @@ Module net.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                           ]
                         |)));
                     fun γ =>
@@ -621,14 +713,18 @@ Module net.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
                           ]
                         |)))
                   ]
@@ -674,7 +770,11 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::IpAddr" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::IpAddr" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -684,7 +784,11 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::IpAddr" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::IpAddr" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "core::cmp::Ordering",
@@ -704,14 +808,18 @@ Module net.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
                       ]
                     |)
                   |),
@@ -776,14 +884,24 @@ Module net.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| __self_0 |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| __arg1_0 |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| __self_0 |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| __arg1_0 |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                   ]
                                 |)));
                             fun γ =>
@@ -832,14 +950,24 @@ Module net.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| __self_0 |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| __arg1_0 |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| __self_0 |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| __arg1_0 |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                   ]
                                 |)));
                             fun γ =>
@@ -970,22 +1098,42 @@ Module net.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::net::ip_addr::Ipv4Addr",
-                    "octets"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::net::ip_addr::Ipv4Addr",
-                    "octets"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::net::ip_addr::Ipv4Addr",
+                      "octets"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 4 ]
+                        [ Ty.path "u8" ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::net::ip_addr::Ipv4Addr",
+                      "octets"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 4 ]
+                        [ Ty.path "u8" ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1070,26 +1218,35 @@ Module net.
                     [ H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "u32",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "u32",
-                          M.get_associated_function (| Ty.path "u32", "from_ne_bytes", [], [] |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::net::ip_addr::Ipv4Addr",
-                                "octets"
-                              |)
-                            |)
-                          ]
+                          M.call_closure (|
+                            Ty.path "u32",
+                            M.get_associated_function (| Ty.path "u32", "from_ne_bytes", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::net::ip_addr::Ipv4Addr",
+                                    "octets"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 4 ]
+                                  [ Ty.path "u8" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1203,22 +1360,42 @@ Module net.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::net::ip_addr::Ipv6Addr",
-                    "octets"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::net::ip_addr::Ipv6Addr",
-                    "octets"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::net::ip_addr::Ipv6Addr",
+                      "octets"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "u8" ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::net::ip_addr::Ipv6Addr",
+                      "octets"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "u8" ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1303,26 +1480,35 @@ Module net.
                     [ H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "u128",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "u128",
-                          M.get_associated_function (| Ty.path "u128", "from_ne_bytes", [], [] |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::net::ip_addr::Ipv6Addr",
-                                "octets"
-                              |)
-                            |)
-                          ]
+                          M.call_closure (|
+                            Ty.path "u128",
+                            M.get_associated_function (| Ty.path "u128", "from_ne_bytes", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::net::ip_addr::Ipv6Addr",
+                                    "octets"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 16 ]
+                                  [ Ty.path "u8" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1444,7 +1630,14 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -1454,7 +1647,14 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -1557,7 +1757,14 @@ Module net.
                     [],
                     [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.tuple [],
@@ -1573,11 +1780,15 @@ Module net.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -1616,82 +1827,92 @@ Module net.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.match_operator (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                  self,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::net::ip_addr::Ipv6MulticastScope::InterfaceLocal"
-                          |) in
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| mk_str (| "InterfaceLocal" |) |)
-                        |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::net::ip_addr::Ipv6MulticastScope::LinkLocal"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LinkLocal" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::net::ip_addr::Ipv6MulticastScope::RealmLocal"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RealmLocal" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::net::ip_addr::Ipv6MulticastScope::AdminLocal"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AdminLocal" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::net::ip_addr::Ipv6MulticastScope::SiteLocal"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SiteLocal" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::net::ip_addr::Ipv6MulticastScope::OrganizationLocal"
-                          |) in
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| mk_str (| "OrganizationLocal" |) |)
-                        |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::net::ip_addr::Ipv6MulticastScope::Global"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Global" |) |) |)))
-                  ]
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.match_operator (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    self,
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::net::ip_addr::Ipv6MulticastScope::InterfaceLocal"
+                            |) in
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "InterfaceLocal" |) |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::net::ip_addr::Ipv6MulticastScope::LinkLocal"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LinkLocal" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::net::ip_addr::Ipv6MulticastScope::RealmLocal"
+                            |) in
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "RealmLocal" |) |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::net::ip_addr::Ipv6MulticastScope::AdminLocal"
+                            |) in
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "AdminLocal" |) |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::net::ip_addr::Ipv6MulticastScope::SiteLocal"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SiteLocal" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::net::ip_addr::Ipv6MulticastScope::OrganizationLocal"
+                            |) in
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "OrganizationLocal" |) |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::net::ip_addr::Ipv6MulticastScope::Global"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Global" |) |) |)))
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1752,7 +1973,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -1776,7 +2001,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                      ]
                     |)))
               ]
             |)))
@@ -1831,7 +2060,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -1855,7 +2088,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                      ]
                     |)))
               ]
             |)))
@@ -1910,7 +2147,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -1934,7 +2175,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                      ]
                     |)))
               ]
             |)))
@@ -1989,7 +2234,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -2013,7 +2262,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                      ]
                     |)))
               ]
             |)))
@@ -2068,7 +2321,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -2092,7 +2349,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                      ]
                     |)))
               ]
             |)))
@@ -2147,7 +2408,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -2171,7 +2436,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                      ]
                     |)))
               ]
             |)))
@@ -2312,7 +2581,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v6 |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v6 |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                      ]
                     |)))
               ]
             |)))
@@ -2341,14 +2614,14 @@ Module net.
             let b := M.alloc (| Ty.path "u8", b |) in
             let c := M.alloc (| Ty.path "u8", c |) in
             let d := M.alloc (| Ty.path "u8", d |) in
-            Value.mkStructRecord
-              "core::net::ip_addr::Ipv4Addr"
-              []
-              []
-              [
-                ("octets",
-                  Value.Array [ M.read (| a |); M.read (| b |); M.read (| c |); M.read (| d |) ])
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::net::ip_addr::Ipv4Addr"
+                [
+                  ("octets",
+                    Value.Array [ M.read (| a |); M.read (| b |); M.read (| c |); M.read (| d |) ])
+                ])
+              (Ty.path "core::net::ip_addr::Ipv4Addr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2380,13 +2653,18 @@ Module net.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u32", "from_be_bytes", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::net::ip_addr::Ipv4Addr",
-                    "octets"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::net::ip_addr::Ipv4Addr",
+                      "octets"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 4 ]
+                    [ Ty.path "u8" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2406,21 +2684,21 @@ Module net.
         | [], [], [ bits ] =>
           ltac:(M.monadic
             (let bits := M.alloc (| Ty.path "u32", bits |) in
-            Value.mkStructRecord
-              "core::net::ip_addr::Ipv4Addr"
-              []
-              []
-              [
-                ("octets",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 4 ]
-                      [ Ty.path "u8" ],
-                    M.get_associated_function (| Ty.path "u32", "to_be_bytes", [], [] |),
-                    [ M.read (| bits |) ]
-                  |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::net::ip_addr::Ipv4Addr"
+                [
+                  ("octets",
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 4 ]
+                        [ Ty.path "u8" ],
+                      M.get_associated_function (| Ty.path "u32", "to_be_bytes", [], [] |),
+                      [ M.value_with_ty (M.read (| bits |)) (Ty.path "u32") ]
+                    |))
+                ])
+              (Ty.path "core::net::ip_addr::Ipv4Addr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2439,10 +2717,10 @@ Module net.
               Ty.path "core::net::ip_addr::Ipv4Addr",
               M.get_associated_function (| Ty.path "core::net::ip_addr::Ipv4Addr", "new", [], [] |),
               [
-                Value.Integer IntegerKind.U8 127;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 1
+                M.value_with_ty (Value.Integer IntegerKind.U8 127) (Ty.path "u8");
+                M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                M.value_with_ty (Value.Integer IntegerKind.U8 1) (Ty.path "u8")
               ]
             |)
           |))).
@@ -2462,10 +2740,10 @@ Module net.
               Ty.path "core::net::ip_addr::Ipv4Addr",
               M.get_associated_function (| Ty.path "core::net::ip_addr::Ipv4Addr", "new", [], [] |),
               [
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0;
-                Value.Integer IntegerKind.U8 0
+                M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8")
               ]
             |)
           |))).
@@ -2485,10 +2763,10 @@ Module net.
               Ty.path "core::net::ip_addr::Ipv4Addr",
               M.get_associated_function (| Ty.path "core::net::ip_addr::Ipv4Addr", "new", [], [] |),
               [
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255;
-                Value.Integer IntegerKind.U8 255
+                M.value_with_ty (Value.Integer IntegerKind.U8 255) (Ty.path "u8");
+                M.value_with_ty (Value.Integer IntegerKind.U8 255) (Ty.path "u8");
+                M.value_with_ty (Value.Integer IntegerKind.U8 255) (Ty.path "u8");
+                M.value_with_ty (Value.Integer IntegerKind.U8 255) (Ty.path "u8")
               ]
             |)
           |))).
@@ -2540,11 +2818,11 @@ Module net.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
                 octets
               |) in
-            Value.mkStructRecord
-              "core::net::ip_addr::Ipv4Addr"
-              []
-              []
-              [ ("octets", M.read (| octets |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::net::ip_addr::Ipv4Addr"
+                [ ("octets", M.read (| octets |)) ])
+              (Ty.path "core::net::ip_addr::Ipv4Addr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2575,13 +2853,18 @@ Module net.
                   Ty.path "u32",
                   M.get_associated_function (| Ty.path "u32", "from_be_bytes", [], [] |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::net::ip_addr::Ipv4Addr",
-                        "octets"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::net::ip_addr::Ipv4Addr",
+                          "octets"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 4 ]
+                        [ Ty.path "u8" ])
                   ]
                 |);
                 Value.Integer IntegerKind.U32 0
@@ -2631,7 +2914,11 @@ Module net.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                        ]
                       |)
                     |),
                     Value.Integer IntegerKind.Usize 0
@@ -2679,7 +2966,11 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                  ]
                 |)
               |),
               [
@@ -2778,7 +3069,11 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                  ]
                 |)
               |),
               [
@@ -2873,10 +3168,15 @@ Module net.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                               ]
                                             |)
                                           |),
@@ -2896,10 +3196,15 @@ Module net.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                       ]
                                     |)))
                                 |),
@@ -2913,10 +3218,15 @@ Module net.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                     ]
                                   |)))
                               |),
@@ -2929,7 +3239,16 @@ Module net.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                   ]
                                 |)))
                             |),
@@ -2942,7 +3261,17 @@ Module net.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                                ]
                               |)))
                           |),
                           ltac:(M.monadic
@@ -2973,10 +3302,15 @@ Module net.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| self |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                                 ]
                                               |)
                                             |),
@@ -3010,10 +3344,15 @@ Module net.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| self |) |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                                   ]
                                                 |)
                                               |),
@@ -3048,10 +3387,15 @@ Module net.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| self |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                                 ]
                                               |)
                                             |),
@@ -3086,10 +3430,15 @@ Module net.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                               ]
                                             |)
                                           |),
@@ -3124,10 +3473,15 @@ Module net.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                                             ]
                                           |)
                                         |),
@@ -3148,7 +3502,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                            ]
                           |)))
                       |),
                       ltac:(M.monadic
@@ -3160,7 +3521,11 @@ Module net.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                          ]
                         |)))
                     |),
                     ltac:(M.monadic
@@ -3172,7 +3537,11 @@ Module net.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                        ]
                       |)))
                   |),
                   ltac:(M.monadic
@@ -3184,7 +3553,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                      ]
                     |)))
                 |)
               ]
@@ -3234,7 +3607,11 @@ Module net.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                          ]
                         |)
                       |),
                       Value.Integer IntegerKind.Usize 0
@@ -3270,7 +3647,17 @@ Module net.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                                ]
                               |)
                             |),
                             Value.Integer IntegerKind.Usize 1
@@ -3328,7 +3715,11 @@ Module net.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                          ]
                         |)
                       |),
                       Value.Integer IntegerKind.Usize 0
@@ -3364,7 +3755,17 @@ Module net.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                                ]
                               |)
                             |),
                             Value.Integer IntegerKind.Usize 1
@@ -3426,7 +3827,14 @@ Module net.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                              ]
                             |)
                           |),
                           Value.Integer IntegerKind.Usize 0
@@ -3451,7 +3859,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                      ]
                     |)
                   ]
                 |)))
@@ -3501,7 +3913,11 @@ Module net.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                          ]
                         |)
                       |),
                       Value.Integer IntegerKind.Usize 0
@@ -3533,7 +3949,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                            ]
                           |)
                         |),
                         Value.Integer IntegerKind.Usize 0
@@ -3573,47 +3996,63 @@ Module net.
                   Ty.path "u32",
                   M.get_associated_function (| Ty.path "u32", "from_be_bytes", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 4 ]
+                          [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.path "core::net::ip_addr::Ipv4Addr",
+                          "octets",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "array")
                         [ Value.Integer IntegerKind.Usize 4 ]
-                        [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.path "core::net::ip_addr::Ipv4Addr",
-                        "octets",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
+                        [ Ty.path "u8" ])
                   ]
                 |);
                 M.call_closure (|
                   Ty.path "u32",
                   M.get_associated_function (| Ty.path "u32", "from_be_bytes", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 4 ]
+                          [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.path "core::net::ip_addr::Ipv4Addr",
+                          "octets",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              get_associated_constant (|
+                                Ty.path "core::net::ip_addr::Ipv4Addr",
+                                "BROADCAST",
+                                Ty.path "core::net::ip_addr::Ipv4Addr"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "array")
                         [ Value.Integer IntegerKind.Usize 4 ]
-                        [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.path "core::net::ip_addr::Ipv4Addr",
-                        "octets",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          get_associated_constant (|
-                            Ty.path "core::net::ip_addr::Ipv4Addr",
-                            "BROADCAST",
-                            Ty.path "core::net::ip_addr::Ipv4Addr"
-                          |)
-                        |)
-                      ]
-                    |)
+                        [ Ty.path "u8" ])
                   ]
                 |)
               ]
@@ -3652,7 +4091,11 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                  ]
                 |)
               |),
               [
@@ -3773,7 +4216,11 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                  ]
                 |)
               |),
               [
@@ -3787,32 +4234,32 @@ Module net.
                     let b := M.copy (| Ty.path "u8", γ0_1 |) in
                     let c := M.copy (| Ty.path "u8", γ0_2 |) in
                     let d := M.copy (| Ty.path "u8", γ0_3 |) in
-                    Value.mkStructRecord
-                      "core::net::ip_addr::Ipv6Addr"
-                      []
-                      []
-                      [
-                        ("octets",
-                          Value.Array
-                            [
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              M.read (| a |);
-                              M.read (| b |);
-                              M.read (| c |);
-                              M.read (| d |)
-                            ])
-                      ]))
+                    M.value_with_ty
+                      (Value.mkStructRecord
+                        "core::net::ip_addr::Ipv6Addr"
+                        [
+                          ("octets",
+                            Value.Array
+                              [
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                M.read (| a |);
+                                M.read (| b |);
+                                M.read (| c |);
+                                M.read (| d |)
+                              ])
+                        ])
+                      (Ty.path "core::net::ip_addr::Ipv6Addr")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3850,7 +4297,11 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                  ]
                 |)
               |),
               [
@@ -3864,32 +4315,32 @@ Module net.
                     let b := M.copy (| Ty.path "u8", γ0_1 |) in
                     let c := M.copy (| Ty.path "u8", γ0_2 |) in
                     let d := M.copy (| Ty.path "u8", γ0_3 |) in
-                    Value.mkStructRecord
-                      "core::net::ip_addr::Ipv6Addr"
-                      []
-                      []
-                      [
-                        ("octets",
-                          Value.Array
-                            [
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 0;
-                              Value.Integer IntegerKind.U8 255;
-                              Value.Integer IntegerKind.U8 255;
-                              M.read (| a |);
-                              M.read (| b |);
-                              M.read (| c |);
-                              M.read (| d |)
-                            ])
-                      ]))
+                    M.value_with_ty
+                      (Value.mkStructRecord
+                        "core::net::ip_addr::Ipv6Addr"
+                        [
+                          ("octets",
+                            Value.Array
+                              [
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 0;
+                                Value.Integer IntegerKind.U8 255;
+                                Value.Integer IntegerKind.U8 255;
+                                M.read (| a |);
+                                M.read (| b |);
+                                M.read (| c |);
+                                M.read (| d |)
+                              ])
+                        ])
+                      (Ty.path "core::net::ip_addr::Ipv6Addr")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3959,8 +4410,12 @@ Module net.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -3992,8 +4447,12 @@ Module net.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ip |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)))
               ]
@@ -4044,8 +4503,12 @@ Module net.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::IpAddr" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4073,7 +4536,9 @@ Module net.
         | [], [], [ ipv4 ] =>
           ltac:(M.monadic
             (let ipv4 := M.alloc (| Ty.path "core::net::ip_addr::Ipv4Addr", ipv4 |) in
-            Value.StructTuple "core::net::ip_addr::IpAddr::V4" [] [] [ M.read (| ipv4 |) ]))
+            M.value_with_ty
+              (Value.StructTuple "core::net::ip_addr::IpAddr::V4" [ M.read (| ipv4 |) ])
+              (Ty.path "core::net::ip_addr::IpAddr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4099,7 +4564,9 @@ Module net.
         | [], [], [ ipv6 ] =>
           ltac:(M.monadic
             (let ipv6 := M.alloc (| Ty.path "core::net::ip_addr::Ipv6Addr", ipv6 |) in
-            Value.StructTuple "core::net::ip_addr::IpAddr::V6" [] [] [ M.read (| ipv6 |) ]))
+            M.value_with_ty
+              (Value.StructTuple "core::net::ip_addr::IpAddr::V6" [ M.read (| ipv6 |) ])
+              (Ty.path "core::net::ip_addr::IpAddr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4159,7 +4626,11 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply
@@ -4192,33 +4663,48 @@ Module net.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "usize" ],
-                                        M.call_closure (|
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
                                             [ Ty.path "usize" ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Formatter",
-                                            "precision",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| fmt |) |)
-                                            |)
-                                          ]
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "usize" ],
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Formatter",
+                                              "precision",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| fmt |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "core::fmt::Formatter" ])
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ])
                                   ]
                                 |),
                                 ltac:(M.monadic
@@ -4234,33 +4720,48 @@ Module net.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [ Ty.path "usize" ],
-                                          M.call_closure (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
                                             Ty.apply
                                               (Ty.path "core::option::Option")
                                               []
                                               [ Ty.path "usize" ],
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::Formatter",
-                                              "width",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| fmt |) |)
-                                              |)
-                                            ]
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "usize" ],
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Formatter",
+                                                "width",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| fmt |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "core::fmt::Formatter" ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "usize" ]
+                                          ])
                                     ]
                                   |)))
                               |)
@@ -4278,151 +4779,183 @@ Module net.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_v1",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_v1",
+                                  [
+                                    Value.Integer IntegerKind.Usize 4;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ],
+                                  []
+                                |),
                                 [
-                                  Value.Integer IntegerKind.Usize 4;
-                                  Value.Integer IntegerKind.Usize 4
-                                ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 4 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (| "" |);
+                                                mk_str (| "." |);
+                                                mk_str (| "." |);
+                                                mk_str (| "." |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 4 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (| "" |);
-                                            mk_str (| "." |);
-                                            mk_str (| "." |);
-                                            mk_str (| "." |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 4 ]
+                                              [ Ty.path "core::fmt::rt::Argument" ],
+                                            Value.Array
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    "new_display",
+                                                    [],
+                                                    [ Ty.path "u8" ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_array_field (|
+                                                              octets,
+                                                              Value.Integer IntegerKind.Usize 0
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                  ]
+                                                |);
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    "new_display",
+                                                    [],
+                                                    [ Ty.path "u8" ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_array_field (|
+                                                              octets,
+                                                              Value.Integer IntegerKind.Usize 1
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                  ]
+                                                |);
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    "new_display",
+                                                    [],
+                                                    [ Ty.path "u8" ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_array_field (|
+                                                              octets,
+                                                              Value.Integer IntegerKind.Usize 2
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                  ]
+                                                |);
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    "new_display",
+                                                    [],
+                                                    [ Ty.path "u8" ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_array_field (|
+                                                              octets,
+                                                              Value.Integer IntegerKind.Usize 3
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                  ]
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 4 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        Value.Array
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_display",
-                                                [],
-                                                [ Ty.path "u8" ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_array_field (|
-                                                        octets,
-                                                        Value.Integer IntegerKind.Usize 0
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_display",
-                                                [],
-                                                [ Ty.path "u8" ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_array_field (|
-                                                        octets,
-                                                        Value.Integer IntegerKind.Usize 1
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_display",
-                                                [],
-                                                [ Ty.path "u8" ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_array_field (|
-                                                        octets,
-                                                        Value.Integer IntegerKind.Usize 2
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_display",
-                                                [],
-                                                [ Ty.path "u8" ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_array_field (|
-                                                        octets,
-                                                        Value.Integer IntegerKind.Usize 3
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.path "core::fmt::rt::Argument" ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)));
                     fun γ =>
@@ -4462,171 +4995,241 @@ Module net.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                    M.get_trait_method (|
+                                      "core::fmt::Write",
+                                      Ty.apply
+                                        (Ty.path "core::net::display_buffer::DisplayBuffer")
+                                        [ Value.Integer IntegerKind.Usize 15 ]
+                                        [],
+                                      [],
+                                      [],
+                                      "write_fmt",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, buf |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::net::display_buffer::DisplayBuffer")
+                                              [ Value.Integer IntegerKind.Usize 15 ]
+                                              []
+                                          ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "core::fmt::Arguments",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::Arguments",
+                                            "new_v1",
+                                            [
+                                              Value.Integer IntegerKind.Usize 4;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 4 ]
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "str" ]
+                                                        ],
+                                                      Value.Array
+                                                        [
+                                                          mk_str (| "" |);
+                                                          mk_str (| "." |);
+                                                          mk_str (| "." |);
+                                                          mk_str (| "." |)
+                                                        ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 4 ]
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 4 ]
+                                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                                      Value.Array
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "core::fmt::rt::Argument",
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::rt::Argument",
+                                                              "new_display",
+                                                              [],
+                                                              [ Ty.path "u8" ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_array_field (|
+                                                                        octets,
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          0
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "u8" ])
+                                                            ]
+                                                          |);
+                                                          M.call_closure (|
+                                                            Ty.path "core::fmt::rt::Argument",
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::rt::Argument",
+                                                              "new_display",
+                                                              [],
+                                                              [ Ty.path "u8" ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_array_field (|
+                                                                        octets,
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          1
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "u8" ])
+                                                            ]
+                                                          |);
+                                                          M.call_closure (|
+                                                            Ty.path "core::fmt::rt::Argument",
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::rt::Argument",
+                                                              "new_display",
+                                                              [],
+                                                              [ Ty.path "u8" ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_array_field (|
+                                                                        octets,
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          2
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "u8" ])
+                                                            ]
+                                                          |);
+                                                          M.call_closure (|
+                                                            Ty.path "core::fmt::rt::Argument",
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::rt::Argument",
+                                                              "new_display",
+                                                              [],
+                                                              [ Ty.path "u8" ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_array_field (|
+                                                                        octets,
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          3
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "u8" ])
+                                                            ]
+                                                          |)
+                                                        ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 4 ]
+                                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.path "core::fmt::Arguments")
+                                    ]
+                                  |))
+                                  (Ty.apply
                                     (Ty.path "core::result::Result")
                                     []
-                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                  M.get_trait_method (|
-                                    "core::fmt::Write",
-                                    Ty.apply
-                                      (Ty.path "core::net::display_buffer::DisplayBuffer")
-                                      [ Value.Integer IntegerKind.Usize 15 ]
-                                      [],
-                                    [],
-                                    [],
-                                    "write_fmt",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.MutRef, buf |);
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::Arguments",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::Arguments",
-                                        "new_v1",
-                                        [
-                                          Value.Integer IntegerKind.Usize 4;
-                                          Value.Integer IntegerKind.Usize 4
-                                        ],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 4 ]
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                Value.Array
-                                                  [
-                                                    mk_str (| "" |);
-                                                    mk_str (| "." |);
-                                                    mk_str (| "." |);
-                                                    mk_str (| "." |)
-                                                  ]
-                                              |)
-                                            |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 4 ]
-                                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                                Value.Array
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "core::fmt::rt::Argument",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        "new_display",
-                                                        [],
-                                                        [ Ty.path "u8" ]
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.SubPointer.get_array_field (|
-                                                                octets,
-                                                                Value.Integer IntegerKind.Usize 0
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "core::fmt::rt::Argument",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        "new_display",
-                                                        [],
-                                                        [ Ty.path "u8" ]
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.SubPointer.get_array_field (|
-                                                                octets,
-                                                                Value.Integer IntegerKind.Usize 1
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "core::fmt::rt::Argument",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        "new_display",
-                                                        [],
-                                                        [ Ty.path "u8" ]
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.SubPointer.get_array_field (|
-                                                                octets,
-                                                                Value.Integer IntegerKind.Usize 2
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.path "core::fmt::rt::Argument",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        "new_display",
-                                                        [],
-                                                        [ Ty.path "u8" ]
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.SubPointer.get_array_field (|
-                                                                octets,
-                                                                Value.Integer IntegerKind.Usize 3
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                               ]
                             |) in
                           M.alloc (|
@@ -4646,25 +5249,45 @@ Module net.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "core::net::display_buffer::DisplayBuffer")
-                                          [ Value.Integer IntegerKind.Usize 15 ]
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| fmt |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::net::display_buffer::DisplayBuffer")
+                                            [ Value.Integer IntegerKind.Usize 15 ]
+                                            [],
+                                          "as_str",
                                           [],
-                                        "as_str",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, buf |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "core::net::display_buffer::DisplayBuffer")
+                                                  [ Value.Integer IntegerKind.Usize 15 ]
+                                                  []
+                                              ])
+                                        ]
+                                      |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                               ]
                             |)
                           |)
@@ -4719,8 +5342,12 @@ Module net.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4789,7 +5416,21 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, v4 |); M.borrow (| Pointer.Kind.Ref, other |)
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, v4 |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, other |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
+                            ])
                       ]
                     |)));
                 fun γ =>
@@ -4870,7 +5511,22 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, self |); M.borrow (| Pointer.Kind.Ref, v4 |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, self |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, v4 |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
+                            ])
+                      ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
@@ -4918,28 +5574,32 @@ Module net.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ],
                 other
               |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_trait_method (|
-                    "core::cmp::Ord",
-                    Ty.path "core::net::ip_addr::Ipv4Addr",
-                    [],
-                    [],
-                    "cmp",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_trait_method (|
+                      "core::cmp::Ord",
+                      Ty.path "core::net::ip_addr::Ipv4Addr",
+                      [],
+                      [],
+                      "cmp",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5010,8 +5670,12 @@ Module net.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v4 |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v4 |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                       ]
                     |)));
                 fun γ =>
@@ -5023,11 +5687,18 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Greater" [] [] [] ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Greater" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5100,8 +5771,12 @@ Module net.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v4 |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v4 |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ])
                       ]
                     |)));
                 fun γ =>
@@ -5113,11 +5788,18 @@ Module net.
                         "core::net::ip_addr::IpAddr::V6",
                         0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Less" [] [] [] ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Less" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5166,27 +5848,47 @@ Module net.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::net::ip_addr::Ipv4Addr",
-                    "octets"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "core::net::ip_addr::Ipv4Addr",
-                        "octets"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::net::ip_addr::Ipv4Addr",
+                      "octets"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 4 ]
+                        [ Ty.path "u8" ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "core::net::ip_addr::Ipv4Addr",
+                          "octets"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 4 ]
+                        [ Ty.path "u8" ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5222,7 +5924,7 @@ Module net.
                 [],
                 []
               |),
-              [ M.read (| ip |) ]
+              [ M.value_with_ty (M.read (| ip |)) (Ty.path "core::net::ip_addr::Ipv4Addr") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -5257,7 +5959,7 @@ Module net.
                 [],
                 []
               |),
-              [ M.read (| ip |) ]
+              [ M.value_with_ty (M.read (| ip |)) (Ty.path "u32") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -5288,11 +5990,11 @@ Module net.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
                 octets
               |) in
-            Value.mkStructRecord
-              "core::net::ip_addr::Ipv4Addr"
-              []
-              []
-              [ ("octets", M.read (| octets |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::net::ip_addr::Ipv4Addr"
+                [ ("octets", M.read (| octets |)) ])
+              (Ty.path "core::net::ip_addr::Ipv4Addr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5323,30 +6025,37 @@ Module net.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
                 octets
               |) in
-            Value.StructTuple
-              "core::net::ip_addr::IpAddr::V4"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "core::net::ip_addr::Ipv4Addr",
-                  M.get_trait_method (|
-                    "core::convert::From",
+            M.value_with_ty
+              (Value.StructTuple
+                "core::net::ip_addr::IpAddr::V4"
+                [
+                  M.call_closure (|
                     Ty.path "core::net::ip_addr::Ipv4Addr",
-                    [],
+                    M.get_trait_method (|
+                      "core::convert::From",
+                      Ty.path "core::net::ip_addr::Ipv4Addr",
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 4 ]
+                          [ Ty.path "u8" ]
+                      ],
+                      "from",
+                      [],
+                      []
+                    |),
                     [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 4 ]
-                        [ Ty.path "u8" ]
-                    ],
-                    "from",
-                    [],
-                    []
-                  |),
-                  [ M.read (| octets |) ]
-                |)
-              ]))
+                      M.value_with_ty
+                        (M.read (| octets |))
+                        (Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 4 ]
+                          [ Ty.path "u8" ])
+                    ]
+                  |)
+                ])
+              (Ty.path "core::net::ip_addr::IpAddr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5405,74 +6114,81 @@ Module net.
                     M.call_closure (|
                       Ty.path "u16",
                       M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
-                      [ M.read (| a |) ]
+                      [ M.value_with_ty (M.read (| a |)) (Ty.path "u16") ]
                     |);
                     M.call_closure (|
                       Ty.path "u16",
                       M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
-                      [ M.read (| b |) ]
+                      [ M.value_with_ty (M.read (| b |)) (Ty.path "u16") ]
                     |);
                     M.call_closure (|
                       Ty.path "u16",
                       M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
-                      [ M.read (| c |) ]
+                      [ M.value_with_ty (M.read (| c |)) (Ty.path "u16") ]
                     |);
                     M.call_closure (|
                       Ty.path "u16",
                       M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
-                      [ M.read (| d |) ]
+                      [ M.value_with_ty (M.read (| d |)) (Ty.path "u16") ]
                     |);
                     M.call_closure (|
                       Ty.path "u16",
                       M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
-                      [ M.read (| e |) ]
+                      [ M.value_with_ty (M.read (| e |)) (Ty.path "u16") ]
                     |);
                     M.call_closure (|
                       Ty.path "u16",
                       M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
-                      [ M.read (| f |) ]
+                      [ M.value_with_ty (M.read (| f |)) (Ty.path "u16") ]
                     |);
                     M.call_closure (|
                       Ty.path "u16",
                       M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
-                      [ M.read (| g |) ]
+                      [ M.value_with_ty (M.read (| g |)) (Ty.path "u16") ]
                     |);
                     M.call_closure (|
                       Ty.path "u16",
                       M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
-                      [ M.read (| h |) ]
+                      [ M.value_with_ty (M.read (| h |)) (Ty.path "u16") ]
                     |)
                   ] in
               M.alloc (|
                 Ty.path "core::net::ip_addr::Ipv6Addr",
-                Value.mkStructRecord
-                  "core::net::ip_addr::Ipv6Addr"
-                  []
-                  []
-                  [
-                    ("octets",
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 16 ]
-                          [ Ty.path "u8" ],
-                        M.get_function (|
-                          "core::intrinsics::transmute",
-                          [],
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::net::ip_addr::Ipv6Addr"
+                    [
+                      ("octets",
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 16 ]
+                            [ Ty.path "u8" ],
+                          M.get_function (|
+                            "core::intrinsics::transmute",
+                            [],
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 8 ]
+                                [ Ty.path "u16" ];
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 16 ]
+                                [ Ty.path "u8" ]
+                            ]
+                          |),
                           [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 8 ]
-                              [ Ty.path "u16" ];
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 16 ]
-                              [ Ty.path "u8" ]
+                            M.value_with_ty
+                              (M.read (| addr16 |))
+                              (Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 8 ]
+                                [ Ty.path "u16" ])
                           ]
-                        |),
-                        [ M.read (| addr16 |) ]
-                      |))
-                  ]
+                        |))
+                    ])
+                  (Ty.path "core::net::ip_addr::Ipv6Addr")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5506,13 +6222,18 @@ Module net.
               Ty.path "u128",
               M.get_associated_function (| Ty.path "u128", "from_be_bytes", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    self,
-                    "core::net::ip_addr::Ipv6Addr",
-                    "octets"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      self,
+                      "core::net::ip_addr::Ipv6Addr",
+                      "octets"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 16 ]
+                    [ Ty.path "u8" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5532,21 +6253,21 @@ Module net.
         | [], [], [ bits ] =>
           ltac:(M.monadic
             (let bits := M.alloc (| Ty.path "u128", bits |) in
-            Value.mkStructRecord
-              "core::net::ip_addr::Ipv6Addr"
-              []
-              []
-              [
-                ("octets",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 16 ]
-                      [ Ty.path "u8" ],
-                    M.get_associated_function (| Ty.path "u128", "to_be_bytes", [], [] |),
-                    [ M.read (| bits |) ]
-                  |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::net::ip_addr::Ipv6Addr"
+                [
+                  ("octets",
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "u8" ],
+                      M.get_associated_function (| Ty.path "u128", "to_be_bytes", [], [] |),
+                      [ M.value_with_ty (M.read (| bits |)) (Ty.path "u128") ]
+                    |))
+                ])
+              (Ty.path "core::net::ip_addr::Ipv6Addr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5565,14 +6286,14 @@ Module net.
               Ty.path "core::net::ip_addr::Ipv6Addr",
               M.get_associated_function (| Ty.path "core::net::ip_addr::Ipv6Addr", "new", [], [] |),
               [
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 1
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 1) (Ty.path "u16")
               ]
             |)
           |))).
@@ -5592,14 +6313,14 @@ Module net.
               Ty.path "core::net::ip_addr::Ipv6Addr",
               M.get_associated_function (| Ty.path "core::net::ip_addr::Ipv6Addr", "new", [], [] |),
               [
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0;
-                Value.Integer IntegerKind.U16 0
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16")
               ]
             |)
           |))).
@@ -5660,13 +6381,18 @@ Module net.
                     ]
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::net::ip_addr::Ipv6Addr",
-                        "octets"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::net::ip_addr::Ipv6Addr",
+                          "octets"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "u8" ])
                   ]
                 |)
               |),
@@ -5694,42 +6420,42 @@ Module net.
                         M.call_closure (|
                           Ty.path "u16",
                           M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
-                          [ M.read (| a |) ]
+                          [ M.value_with_ty (M.read (| a |)) (Ty.path "u16") ]
                         |);
                         M.call_closure (|
                           Ty.path "u16",
                           M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
-                          [ M.read (| b |) ]
+                          [ M.value_with_ty (M.read (| b |)) (Ty.path "u16") ]
                         |);
                         M.call_closure (|
                           Ty.path "u16",
                           M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
-                          [ M.read (| c |) ]
+                          [ M.value_with_ty (M.read (| c |)) (Ty.path "u16") ]
                         |);
                         M.call_closure (|
                           Ty.path "u16",
                           M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
-                          [ M.read (| d |) ]
+                          [ M.value_with_ty (M.read (| d |)) (Ty.path "u16") ]
                         |);
                         M.call_closure (|
                           Ty.path "u16",
                           M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
-                          [ M.read (| e |) ]
+                          [ M.value_with_ty (M.read (| e |)) (Ty.path "u16") ]
                         |);
                         M.call_closure (|
                           Ty.path "u16",
                           M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
-                          [ M.read (| f |) ]
+                          [ M.value_with_ty (M.read (| f |)) (Ty.path "u16") ]
                         |);
                         M.call_closure (|
                           Ty.path "u16",
                           M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
-                          [ M.read (| g |) ]
+                          [ M.value_with_ty (M.read (| g |)) (Ty.path "u16") ]
                         |);
                         M.call_closure (|
                           Ty.path "u16",
                           M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
-                          [ M.read (| h |) ]
+                          [ M.value_with_ty (M.read (| h |)) (Ty.path "u16") ]
                         |)
                       ]))
               ]
@@ -5788,14 +6514,14 @@ Module net.
                         []
                       |),
                       [
-                        M.read (| a |);
-                        M.read (| b |);
-                        M.read (| c |);
-                        M.read (| d |);
-                        M.read (| e |);
-                        M.read (| f |);
-                        M.read (| g |);
-                        M.read (| h |)
+                        M.value_with_ty (M.read (| a |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| b |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| c |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| d |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| e |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| f |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| g |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| h |)) (Ty.path "u16")
                       ]
                     |)))
               ]
@@ -5830,47 +6556,63 @@ Module net.
                   Ty.path "u128",
                   M.get_associated_function (| Ty.path "u128", "from_be_bytes", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 16 ]
+                          [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.path "core::net::ip_addr::Ipv6Addr",
+                          "octets",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "array")
                         [ Value.Integer IntegerKind.Usize 16 ]
-                        [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.path "core::net::ip_addr::Ipv6Addr",
-                        "octets",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
+                        [ Ty.path "u8" ])
                   ]
                 |);
                 M.call_closure (|
                   Ty.path "u128",
                   M.get_associated_function (| Ty.path "u128", "from_be_bytes", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 16 ]
+                          [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.path "core::net::ip_addr::Ipv6Addr",
+                          "octets",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              get_associated_constant (|
+                                Ty.path "core::net::ip_addr::Ipv6Addr",
+                                "UNSPECIFIED",
+                                Ty.path "core::net::ip_addr::Ipv6Addr"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "array")
                         [ Value.Integer IntegerKind.Usize 16 ]
-                        [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.path "core::net::ip_addr::Ipv6Addr",
-                        "octets",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          get_associated_constant (|
-                            Ty.path "core::net::ip_addr::Ipv6Addr",
-                            "UNSPECIFIED",
-                            Ty.path "core::net::ip_addr::Ipv6Addr"
-                          |)
-                        |)
-                      ]
-                    |)
+                        [ Ty.path "u8" ])
                   ]
                 |)
               ]
@@ -5905,47 +6647,63 @@ Module net.
                   Ty.path "u128",
                   M.get_associated_function (| Ty.path "u128", "from_be_bytes", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 16 ]
+                          [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.path "core::net::ip_addr::Ipv6Addr",
+                          "octets",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "array")
                         [ Value.Integer IntegerKind.Usize 16 ]
-                        [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.path "core::net::ip_addr::Ipv6Addr",
-                        "octets",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
+                        [ Ty.path "u8" ])
                   ]
                 |);
                 M.call_closure (|
                   Ty.path "u128",
                   M.get_associated_function (| Ty.path "u128", "from_be_bytes", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 16 ]
+                          [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.path "core::net::ip_addr::Ipv6Addr",
+                          "octets",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              get_associated_constant (|
+                                Ty.path "core::net::ip_addr::Ipv6Addr",
+                                "LOCALHOST",
+                                Ty.path "core::net::ip_addr::Ipv6Addr"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "array")
                         [ Value.Integer IntegerKind.Usize 16 ]
-                        [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.path "core::net::ip_addr::Ipv6Addr",
-                        "octets",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          get_associated_constant (|
-                            Ty.path "core::net::ip_addr::Ipv6Addr",
-                            "LOCALHOST",
-                            Ty.path "core::net::ip_addr::Ipv6Addr"
-                          |)
-                        |)
-                      ]
-                    |)
+                        [ Ty.path "u8" ])
                   ]
                 |)
               ]
@@ -6022,10 +6780,15 @@ Module net.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                     ]
                                   |),
                                   ltac:(M.monadic
@@ -6038,10 +6801,15 @@ Module net.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                       ]
                                     |)))
                                 |),
@@ -6065,10 +6833,15 @@ Module net.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                         ]
                                       |)
                                     |),
@@ -6138,10 +6911,15 @@ Module net.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                       ]
                                     |)
                                   |),
@@ -6196,10 +6974,15 @@ Module net.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                     ]
                                   |)
                                 |),
@@ -6260,10 +7043,15 @@ Module net.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                     ]
                                   |)
                                 |),
@@ -6324,24 +7112,37 @@ Module net.
                                                     []
                                                   |),
                                                   [
-                                                    M.call_closure (|
-                                                      Ty.apply
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 16 ]
+                                                          [ Ty.path "u8" ],
+                                                        M.get_associated_function (|
+                                                          Ty.path "core::net::ip_addr::Ipv6Addr",
+                                                          "octets",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| self |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "core::net::ip_addr::Ipv6Addr"
+                                                              ])
+                                                        ]
+                                                      |))
+                                                      (Ty.apply
                                                         (Ty.path "array")
                                                         [ Value.Integer IntegerKind.Usize 16 ]
-                                                        [ Ty.path "u8" ],
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::net::ip_addr::Ipv6Addr",
-                                                        "octets",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| self |) |)
-                                                        |)
-                                                      ]
-                                                    |)
+                                                        [ Ty.path "u8" ])
                                                   ]
                                                 |);
                                                 Value.Integer
@@ -6363,24 +7164,37 @@ Module net.
                                                       []
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 16 ]
+                                                            [ Ty.path "u8" ],
+                                                          M.get_associated_function (|
+                                                            Ty.path "core::net::ip_addr::Ipv6Addr",
+                                                            "octets",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| self |) |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::net::ip_addr::Ipv6Addr"
+                                                                ])
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
                                                           (Ty.path "array")
                                                           [ Value.Integer IntegerKind.Usize 16 ]
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
-                                                          Ty.path "core::net::ip_addr::Ipv6Addr",
-                                                          "octets",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| self |) |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                          [ Ty.path "u8" ])
                                                     ]
                                                   |);
                                                   Value.Integer
@@ -6409,10 +7223,15 @@ Module net.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| self |) |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                                   ]
                                                 |)
                                               |),
@@ -6470,10 +7289,15 @@ Module net.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| self |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                                 ]
                                               |)
                                             |),
@@ -6536,10 +7360,15 @@ Module net.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                               ]
                                             |)
                                           |),
@@ -6630,7 +7459,17 @@ Module net.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                                ]
                               |)
                             |),
                             [
@@ -6663,7 +7502,11 @@ Module net.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                          ]
                         |)))
                     |),
                     ltac:(M.monadic
@@ -6675,7 +7518,11 @@ Module net.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                        ]
                       |)))
                   |),
                   ltac:(M.monadic
@@ -6687,7 +7534,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                      ]
                     |)))
                 |)
               ]
@@ -6740,7 +7591,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                            ]
                           |)
                         |),
                         Value.Integer IntegerKind.Usize 0
@@ -6786,7 +7644,11 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                  ]
                 |)
               ]
             |)))
@@ -6838,7 +7700,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                            ]
                           |)
                         |),
                         Value.Integer IntegerKind.Usize 0
@@ -6895,7 +7764,11 @@ Module net.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                          ]
                         |)
                       |),
                       Value.Integer IntegerKind.Usize 0
@@ -6927,7 +7800,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                            ]
                           |)
                         |),
                         Value.Integer IntegerKind.Usize 1
@@ -6983,7 +7863,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                            ]
                           |)
                         |),
                         Value.Integer IntegerKind.Usize 0
@@ -7015,7 +7902,14 @@ Module net.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                              ]
                             |)
                           |),
                           Value.Integer IntegerKind.Usize 1
@@ -7048,7 +7942,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                            ]
                           |)
                         |),
                         Value.Integer IntegerKind.Usize 2
@@ -7100,7 +8001,11 @@ Module net.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                          ]
                         |),
                         ltac:(M.monadic
                           (M.call_closure (|
@@ -7115,7 +8020,17 @@ Module net.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                                ]
                               |)
                             ]
                           |)))
@@ -7133,7 +8048,14 @@ Module net.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                              ]
                             |)
                           ]
                         |)))
@@ -7151,7 +8073,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                            ]
                           |)
                         ]
                       |)))
@@ -7169,7 +8098,11 @@ Module net.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                          ]
                         |)
                       ]
                     |)))
@@ -7187,7 +8120,11 @@ Module net.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                        ]
                       |)
                     ]
                   |)))
@@ -7205,7 +8142,11 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                      ]
                     |)
                   ]
                 |)))
@@ -7266,7 +8207,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -7300,10 +8248,15 @@ Module net.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                     ]
                                   |)
                                 |),
@@ -7322,17 +8275,20 @@ Module net.
                                 M.read (| γ |),
                                 Value.Integer IntegerKind.U16 1
                               |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
-                              [
-                                Value.StructTuple
-                                  "core::net::ip_addr::Ipv6MulticastScope::InterfaceLocal"
-                                  []
-                                  []
-                                  []
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::net::ip_addr::Ipv6MulticastScope::InterfaceLocal"
+                                      [])
+                                    (Ty.path "core::net::ip_addr::Ipv6MulticastScope")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])));
                         fun γ =>
                           ltac:(M.monadic
                             (let _ :=
@@ -7340,17 +8296,20 @@ Module net.
                                 M.read (| γ |),
                                 Value.Integer IntegerKind.U16 2
                               |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
-                              [
-                                Value.StructTuple
-                                  "core::net::ip_addr::Ipv6MulticastScope::LinkLocal"
-                                  []
-                                  []
-                                  []
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::net::ip_addr::Ipv6MulticastScope::LinkLocal"
+                                      [])
+                                    (Ty.path "core::net::ip_addr::Ipv6MulticastScope")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])));
                         fun γ =>
                           ltac:(M.monadic
                             (let _ :=
@@ -7358,17 +8317,20 @@ Module net.
                                 M.read (| γ |),
                                 Value.Integer IntegerKind.U16 3
                               |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
-                              [
-                                Value.StructTuple
-                                  "core::net::ip_addr::Ipv6MulticastScope::RealmLocal"
-                                  []
-                                  []
-                                  []
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::net::ip_addr::Ipv6MulticastScope::RealmLocal"
+                                      [])
+                                    (Ty.path "core::net::ip_addr::Ipv6MulticastScope")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])));
                         fun γ =>
                           ltac:(M.monadic
                             (let _ :=
@@ -7376,17 +8338,20 @@ Module net.
                                 M.read (| γ |),
                                 Value.Integer IntegerKind.U16 4
                               |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
-                              [
-                                Value.StructTuple
-                                  "core::net::ip_addr::Ipv6MulticastScope::AdminLocal"
-                                  []
-                                  []
-                                  []
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::net::ip_addr::Ipv6MulticastScope::AdminLocal"
+                                      [])
+                                    (Ty.path "core::net::ip_addr::Ipv6MulticastScope")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])));
                         fun γ =>
                           ltac:(M.monadic
                             (let _ :=
@@ -7394,17 +8359,20 @@ Module net.
                                 M.read (| γ |),
                                 Value.Integer IntegerKind.U16 5
                               |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
-                              [
-                                Value.StructTuple
-                                  "core::net::ip_addr::Ipv6MulticastScope::SiteLocal"
-                                  []
-                                  []
-                                  []
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::net::ip_addr::Ipv6MulticastScope::SiteLocal"
+                                      [])
+                                    (Ty.path "core::net::ip_addr::Ipv6MulticastScope")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])));
                         fun γ =>
                           ltac:(M.monadic
                             (let _ :=
@@ -7412,17 +8380,20 @@ Module net.
                                 M.read (| γ |),
                                 Value.Integer IntegerKind.U16 8
                               |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
-                              [
-                                Value.StructTuple
-                                  "core::net::ip_addr::Ipv6MulticastScope::OrganizationLocal"
-                                  []
-                                  []
-                                  []
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::net::ip_addr::Ipv6MulticastScope::OrganizationLocal"
+                                      [])
+                                    (Ty.path "core::net::ip_addr::Ipv6MulticastScope")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])));
                         fun γ =>
                           ltac:(M.monadic
                             (let _ :=
@@ -7430,33 +8401,38 @@ Module net.
                                 M.read (| γ |),
                                 Value.Integer IntegerKind.U16 14
                               |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
-                              [
-                                Value.StructTuple
-                                  "core::net::ip_addr::Ipv6MulticastScope::Global"
-                                  []
-                                  []
-                                  []
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::net::ip_addr::Ipv6MulticastScope::Global"
+                                      [])
+                                    (Ty.path "core::net::ip_addr::Ipv6MulticastScope")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])));
                         fun γ =>
                           ltac:(M.monadic
-                            (Value.StructTuple
-                              "core::option::Option::None"
-                              []
-                              [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
-                              []))
+                            (M.value_with_ty
+                              (Value.StructTuple "core::option::Option::None" [])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])))
                       ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::net::ip_addr::Ipv6MulticastScope" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7507,7 +8483,14 @@ Module net.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                            ]
                           |)
                         |),
                         Value.Integer IntegerKind.Usize 0
@@ -7556,7 +8539,11 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                  ]
                 |)
               |),
               [
@@ -7649,7 +8636,11 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                  ]
                 |)
               |),
               [
@@ -7735,29 +8726,38 @@ Module net.
                     let b := M.copy (| Ty.path "u8", γ0_13 |) in
                     let c := M.copy (| Ty.path "u8", γ0_14 |) in
                     let d := M.copy (| Ty.path "u8", γ0_15 |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
-                      [
-                        M.call_closure (|
-                          Ty.path "core::net::ip_addr::Ipv4Addr",
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.call_closure (|
                             Ty.path "core::net::ip_addr::Ipv4Addr",
-                            "new",
-                            [],
-                            []
-                          |),
-                          [ M.read (| a |); M.read (| b |); M.read (| c |); M.read (| d |) ]
-                        |)
-                      ]));
+                            M.get_associated_function (|
+                              Ty.path "core::net::ip_addr::Ipv4Addr",
+                              "new",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty (M.read (| a |)) (Ty.path "u8");
+                              M.value_with_ty (M.read (| b |)) (Ty.path "u8");
+                              M.value_with_ty (M.read (| c |)) (Ty.path "u8");
+                              M.value_with_ty (M.read (| d |)) (Ty.path "u8")
+                            ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::net::ip_addr::Ipv4Addr" ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::net::ip_addr::Ipv4Addr" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7814,7 +8814,11 @@ Module net.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                          ]
                         |)
                       |) in
                     let γ0_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
@@ -7898,7 +8902,7 @@ Module net.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| ab |) ]
+                                    [ M.value_with_ty (M.read (| ab |)) (Ty.path "u16") ]
                                   |)
                                 |),
                                 [
@@ -7929,7 +8933,7 @@ Module net.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| cd |) ]
+                                            [ M.value_with_ty (M.read (| cd |)) (Ty.path "u16") ]
                                           |)
                                         |),
                                         [
@@ -7940,27 +8944,38 @@ Module net.
                                               let γ0_1 := M.SubPointer.get_slice_index (| γ, 1 |) in
                                               let c := M.copy (| Ty.path "u8", γ0_0 |) in
                                               let d := M.copy (| Ty.path "u8", γ0_1 |) in
-                                              Value.StructTuple
-                                                "core::option::Option::Some"
-                                                []
-                                                [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "core::net::ip_addr::Ipv4Addr",
-                                                    M.get_associated_function (|
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  [
+                                                    M.call_closure (|
                                                       Ty.path "core::net::ip_addr::Ipv4Addr",
-                                                      "new",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.read (| a |);
-                                                      M.read (| b |);
-                                                      M.read (| c |);
-                                                      M.read (| d |)
-                                                    ]
-                                                  |)
-                                                ]))
+                                                      M.get_associated_function (|
+                                                        Ty.path "core::net::ip_addr::Ipv4Addr",
+                                                        "new",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| a |))
+                                                          (Ty.path "u8");
+                                                        M.value_with_ty
+                                                          (M.read (| b |))
+                                                          (Ty.path "u8");
+                                                        M.value_with_ty
+                                                          (M.read (| c |))
+                                                          (Ty.path "u8");
+                                                        M.value_with_ty
+                                                          (M.read (| d |))
+                                                          (Ty.path "u8")
+                                                      ]
+                                                    |)
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "core::net::ip_addr::Ipv4Addr" ])))
                                         ]
                                       |)))
                                 ]
@@ -7970,11 +8985,12 @@ Module net.
                     |)));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::net::ip_addr::Ipv4Addr" ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::net::ip_addr::Ipv4Addr" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8028,7 +9044,16 @@ Module net.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                   ]
                                 |)
                               |) in
@@ -8043,11 +9068,11 @@ Module net.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::net::ip_addr::IpAddr::V4"
-                                    []
-                                    []
-                                    [ M.read (| mapped |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::net::ip_addr::IpAddr::V4"
+                                      [ M.read (| mapped |) ])
+                                    (Ty.path "core::net::ip_addr::IpAddr")
                                 |)
                               |)
                             |)));
@@ -8056,11 +9081,11 @@ Module net.
                     |) in
                   M.alloc (|
                     Ty.path "core::net::ip_addr::IpAddr",
-                    Value.StructTuple
-                      "core::net::ip_addr::IpAddr::V6"
-                      []
-                      []
-                      [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::net::ip_addr::IpAddr::V6"
+                        [ M.read (| M.deref (| M.read (| self |) |) |) ])
+                      (Ty.path "core::net::ip_addr::IpAddr")
                   |)
                 |)))
             |)))
@@ -8114,11 +9139,11 @@ Module net.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
                 octets
               |) in
-            Value.mkStructRecord
-              "core::net::ip_addr::Ipv6Addr"
-              []
-              []
-              [ ("octets", M.read (| octets |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::net::ip_addr::Ipv6Addr"
+                [ ("octets", M.read (| octets |)) ])
+              (Ty.path "core::net::ip_addr::Ipv6Addr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -8246,33 +9271,48 @@ Module net.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "usize" ],
-                                        M.call_closure (|
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
                                             [ Ty.path "usize" ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Formatter",
-                                            "precision",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| f |) |)
-                                            |)
-                                          ]
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "usize" ],
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Formatter",
+                                              "precision",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| f |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "core::fmt::Formatter" ])
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ])
                                   ]
                                 |),
                                 ltac:(M.monadic
@@ -8288,33 +9328,48 @@ Module net.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [ Ty.path "usize" ],
-                                          M.call_closure (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
                                             Ty.apply
                                               (Ty.path "core::option::Option")
                                               []
                                               [ Ty.path "usize" ],
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::Formatter",
-                                              "width",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| f |) |)
-                                              |)
-                                            ]
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "usize" ],
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Formatter",
+                                                "width",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| f |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "core::fmt::Formatter" ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "usize" ]
+                                          ])
                                     ]
                                   |)))
                               |)
@@ -8337,7 +9392,14 @@ Module net.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                              ]
                             |) in
                           M.alloc (|
                             Ty.apply
@@ -8371,10 +9433,15 @@ Module net.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                                           ]
                                         |)
                                       |) in
@@ -8398,78 +9465,120 @@ Module net.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| f |) |)
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Arguments",
-                                            "new_v1",
-                                            [
-                                              Value.Integer IntegerKind.Usize 1;
-                                              Value.Integer IntegerKind.Usize 1
-                                            ],
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| f |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
                                             []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            [ Ty.path "core::fmt::Formatter" ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.path "core::fmt::Arguments",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_v1",
+                                              [
+                                                Value.Integer IntegerKind.Usize 1;
+                                                Value.Integer IntegerKind.Usize 1
+                                              ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array [ mk_str (| "::ffff:" |) ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array [ mk_str (| "::ffff:" |) ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                                      ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                                        Value.Array
+                                                          [
+                                                            M.call_closure (|
+                                                              Ty.path "core::fmt::rt::Argument",
+                                                              M.get_associated_function (|
+                                                                Ty.path "core::fmt::rt::Argument",
+                                                                "new_display",
+                                                                [],
+                                                                [
+                                                                  Ty.path
+                                                                    "core::net::ip_addr::Ipv4Addr"
+                                                                ]
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        ipv4
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "core::net::ip_addr::Ipv4Addr"
+                                                                    ])
+                                                              ]
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                                    Value.Array
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "core::fmt::rt::Argument",
-                                                          M.get_associated_function (|
-                                                            Ty.path "core::fmt::rt::Argument",
-                                                            "new_display",
-                                                            [],
-                                                            [ Ty.path "core::net::ip_addr::Ipv4Addr"
-                                                            ]
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  ipv4
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)));
                                 fun γ =>
@@ -8553,8 +9662,111 @@ Module net.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.apply
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::iter::adapters::enumerate::Enumerate")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::slice::iter::Iter")
+                                                                    []
+                                                                    [ Ty.path "u16" ]
+                                                                ],
+                                                              M.get_trait_method (|
+                                                                "core::iter::traits::iterator::Iterator",
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::iter::Iter")
+                                                                  []
+                                                                  [ Ty.path "u16" ],
+                                                                [],
+                                                                [],
+                                                                "enumerate",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::slice::iter::Iter")
+                                                                      []
+                                                                      [ Ty.path "u16" ],
+                                                                    M.get_associated_function (|
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ Ty.path "u16" ],
+                                                                      "iter",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "slice")
+                                                                                []
+                                                                                [ Ty.path "u16" ]
+                                                                            ],
+                                                                          M.pointer_coercion
+                                                                            M.PointerCoercion.Unsize
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "array")
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      8
+                                                                                  ]
+                                                                                  [ Ty.path "u16" ]
+                                                                              ])
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "slice")
+                                                                                  []
+                                                                                  [ Ty.path "u16" ]
+                                                                              ]),
+                                                                          [
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              segments
+                                                                            |)
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "slice")
+                                                                              []
+                                                                              [ Ty.path "u16" ]
+                                                                          ])
+                                                                    ]
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path
+                                                                      "core::slice::iter::Iter")
+                                                                    []
+                                                                    [ Ty.path "u16" ])
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
                                                               (Ty.path
                                                                 "core::iter::adapters::enumerate::Enumerate")
                                                               []
@@ -8564,81 +9776,7 @@ Module net.
                                                                     "core::slice::iter::Iter")
                                                                   []
                                                                   [ Ty.path "u16" ]
-                                                              ],
-                                                            M.get_trait_method (|
-                                                              "core::iter::traits::iterator::Iterator",
-                                                              Ty.apply
-                                                                (Ty.path "core::slice::iter::Iter")
-                                                                []
-                                                                [ Ty.path "u16" ],
-                                                              [],
-                                                              [],
-                                                              "enumerate",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "core::slice::iter::Iter")
-                                                                  []
-                                                                  [ Ty.path "u16" ],
-                                                                M.get_associated_function (|
-                                                                  Ty.apply
-                                                                    (Ty.path "slice")
-                                                                    []
-                                                                    [ Ty.path "u16" ],
-                                                                  "iter",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path "slice")
-                                                                          []
-                                                                          [ Ty.path "u16" ]
-                                                                      ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.Unsize
-                                                                      (Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "array")
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                8
-                                                                            ]
-                                                                            [ Ty.path "u16" ]
-                                                                        ])
-                                                                      (Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "slice")
-                                                                            []
-                                                                            [ Ty.path "u16" ]
-                                                                        ]),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        segments
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                ]
-                                                              |)
-                                                            ]
-                                                          |)
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -8715,15 +9853,35 @@ Module net.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            M.deref (|
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.MutRef,
-                                                                                iter
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              M.deref (|
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.MutRef,
+                                                                                  iter
+                                                                                |)
                                                                               |)
-                                                                            |)
-                                                                          |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&mut")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::iter::adapters::enumerate::Enumerate")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::slice::iter::Iter")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "u16"
+                                                                                      ]
+                                                                                  ]
+                                                                              ])
                                                                         ]
                                                                       |)
                                                                     |),
@@ -9119,90 +10277,155 @@ Module net.
                                                             []
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.apply
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::result::Result")
+                                                                  []
+                                                                  [
+                                                                    Ty.tuple [];
+                                                                    Ty.path "core::fmt::Error"
+                                                                  ],
+                                                                M.get_associated_function (|
+                                                                  Self,
+                                                                  "fmt_subslice.fmt",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.deref (| M.read (| f |) |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "core::fmt::Formatter"
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "slice")
+                                                                                    []
+                                                                                    [ Ty.path "u16"
+                                                                                    ]
+                                                                                ],
+                                                                              M.get_trait_method (|
+                                                                                "core::ops::index::Index",
+                                                                                Ty.apply
+                                                                                  (Ty.path "array")
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      8
+                                                                                  ]
+                                                                                  [ Ty.path "u16" ],
+                                                                                [],
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::ops::range::RangeTo")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "usize"
+                                                                                    ]
+                                                                                ],
+                                                                                "index",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    segments
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "array")
+                                                                                        [
+                                                                                          Value.Integer
+                                                                                            IntegerKind.Usize
+                                                                                            8
+                                                                                        ]
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "u16"
+                                                                                        ]
+                                                                                    ]);
+                                                                                M.value_with_ty
+                                                                                  (M.value_with_ty
+                                                                                    (Value.mkStructRecord
+                                                                                      "core::ops::range::RangeTo"
+                                                                                      [
+                                                                                        ("end_",
+                                                                                          M.read (|
+                                                                                            M.SubPointer.get_struct_record_field (|
+                                                                                              zeroes,
+                                                                                              "core::net::ip_addr::fmt::Span",
+                                                                                              "start"
+                                                                                            |)
+                                                                                          |))
+                                                                                      ])
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::ops::range::RangeTo")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "usize"
+                                                                                      ]))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::ops::range::RangeTo")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "usize"
+                                                                                    ])
+                                                                              ]
+                                                                            |)
+                                                                          |)
+                                                                        |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ Ty.path "u16" ]
+                                                                      ])
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "core::result::Result")
                                                                 []
                                                                 [
                                                                   Ty.tuple [];
                                                                   Ty.path "core::fmt::Error"
-                                                                ],
-                                                              M.get_associated_function (|
-                                                                Self,
-                                                                "fmt_subslice.fmt",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (| M.read (| f |) |)
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.call_closure (|
-                                                                          Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path "slice")
-                                                                                []
-                                                                                [ Ty.path "u16" ]
-                                                                            ],
-                                                                          M.get_trait_method (|
-                                                                            "core::ops::index::Index",
-                                                                            Ty.apply
-                                                                              (Ty.path "array")
-                                                                              [
-                                                                                Value.Integer
-                                                                                  IntegerKind.Usize
-                                                                                  8
-                                                                              ]
-                                                                              [ Ty.path "u16" ],
-                                                                            [],
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "core::ops::range::RangeTo")
-                                                                                []
-                                                                                [ Ty.path "usize" ]
-                                                                            ],
-                                                                            "index",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              segments
-                                                                            |);
-                                                                            Value.mkStructRecord
-                                                                              "core::ops::range::RangeTo"
-                                                                              []
-                                                                              [ Ty.path "usize" ]
-                                                                              [
-                                                                                ("end_",
-                                                                                  M.read (|
-                                                                                    M.SubPointer.get_struct_record_field (|
-                                                                                      zeroes,
-                                                                                      "core::net::ip_addr::fmt::Span",
-                                                                                      "start"
-                                                                                    |)
-                                                                                  |))
-                                                                              ]
-                                                                          ]
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -9266,7 +10489,20 @@ Module net.
                                                                       [],
                                                                       []
                                                                     |),
-                                                                    [ M.read (| residual |) ]
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (| residual |))
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "core::convert::Infallible";
+                                                                            Ty.path
+                                                                              "core::fmt::Error"
+                                                                          ])
+                                                                    ]
                                                                   |)
                                                                 |)
                                                               |)
@@ -9334,31 +10570,54 @@ Module net.
                                                             []
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.apply
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::result::Result")
+                                                                  []
+                                                                  [
+                                                                    Ty.tuple [];
+                                                                    Ty.path "core::fmt::Error"
+                                                                  ],
+                                                                M.get_associated_function (|
+                                                                  Ty.path "core::fmt::Formatter",
+                                                                  "write_str",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.deref (| M.read (| f |) |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "core::fmt::Formatter"
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        mk_str (| "::" |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "str" ])
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "core::result::Result")
                                                                 []
                                                                 [
                                                                   Ty.tuple [];
                                                                   Ty.path "core::fmt::Error"
-                                                                ],
-                                                              M.get_associated_function (|
-                                                                Ty.path "core::fmt::Formatter",
-                                                                "write_str",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (| M.read (| f |) |)
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| mk_str (| "::" |) |)
-                                                                |)
-                                                              ]
-                                                            |)
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -9422,7 +10681,20 @@ Module net.
                                                                       [],
                                                                       []
                                                                     |),
-                                                                    [ M.read (| residual |) ]
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (| residual |))
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "core::convert::Infallible";
+                                                                            Ty.path
+                                                                              "core::fmt::Error"
+                                                                          ])
+                                                                    ]
                                                                   |)
                                                                 |)
                                                               |)
@@ -9457,86 +10729,125 @@ Module net.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (| M.read (| f |) |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.call_closure (|
-                                                                  Ty.apply
-                                                                    (Ty.path "&")
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "slice")
-                                                                        []
-                                                                        [ Ty.path "u16" ]
-                                                                    ],
-                                                                  M.get_trait_method (|
-                                                                    "core::ops::index::Index",
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (| M.read (| f |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [ Ty.path "core::fmt::Formatter" ]);
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
                                                                     Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          8
-                                                                      ]
-                                                                      [ Ty.path "u16" ],
-                                                                    [],
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path
-                                                                          "core::ops::range::RangeFrom")
-                                                                        []
-                                                                        [ Ty.path "usize" ]
-                                                                    ],
-                                                                    "index",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      segments
-                                                                    |);
-                                                                    Value.mkStructRecord
-                                                                      "core::ops::range::RangeFrom"
+                                                                      (Ty.path "&")
                                                                       []
-                                                                      [ Ty.path "usize" ]
                                                                       [
-                                                                        ("start",
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.add,
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ Ty.path "u16" ]
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "core::ops::index::Index",
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            8
+                                                                        ]
+                                                                        [ Ty.path "u16" ],
+                                                                      [],
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::ops::range::RangeFrom")
+                                                                          []
+                                                                          [ Ty.path "usize" ]
+                                                                      ],
+                                                                      "index",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          segments
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "array")
+                                                                              [
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  8
+                                                                              ]
+                                                                              [ Ty.path "u16" ]
+                                                                          ]);
+                                                                      M.value_with_ty
+                                                                        (M.value_with_ty
+                                                                          (Value.mkStructRecord
+                                                                            "core::ops::range::RangeFrom"
                                                                             [
-                                                                              M.read (|
-                                                                                M.SubPointer.get_struct_record_field (|
-                                                                                  zeroes,
-                                                                                  "core::net::ip_addr::fmt::Span",
-                                                                                  "start"
-                                                                                |)
-                                                                              |);
-                                                                              M.read (|
-                                                                                M.SubPointer.get_struct_record_field (|
-                                                                                  zeroes,
-                                                                                  "core::net::ip_addr::fmt::Span",
-                                                                                  "len"
-                                                                                |)
-                                                                              |)
-                                                                            ]
-                                                                          |))
-                                                                      ]
-                                                                  ]
+                                                                              ("start",
+                                                                                M.call_closure (|
+                                                                                  Ty.path "usize",
+                                                                                  BinOp.Wrap.add,
+                                                                                  [
+                                                                                    M.read (|
+                                                                                      M.SubPointer.get_struct_record_field (|
+                                                                                        zeroes,
+                                                                                        "core::net::ip_addr::fmt::Span",
+                                                                                        "start"
+                                                                                      |)
+                                                                                    |);
+                                                                                    M.read (|
+                                                                                      M.SubPointer.get_struct_record_field (|
+                                                                                        zeroes,
+                                                                                        "core::net::ip_addr::fmt::Span",
+                                                                                        "len"
+                                                                                      |)
+                                                                                    |)
+                                                                                  ]
+                                                                                |))
+                                                                            ])
+                                                                          (Ty.apply
+                                                                            (Ty.path
+                                                                              "core::ops::range::RangeFrom")
+                                                                            []
+                                                                            [ Ty.path "usize" ]))
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::ops::range::RangeFrom")
+                                                                          []
+                                                                          [ Ty.path "usize" ])
+                                                                    ]
+                                                                  |)
                                                                 |)
                                                               |)
                                                             |)
-                                                          |)
-                                                        |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u16" ]
+                                                            ])
                                                       ]
                                                     |)
                                                   |)
@@ -9555,32 +10866,18 @@ Module net.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.deref (| M.read (| f |) |)
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (| M.read (| f |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
                                                         []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "slice")
-                                                            []
-                                                            [ Ty.path "u16" ]
-                                                        ],
-                                                      M.pointer_coercion
-                                                        M.PointerCoercion.Unsize
-                                                        (Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "array")
-                                                              [ Value.Integer IntegerKind.Usize 8 ]
-                                                              [ Ty.path "u16" ]
-                                                          ])
-                                                        (Ty.apply
+                                                        [ Ty.path "core::fmt::Formatter" ]);
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.apply
                                                           (Ty.path "&")
                                                           []
                                                           [
@@ -9588,19 +10885,49 @@ Module net.
                                                               (Ty.path "slice")
                                                               []
                                                               [ Ty.path "u16" ]
-                                                          ]),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              segments
+                                                          ],
+                                                        M.pointer_coercion
+                                                          M.PointerCoercion.Unsize
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "array")
+                                                                [ Value.Integer IntegerKind.Usize 8
+                                                                ]
+                                                                [ Ty.path "u16" ]
+                                                            ])
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u16" ]
+                                                            ]),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                segments
+                                                              |)
                                                             |)
                                                           |)
-                                                        |)
-                                                      ]
-                                                    |)
+                                                        ]
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u16" ]
+                                                        ])
                                                   ]
                                                 |)))
                                           ]
@@ -9648,96 +10975,156 @@ Module net.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                  M.get_trait_method (|
-                                    "core::fmt::Write",
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "core::net::display_buffer::DisplayBuffer")
-                                      [ Value.Integer IntegerKind.Usize 39 ]
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                    M.get_trait_method (|
+                                      "core::fmt::Write",
+                                      Ty.apply
+                                        (Ty.path "core::net::display_buffer::DisplayBuffer")
+                                        [ Value.Integer IntegerKind.Usize 39 ]
+                                        [],
                                       [],
-                                    [],
-                                    [],
-                                    "write_fmt",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.MutRef, buf |);
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::Arguments",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::Arguments",
-                                        "new_v1",
-                                        [
-                                          Value.Integer IntegerKind.Usize 1;
-                                          Value.Integer IntegerKind.Usize 1
-                                        ],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                Value.Array [ mk_str (| "" |) ]
-                                              |)
-                                            |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                                Value.Array
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "core::fmt::rt::Argument",
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        "new_display",
-                                                        [],
+                                      [],
+                                      "write_fmt",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, buf |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::net::display_buffer::DisplayBuffer")
+                                              [ Value.Integer IntegerKind.Usize 39 ]
+                                              []
+                                          ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "core::fmt::Arguments",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::Arguments",
+                                            "new_v1",
+                                            [
+                                              Value.Integer IntegerKind.Usize 1;
+                                              Value.Integer IntegerKind.Usize 1
+                                            ],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 1 ]
                                                         [
                                                           Ty.apply
                                                             (Ty.path "&")
                                                             []
-                                                            [ Ty.path "core::net::ip_addr::Ipv6Addr"
-                                                            ]
-                                                        ]
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.Ref, self |)
-                                                          |)
-                                                        |)
-                                                      ]
+                                                            [ Ty.path "str" ]
+                                                        ],
+                                                      Value.Array [ mk_str (| "" |) ]
                                                     |)
-                                                  ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                                      Value.Array
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "core::fmt::rt::Argument",
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::rt::Argument",
+                                                              "new_display",
+                                                              [],
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "core::net::ip_addr::Ipv6Addr"
+                                                                  ]
+                                                              ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      self
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "core::net::ip_addr::Ipv6Addr"
+                                                                      ]
+                                                                  ])
+                                                            ]
+                                                          |)
+                                                        ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.path "core::fmt::Arguments")
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                               ]
                             |) in
                           M.alloc (|
@@ -9757,25 +11144,42 @@ Module net.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "core::net::display_buffer::DisplayBuffer")
-                                          [ Value.Integer IntegerKind.Usize 39 ]
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::net::display_buffer::DisplayBuffer")
+                                            [ Value.Integer IntegerKind.Usize 39 ]
+                                            [],
+                                          "as_str",
                                           [],
-                                        "as_str",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, buf |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "core::net::display_buffer::DisplayBuffer")
+                                                  [ Value.Integer IntegerKind.Usize 39 ]
+                                                  []
+                                              ])
+                                        ]
+                                      |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                               ]
                             |)
                           |)
@@ -9829,8 +11233,12 @@ Module net.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -9909,7 +11317,22 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, self |); M.borrow (| Pointer.Kind.Ref, v6 |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, self |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, v6 |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]
+                            ])
+                      ]
                     |)))
               ]
             |)))
@@ -9989,7 +11412,21 @@ Module net.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, v6 |); M.borrow (| Pointer.Kind.Ref, other |)
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, v6 |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, other |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]
+                            ])
                       ]
                     |)))
               ]
@@ -10028,28 +11465,32 @@ Module net.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ],
                 other
               |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_trait_method (|
-                    "core::cmp::Ord",
-                    Ty.path "core::net::ip_addr::Ipv6Addr",
-                    [],
-                    [],
-                    "cmp",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_trait_method (|
+                      "core::cmp::Ord",
+                      Ty.path "core::net::ip_addr::Ipv6Addr",
+                      [],
+                      [],
+                      "cmp",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10100,11 +11541,18 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Less" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Less" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -10134,8 +11582,12 @@ Module net.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v6 |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v6 |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                       ]
                     |)))
               ]
@@ -10190,11 +11642,18 @@ Module net.
                         "core::net::ip_addr::IpAddr::V4",
                         0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::cmp::Ordering" ]
-                      [ Value.StructTuple "core::cmp::Ordering::Greater" [] [] [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::cmp::Ordering::Greater" [])
+                            (Ty.path "core::cmp::Ordering")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::cmp::Ordering" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -10224,8 +11683,12 @@ Module net.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v6 |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v6 |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
                       ]
                     |)))
               ]
@@ -10276,55 +11739,86 @@ Module net.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 8 ]
-                      [ Ty.path "u16" ],
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.apply
                         (Ty.path "array")
                         [ Value.Integer IntegerKind.Usize 8 ]
                         [ Ty.path "u16" ],
-                      M.get_associated_function (|
-                        Ty.path "core::net::ip_addr::Ipv6Addr",
-                        "segments",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
+                      M.call_closure (|
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 8 ]
                           [ Ty.path "u16" ],
-                        M.call_closure (|
+                        M.get_associated_function (|
+                          Ty.path "core::net::ip_addr::Ipv6Addr",
+                          "segments",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                        ]
+                      |)
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 8 ]
+                        [ Ty.path "u16" ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 8 ]
                             [ Ty.path "u16" ],
-                          M.get_associated_function (|
-                            Ty.path "core::net::ip_addr::Ipv6Addr",
-                            "segments",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 8 ]
+                              [ Ty.path "u16" ],
+                            M.get_associated_function (|
+                              Ty.path "core::net::ip_addr::Ipv6Addr",
+                              "segments",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::net::ip_addr::Ipv6Addr" ])
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 8 ]
+                        [ Ty.path "u16" ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10360,7 +11854,7 @@ Module net.
                 [],
                 []
               |),
-              [ M.read (| ip |) ]
+              [ M.value_with_ty (M.read (| ip |)) (Ty.path "core::net::ip_addr::Ipv6Addr") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -10395,7 +11889,7 @@ Module net.
                 [],
                 []
               |),
-              [ M.read (| ip |) ]
+              [ M.value_with_ty (M.read (| ip |)) (Ty.path "u128") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -10426,11 +11920,11 @@ Module net.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
                 octets
               |) in
-            Value.mkStructRecord
-              "core::net::ip_addr::Ipv6Addr"
-              []
-              []
-              [ ("octets", M.read (| octets |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::net::ip_addr::Ipv6Addr"
+                [ ("octets", M.read (| octets |)) ])
+              (Ty.path "core::net::ip_addr::Ipv6Addr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10493,14 +11987,14 @@ Module net.
                         []
                       |),
                       [
-                        M.read (| a |);
-                        M.read (| b |);
-                        M.read (| c |);
-                        M.read (| d |);
-                        M.read (| e |);
-                        M.read (| f |);
-                        M.read (| g |);
-                        M.read (| h |)
+                        M.value_with_ty (M.read (| a |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| b |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| c |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| d |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| e |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| f |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| g |)) (Ty.path "u16");
+                        M.value_with_ty (M.read (| h |)) (Ty.path "u16")
                       ]
                     |)))
               ]
@@ -10535,30 +12029,37 @@ Module net.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
                 octets
               |) in
-            Value.StructTuple
-              "core::net::ip_addr::IpAddr::V6"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "core::net::ip_addr::Ipv6Addr",
-                  M.get_trait_method (|
-                    "core::convert::From",
+            M.value_with_ty
+              (Value.StructTuple
+                "core::net::ip_addr::IpAddr::V6"
+                [
+                  M.call_closure (|
                     Ty.path "core::net::ip_addr::Ipv6Addr",
-                    [],
+                    M.get_trait_method (|
+                      "core::convert::From",
+                      Ty.path "core::net::ip_addr::Ipv6Addr",
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 16 ]
+                          [ Ty.path "u8" ]
+                      ],
+                      "from",
+                      [],
+                      []
+                    |),
                     [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 16 ]
-                        [ Ty.path "u8" ]
-                    ],
-                    "from",
-                    [],
-                    []
-                  |),
-                  [ M.read (| octets |) ]
-                |)
-              ]))
+                      M.value_with_ty
+                        (M.read (| octets |))
+                        (Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 16 ]
+                          [ Ty.path "u8" ])
+                    ]
+                  |)
+                ])
+              (Ty.path "core::net::ip_addr::IpAddr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10589,30 +12090,37 @@ Module net.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u16" ],
                 segments
               |) in
-            Value.StructTuple
-              "core::net::ip_addr::IpAddr::V6"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "core::net::ip_addr::Ipv6Addr",
-                  M.get_trait_method (|
-                    "core::convert::From",
+            M.value_with_ty
+              (Value.StructTuple
+                "core::net::ip_addr::IpAddr::V6"
+                [
+                  M.call_closure (|
                     Ty.path "core::net::ip_addr::Ipv6Addr",
-                    [],
+                    M.get_trait_method (|
+                      "core::convert::From",
+                      Ty.path "core::net::ip_addr::Ipv6Addr",
+                      [],
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 8 ]
+                          [ Ty.path "u16" ]
+                      ],
+                      "from",
+                      [],
+                      []
+                    |),
                     [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 8 ]
-                        [ Ty.path "u16" ]
-                    ],
-                    "from",
-                    [],
-                    []
-                  |),
-                  [ M.read (| segments |) ]
-                |)
-              ]))
+                      M.value_with_ty
+                        (M.read (| segments |))
+                        (Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 8 ]
+                          [ Ty.path "u16" ])
+                    ]
+                  |)
+                ])
+              (Ty.path "core::net::ip_addr::IpAddr")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10675,14 +12183,24 @@ Module net.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::net::ip_addr::Ipv4Addr",
-                                  "octets"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::net::ip_addr::Ipv4Addr",
+                                    "octets"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 4 ]
+                                      [ Ty.path "u8" ]
+                                  ])
                             ]
                           |)
                         |),
@@ -10725,12 +12243,22 @@ Module net.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -10828,7 +12356,11 @@ Module net.
                 [],
                 []
               |),
-              [ M.read (| M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.read (| M.deref (| M.read (| self |) |) |))
+                  (Ty.path "core::net::ip_addr::Ipv4Addr")
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -10892,14 +12424,24 @@ Module net.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::net::ip_addr::Ipv6Addr",
-                                  "octets"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::net::ip_addr::Ipv6Addr",
+                                    "octets"
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 16 ]
+                                      [ Ty.path "u8" ]
+                                  ])
                             ]
                           |)
                         |),
@@ -10942,12 +12484,22 @@ Module net.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -11045,7 +12597,11 @@ Module net.
                 [],
                 []
               |),
-              [ M.read (| M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.read (| M.deref (| M.read (| self |) |) |))
+                  (Ty.path "core::net::ip_addr::Ipv6Addr")
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -11127,8 +12683,74 @@ Module net.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::zip::Zip")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::slice::iter::IterMut")
+                                    []
+                                    [ Ty.path "u8" ];
+                                  Ty.apply
+                                    (Ty.path "core::array::iter::IntoIter")
+                                    [ Value.Integer IntegerKind.Usize 4 ]
+                                    [ Ty.path "u8" ]
+                                ],
+                              M.get_function (|
+                                "core::iter::adapters::zip::zip",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 4 ]
+                                        [ Ty.path "u8" ]
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 4 ]
+                                    [ Ty.path "u8" ]
+                                ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::net::ip_addr::Ipv4Addr",
+                                      "octets"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 4 ]
+                                        [ Ty.path "u8" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      rhs,
+                                      "core::net::ip_addr::Ipv4Addr",
+                                      "octets"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 4 ]
+                                    [ Ty.path "u8" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::iter::adapters::zip::Zip")
                               []
                               [
@@ -11137,44 +12759,7 @@ Module net.
                                   (Ty.path "core::array::iter::IntoIter")
                                   [ Value.Integer IntegerKind.Usize 4 ]
                                   [ Ty.path "u8" ]
-                              ],
-                            M.get_function (|
-                              "core::iter::adapters::zip::zip",
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 4 ]
-                                      [ Ty.path "u8" ]
-                                  ];
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 4 ]
-                                  [ Ty.path "u8" ]
-                              ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::net::ip_addr::Ipv4Addr",
-                                  "octets"
-                                |)
-                              |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  rhs,
-                                  "core::net::ip_addr::Ipv4Addr",
-                                  "octets"
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -11247,10 +12832,29 @@ Module net.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::iter::adapters::zip::Zip")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ Ty.path "u8" ];
+                                                    Ty.apply
+                                                      (Ty.path "core::array::iter::IntoIter")
+                                                      [ Value.Integer IntegerKind.Usize 4 ]
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ])
                                         ]
                                       |)
                                     |),
@@ -11293,11 +12897,13 @@ Module net.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| lhs |) |)
-                                                  |);
-                                                  M.read (| rhs |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| lhs |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ]);
+                                                  M.value_with_ty (M.read (| rhs |)) (Ty.path "u8")
                                                 ]
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11359,8 +12965,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv4Addr")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11409,7 +13019,12 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, self |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "core::net::ip_addr::Ipv4Addr")
+                  ]
                 |) in
               self
             |)))
@@ -11462,8 +13077,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, self |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv4Addr")
                   ]
                 |) in
               self
@@ -11521,7 +13140,12 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, lhs |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, lhs |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "core::net::ip_addr::Ipv4Addr")
+                  ]
                 |) in
               lhs
             |)))
@@ -11582,8 +13206,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, lhs |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, lhs |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv4Addr")
                   ]
                 |) in
               lhs
@@ -11669,8 +13297,74 @@ Module net.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::zip::Zip")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::slice::iter::IterMut")
+                                    []
+                                    [ Ty.path "u8" ];
+                                  Ty.apply
+                                    (Ty.path "core::array::iter::IntoIter")
+                                    [ Value.Integer IntegerKind.Usize 4 ]
+                                    [ Ty.path "u8" ]
+                                ],
+                              M.get_function (|
+                                "core::iter::adapters::zip::zip",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 4 ]
+                                        [ Ty.path "u8" ]
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 4 ]
+                                    [ Ty.path "u8" ]
+                                ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::net::ip_addr::Ipv4Addr",
+                                      "octets"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 4 ]
+                                        [ Ty.path "u8" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      rhs,
+                                      "core::net::ip_addr::Ipv4Addr",
+                                      "octets"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 4 ]
+                                    [ Ty.path "u8" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::iter::adapters::zip::Zip")
                               []
                               [
@@ -11679,44 +13373,7 @@ Module net.
                                   (Ty.path "core::array::iter::IntoIter")
                                   [ Value.Integer IntegerKind.Usize 4 ]
                                   [ Ty.path "u8" ]
-                              ],
-                            M.get_function (|
-                              "core::iter::adapters::zip::zip",
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 4 ]
-                                      [ Ty.path "u8" ]
-                                  ];
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 4 ]
-                                  [ Ty.path "u8" ]
-                              ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::net::ip_addr::Ipv4Addr",
-                                  "octets"
-                                |)
-                              |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  rhs,
-                                  "core::net::ip_addr::Ipv4Addr",
-                                  "octets"
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -11789,10 +13446,29 @@ Module net.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::iter::adapters::zip::Zip")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ Ty.path "u8" ];
+                                                    Ty.apply
+                                                      (Ty.path "core::array::iter::IntoIter")
+                                                      [ Value.Integer IntegerKind.Usize 4 ]
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ])
                                         ]
                                       |)
                                     |),
@@ -11835,11 +13511,13 @@ Module net.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| lhs |) |)
-                                                  |);
-                                                  M.read (| rhs |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| lhs |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ]);
+                                                  M.value_with_ty (M.read (| rhs |)) (Ty.path "u8")
                                                 ]
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11901,8 +13579,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv4Addr")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11951,7 +13633,12 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, self |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "core::net::ip_addr::Ipv4Addr")
+                  ]
                 |) in
               self
             |)))
@@ -12004,8 +13691,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, self |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv4Addr")
                   ]
                 |) in
               self
@@ -12063,7 +13754,12 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, lhs |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, lhs |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "core::net::ip_addr::Ipv4Addr")
+                  ]
                 |) in
               lhs
             |)))
@@ -12124,8 +13820,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, lhs |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, lhs |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv4Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv4Addr")
                   ]
                 |) in
               lhs
@@ -12211,8 +13911,74 @@ Module net.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::zip::Zip")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::slice::iter::IterMut")
+                                    []
+                                    [ Ty.path "u8" ];
+                                  Ty.apply
+                                    (Ty.path "core::array::iter::IntoIter")
+                                    [ Value.Integer IntegerKind.Usize 16 ]
+                                    [ Ty.path "u8" ]
+                                ],
+                              M.get_function (|
+                                "core::iter::adapters::zip::zip",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 16 ]
+                                        [ Ty.path "u8" ]
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 16 ]
+                                    [ Ty.path "u8" ]
+                                ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::net::ip_addr::Ipv6Addr",
+                                      "octets"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 16 ]
+                                        [ Ty.path "u8" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      rhs,
+                                      "core::net::ip_addr::Ipv6Addr",
+                                      "octets"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 16 ]
+                                    [ Ty.path "u8" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::iter::adapters::zip::Zip")
                               []
                               [
@@ -12221,44 +13987,7 @@ Module net.
                                   (Ty.path "core::array::iter::IntoIter")
                                   [ Value.Integer IntegerKind.Usize 16 ]
                                   [ Ty.path "u8" ]
-                              ],
-                            M.get_function (|
-                              "core::iter::adapters::zip::zip",
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 16 ]
-                                      [ Ty.path "u8" ]
-                                  ];
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 16 ]
-                                  [ Ty.path "u8" ]
-                              ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::net::ip_addr::Ipv6Addr",
-                                  "octets"
-                                |)
-                              |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  rhs,
-                                  "core::net::ip_addr::Ipv6Addr",
-                                  "octets"
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -12331,10 +14060,29 @@ Module net.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::iter::adapters::zip::Zip")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ Ty.path "u8" ];
+                                                    Ty.apply
+                                                      (Ty.path "core::array::iter::IntoIter")
+                                                      [ Value.Integer IntegerKind.Usize 16 ]
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ])
                                         ]
                                       |)
                                     |),
@@ -12377,11 +14125,13 @@ Module net.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| lhs |) |)
-                                                  |);
-                                                  M.read (| rhs |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| lhs |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ]);
+                                                  M.value_with_ty (M.read (| rhs |)) (Ty.path "u8")
                                                 ]
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12443,8 +14193,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv6Addr")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12493,7 +14247,12 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, self |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "core::net::ip_addr::Ipv6Addr")
+                  ]
                 |) in
               self
             |)))
@@ -12546,8 +14305,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, self |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv6Addr")
                   ]
                 |) in
               self
@@ -12605,7 +14368,12 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, lhs |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, lhs |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "core::net::ip_addr::Ipv6Addr")
+                  ]
                 |) in
               lhs
             |)))
@@ -12666,8 +14434,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, lhs |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, lhs |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv6Addr")
                   ]
                 |) in
               lhs
@@ -12753,8 +14525,74 @@ Module net.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::zip::Zip")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::slice::iter::IterMut")
+                                    []
+                                    [ Ty.path "u8" ];
+                                  Ty.apply
+                                    (Ty.path "core::array::iter::IntoIter")
+                                    [ Value.Integer IntegerKind.Usize 16 ]
+                                    [ Ty.path "u8" ]
+                                ],
+                              M.get_function (|
+                                "core::iter::adapters::zip::zip",
+                                [],
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 16 ]
+                                        [ Ty.path "u8" ]
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 16 ]
+                                    [ Ty.path "u8" ]
+                                ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::net::ip_addr::Ipv6Addr",
+                                      "octets"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 16 ]
+                                        [ Ty.path "u8" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      rhs,
+                                      "core::net::ip_addr::Ipv6Addr",
+                                      "octets"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 16 ]
+                                    [ Ty.path "u8" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::iter::adapters::zip::Zip")
                               []
                               [
@@ -12763,44 +14601,7 @@ Module net.
                                   (Ty.path "core::array::iter::IntoIter")
                                   [ Value.Integer IntegerKind.Usize 16 ]
                                   [ Ty.path "u8" ]
-                              ],
-                            M.get_function (|
-                              "core::iter::adapters::zip::zip",
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 16 ]
-                                      [ Ty.path "u8" ]
-                                  ];
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 16 ]
-                                  [ Ty.path "u8" ]
-                              ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::net::ip_addr::Ipv6Addr",
-                                  "octets"
-                                |)
-                              |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  rhs,
-                                  "core::net::ip_addr::Ipv6Addr",
-                                  "octets"
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -12873,10 +14674,29 @@ Module net.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::iter::adapters::zip::Zip")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ Ty.path "u8" ];
+                                                    Ty.apply
+                                                      (Ty.path "core::array::iter::IntoIter")
+                                                      [ Value.Integer IntegerKind.Usize 16 ]
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ])
                                         ]
                                       |)
                                     |),
@@ -12919,11 +14739,13 @@ Module net.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| lhs |) |)
-                                                  |);
-                                                  M.read (| rhs |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| lhs |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ]);
+                                                  M.value_with_ty (M.read (| rhs |)) (Ty.path "u8")
                                                 ]
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12985,8 +14807,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv6Addr")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -13035,7 +14861,12 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, self |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "core::net::ip_addr::Ipv6Addr")
+                  ]
                 |) in
               self
             |)))
@@ -13088,8 +14919,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, self |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv6Addr")
                   ]
                 |) in
               self
@@ -13147,7 +14982,12 @@ Module net.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, lhs |); M.read (| rhs |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, lhs |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "core::net::ip_addr::Ipv6Addr")
+                  ]
                 |) in
               lhs
             |)))
@@ -13208,8 +15048,12 @@ Module net.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, lhs |);
-                    M.read (| M.deref (| M.read (| rhs |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, lhs |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::net::ip_addr::Ipv6Addr" ]);
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| rhs |) |) |))
+                      (Ty.path "core::net::ip_addr::Ipv6Addr")
                   ]
                 |) in
               lhs

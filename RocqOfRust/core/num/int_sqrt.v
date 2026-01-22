@@ -54,28 +54,9 @@ Module num.
                                         []
                                       |),
                                       [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [ Ty.tuple [ Ty.path "u8"; Ty.path "u8" ] ]
-                                            ],
-                                          M.pointer_coercion
-                                            M.PointerCoercion.Unsize
-                                            (Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "array")
-                                                  [ Value.Integer IntegerKind.Usize 256 ]
-                                                  [ Ty.tuple [ Ty.path "u8"; Ty.path "u8" ] ]
-                                              ])
-                                            (Ty.apply
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply
                                               (Ty.path "&")
                                               []
                                               [
@@ -83,9 +64,38 @@ Module num.
                                                   (Ty.path "slice")
                                                   []
                                                   [ Ty.tuple [ Ty.path "u8"; Ty.path "u8" ] ]
-                                              ]),
-                                          [ M.borrow (| Pointer.Kind.Ref, result |) ]
-                                        |)
+                                              ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.Unsize
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 256 ]
+                                                    [ Ty.tuple [ Ty.path "u8"; Ty.path "u8" ] ]
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [ Ty.tuple [ Ty.path "u8"; Ty.path "u8" ] ]
+                                                ]),
+                                            [ M.borrow (| Pointer.Kind.Ref, result |) ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [ Ty.tuple [ Ty.path "u8"; Ty.path "u8" ] ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -115,7 +125,13 @@ Module num.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| isqrt_n |); Value.Integer IntegerKind.U32 2
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| isqrt_n |))
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.U32 2)
+                                                (Ty.path "u32")
                                             ]
                                           |)
                                         ]
@@ -158,15 +174,19 @@ Module num.
                                                     []
                                                   |),
                                                   [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.add,
-                                                      [
-                                                        M.read (| isqrt_n |);
-                                                        Value.Integer IntegerKind.Usize 1
-                                                      ]
-                                                    |);
-                                                    Value.Integer IntegerKind.U32 2
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.add,
+                                                        [
+                                                          M.read (| isqrt_n |);
+                                                          Value.Integer IntegerKind.Usize 1
+                                                        ]
+                                                      |))
+                                                      (Ty.path "usize");
+                                                    M.value_with_ty
+                                                      (Value.Integer IntegerKind.U32 2)
+                                                      (Ty.path "u32")
                                                   ]
                                                 |)
                                               ]
@@ -303,38 +323,55 @@ Module num.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "Negative input inside `isqrt`."
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "Negative input inside `isqrt`."
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -353,7 +390,7 @@ Module num.
                 (M.call_closure (|
                   Ty.path "u8",
                   M.get_function (| "core::num::int_sqrt::u8", [], [] |),
-                  [ M.cast (Ty.path "u8") (M.read (| n |)) ]
+                  [ M.value_with_ty (M.cast (Ty.path "u8") (M.read (| n |))) (Ty.path "u8") ]
                 |))
             |)
           |)))
@@ -419,38 +456,55 @@ Module num.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "Negative input inside `isqrt`."
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "Negative input inside `isqrt`."
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -469,7 +523,7 @@ Module num.
                 (M.call_closure (|
                   Ty.path "u16",
                   M.get_function (| "core::num::int_sqrt::u16", [], [] |),
-                  [ M.cast (Ty.path "u16") (M.read (| n |)) ]
+                  [ M.value_with_ty (M.cast (Ty.path "u16") (M.read (| n |))) (Ty.path "u16") ]
                 |))
             |)
           |)))
@@ -535,38 +589,55 @@ Module num.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "Negative input inside `isqrt`."
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "Negative input inside `isqrt`."
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -585,7 +656,7 @@ Module num.
                 (M.call_closure (|
                   Ty.path "u32",
                   M.get_function (| "core::num::int_sqrt::u32", [], [] |),
-                  [ M.cast (Ty.path "u32") (M.read (| n |)) ]
+                  [ M.value_with_ty (M.cast (Ty.path "u32") (M.read (| n |))) (Ty.path "u32") ]
                 |))
             |)
           |)))
@@ -651,38 +722,55 @@ Module num.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "Negative input inside `isqrt`."
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "Negative input inside `isqrt`."
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -701,7 +789,7 @@ Module num.
                 (M.call_closure (|
                   Ty.path "u64",
                   M.get_function (| "core::num::int_sqrt::u64", [], [] |),
-                  [ M.cast (Ty.path "u64") (M.read (| n |)) ]
+                  [ M.value_with_ty (M.cast (Ty.path "u64") (M.read (| n |))) (Ty.path "u64") ]
                 |))
             |)
           |)))
@@ -767,38 +855,55 @@ Module num.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "Negative input inside `isqrt`."
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "Negative input inside `isqrt`."
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -817,7 +922,7 @@ Module num.
                 (M.call_closure (|
                   Ty.path "u128",
                   M.get_function (| "core::num::int_sqrt::u128", [], [] |),
-                  [ M.cast (Ty.path "u128") (M.read (| n |)) ]
+                  [ M.value_with_ty (M.cast (Ty.path "u128") (M.read (| n |))) (Ty.path "u128") ]
                 |))
             |)
           |)))
@@ -884,38 +989,55 @@ Module num.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "`$n` is  zero in `first_stage!`."
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "`$n` is  zero in `first_stage!`."
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -965,11 +1087,13 @@ Module num.
                             Ty.tuple [],
                             M.get_function (| "core::hint::assert_unchecked", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ne,
-                                [ M.read (| s |); Value.Integer IntegerKind.U8 0 ]
-                              |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ne,
+                                  [ M.read (| s |); Value.Integer IntegerKind.U8 0 ]
+                                |))
+                                (Ty.path "bool")
                             ]
                           |) in
                         M.alloc (|
@@ -1039,21 +1163,50 @@ Module num.
                                                 []
                                               |),
                                               [
-                                                M.call_closure (|
-                                                  Ty.path "core::fmt::Arguments",
-                                                  M.get_associated_function (|
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.path "core::fmt::Arguments",
-                                                    "new_const",
-                                                    [ Value.Integer IntegerKind.Usize 1 ],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::Arguments",
+                                                      "new_const",
+                                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
                                                           Pointer.Kind.Ref,
-                                                          M.alloc (|
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.alloc (|
+                                                                Ty.apply
+                                                                  (Ty.path "array")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ]
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "str" ]
+                                                                  ],
+                                                                Value.Array
+                                                                  [
+                                                                    mk_str (|
+                                                                      "`$s` is  zero in `last_stage!`."
+                                                                    |)
+                                                                  ]
+                                                              |)
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
                                                             Ty.apply
                                                               (Ty.path "array")
                                                               [ Value.Integer IntegerKind.Usize 1 ]
@@ -1062,19 +1215,11 @@ Module num.
                                                                   (Ty.path "&")
                                                                   []
                                                                   [ Ty.path "str" ]
-                                                              ],
-                                                            Value.Array
-                                                              [
-                                                                mk_str (|
-                                                                  "`$s` is  zero in `last_stage!`."
-                                                                |)
                                                               ]
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
+                                                          ])
+                                                    ]
+                                                  |))
+                                                  (Ty.path "core::fmt::Arguments")
                                               ]
                                             |)
                                           |)));
@@ -1182,7 +1327,10 @@ Module num.
                               [],
                               []
                             |),
-                            [ M.read (| s |); M.read (| s |) ]
+                            [
+                              M.value_with_ty (M.read (| s |)) (Ty.path "u16");
+                              M.value_with_ty (M.read (| s |)) (Ty.path "u16")
+                            ]
                           |)
                         |),
                         [
@@ -1397,38 +1545,55 @@ Module num.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "`$n` is  zero in `first_stage!`."
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "`$n` is  zero in `first_stage!`."
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -1478,11 +1643,13 @@ Module num.
                             Ty.tuple [],
                             M.get_function (| "core::hint::assert_unchecked", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ne,
-                                [ M.read (| s |); Value.Integer IntegerKind.U8 0 ]
-                              |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ne,
+                                  [ M.read (| s |); Value.Integer IntegerKind.U8 0 ]
+                                |))
+                                (Ty.path "bool")
                             ]
                           |) in
                         M.alloc (|
@@ -1553,21 +1720,50 @@ Module num.
                                                 []
                                               |),
                                               [
-                                                M.call_closure (|
-                                                  Ty.path "core::fmt::Arguments",
-                                                  M.get_associated_function (|
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.path "core::fmt::Arguments",
-                                                    "new_const",
-                                                    [ Value.Integer IntegerKind.Usize 1 ],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::Arguments",
+                                                      "new_const",
+                                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
                                                           Pointer.Kind.Ref,
-                                                          M.alloc (|
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.alloc (|
+                                                                Ty.apply
+                                                                  (Ty.path "array")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ]
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "str" ]
+                                                                  ],
+                                                                Value.Array
+                                                                  [
+                                                                    mk_str (|
+                                                                      "`$s` is  zero in `middle_stage!`."
+                                                                    |)
+                                                                  ]
+                                                              |)
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
                                                             Ty.apply
                                                               (Ty.path "array")
                                                               [ Value.Integer IntegerKind.Usize 1 ]
@@ -1576,19 +1772,11 @@ Module num.
                                                                   (Ty.path "&")
                                                                   []
                                                                   [ Ty.path "str" ]
-                                                              ],
-                                                            Value.Array
-                                                              [
-                                                                mk_str (|
-                                                                  "`$s` is  zero in `middle_stage!`."
-                                                                |)
                                                               ]
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
+                                                          ])
+                                                    ]
+                                                  |))
+                                                  (Ty.path "core::fmt::Arguments")
                                               ]
                                             |)
                                           |)));
@@ -1719,43 +1907,47 @@ Module num.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.path "u16",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u16",
-                                    BinOp.Wrap.shl,
-                                    [
-                                      M.read (| u |);
-                                      M.read (|
-                                        get_constant (|
-                                          "core::num::int_sqrt::u32_stages::QUARTER_BITS",
-                                          Ty.path "u32"
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.bit_or,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u16",
+                                      BinOp.Wrap.shl,
+                                      [
+                                        M.read (| u |);
+                                        M.read (|
+                                          get_constant (|
+                                            "core::num::int_sqrt::u32_stages::QUARTER_BITS",
+                                            Ty.path "u32"
+                                          |)
                                         |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "u16",
-                                    BinOp.Wrap.bit_and,
-                                    [
-                                      M.read (| lo |);
-                                      M.read (|
-                                        get_constant (|
-                                          "core::num::int_sqrt::u32_stages::LOWEST_QUARTER_1_BITS",
-                                          Ty.path "u16"
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "u16",
+                                      BinOp.Wrap.bit_and,
+                                      [
+                                        M.read (| lo |);
+                                        M.read (|
+                                          get_constant (|
+                                            "core::num::int_sqrt::u32_stages::LOWEST_QUARTER_1_BITS",
+                                            Ty.path "u16"
+                                          |)
                                         |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "u16",
-                                BinOp.Wrap.mul,
-                                [ M.read (| q |); M.read (| q |) ]
-                              |)
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u16");
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.mul,
+                                  [ M.read (| q |); M.read (| q |) ]
+                                |))
+                                (Ty.path "u16")
                             ]
                           |)
                         |),
@@ -1793,22 +1985,26 @@ Module num.
                                                     []
                                                   |),
                                                   [
-                                                    M.read (| r |);
-                                                    M.call_closure (|
-                                                      Ty.path "u16",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u16",
-                                                          BinOp.Wrap.mul,
-                                                          [
-                                                            Value.Integer IntegerKind.U16 2;
-                                                            M.read (| s |)
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.U16 1
-                                                      ]
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.read (| r |))
+                                                      (Ty.path "u16");
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.path "u16",
+                                                        BinOp.Wrap.sub,
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "u16",
+                                                            BinOp.Wrap.mul,
+                                                            [
+                                                              Value.Integer IntegerKind.U16 2;
+                                                              M.read (| s |)
+                                                            ]
+                                                          |);
+                                                          Value.Integer IntegerKind.U16 1
+                                                        ]
+                                                      |))
+                                                      (Ty.path "u16")
                                                   ]
                                                 |)
                                               |) in
@@ -1833,11 +2029,13 @@ Module num.
                                     Ty.tuple [],
                                     M.get_function (| "core::hint::assert_unchecked", [], [] |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ne,
-                                        [ M.read (| s |); Value.Integer IntegerKind.U16 0 ]
-                                      |)
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.ne,
+                                          [ M.read (| s |); Value.Integer IntegerKind.U16 0 ]
+                                        |))
+                                        (Ty.path "bool")
                                     ]
                                   |) in
                                 M.alloc (|
@@ -1911,21 +2109,50 @@ Module num.
                                                         []
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.path "core::fmt::Arguments",
-                                                          M.get_associated_function (|
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
                                                             Ty.path "core::fmt::Arguments",
-                                                            "new_const",
-                                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::Arguments",
+                                                              "new_const",
+                                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
                                                                   Pointer.Kind.Ref,
-                                                                  M.alloc (|
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.alloc (|
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Ty.path "str" ]
+                                                                          ],
+                                                                        Value.Array
+                                                                          [
+                                                                            mk_str (|
+                                                                              "`$s` is  zero in `last_stage!`."
+                                                                            |)
+                                                                          ]
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
                                                                     Ty.apply
                                                                       (Ty.path "array")
                                                                       [
@@ -1938,19 +2165,11 @@ Module num.
                                                                           (Ty.path "&")
                                                                           []
                                                                           [ Ty.path "str" ]
-                                                                      ],
-                                                                    Value.Array
-                                                                      [
-                                                                        mk_str (|
-                                                                          "`$s` is  zero in `last_stage!`."
-                                                                        |)
                                                                       ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                                  ])
+                                                            ]
+                                                          |))
+                                                          (Ty.path "core::fmt::Arguments")
                                                       ]
                                                     |)
                                                   |)));
@@ -2061,7 +2280,10 @@ Module num.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| s |); M.read (| s |) ]
+                                    [
+                                      M.value_with_ty (M.read (| s |)) (Ty.path "u32");
+                                      M.value_with_ty (M.read (| s |)) (Ty.path "u32")
+                                    ]
                                   |)
                                 |),
                                 [
@@ -2415,38 +2637,55 @@ Module num.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "`$n` is  zero in `first_stage!`."
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "`$n` is  zero in `first_stage!`."
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -2496,11 +2735,13 @@ Module num.
                             Ty.tuple [],
                             M.get_function (| "core::hint::assert_unchecked", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ne,
-                                [ M.read (| s |); Value.Integer IntegerKind.U8 0 ]
-                              |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ne,
+                                  [ M.read (| s |); Value.Integer IntegerKind.U8 0 ]
+                                |))
+                                (Ty.path "bool")
                             ]
                           |) in
                         M.alloc (|
@@ -2571,21 +2812,50 @@ Module num.
                                                 []
                                               |),
                                               [
-                                                M.call_closure (|
-                                                  Ty.path "core::fmt::Arguments",
-                                                  M.get_associated_function (|
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.path "core::fmt::Arguments",
-                                                    "new_const",
-                                                    [ Value.Integer IntegerKind.Usize 1 ],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::Arguments",
+                                                      "new_const",
+                                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
                                                           Pointer.Kind.Ref,
-                                                          M.alloc (|
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.alloc (|
+                                                                Ty.apply
+                                                                  (Ty.path "array")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ]
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "str" ]
+                                                                  ],
+                                                                Value.Array
+                                                                  [
+                                                                    mk_str (|
+                                                                      "`$s` is  zero in `middle_stage!`."
+                                                                    |)
+                                                                  ]
+                                                              |)
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
                                                             Ty.apply
                                                               (Ty.path "array")
                                                               [ Value.Integer IntegerKind.Usize 1 ]
@@ -2594,19 +2864,11 @@ Module num.
                                                                   (Ty.path "&")
                                                                   []
                                                                   [ Ty.path "str" ]
-                                                              ],
-                                                            Value.Array
-                                                              [
-                                                                mk_str (|
-                                                                  "`$s` is  zero in `middle_stage!`."
-                                                                |)
                                                               ]
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
+                                                          ])
+                                                    ]
+                                                  |))
+                                                  (Ty.path "core::fmt::Arguments")
                                               ]
                                             |)
                                           |)));
@@ -2737,43 +2999,47 @@ Module num.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.path "u16",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u16",
-                                    BinOp.Wrap.shl,
-                                    [
-                                      M.read (| u |);
-                                      M.read (|
-                                        get_constant (|
-                                          "core::num::int_sqrt::u64_stages::QUARTER_BITS",
-                                          Ty.path "u32"
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.bit_or,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u16",
+                                      BinOp.Wrap.shl,
+                                      [
+                                        M.read (| u |);
+                                        M.read (|
+                                          get_constant (|
+                                            "core::num::int_sqrt::u64_stages::QUARTER_BITS",
+                                            Ty.path "u32"
+                                          |)
                                         |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "u16",
-                                    BinOp.Wrap.bit_and,
-                                    [
-                                      M.read (| lo |);
-                                      M.read (|
-                                        get_constant (|
-                                          "core::num::int_sqrt::u64_stages::LOWEST_QUARTER_1_BITS",
-                                          Ty.path "u16"
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "u16",
+                                      BinOp.Wrap.bit_and,
+                                      [
+                                        M.read (| lo |);
+                                        M.read (|
+                                          get_constant (|
+                                            "core::num::int_sqrt::u64_stages::LOWEST_QUARTER_1_BITS",
+                                            Ty.path "u16"
+                                          |)
                                         |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "u16",
-                                BinOp.Wrap.mul,
-                                [ M.read (| q |); M.read (| q |) ]
-                              |)
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u16");
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.mul,
+                                  [ M.read (| q |); M.read (| q |) ]
+                                |))
+                                (Ty.path "u16")
                             ]
                           |)
                         |),
@@ -2811,22 +3077,26 @@ Module num.
                                                     []
                                                   |),
                                                   [
-                                                    M.read (| r |);
-                                                    M.call_closure (|
-                                                      Ty.path "u16",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u16",
-                                                          BinOp.Wrap.mul,
-                                                          [
-                                                            Value.Integer IntegerKind.U16 2;
-                                                            M.read (| s |)
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.U16 1
-                                                      ]
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.read (| r |))
+                                                      (Ty.path "u16");
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.path "u16",
+                                                        BinOp.Wrap.sub,
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "u16",
+                                                            BinOp.Wrap.mul,
+                                                            [
+                                                              Value.Integer IntegerKind.U16 2;
+                                                              M.read (| s |)
+                                                            ]
+                                                          |);
+                                                          Value.Integer IntegerKind.U16 1
+                                                        ]
+                                                      |))
+                                                      (Ty.path "u16")
                                                   ]
                                                 |)
                                               |) in
@@ -2851,11 +3121,13 @@ Module num.
                                     Ty.tuple [],
                                     M.get_function (| "core::hint::assert_unchecked", [], [] |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ne,
-                                        [ M.read (| s |); Value.Integer IntegerKind.U16 0 ]
-                                      |)
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.ne,
+                                          [ M.read (| s |); Value.Integer IntegerKind.U16 0 ]
+                                        |))
+                                        (Ty.path "bool")
                                     ]
                                   |) in
                                 M.alloc (|
@@ -2930,21 +3202,50 @@ Module num.
                                                         []
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.path "core::fmt::Arguments",
-                                                          M.get_associated_function (|
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
                                                             Ty.path "core::fmt::Arguments",
-                                                            "new_const",
-                                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::Arguments",
+                                                              "new_const",
+                                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
                                                                   Pointer.Kind.Ref,
-                                                                  M.alloc (|
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.alloc (|
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Ty.path "str" ]
+                                                                          ],
+                                                                        Value.Array
+                                                                          [
+                                                                            mk_str (|
+                                                                              "`$s` is  zero in `middle_stage!`."
+                                                                            |)
+                                                                          ]
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
                                                                     Ty.apply
                                                                       (Ty.path "array")
                                                                       [
@@ -2957,19 +3258,11 @@ Module num.
                                                                           (Ty.path "&")
                                                                           []
                                                                           [ Ty.path "str" ]
-                                                                      ],
-                                                                    Value.Array
-                                                                      [
-                                                                        mk_str (|
-                                                                          "`$s` is  zero in `middle_stage!`."
-                                                                        |)
                                                                       ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                                  ])
+                                                            ]
+                                                          |))
+                                                          (Ty.path "core::fmt::Arguments")
                                                       ]
                                                     |)
                                                   |)));
@@ -3103,43 +3396,47 @@ Module num.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "u32",
-                                        BinOp.Wrap.bit_or,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "u32",
-                                            BinOp.Wrap.shl,
-                                            [
-                                              M.read (| u |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "core::num::int_sqrt::u64_stages::QUARTER_BITS'1",
-                                                  Ty.path "u32"
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "u32",
+                                          BinOp.Wrap.bit_or,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "u32",
+                                              BinOp.Wrap.shl,
+                                              [
+                                                M.read (| u |);
+                                                M.read (|
+                                                  get_constant (|
+                                                    "core::num::int_sqrt::u64_stages::QUARTER_BITS'1",
+                                                    Ty.path "u32"
+                                                  |)
                                                 |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "u32",
-                                            BinOp.Wrap.bit_and,
-                                            [
-                                              M.read (| lo |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "core::num::int_sqrt::u64_stages::LOWEST_QUARTER_1_BITS'1",
-                                                  Ty.path "u32"
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "u32",
+                                              BinOp.Wrap.bit_and,
+                                              [
+                                                M.read (| lo |);
+                                                M.read (|
+                                                  get_constant (|
+                                                    "core::num::int_sqrt::u64_stages::LOWEST_QUARTER_1_BITS'1",
+                                                    Ty.path "u32"
+                                                  |)
                                                 |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "u32",
-                                        BinOp.Wrap.mul,
-                                        [ M.read (| q |); M.read (| q |) ]
-                                      |)
+                                              ]
+                                            |)
+                                          ]
+                                        |))
+                                        (Ty.path "u32");
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "u32",
+                                          BinOp.Wrap.mul,
+                                          [ M.read (| q |); M.read (| q |) ]
+                                        |))
+                                        (Ty.path "u32")
                                     ]
                                   |)
                                 |),
@@ -3177,22 +3474,28 @@ Module num.
                                                             []
                                                           |),
                                                           [
-                                                            M.read (| r |);
-                                                            M.call_closure (|
-                                                              Ty.path "u32",
-                                                              BinOp.Wrap.sub,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "u32",
-                                                                  BinOp.Wrap.mul,
-                                                                  [
-                                                                    Value.Integer IntegerKind.U32 2;
-                                                                    M.read (| s |)
-                                                                  ]
-                                                                |);
-                                                                Value.Integer IntegerKind.U32 1
-                                                              ]
-                                                            |)
+                                                            M.value_with_ty
+                                                              (M.read (| r |))
+                                                              (Ty.path "u32");
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path "u32",
+                                                                BinOp.Wrap.sub,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "u32",
+                                                                    BinOp.Wrap.mul,
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.U32
+                                                                        2;
+                                                                      M.read (| s |)
+                                                                    ]
+                                                                  |);
+                                                                  Value.Integer IntegerKind.U32 1
+                                                                ]
+                                                              |))
+                                                              (Ty.path "u32")
                                                           ]
                                                         |)
                                                       |) in
@@ -3223,11 +3526,14 @@ Module num.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.ne,
-                                                [ M.read (| s |); Value.Integer IntegerKind.U32 0 ]
-                                              |)
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.ne,
+                                                  [ M.read (| s |); Value.Integer IntegerKind.U32 0
+                                                  ]
+                                                |))
+                                                (Ty.path "bool")
                                             ]
                                           |) in
                                         M.alloc (|
@@ -3304,25 +3610,58 @@ Module num.
                                                                 []
                                                               |),
                                                               [
-                                                                M.call_closure (|
-                                                                  Ty.path "core::fmt::Arguments",
-                                                                  M.get_associated_function (|
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
                                                                     Ty.path "core::fmt::Arguments",
-                                                                    "new_const",
+                                                                    M.get_associated_function (|
+                                                                      Ty.path
+                                                                        "core::fmt::Arguments",
+                                                                      "new_const",
+                                                                      [
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          1
+                                                                      ],
+                                                                      []
+                                                                    |),
                                                                     [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        1
-                                                                    ],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.borrow (|
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
                                                                           Pointer.Kind.Ref,
-                                                                          M.alloc (|
+                                                                          M.deref (|
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.alloc (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "array")
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      1
+                                                                                  ]
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "str"
+                                                                                      ]
+                                                                                  ],
+                                                                                Value.Array
+                                                                                  [
+                                                                                    mk_str (|
+                                                                                      "`$s` is  zero in `last_stage!`."
+                                                                                    |)
+                                                                                  ]
+                                                                              |)
+                                                                            |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
                                                                             Ty.apply
                                                                               (Ty.path "array")
                                                                               [
@@ -3335,19 +3674,11 @@ Module num.
                                                                                   (Ty.path "&")
                                                                                   []
                                                                                   [ Ty.path "str" ]
-                                                                              ],
-                                                                            Value.Array
-                                                                              [
-                                                                                mk_str (|
-                                                                                  "`$s` is  zero in `last_stage!`."
-                                                                                |)
                                                                               ]
-                                                                          |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  ]
-                                                                |)
+                                                                          ])
+                                                                    ]
+                                                                  |))
+                                                                  (Ty.path "core::fmt::Arguments")
                                                               ]
                                                             |)
                                                           |)));
@@ -3458,7 +3789,10 @@ Module num.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| s |); M.read (| s |) ]
+                                            [
+                                              M.value_with_ty (M.read (| s |)) (Ty.path "u64");
+                                              M.value_with_ty (M.read (| s |)) (Ty.path "u64")
+                                            ]
                                           |)
                                         |),
                                         [
@@ -3950,38 +4284,55 @@ Module num.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "`$n` is  zero in `first_stage!`."
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "`$n` is  zero in `first_stage!`."
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -4031,11 +4382,13 @@ Module num.
                             Ty.tuple [],
                             M.get_function (| "core::hint::assert_unchecked", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                BinOp.ne,
-                                [ M.read (| s |); Value.Integer IntegerKind.U8 0 ]
-                              |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  BinOp.ne,
+                                  [ M.read (| s |); Value.Integer IntegerKind.U8 0 ]
+                                |))
+                                (Ty.path "bool")
                             ]
                           |) in
                         M.alloc (|
@@ -4106,21 +4459,50 @@ Module num.
                                                 []
                                               |),
                                               [
-                                                M.call_closure (|
-                                                  Ty.path "core::fmt::Arguments",
-                                                  M.get_associated_function (|
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.path "core::fmt::Arguments",
-                                                    "new_const",
-                                                    [ Value.Integer IntegerKind.Usize 1 ],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::Arguments",
+                                                      "new_const",
+                                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
                                                           Pointer.Kind.Ref,
-                                                          M.alloc (|
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.alloc (|
+                                                                Ty.apply
+                                                                  (Ty.path "array")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ]
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "str" ]
+                                                                  ],
+                                                                Value.Array
+                                                                  [
+                                                                    mk_str (|
+                                                                      "`$s` is  zero in `middle_stage!`."
+                                                                    |)
+                                                                  ]
+                                                              |)
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
                                                             Ty.apply
                                                               (Ty.path "array")
                                                               [ Value.Integer IntegerKind.Usize 1 ]
@@ -4129,19 +4511,11 @@ Module num.
                                                                   (Ty.path "&")
                                                                   []
                                                                   [ Ty.path "str" ]
-                                                              ],
-                                                            Value.Array
-                                                              [
-                                                                mk_str (|
-                                                                  "`$s` is  zero in `middle_stage!`."
-                                                                |)
                                                               ]
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
+                                                          ])
+                                                    ]
+                                                  |))
+                                                  (Ty.path "core::fmt::Arguments")
                                               ]
                                             |)
                                           |)));
@@ -4272,43 +4646,47 @@ Module num.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.path "u16",
-                                BinOp.Wrap.bit_or,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u16",
-                                    BinOp.Wrap.shl,
-                                    [
-                                      M.read (| u |);
-                                      M.read (|
-                                        get_constant (|
-                                          "core::num::int_sqrt::u128_stages::QUARTER_BITS",
-                                          Ty.path "u32"
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.bit_or,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u16",
+                                      BinOp.Wrap.shl,
+                                      [
+                                        M.read (| u |);
+                                        M.read (|
+                                          get_constant (|
+                                            "core::num::int_sqrt::u128_stages::QUARTER_BITS",
+                                            Ty.path "u32"
+                                          |)
                                         |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "u16",
-                                    BinOp.Wrap.bit_and,
-                                    [
-                                      M.read (| lo |);
-                                      M.read (|
-                                        get_constant (|
-                                          "core::num::int_sqrt::u128_stages::LOWEST_QUARTER_1_BITS",
-                                          Ty.path "u16"
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "u16",
+                                      BinOp.Wrap.bit_and,
+                                      [
+                                        M.read (| lo |);
+                                        M.read (|
+                                          get_constant (|
+                                            "core::num::int_sqrt::u128_stages::LOWEST_QUARTER_1_BITS",
+                                            Ty.path "u16"
+                                          |)
                                         |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "u16",
-                                BinOp.Wrap.mul,
-                                [ M.read (| q |); M.read (| q |) ]
-                              |)
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u16");
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u16",
+                                  BinOp.Wrap.mul,
+                                  [ M.read (| q |); M.read (| q |) ]
+                                |))
+                                (Ty.path "u16")
                             ]
                           |)
                         |),
@@ -4346,22 +4724,26 @@ Module num.
                                                     []
                                                   |),
                                                   [
-                                                    M.read (| r |);
-                                                    M.call_closure (|
-                                                      Ty.path "u16",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.call_closure (|
-                                                          Ty.path "u16",
-                                                          BinOp.Wrap.mul,
-                                                          [
-                                                            Value.Integer IntegerKind.U16 2;
-                                                            M.read (| s |)
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.U16 1
-                                                      ]
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.read (| r |))
+                                                      (Ty.path "u16");
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.path "u16",
+                                                        BinOp.Wrap.sub,
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "u16",
+                                                            BinOp.Wrap.mul,
+                                                            [
+                                                              Value.Integer IntegerKind.U16 2;
+                                                              M.read (| s |)
+                                                            ]
+                                                          |);
+                                                          Value.Integer IntegerKind.U16 1
+                                                        ]
+                                                      |))
+                                                      (Ty.path "u16")
                                                   ]
                                                 |)
                                               |) in
@@ -4386,11 +4768,13 @@ Module num.
                                     Ty.tuple [],
                                     M.get_function (| "core::hint::assert_unchecked", [], [] |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.ne,
-                                        [ M.read (| s |); Value.Integer IntegerKind.U16 0 ]
-                                      |)
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "bool",
+                                          BinOp.ne,
+                                          [ M.read (| s |); Value.Integer IntegerKind.U16 0 ]
+                                        |))
+                                        (Ty.path "bool")
                                     ]
                                   |) in
                                 M.alloc (|
@@ -4465,21 +4849,50 @@ Module num.
                                                         []
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.path "core::fmt::Arguments",
-                                                          M.get_associated_function (|
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
                                                             Ty.path "core::fmt::Arguments",
-                                                            "new_const",
-                                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::Arguments",
+                                                              "new_const",
+                                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
                                                                   Pointer.Kind.Ref,
-                                                                  M.alloc (|
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.alloc (|
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Ty.path "str" ]
+                                                                          ],
+                                                                        Value.Array
+                                                                          [
+                                                                            mk_str (|
+                                                                              "`$s` is  zero in `middle_stage!`."
+                                                                            |)
+                                                                          ]
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
                                                                     Ty.apply
                                                                       (Ty.path "array")
                                                                       [
@@ -4492,19 +4905,11 @@ Module num.
                                                                           (Ty.path "&")
                                                                           []
                                                                           [ Ty.path "str" ]
-                                                                      ],
-                                                                    Value.Array
-                                                                      [
-                                                                        mk_str (|
-                                                                          "`$s` is  zero in `middle_stage!`."
-                                                                        |)
                                                                       ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                                  ])
+                                                            ]
+                                                          |))
+                                                          (Ty.path "core::fmt::Arguments")
                                                       ]
                                                     |)
                                                   |)));
@@ -4638,43 +5043,47 @@ Module num.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "u32",
-                                        BinOp.Wrap.bit_or,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "u32",
-                                            BinOp.Wrap.shl,
-                                            [
-                                              M.read (| u |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "core::num::int_sqrt::u128_stages::QUARTER_BITS'1",
-                                                  Ty.path "u32"
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "u32",
+                                          BinOp.Wrap.bit_or,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "u32",
+                                              BinOp.Wrap.shl,
+                                              [
+                                                M.read (| u |);
+                                                M.read (|
+                                                  get_constant (|
+                                                    "core::num::int_sqrt::u128_stages::QUARTER_BITS'1",
+                                                    Ty.path "u32"
+                                                  |)
                                                 |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "u32",
-                                            BinOp.Wrap.bit_and,
-                                            [
-                                              M.read (| lo |);
-                                              M.read (|
-                                                get_constant (|
-                                                  "core::num::int_sqrt::u128_stages::LOWEST_QUARTER_1_BITS'1",
-                                                  Ty.path "u32"
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "u32",
+                                              BinOp.Wrap.bit_and,
+                                              [
+                                                M.read (| lo |);
+                                                M.read (|
+                                                  get_constant (|
+                                                    "core::num::int_sqrt::u128_stages::LOWEST_QUARTER_1_BITS'1",
+                                                    Ty.path "u32"
+                                                  |)
                                                 |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "u32",
-                                        BinOp.Wrap.mul,
-                                        [ M.read (| q |); M.read (| q |) ]
-                                      |)
+                                              ]
+                                            |)
+                                          ]
+                                        |))
+                                        (Ty.path "u32");
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "u32",
+                                          BinOp.Wrap.mul,
+                                          [ M.read (| q |); M.read (| q |) ]
+                                        |))
+                                        (Ty.path "u32")
                                     ]
                                   |)
                                 |),
@@ -4712,22 +5121,28 @@ Module num.
                                                             []
                                                           |),
                                                           [
-                                                            M.read (| r |);
-                                                            M.call_closure (|
-                                                              Ty.path "u32",
-                                                              BinOp.Wrap.sub,
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "u32",
-                                                                  BinOp.Wrap.mul,
-                                                                  [
-                                                                    Value.Integer IntegerKind.U32 2;
-                                                                    M.read (| s |)
-                                                                  ]
-                                                                |);
-                                                                Value.Integer IntegerKind.U32 1
-                                                              ]
-                                                            |)
+                                                            M.value_with_ty
+                                                              (M.read (| r |))
+                                                              (Ty.path "u32");
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path "u32",
+                                                                BinOp.Wrap.sub,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "u32",
+                                                                    BinOp.Wrap.mul,
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.U32
+                                                                        2;
+                                                                      M.read (| s |)
+                                                                    ]
+                                                                  |);
+                                                                  Value.Integer IntegerKind.U32 1
+                                                                ]
+                                                              |))
+                                                              (Ty.path "u32")
                                                           ]
                                                         |)
                                                       |) in
@@ -4758,11 +5173,14 @@ Module num.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.ne,
-                                                [ M.read (| s |); Value.Integer IntegerKind.U32 0 ]
-                                              |)
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.ne,
+                                                  [ M.read (| s |); Value.Integer IntegerKind.U32 0
+                                                  ]
+                                                |))
+                                                (Ty.path "bool")
                                             ]
                                           |) in
                                         M.alloc (|
@@ -4840,25 +5258,58 @@ Module num.
                                                                 []
                                                               |),
                                                               [
-                                                                M.call_closure (|
-                                                                  Ty.path "core::fmt::Arguments",
-                                                                  M.get_associated_function (|
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
                                                                     Ty.path "core::fmt::Arguments",
-                                                                    "new_const",
+                                                                    M.get_associated_function (|
+                                                                      Ty.path
+                                                                        "core::fmt::Arguments",
+                                                                      "new_const",
+                                                                      [
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          1
+                                                                      ],
+                                                                      []
+                                                                    |),
                                                                     [
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        1
-                                                                    ],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.borrow (|
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
                                                                           Pointer.Kind.Ref,
-                                                                          M.alloc (|
+                                                                          M.deref (|
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.alloc (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "array")
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      1
+                                                                                  ]
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "str"
+                                                                                      ]
+                                                                                  ],
+                                                                                Value.Array
+                                                                                  [
+                                                                                    mk_str (|
+                                                                                      "`$s` is  zero in `middle_stage!`."
+                                                                                    |)
+                                                                                  ]
+                                                                              |)
+                                                                            |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
                                                                             Ty.apply
                                                                               (Ty.path "array")
                                                                               [
@@ -4871,19 +5322,11 @@ Module num.
                                                                                   (Ty.path "&")
                                                                                   []
                                                                                   [ Ty.path "str" ]
-                                                                              ],
-                                                                            Value.Array
-                                                                              [
-                                                                                mk_str (|
-                                                                                  "`$s` is  zero in `middle_stage!`."
-                                                                                |)
                                                                               ]
-                                                                          |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  ]
-                                                                |)
+                                                                          ])
+                                                                    ]
+                                                                  |))
+                                                                  (Ty.path "core::fmt::Arguments")
                                                               ]
                                                             |)
                                                           |)));
@@ -5017,43 +5460,47 @@ Module num.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.path "u64",
-                                                BinOp.Wrap.bit_or,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "u64",
-                                                    BinOp.Wrap.shl,
-                                                    [
-                                                      M.read (| u |);
-                                                      M.read (|
-                                                        get_constant (|
-                                                          "core::num::int_sqrt::u128_stages::QUARTER_BITS'2",
-                                                          Ty.path "u32"
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.bit_or,
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.shl,
+                                                      [
+                                                        M.read (| u |);
+                                                        M.read (|
+                                                          get_constant (|
+                                                            "core::num::int_sqrt::u128_stages::QUARTER_BITS'2",
+                                                            Ty.path "u32"
+                                                          |)
                                                         |)
-                                                      |)
-                                                    ]
-                                                  |);
-                                                  M.call_closure (|
-                                                    Ty.path "u64",
-                                                    BinOp.Wrap.bit_and,
-                                                    [
-                                                      M.read (| lo |);
-                                                      M.read (|
-                                                        get_constant (|
-                                                          "core::num::int_sqrt::u128_stages::LOWEST_QUARTER_1_BITS'2",
-                                                          Ty.path "u64"
+                                                      ]
+                                                    |);
+                                                    M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.bit_and,
+                                                      [
+                                                        M.read (| lo |);
+                                                        M.read (|
+                                                          get_constant (|
+                                                            "core::num::int_sqrt::u128_stages::LOWEST_QUARTER_1_BITS'2",
+                                                            Ty.path "u64"
+                                                          |)
                                                         |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "u64",
-                                                BinOp.Wrap.mul,
-                                                [ M.read (| q |); M.read (| q |) ]
-                                              |)
+                                                      ]
+                                                    |)
+                                                  ]
+                                                |))
+                                                (Ty.path "u64");
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.mul,
+                                                  [ M.read (| q |); M.read (| q |) ]
+                                                |))
+                                                (Ty.path "u64")
                                             ]
                                           |)
                                         |),
@@ -5092,26 +5539,30 @@ Module num.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.read (| r |);
-                                                                    M.call_closure (|
-                                                                      Ty.path "u64",
-                                                                      BinOp.Wrap.sub,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "u64",
-                                                                          BinOp.Wrap.mul,
-                                                                          [
-                                                                            Value.Integer
-                                                                              IntegerKind.U64
-                                                                              2;
-                                                                            M.read (| s |)
-                                                                          ]
-                                                                        |);
-                                                                        Value.Integer
-                                                                          IntegerKind.U64
-                                                                          1
-                                                                      ]
-                                                                    |)
+                                                                    M.value_with_ty
+                                                                      (M.read (| r |))
+                                                                      (Ty.path "u64");
+                                                                    M.value_with_ty
+                                                                      (M.call_closure (|
+                                                                        Ty.path "u64",
+                                                                        BinOp.Wrap.sub,
+                                                                        [
+                                                                          M.call_closure (|
+                                                                            Ty.path "u64",
+                                                                            BinOp.Wrap.mul,
+                                                                            [
+                                                                              Value.Integer
+                                                                                IntegerKind.U64
+                                                                                2;
+                                                                              M.read (| s |)
+                                                                            ]
+                                                                          |);
+                                                                          Value.Integer
+                                                                            IntegerKind.U64
+                                                                            1
+                                                                        ]
+                                                                      |))
+                                                                      (Ty.path "u64")
                                                                   ]
                                                                 |)
                                                               |) in
@@ -5145,14 +5596,16 @@ Module num.
                                                       []
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        BinOp.ne,
-                                                        [
-                                                          M.read (| s |);
-                                                          Value.Integer IntegerKind.U64 0
-                                                        ]
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.path "bool",
+                                                          BinOp.ne,
+                                                          [
+                                                            M.read (| s |);
+                                                            Value.Integer IntegerKind.U64 0
+                                                          ]
+                                                        |))
+                                                        (Ty.path "bool")
                                                     ]
                                                   |) in
                                                 M.alloc (|
@@ -5235,27 +5688,61 @@ Module num.
                                                                         []
                                                                       |),
                                                                       [
-                                                                        M.call_closure (|
-                                                                          Ty.path
-                                                                            "core::fmt::Arguments",
-                                                                          M.get_associated_function (|
+                                                                        M.value_with_ty
+                                                                          (M.call_closure (|
                                                                             Ty.path
                                                                               "core::fmt::Arguments",
-                                                                            "new_const",
+                                                                            M.get_associated_function (|
+                                                                              Ty.path
+                                                                                "core::fmt::Arguments",
+                                                                              "new_const",
+                                                                              [
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  1
+                                                                              ],
+                                                                              []
+                                                                            |),
                                                                             [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1
-                                                                            ],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.borrow (|
+                                                                              M.value_with_ty
+                                                                                (M.borrow (|
                                                                                   Pointer.Kind.Ref,
-                                                                                  M.alloc (|
+                                                                                  M.deref (|
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.alloc (|
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "array")
+                                                                                          [
+                                                                                            Value.Integer
+                                                                                              IntegerKind.Usize
+                                                                                              1
+                                                                                          ]
+                                                                                          [
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "str"
+                                                                                              ]
+                                                                                          ],
+                                                                                        Value.Array
+                                                                                          [
+                                                                                            mk_str (|
+                                                                                              "`$s` is  zero in `last_stage!`."
+                                                                                            |)
+                                                                                          ]
+                                                                                      |)
+                                                                                    |)
+                                                                                  |)
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [
                                                                                     Ty.apply
                                                                                       (Ty.path
                                                                                         "array")
@@ -5273,19 +5760,12 @@ Module num.
                                                                                             Ty.path
                                                                                               "str"
                                                                                           ]
-                                                                                      ],
-                                                                                    Value.Array
-                                                                                      [
-                                                                                        mk_str (|
-                                                                                          "`$s` is  zero in `last_stage!`."
-                                                                                        |)
                                                                                       ]
-                                                                                  |)
-                                                                                |)
-                                                                              |)
-                                                                            |)
-                                                                          ]
-                                                                        |)
+                                                                                  ])
+                                                                            ]
+                                                                          |))
+                                                                          (Ty.path
+                                                                            "core::fmt::Arguments")
                                                                       ]
                                                                     |)
                                                                   |)));
@@ -5397,7 +5877,14 @@ Module num.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| s |); M.read (| s |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| s |))
+                                                        (Ty.path "u128");
+                                                      M.value_with_ty
+                                                        (M.read (| s |))
+                                                        (Ty.path "u128")
+                                                    ]
                                                   |)
                                                 |),
                                                 [
@@ -6059,7 +6546,7 @@ Module num.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_function (| "core::num::int_sqrt::u8", [], [] |),
-                      [ M.cast (Ty.path "u8") (M.read (| n |)) ]
+                      [ M.value_with_ty (M.cast (Ty.path "u8") (M.read (| n |))) (Ty.path "u8") ]
                     |))));
               fun γ =>
                 ltac:(M.monadic
@@ -6072,7 +6559,7 @@ Module num.
                           M.call_closure (|
                             Ty.path "u32",
                             M.get_associated_function (| Ty.path "u16", "leading_zeros", [], [] |),
-                            [ M.read (| n |) ]
+                            [ M.value_with_ty (M.read (| n |)) (Ty.path "u16") ]
                           |);
                           M.read (|
                             get_constant (|
@@ -6096,7 +6583,7 @@ Module num.
                       M.call_closure (|
                         Ty.path "u16",
                         M.get_function (| "core::num::int_sqrt::u16_stages", [], [] |),
-                        [ M.read (| n |) ]
+                        [ M.value_with_ty (M.read (| n |)) (Ty.path "u16") ]
                       |) in
                     let~ denormalization_shift : Ty.path "u32" :=
                       M.call_closure (|
@@ -6220,7 +6707,7 @@ Module num.
                     (M.call_closure (|
                       Ty.path "u16",
                       M.get_function (| "core::num::int_sqrt::u16", [], [] |),
-                      [ M.cast (Ty.path "u16") (M.read (| n |)) ]
+                      [ M.value_with_ty (M.cast (Ty.path "u16") (M.read (| n |))) (Ty.path "u16") ]
                     |))));
               fun γ =>
                 ltac:(M.monadic
@@ -6233,7 +6720,7 @@ Module num.
                           M.call_closure (|
                             Ty.path "u32",
                             M.get_associated_function (| Ty.path "u32", "leading_zeros", [], [] |),
-                            [ M.read (| n |) ]
+                            [ M.value_with_ty (M.read (| n |)) (Ty.path "u32") ]
                           |);
                           M.read (|
                             get_constant (|
@@ -6257,7 +6744,7 @@ Module num.
                       M.call_closure (|
                         Ty.path "u32",
                         M.get_function (| "core::num::int_sqrt::u32_stages", [], [] |),
-                        [ M.read (| n |) ]
+                        [ M.value_with_ty (M.read (| n |)) (Ty.path "u32") ]
                       |) in
                     let~ denormalization_shift : Ty.path "u32" :=
                       M.call_closure (|
@@ -6381,7 +6868,7 @@ Module num.
                     (M.call_closure (|
                       Ty.path "u32",
                       M.get_function (| "core::num::int_sqrt::u32", [], [] |),
-                      [ M.cast (Ty.path "u32") (M.read (| n |)) ]
+                      [ M.value_with_ty (M.cast (Ty.path "u32") (M.read (| n |))) (Ty.path "u32") ]
                     |))));
               fun γ =>
                 ltac:(M.monadic
@@ -6394,7 +6881,7 @@ Module num.
                           M.call_closure (|
                             Ty.path "u32",
                             M.get_associated_function (| Ty.path "u64", "leading_zeros", [], [] |),
-                            [ M.read (| n |) ]
+                            [ M.value_with_ty (M.read (| n |)) (Ty.path "u64") ]
                           |);
                           M.read (|
                             get_constant (|
@@ -6418,7 +6905,7 @@ Module num.
                       M.call_closure (|
                         Ty.path "u64",
                         M.get_function (| "core::num::int_sqrt::u64_stages", [], [] |),
-                        [ M.read (| n |) ]
+                        [ M.value_with_ty (M.read (| n |)) (Ty.path "u64") ]
                       |) in
                     let~ denormalization_shift : Ty.path "u32" :=
                       M.call_closure (|
@@ -6542,7 +7029,7 @@ Module num.
                     (M.call_closure (|
                       Ty.path "u64",
                       M.get_function (| "core::num::int_sqrt::u64", [], [] |),
-                      [ M.cast (Ty.path "u64") (M.read (| n |)) ]
+                      [ M.value_with_ty (M.cast (Ty.path "u64") (M.read (| n |))) (Ty.path "u64") ]
                     |))));
               fun γ =>
                 ltac:(M.monadic
@@ -6555,7 +7042,7 @@ Module num.
                           M.call_closure (|
                             Ty.path "u32",
                             M.get_associated_function (| Ty.path "u128", "leading_zeros", [], [] |),
-                            [ M.read (| n |) ]
+                            [ M.value_with_ty (M.read (| n |)) (Ty.path "u128") ]
                           |);
                           M.read (|
                             get_constant (|
@@ -6579,7 +7066,7 @@ Module num.
                       M.call_closure (|
                         Ty.path "u128",
                         M.get_function (| "core::num::int_sqrt::u128_stages", [], [] |),
-                        [ M.read (| n |) ]
+                        [ M.value_with_ty (M.read (| n |)) (Ty.path "u128") ]
                       |) in
                     let~ denormalization_shift : Ty.path "u32" :=
                       M.call_closure (|
@@ -6640,33 +7127,46 @@ Module num.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array
+                                [ mk_str (| "argument of integer square root cannot be negative" |)
+                                ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [ mk_str (| "argument of integer square root cannot be negative" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

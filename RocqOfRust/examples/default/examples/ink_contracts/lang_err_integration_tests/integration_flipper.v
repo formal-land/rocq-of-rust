@@ -35,8 +35,12 @@ Module Impl_core_fmt_Debug_for_integration_flipper_FlipperError.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FlipperError" |) |) |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FlipperError" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -64,11 +68,11 @@ Module Impl_integration_flipper_Flipper.
     | [], [], [ init_value ] =>
       ltac:(M.monadic
         (let init_value := M.alloc (| Ty.path "bool", init_value |) in
-        Value.mkStructRecord
-          "integration_flipper::Flipper"
-          []
-          []
-          [ ("value", M.read (| init_value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "integration_flipper::Flipper"
+            [ ("value", M.read (| init_value |)) ])
+          (Ty.path "integration_flipper::Flipper")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -89,19 +93,21 @@ Module Impl_integration_flipper_Flipper.
           Ty.path "integration_flipper::Flipper",
           M.get_associated_function (| Ty.path "integration_flipper::Flipper", "new", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_trait_method (|
-                "core::default::Default",
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "bool",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "bool",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
+              |))
+              (Ty.path "bool")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -137,35 +143,45 @@ Module Impl_integration_flipper_Flipper.
               ltac:(M.monadic
                 (let γ := M.use succeed in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [
-                    Ty.path "integration_flipper::Flipper";
-                    Ty.path "integration_flipper::FlipperError"
-                  ]
-                  [
-                    M.call_closure (|
-                      Ty.path "integration_flipper::Flipper",
-                      M.get_associated_function (|
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
                         Ty.path "integration_flipper::Flipper",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ Value.Bool true ]
-                    |)
-                  ]));
+                        M.get_associated_function (|
+                          Ty.path "integration_flipper::Flipper",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.value_with_ty (Value.Bool true) (Ty.path "bool") ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "integration_flipper::Flipper";
+                      Ty.path "integration_flipper::FlipperError"
+                    ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [
-                    Ty.path "integration_flipper::Flipper";
-                    Ty.path "integration_flipper::FlipperError"
-                  ]
-                  [ Value.StructTuple "integration_flipper::FlipperError" [] [] [] ]))
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple "integration_flipper::FlipperError" [])
+                        (Ty.path "integration_flipper::FlipperError")
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "integration_flipper::Flipper";
+                      Ty.path "integration_flipper::FlipperError"
+                    ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -273,15 +289,17 @@ Module Impl_integration_flipper_Flipper.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "integration_flipper::Flipper" ])
+              ]
             |) in
           M.alloc (|
             Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.tuple [] ],
-            Value.StructTuple
-              "core::result::Result::Err"
-              []
-              [ Ty.tuple []; Ty.tuple [] ]
-              [ Value.Tuple [] ]
+            M.value_with_ty
+              (Value.StructTuple "core::result::Result::Err" [ Value.Tuple [] ])
+              (Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.tuple [] ])
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

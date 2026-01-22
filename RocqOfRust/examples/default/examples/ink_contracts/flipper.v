@@ -22,7 +22,9 @@ Module Impl_flipper_Flipper.
     | [], [], [ init_value ] =>
       ltac:(M.monadic
         (let init_value := M.alloc (| Ty.path "bool", init_value |) in
-        Value.mkStructRecord "flipper::Flipper" [] [] [ ("value", M.read (| init_value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord "flipper::Flipper" [ ("value", M.read (| init_value |)) ])
+          (Ty.path "flipper::Flipper")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -43,19 +45,21 @@ Module Impl_flipper_Flipper.
           Ty.path "flipper::Flipper",
           M.get_associated_function (| Ty.path "flipper::Flipper", "new", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "bool",
-              M.get_trait_method (|
-                "core::default::Default",
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "bool",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "bool",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
+              |))
+              (Ty.path "bool")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

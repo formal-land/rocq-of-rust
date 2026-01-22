@@ -30,7 +30,7 @@ Module SStoreResult.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_context_interface::host::SStoreResult";
     φ x :=
-      Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
+      Value.StructRecord "revm_context_interface::host::SStoreResult" [
         ("new_value", φ x.(new_value));
         ("original_value", φ x.(original_value));
         ("present_value", φ x.(present_value))
@@ -48,7 +48,7 @@ Module SStoreResult.
       (original_value' : Value.t) {H_original_value : OfValueWith.C (aliases.U256.t) original_value'}
       (present_value' : Value.t) {H_present_value : OfValueWith.C (aliases.U256.t) present_value'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_context_interface::host::SStoreResult" [
       ("new_value", new_value');
       ("original_value", original_value');
       ("present_value", present_value')
@@ -67,7 +67,7 @@ Module SStoreResult.
       (original_value' : Value.t) {H_original_value : OfValueWith.C (aliases.U256.t) original_value'}
       (present_value' : Value.t) {H_present_value : OfValueWith.C (aliases.U256.t) present_value'}
       :
-    OfValue.C (Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
+    OfValue.C (Value.StructRecord "revm_context_interface::host::SStoreResult" [
       ("new_value", new_value');
       ("original_value", original_value');
       ("present_value", present_value')
@@ -144,7 +144,7 @@ Module SelfDestructResult.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_context_interface::host::SelfDestructResult";
     φ x :=
-      Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
+      Value.StructRecord "revm_context_interface::host::SelfDestructResult" [
         ("had_value", φ x.(had_value));
         ("previously_destroyed", φ x.(previously_destroyed));
         ("target_exists", φ x.(target_exists))
@@ -162,7 +162,7 @@ Module SelfDestructResult.
       (previously_destroyed' : Value.t) {H_previously_destroyed : OfValueWith.C (bool) previously_destroyed'}
       (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_context_interface::host::SelfDestructResult" [
       ("had_value", had_value');
       ("previously_destroyed", previously_destroyed');
       ("target_exists", target_exists')
@@ -181,7 +181,7 @@ Module SelfDestructResult.
       (previously_destroyed' : Value.t) {H_previously_destroyed : OfValueWith.C (bool) previously_destroyed'}
       (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
       :
-    OfValue.C (Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
+    OfValue.C (Value.StructRecord "revm_context_interface::host::SelfDestructResult" [
       ("had_value", had_value');
       ("previously_destroyed", previously_destroyed');
       ("target_exists", target_exists')

@@ -24,7 +24,9 @@ Definition ui_amount_to_amount (ε : list Value.t) (τ : list Ty.t) (α : list V
               (M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.path "usize", "pow", [], [] |),
-                [ Value.Integer IntegerKind.Usize 10; M.cast (Ty.path "u32") (M.read (| decimals |))
+                [
+                  M.value_with_ty (Value.Integer IntegerKind.Usize 10) (Ty.path "usize");
+                  M.value_with_ty (M.cast (Ty.path "u32") (M.read (| decimals |))) (Ty.path "u32")
                 ]
               |))
           ]
@@ -58,7 +60,10 @@ Definition amount_to_ui_amount (ε : list Value.t) (τ : list Ty.t) (α : list V
             (M.call_closure (|
               Ty.path "usize",
               M.get_associated_function (| Ty.path "usize", "pow", [], [] |),
-              [ Value.Integer IntegerKind.Usize 10; M.cast (Ty.path "u32") (M.read (| decimals |)) ]
+              [
+                M.value_with_ty (Value.Integer IntegerKind.Usize 10) (Ty.path "usize");
+                M.value_with_ty (M.cast (Ty.path "u32") (M.read (| decimals |))) (Ty.path "u32")
+              ]
             |))
         ]
       |)))
@@ -121,266 +126,342 @@ Definition amount_to_ui_amount_string (ε : list Value.t) (τ : list Ty.t) (α :
                           [ Ty.path "alloc::string::String" ]
                         |),
                         [
-                          M.read (|
-                            let~ res : Ty.path "alloc::string::String" :=
-                              M.call_closure (|
-                                Ty.path "alloc::string::String",
-                                M.get_function (| "alloc::fmt::format", [], [] |),
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::Arguments",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::Arguments",
-                                      "new_v1_formatted",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                            ]),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                  Value.Array [ mk_str (| "" |) ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [ Ty.path "core::fmt::rt::Argument" ]
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 2 ]
-                                                [ Ty.path "core::fmt::rt::Argument" ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [ Ty.path "core::fmt::rt::Argument" ]
-                                            ]),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                                  Value.Array
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        M.get_associated_function (|
-                                                          Ty.path "core::fmt::rt::Argument",
-                                                          "new_display",
-                                                          [],
-                                                          [ Ty.path "u64" ]
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                amount
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        M.get_associated_function (|
-                                                          Ty.path "core::fmt::rt::Argument",
-                                                          "from_usize",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.alloc (|
-                                                                  Ty.path "usize",
-                                                                  M.call_closure (|
-                                                                    Ty.path "usize",
-                                                                    BinOp.Wrap.add,
-                                                                    [
-                                                                      M.read (| decimals |);
-                                                                      Value.Integer
-                                                                        IntegerKind.Usize
-                                                                        1
-                                                                    ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [ Ty.path "core::fmt::rt::Placeholder" ]
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.path "core::fmt::rt::Placeholder" ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [ Ty.path "core::fmt::rt::Placeholder" ]
-                                            ]),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.path "core::fmt::rt::Placeholder" ],
-                                                  Value.Array
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "core::fmt::rt::Placeholder",
-                                                        M.get_associated_function (|
-                                                          Ty.path "core::fmt::rt::Placeholder",
-                                                          "new",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          Value.Integer IntegerKind.Usize 0;
-                                                          Value.UnicodeChar 32;
-                                                          Value.StructTuple
-                                                            "core::fmt::rt::Alignment::Unknown"
-                                                            []
-                                                            []
-                                                            [];
-                                                          Value.Integer IntegerKind.U32 8;
-                                                          Value.StructTuple
-                                                            "core::fmt::rt::Count::Implied"
-                                                            []
-                                                            []
-                                                            [];
-                                                          Value.StructTuple
-                                                            "core::fmt::rt::Count::Param"
-                                                            []
-                                                            []
-                                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                                        ]
-                                                      |)
-                                                    ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::UnsafeArg",
+                          M.value_with_ty
+                            (M.read (|
+                              let~ res : Ty.path "alloc::string::String" :=
+                                M.call_closure (|
+                                  Ty.path "alloc::string::String",
+                                  M.get_function (| "alloc::fmt::format", [], [] |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "core::fmt::Arguments",
                                         M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::UnsafeArg",
-                                          "new",
+                                          Ty.path "core::fmt::Arguments",
+                                          "new_v1_formatted",
                                           [],
                                           []
                                         |),
-                                        []
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |) in
-                            res
-                          |)
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                                ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ]
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ]
+                                                  ]),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array [ mk_str (| "" |) ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                                ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 2 ]
+                                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                                  ]),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 2 ]
+                                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                                        Value.Array
+                                                          [
+                                                            M.call_closure (|
+                                                              Ty.path "core::fmt::rt::Argument",
+                                                              M.get_associated_function (|
+                                                                Ty.path "core::fmt::rt::Argument",
+                                                                "new_display",
+                                                                [],
+                                                                [ Ty.path "u64" ]
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        amount
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [ Ty.path "u64" ])
+                                                              ]
+                                                            |);
+                                                            M.call_closure (|
+                                                              Ty.path "core::fmt::rt::Argument",
+                                                              M.get_associated_function (|
+                                                                Ty.path "core::fmt::rt::Argument",
+                                                                "from_usize",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.alloc (|
+                                                                          Ty.path "usize",
+                                                                          M.call_closure (|
+                                                                            Ty.path "usize",
+                                                                            BinOp.Wrap.add,
+                                                                            [
+                                                                              M.read (| decimals |);
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                1
+                                                                            ]
+                                                                          |)
+                                                                        |)
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [ Ty.path "usize" ])
+                                                              ]
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [ Ty.path "core::fmt::rt::Argument" ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                                ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                                      [ Ty.path "core::fmt::rt::Placeholder" ]
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [ Ty.path "core::fmt::rt::Placeholder" ]
+                                                  ]),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [ Ty.path "core::fmt::rt::Placeholder" ],
+                                                        Value.Array
+                                                          [
+                                                            M.call_closure (|
+                                                              Ty.path "core::fmt::rt::Placeholder",
+                                                              M.get_associated_function (|
+                                                                Ty.path
+                                                                  "core::fmt::rt::Placeholder",
+                                                                "new",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (Value.Integer
+                                                                    IntegerKind.Usize
+                                                                    0)
+                                                                  (Ty.path "usize");
+                                                                M.value_with_ty
+                                                                  (Value.UnicodeChar 32)
+                                                                  (Ty.path "char");
+                                                                M.value_with_ty
+                                                                  (M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::fmt::rt::Alignment::Unknown"
+                                                                      [])
+                                                                    (Ty.path
+                                                                      "core::fmt::rt::Alignment"))
+                                                                  (Ty.path
+                                                                    "core::fmt::rt::Alignment");
+                                                                M.value_with_ty
+                                                                  (Value.Integer IntegerKind.U32 8)
+                                                                  (Ty.path "u32");
+                                                                M.value_with_ty
+                                                                  (M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::fmt::rt::Count::Implied"
+                                                                      [])
+                                                                    (Ty.path
+                                                                      "core::fmt::rt::Count"))
+                                                                  (Ty.path "core::fmt::rt::Count");
+                                                                M.value_with_ty
+                                                                  (M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::fmt::rt::Count::Param"
+                                                                      [
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          1
+                                                                      ])
+                                                                    (Ty.path
+                                                                      "core::fmt::rt::Count"))
+                                                                  (Ty.path "core::fmt::rt::Count")
+                                                              ]
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [ Ty.path "core::fmt::rt::Placeholder" ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "core::fmt::rt::UnsafeArg",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::UnsafeArg",
+                                                "new",
+                                                [],
+                                                []
+                                              |),
+                                              []
+                                            |))
+                                            (Ty.path "core::fmt::rt::UnsafeArg")
+                                        ]
+                                      |))
+                                      (Ty.path "core::fmt::Arguments")
+                                  ]
+                                |) in
+                              res
+                            |))
+                            (Ty.path "alloc::string::String")
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
@@ -393,25 +474,36 @@ Definition amount_to_ui_amount_string (ε : list Value.t) (τ : list Ty.t) (α :
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, s |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.sub,
-                            [
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.path "alloc::string::String",
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, s |) ]
-                              |);
-                              M.read (| decimals |)
-                            ]
-                          |);
-                          Value.UnicodeChar 46
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, s |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "alloc::string::String" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.path "alloc::string::String",
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, s |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "alloc::string::String" ])
+                                  ]
+                                |);
+                                M.read (| decimals |)
+                              ]
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty (Value.UnicodeChar 46) (Ty.path "char")
                         ]
                       |) in
                     s
@@ -429,7 +521,11 @@ Definition amount_to_ui_amount_string (ε : list Value.t) (τ : list Ty.t) (α :
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, amount |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, amount |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                    ]
                   |)))
             ]
           |)
@@ -468,7 +564,10 @@ Definition amount_to_ui_amount_string_trimmed
           M.call_closure (|
             Ty.path "alloc::string::String",
             M.get_function (| "spl_token::amount_to_ui_amount_string", [], [] |),
-            [ M.read (| amount |); M.read (| decimals |) ]
+            [
+              M.value_with_ty (M.read (| amount |)) (Ty.path "u64");
+              M.value_with_ty (M.read (| decimals |)) (Ty.path "u8")
+            ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.match_operator (|
@@ -499,25 +598,34 @@ Definition amount_to_ui_amount_string_trimmed
                           [ Ty.path "char" ]
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::Deref",
-                                  Ty.path "alloc::string::String",
-                                  [],
-                                  [],
-                                  "deref",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, s |) ]
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
+                                    Ty.path "alloc::string::String",
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, s |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "alloc::string::String" ])
+                                  ]
+                                |)
                               |)
-                            |)
-                          |);
-                          Value.UnicodeChar 48
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty (Value.UnicodeChar 48) (Ty.path "char")
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
@@ -535,27 +643,31 @@ Definition amount_to_ui_amount_string_trimmed
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                  M.get_associated_function (|
-                                    Ty.path "str",
-                                    "trim_end_matches",
-                                    [],
-                                    [ Ty.path "char" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| zeros_trimmed |) |)
-                                    |);
-                                    Value.UnicodeChar 46
-                                  ]
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                    M.get_associated_function (|
+                                      Ty.path "str",
+                                      "trim_end_matches",
+                                      [],
+                                      [ Ty.path "char" ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| zeros_trimmed |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                      M.value_with_ty (Value.UnicodeChar 46) (Ty.path "char")
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                           ]
                         |)
                       |) in
@@ -618,25 +730,31 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                 Ty.apply (Ty.path "core::str::iter::Split") [] [ Ty.path "char" ],
                 M.get_associated_function (| Ty.path "str", "split", [], [ Ty.path "char" ] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ty.path "alloc::string::String",
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, ui_amount |) ]
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.path "alloc::string::String",
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, ui_amount |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |);
-                  Value.UnicodeChar 46
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty (Value.UnicodeChar 46) (Ty.path "char")
                 ]
               |) in
             let~ amount_str : Ty.path "alloc::string::String" :=
@@ -652,41 +770,60 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "core::option::Option")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          "unwrap",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                          M.get_associated_function (|
                             Ty.apply
                               (Ty.path "core::option::Option")
                               []
                               [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            M.get_trait_method (|
-                              "core::iter::traits::iterator::Iterator",
-                              Ty.apply (Ty.path "core::str::iter::Split") [] [ Ty.path "char" ],
-                              [],
-                              [],
-                              "next",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.MutRef, parts |) ]
-                          |)
-                        ]
+                            "unwrap",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  Ty.apply (Ty.path "core::str::iter::Split") [] [ Ty.path "char" ],
+                                  [],
+                                  [],
+                                  "next",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.MutRef, parts |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::str::iter::Split")
+                                          []
+                                          [ Ty.path "char" ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             let~ after_decimal : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
@@ -702,23 +839,37 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                      M.get_trait_method (|
+                        "core::iter::traits::iterator::Iterator",
+                        Ty.apply (Ty.path "core::str::iter::Split") [] [ Ty.path "char" ],
+                        [],
+                        [],
+                        "next",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, parts |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "core::str::iter::Split") [] [ Ty.path "char" ] ])
+                      ]
+                    |))
+                    (Ty.apply
                       (Ty.path "core::option::Option")
                       []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                    M.get_trait_method (|
-                      "core::iter::traits::iterator::Iterator",
-                      Ty.apply (Ty.path "core::str::iter::Split") [] [ Ty.path "char" ],
-                      [],
-                      [],
-                      "next",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, parts |) ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |)
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             let~ after_decimal : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
@@ -731,8 +882,10 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                   [ Ty.path "char" ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| after_decimal |) |) |);
-                  Value.UnicodeChar 48
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| after_decimal |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty (Value.UnicodeChar 48) (Ty.path "char")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -757,7 +910,14 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, amount_str |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, amount_str |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "alloc::string::String" ])
+                                    ]
                                   |),
                                   ltac:(M.monadic
                                     (M.call_closure (|
@@ -769,10 +929,12 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| after_decimal |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| after_decimal |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                       ]
                                     |)))
                                 |),
@@ -789,34 +951,56 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          M.call_closure (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
                                             Ty.apply
                                               (Ty.path "core::option::Option")
                                               []
                                               [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            M.get_trait_method (|
-                                              "core::iter::traits::iterator::Iterator",
+                                            M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "core::str::iter::Split")
+                                                (Ty.path "core::option::Option")
                                                 []
-                                                [ Ty.path "char" ],
-                                              [],
-                                              [],
-                                              "next",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.borrow (| Pointer.Kind.MutRef, parts |) ]
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                              M.get_trait_method (|
+                                                "core::iter::traits::iterator::Iterator",
+                                                Ty.apply
+                                                  (Ty.path "core::str::iter::Split")
+                                                  []
+                                                  [ Ty.path "char" ],
+                                                [],
+                                                [],
+                                                "next",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.MutRef, parts |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::str::iter::Split")
+                                                        []
+                                                        [ Ty.path "char" ]
+                                                    ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
                                     ]
                                   |)))
                               |),
@@ -829,10 +1013,12 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                                       Ty.path "usize",
                                       M.get_associated_function (| Ty.path "str", "len", [], [] |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| after_decimal |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| after_decimal |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                       ]
                                     |);
                                     M.read (| decimals |)
@@ -844,17 +1030,20 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                       M.never_to_any (|
                         M.read (|
                           M.return_ (|
-                            Value.StructTuple
-                              "core::result::Result::Err"
-                              []
-                              [ Ty.path "u64"; Ty.path "solana_program_error::ProgramError" ]
-                              [
-                                Value.StructTuple
-                                  "solana_program_error::ProgramError::InvalidArgument"
-                                  []
-                                  []
-                                  []
-                              ]
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::result::Result::Err"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "solana_program_error::ProgramError::InvalidArgument"
+                                      [])
+                                    (Ty.path "solana_program_error::ProgramError")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "u64"; Ty.path "solana_program_error::ProgramError" ])
                           |)
                         |)
                       |)));
@@ -866,8 +1055,12 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                 Ty.tuple [],
                 M.get_associated_function (| Ty.path "alloc::string::String", "push_str", [], [] |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, amount_str |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| after_decimal |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, amount_str |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "alloc::string::String" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| after_decimal |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -891,41 +1084,50 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                             []
                           |),
                           [
-                            Value.mkStructRecord
-                              "core::ops::range::Range"
-                              []
-                              [ Ty.path "usize" ]
-                              [
-                                ("start", Value.Integer IntegerKind.Usize 0);
-                                ("end_",
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.path "usize",
-                                      "saturating_sub",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (| decimals |);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.mkStructRecord
+                                  "core::ops::range::Range"
+                                  [
+                                    ("start", Value.Integer IntegerKind.Usize 0);
+                                    ("end_",
                                       M.call_closure (|
                                         Ty.path "usize",
                                         M.get_associated_function (|
-                                          Ty.path "str",
-                                          "len",
+                                          Ty.path "usize",
+                                          "saturating_sub",
                                           [],
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| after_decimal |) |)
-                                          |)
+                                          M.value_with_ty (M.read (| decimals |)) (Ty.path "usize");
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.path "str",
+                                                "len",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| after_decimal |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
+                                            |))
+                                            (Ty.path "usize")
                                         ]
-                                      |)
-                                    ]
-                                  |))
-                              ]
+                                      |))
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ]))
+                              (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
                           ]
                         |)
                       |),
@@ -968,10 +1170,22 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (|
+                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::ops::range::Range")
+                                                    []
+                                                    [ Ty.path "usize" ]
+                                                ])
                                           ]
                                         |)
                                       |),
@@ -1003,8 +1217,18 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (| Pointer.Kind.MutRef, amount_str |);
-                                                    Value.UnicodeChar 48
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        amount_str
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [ Ty.path "alloc::string::String" ]);
+                                                    M.value_with_ty
+                                                      (Value.UnicodeChar 48)
+                                                      (Ty.path "char")
                                                   ]
                                                 |) in
                                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1043,54 +1267,69 @@ Definition try_ui_amount_into_amount (ε : list Value.t) (τ : list Ty.t) (α : 
                   ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "u64"; Ty.path "core::num::error::ParseIntError" ],
+                      M.get_associated_function (| Ty.path "str", "parse", [], [ Ty.path "u64" ] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.path "alloc::string::String",
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, amount_str |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |))
+                    (Ty.apply
                       (Ty.path "core::result::Result")
                       []
-                      [ Ty.path "u64"; Ty.path "core::num::error::ParseIntError" ],
-                    M.get_associated_function (| Ty.path "str", "parse", [], [ Ty.path "u64" ] |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.path "alloc::string::String",
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, amount_str |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "solana_program_error::ProgramError",
-                              M.alloc (| Ty.path "core::num::error::ParseIntError", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (Value.StructTuple
-                                      "solana_program_error::ProgramError::InvalidArgument"
-                                      []
-                                      []
-                                      []))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                      [ Ty.path "u64"; Ty.path "core::num::error::ParseIntError" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "solana_program_error::ProgramError",
+                                M.alloc (| Ty.path "core::num::error::ParseIntError", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (M.value_with_ty
+                                        (Value.StructTuple
+                                          "solana_program_error::ProgramError::InvalidArgument"
+                                          [])
+                                        (Ty.path "solana_program_error::ProgramError")))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "core::num::error::ParseIntError" ]
+                      (Ty.path "solana_program_error::ProgramError"))
                 ]
               |)
             |)

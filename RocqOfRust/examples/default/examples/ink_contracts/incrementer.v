@@ -22,11 +22,9 @@ Module Impl_incrementer_Incrementer.
     | [], [], [ init_value ] =>
       ltac:(M.monadic
         (let init_value := M.alloc (| Ty.path "i32", init_value |) in
-        Value.mkStructRecord
-          "incrementer::Incrementer"
-          []
-          []
-          [ ("value", M.read (| init_value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord "incrementer::Incrementer" [ ("value", M.read (| init_value |)) ])
+          (Ty.path "incrementer::Incrementer")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -47,19 +45,21 @@ Module Impl_incrementer_Incrementer.
           Ty.path "incrementer::Incrementer",
           M.get_associated_function (| Ty.path "incrementer::Incrementer", "new", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "i32",
-              M.get_trait_method (|
-                "core::default::Default",
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "i32",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "i32",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
+              |))
+              (Ty.path "i32")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

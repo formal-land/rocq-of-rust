@@ -30,60 +30,67 @@ Module char.
                   [ Ty.apply (Ty.path "core::char::decode::DecodeUtf16") [] [ I ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::char::decode::DecodeUtf16"
-              []
-              [ I ]
-              [
-                ("iter",
-                  M.call_closure (|
-                    I,
-                    M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::char::decode::DecodeUtf16"
+                [
+                  ("iter",
+                    M.call_closure (|
+                      I,
+                      M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::decode::DecodeUtf16",
-                              "iter"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::char::decode::DecodeUtf16",
+                                  "iter"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("buf",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ I ])
+                      ]
+                    |));
+                  ("buf",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::decode::DecodeUtf16",
-                              "buf"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::char::decode::DecodeUtf16",
+                                  "buf"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ] ])
+                      ]
+                    |))
+                ])
+              (Ty.apply (Ty.path "core::char::decode::DecodeUtf16") [] [ I ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -129,71 +136,83 @@ Module char.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DecodeUtf16" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "iter" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ I ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::char::decode::DecodeUtf16",
-                            "iter"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DecodeUtf16" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "iter" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ I ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::char::decode::DecodeUtf16",
+                              "iter"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "buf" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ] ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ] ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::char::decode::DecodeUtf16",
-                                "buf"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "buf" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ] ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ] ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::char::decode::DecodeUtf16",
+                                  "buf"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -244,37 +263,45 @@ Module char.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DecodeUtf16Error" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "code" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::char::decode::DecodeUtf16Error",
-                                "code"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DecodeUtf16Error" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "code" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::char::decode::DecodeUtf16Error",
+                                  "code"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -302,40 +329,42 @@ Module char.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::char::decode::DecodeUtf16Error" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::char::decode::DecodeUtf16Error"
-              []
-              []
-              [
-                ("code",
-                  M.call_closure (|
-                    Ty.path "u16",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::char::decode::DecodeUtf16Error"
+                [
+                  ("code",
+                    M.call_closure (|
                       Ty.path "u16",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "u16",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::decode::DecodeUtf16Error",
-                              "code"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::char::decode::DecodeUtf16Error",
+                                  "code"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                      ]
+                    |))
+                ])
+              (Ty.path "core::char::decode::DecodeUtf16Error")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -455,33 +484,45 @@ Module char.
       | [], [ _ as I ], [ iter ] =>
         ltac:(M.monadic
           (let iter := M.alloc (| I, iter |) in
-          Value.mkStructRecord
-            "core::char::decode::DecodeUtf16"
-            []
-            [ Ty.associated_in_trait "core::iter::traits::collect::IntoIterator" [] [] I "IntoIter"
-            ]
-            [
-              ("iter",
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "core::iter::traits::collect::IntoIterator"
-                    []
-                    []
-                    I
-                    "IntoIter",
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::IntoIterator",
-                    I,
-                    [],
-                    [],
-                    "into_iter",
-                    [],
-                    []
-                  |),
-                  [ M.read (| iter |) ]
-                |));
-              ("buf", Value.StructTuple "core::option::Option::None" [] [ Ty.path "u16" ] [])
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::char::decode::DecodeUtf16"
+              [
+                ("iter",
+                  M.call_closure (|
+                    Ty.associated_in_trait
+                      "core::iter::traits::collect::IntoIterator"
+                      []
+                      []
+                      I
+                      "IntoIter",
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::IntoIterator",
+                      I,
+                      [],
+                      [],
+                      "into_iter",
+                      [],
+                      []
+                    |),
+                    [ M.value_with_ty (M.read (| iter |)) I ]
+                  |));
+                ("buf",
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ]))
+              ])
+            (Ty.apply
+              (Ty.path "core::char::decode::DecodeUtf16")
+              []
+              [
+                Ty.associated_in_trait
+                  "core::iter::traits::collect::IntoIterator"
+                  []
+                  []
+                  I
+                  "IntoIter"
+              ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -573,14 +614,19 @@ Module char.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::char::decode::DecodeUtf16",
-                                "buf"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::char::decode::DecodeUtf16",
+                                  "buf"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ] ])
                           ]
                         |)
                       |),
@@ -632,31 +678,38 @@ Module char.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "u16" ],
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
+                                          I,
+                                          [],
+                                          [],
+                                          "next",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::char::decode::DecodeUtf16",
+                                                "iter"
+                                              |)
+                                            |))
+                                            (Ty.apply (Ty.path "&mut") [] [ I ])
+                                        ]
+                                      |))
+                                      (Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
-                                        [ Ty.path "u16" ],
-                                      M.get_trait_method (|
-                                        "core::iter::traits::iterator::Iterator",
-                                        I,
-                                        [],
-                                        [],
-                                        "next",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::char::decode::DecodeUtf16",
-                                            "iter"
-                                          |)
-                                        |)
-                                      ]
-                                    |)
+                                        [ Ty.path "u16" ])
                                   ]
                                 |)
                               |),
@@ -718,7 +771,14 @@ Module char.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| residual |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| residual |))
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "core::convert::Infallible" ])
+                                            ]
                                           |)
                                         |)
                                       |)
@@ -777,40 +837,54 @@ Module char.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| u |) ]
+                                        [ M.value_with_ty (M.read (| u |)) (Ty.path "u16") ]
                                       |)
                                     ]
                                   |)
                                 |)) in
                             let _ :=
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::result::Result")
-                                  []
-                                  [ Ty.path "char"; Ty.path "core::char::decode::DecodeUtf16Error" ]
-                              ]
-                              [
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [ Ty.path "char"; Ty.path "core::char::decode::DecodeUtf16Error" ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "char",
-                                      M.get_associated_function (|
-                                        Ty.path "char",
-                                        "from_u32_unchecked",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.cast (Ty.path "u32") (M.read (| u |)) ]
-                                    |)
-                                  ]
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Ok"
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "char",
+                                          M.get_associated_function (|
+                                            Ty.path "char",
+                                            "from_u32_unchecked",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.cast (Ty.path "u32") (M.read (| u |)))
+                                              (Ty.path "u32")
+                                          ]
+                                        |)
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "char";
+                                        Ty.path "core::char::decode::DecodeUtf16Error"
+                                      ])
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.path "char"; Ty.path "core::char::decode::DecodeUtf16Error"
+                                    ]
+                                ])));
                         fun γ =>
                           ltac:(M.monadic
                             (M.match_operator (|
@@ -843,34 +917,40 @@ Module char.
                                         M.read (| γ |),
                                         Value.Bool true
                                       |) in
-                                    Value.StructTuple
-                                      "core::option::Option::Some"
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "char";
-                                            Ty.path "core::char::decode::DecodeUtf16Error"
-                                          ]
-                                      ]
-                                      [
-                                        Value.StructTuple
-                                          "core::result::Result::Err"
-                                          []
-                                          [
-                                            Ty.path "char";
-                                            Ty.path "core::char::decode::DecodeUtf16Error"
-                                          ]
-                                          [
-                                            Value.mkStructRecord
-                                              "core::char::decode::DecodeUtf16Error"
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::option::Option::Some"
+                                        [
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "core::result::Result::Err"
+                                              [
+                                                M.value_with_ty
+                                                  (Value.mkStructRecord
+                                                    "core::char::decode::DecodeUtf16Error"
+                                                    [ ("code", M.read (| u |)) ])
+                                                  (Ty.path "core::char::decode::DecodeUtf16Error")
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::result::Result")
                                               []
-                                              []
-                                              [ ("code", M.read (| u |)) ]
-                                          ]
-                                      ]));
+                                              [
+                                                Ty.path "char";
+                                                Ty.path "core::char::decode::DecodeUtf16Error"
+                                              ])
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "char";
+                                              Ty.path "core::char::decode::DecodeUtf16Error"
+                                            ]
+                                        ])));
                                 fun γ =>
                                   ltac:(M.monadic
                                     (M.read (|
@@ -897,14 +977,16 @@ Module char.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::char::decode::DecodeUtf16",
-                                                    "iter"
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::char::decode::DecodeUtf16",
+                                                      "iter"
+                                                    |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&mut") [] [ I ])
                                               ]
                                             |)
                                           |),
@@ -929,36 +1011,43 @@ Module char.
                                                 M.never_to_any (|
                                                   M.read (|
                                                     M.return_ (|
-                                                      Value.StructTuple
-                                                        "core::option::Option::Some"
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "core::result::Result")
-                                                            []
-                                                            [
-                                                              Ty.path "char";
-                                                              Ty.path
-                                                                "core::char::decode::DecodeUtf16Error"
-                                                            ]
-                                                        ]
-                                                        [
-                                                          Value.StructTuple
-                                                            "core::result::Result::Err"
-                                                            []
-                                                            [
-                                                              Ty.path "char";
-                                                              Ty.path
-                                                                "core::char::decode::DecodeUtf16Error"
-                                                            ]
-                                                            [
-                                                              Value.mkStructRecord
-                                                                "core::char::decode::DecodeUtf16Error"
+                                                      M.value_with_ty
+                                                        (Value.StructTuple
+                                                          "core::option::Option::Some"
+                                                          [
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::result::Result::Err"
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (Value.mkStructRecord
+                                                                      "core::char::decode::DecodeUtf16Error"
+                                                                      [ ("code", M.read (| u |)) ])
+                                                                    (Ty.path
+                                                                      "core::char::decode::DecodeUtf16Error")
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "core::result::Result")
                                                                 []
-                                                                []
-                                                                [ ("code", M.read (| u |)) ]
-                                                            ]
-                                                        ]
+                                                                [
+                                                                  Ty.path "char";
+                                                                  Ty.path
+                                                                    "core::char::decode::DecodeUtf16Error"
+                                                                ])
+                                                          ])
+                                                        (Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "char";
+                                                                Ty.path
+                                                                  "core::char::decode::DecodeUtf16Error"
+                                                              ]
+                                                          ])
                                                     |)
                                                   |)
                                                 |)))
@@ -1009,43 +1098,53 @@ Module char.
                                                           "core::char::decode::DecodeUtf16",
                                                           "buf"
                                                         |),
-                                                        Value.StructTuple
-                                                          "core::option::Option::Some"
-                                                          []
-                                                          [ Ty.path "u16" ]
-                                                          [ M.read (| u2 |) ]
+                                                        M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::option::Option::Some"
+                                                            [ M.read (| u2 |) ])
+                                                          (Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "u16" ])
                                                       |) in
                                                     M.return_ (|
-                                                      Value.StructTuple
-                                                        "core::option::Option::Some"
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "core::result::Result")
-                                                            []
-                                                            [
-                                                              Ty.path "char";
-                                                              Ty.path
-                                                                "core::char::decode::DecodeUtf16Error"
-                                                            ]
-                                                        ]
-                                                        [
-                                                          Value.StructTuple
-                                                            "core::result::Result::Err"
-                                                            []
-                                                            [
-                                                              Ty.path "char";
-                                                              Ty.path
-                                                                "core::char::decode::DecodeUtf16Error"
-                                                            ]
-                                                            [
-                                                              Value.mkStructRecord
-                                                                "core::char::decode::DecodeUtf16Error"
+                                                      M.value_with_ty
+                                                        (Value.StructTuple
+                                                          "core::option::Option::Some"
+                                                          [
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::result::Result::Err"
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (Value.mkStructRecord
+                                                                      "core::char::decode::DecodeUtf16Error"
+                                                                      [ ("code", M.read (| u |)) ])
+                                                                    (Ty.path
+                                                                      "core::char::decode::DecodeUtf16Error")
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "core::result::Result")
                                                                 []
-                                                                []
-                                                                [ ("code", M.read (| u |)) ]
-                                                            ]
-                                                        ]
+                                                                [
+                                                                  Ty.path "char";
+                                                                  Ty.path
+                                                                    "core::char::decode::DecodeUtf16Error"
+                                                                ])
+                                                          ])
+                                                        (Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "char";
+                                                                Ty.path
+                                                                  "core::char::decode::DecodeUtf16Error"
+                                                              ]
+                                                          ])
                                                     |)
                                                   |)
                                                 |)));
@@ -1106,39 +1205,49 @@ Module char.
                                                 Ty.path "core::char::decode::DecodeUtf16Error"
                                               ]
                                           ],
-                                        Value.StructTuple
-                                          "core::option::Option::Some"
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "char";
-                                                Ty.path "core::char::decode::DecodeUtf16Error"
-                                              ]
-                                          ]
-                                          [
-                                            Value.StructTuple
-                                              "core::result::Result::Ok"
-                                              []
-                                              [
-                                                Ty.path "char";
-                                                Ty.path "core::char::decode::DecodeUtf16Error"
-                                              ]
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "char",
-                                                  M.get_associated_function (|
-                                                    Ty.path "char",
-                                                    "from_u32_unchecked",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [ M.read (| c |) ]
-                                                |)
-                                              ]
-                                          ]
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "core::option::Option::Some"
+                                            [
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::result::Result::Ok"
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "char",
+                                                      M.get_associated_function (|
+                                                        Ty.path "char",
+                                                        "from_u32_unchecked",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| c |))
+                                                          (Ty.path "u32")
+                                                      ]
+                                                    |)
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path "char";
+                                                    Ty.path "core::char::decode::DecodeUtf16Error"
+                                                  ])
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "char";
+                                                  Ty.path "core::char::decode::DecodeUtf16Error"
+                                                ]
+                                            ])
                                       |)
                                     |)))
                               ]
@@ -1223,14 +1332,16 @@ Module char.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::char::decode::DecodeUtf16",
-                        "iter"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::char::decode::DecodeUtf16",
+                          "iter"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ I ])
                   ]
                 |)
               |),
@@ -1293,7 +1404,7 @@ Module char.
                                             [],
                                             []
                                           |),
-                                          [ M.read (| u |) ]
+                                          [ M.value_with_ty (M.read (| u |)) (Ty.path "u16") ]
                                         |)
                                       ]
                                     |)
@@ -1340,21 +1451,44 @@ Module char.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, high |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "usize" ],
-                                            Value.StructTuple
-                                              "core::option::Option::Some"
-                                              []
-                                              [ Ty.path "usize" ]
-                                              [ Value.Integer IntegerKind.Usize 0 ]
-                                          |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, high |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "usize" ],
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  [ Value.Integer IntegerKind.Usize 0 ])
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "usize" ])
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ])
                                       ]
                                     |)
                                   |) in
@@ -1406,7 +1540,12 @@ Module char.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| low |); Value.Integer IntegerKind.Usize 2 ]
+                                      [
+                                        M.value_with_ty (M.read (| low |)) (Ty.path "usize");
+                                        M.value_with_ty
+                                          (Value.Integer IntegerKind.Usize 2)
+                                          (Ty.path "usize")
+                                      ]
                                     |);
                                     M.read (| low_buf |)
                                   ]
@@ -1436,40 +1575,59 @@ Module char.
                                     ]
                                   |),
                                   [
-                                    M.read (| high |);
-                                    M.closure
-                                      (fun γ =>
-                                        ltac:(M.monadic
-                                          match γ with
-                                          | [ α0 ] =>
-                                            ltac:(M.monadic
-                                              (M.match_operator (|
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [ Ty.path "usize" ],
-                                                M.alloc (| Ty.path "usize", α0 |),
-                                                [
-                                                  fun γ =>
-                                                    ltac:(M.monadic
-                                                      (let h := M.copy (| Ty.path "usize", γ |) in
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "core::option::Option")
-                                                          []
-                                                          [ Ty.path "usize" ],
-                                                        M.get_associated_function (|
-                                                          Ty.path "usize",
-                                                          "checked_add",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [ M.read (| h |); M.read (| high_buf |) ]
-                                                      |)))
-                                                ]
-                                              |)))
-                                          | _ => M.impossible "wrong number of arguments"
-                                          end))
+                                    M.value_with_ty
+                                      (M.read (| high |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "usize" ]);
+                                    M.value_with_ty
+                                      (M.closure
+                                        (fun γ =>
+                                          ltac:(M.monadic
+                                            match γ with
+                                            | [ α0 ] =>
+                                              ltac:(M.monadic
+                                                (M.match_operator (|
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "usize" ],
+                                                  M.alloc (| Ty.path "usize", α0 |),
+                                                  [
+                                                    fun γ =>
+                                                      ltac:(M.monadic
+                                                        (let h := M.copy (| Ty.path "usize", γ |) in
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "usize" ],
+                                                          M.get_associated_function (|
+                                                            Ty.path "usize",
+                                                            "checked_add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| h |))
+                                                              (Ty.path "usize");
+                                                            M.value_with_ty
+                                                              (M.read (| high_buf |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |)))
+                                                  ]
+                                                |)))
+                                            | _ => M.impossible "wrong number of arguments"
+                                            end)))
+                                      (Ty.function
+                                        [ Ty.path "usize" ]
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "usize" ]))
                                   ]
                                 |) in
                               M.alloc (|
@@ -1576,74 +1734,100 @@ Module char.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "unpaired surrogate found: " |) ]
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array [ mk_str (| "unpaired surrogate found: " |) ]
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_lower_hex",
-                                    [],
-                                    [ Ty.path "u16" ]
-                                  |),
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                Value.Array
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::char::decode::DecodeUtf16Error",
-                                            "code"
-                                          |)
-                                        |)
-                                      |)
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_lower_hex",
+                                        [],
+                                        [ Ty.path "u16" ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::char::decode::DecodeUtf16Error",
+                                                  "code"
+                                                |)
+                                              |)
+                                            |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                                      ]
                                     |)
                                   ]
-                                |)
-                              ]
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

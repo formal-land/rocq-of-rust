@@ -23,39 +23,41 @@ Module bytes_.
               Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
               self
             |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
                   Ty.path "bytes::bytes::Bytes",
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "bytes::bytes::Bytes",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::bytes_::Bytes",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloy_primitives::bytes_::Bytes",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]))
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -76,25 +78,25 @@ Module bytes_.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_trait_method (|
-                  "core::default::Default",
+          (M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
                   Ty.path "bytes::bytes::Bytes",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "bytes::bytes::Bytes",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |)
-            ]))
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -149,22 +151,26 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloy_primitives::bytes_::Bytes",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "alloy_primitives::bytes_::Bytes",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloy_primitives::bytes_::Bytes",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "alloy_primitives::bytes_::Bytes",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -244,32 +250,36 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::bytes_::Bytes",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| other |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| other |) |),
+                        "alloy_primitives::bytes_::Bytes",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -314,32 +324,36 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::bytes_::Bytes",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| other |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| other |) |),
+                        "alloy_primitives::bytes_::Bytes",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -380,20 +394,24 @@ Module bytes_.
               [ __H ]
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::bytes_::Bytes",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ __H ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -484,8 +502,12 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -534,8 +556,12 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -576,73 +602,89 @@ Module bytes_.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "pad", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.path "alloc::string::String",
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.path "alloc::string::String",
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.path "alloc::string::String",
-                              M.call_closure (|
-                                Ty.path "alloc::string::String",
-                                M.get_function (|
-                                  "const_hex::encode_prefixed",
-                                  [],
-                                  [
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                  ]
-                                |),
-                                [
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.path "alloc::string::String",
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    M.get_trait_method (|
-                                      "core::convert::AsRef",
-                                      Ty.path "alloy_primitives::bytes_::Bytes",
+                                    Ty.path "alloc::string::String",
+                                    M.get_function (|
+                                      "const_hex::encode_prefixed",
                                       [],
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      "as_ref",
-                                      [],
-                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                      ]
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          M.get_trait_method (|
+                                            "core::convert::AsRef",
+                                            Ty.path "alloy_primitives::bytes_::Bytes",
+                                            [],
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                            "as_ref",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
-                                ]
+                                |)
                               |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -683,73 +725,89 @@ Module bytes_.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "pad", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.path "alloc::string::String",
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.path "alloc::string::String",
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.path "alloc::string::String",
-                              M.call_closure (|
-                                Ty.path "alloc::string::String",
-                                M.get_function (|
-                                  "const_hex::encode_upper_prefixed",
-                                  [],
-                                  [
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
-                                  ]
-                                |),
-                                [
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.path "alloc::string::String",
                                   M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    M.get_trait_method (|
-                                      "core::convert::AsRef",
-                                      Ty.path "alloy_primitives::bytes_::Bytes",
+                                    Ty.path "alloc::string::String",
+                                    M.get_function (|
+                                      "const_hex::encode_upper_prefixed",
                                       [],
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      "as_ref",
-                                      [],
-                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                      ]
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          M.get_trait_method (|
+                                            "core::convert::AsRef",
+                                            Ty.path "alloy_primitives::bytes_::Bytes",
+                                            [],
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                            "as_ref",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
-                                ]
+                                |)
                               |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -889,14 +947,16 @@ Module bytes_.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::bytes_::Bytes",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
                 ]
               |)
             |)
@@ -944,7 +1004,11 @@ Module bytes_.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                ]
               |)
             |)
           |)))
@@ -973,25 +1037,25 @@ Module bytes_.
       | [], [ T ], [ iter ] =>
         ltac:(M.monadic
           (let iter := M.alloc (| T, iter |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_trait_method (|
-                  "core::iter::traits::collect::FromIterator",
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
                   Ty.path "bytes::bytes::Bytes",
-                  [],
-                  [ Ty.path "u8" ],
-                  "from_iter",
-                  [],
-                  [ T ]
-                |),
-                [ M.read (| iter |) ]
-              |)
-            ]))
+                  M.get_trait_method (|
+                    "core::iter::traits::collect::FromIterator",
+                    Ty.path "bytes::bytes::Bytes",
+                    [],
+                    [ Ty.path "u8" ],
+                    "from_iter",
+                    [],
+                    [ T ]
+                  |),
+                  [ M.value_with_ty (M.read (| iter |)) T ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1017,34 +1081,14 @@ Module bytes_.
       | [], [ T ], [ iter ] =>
         ltac:(M.monadic
           (let iter := M.alloc (| T, iter |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
-                  Ty.apply
-                    (Ty.path "core::iter::adapters::copied::Copied")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "core::iter::traits::collect::IntoIterator"
-                        []
-                        []
-                        T
-                        "IntoIter"
-                    ],
-                  [],
-                  [],
-                  "collect",
-                  [],
-                  [ Ty.path "bytes::bytes::Bytes" ]
-                |),
-                [
-                  M.call_closure (|
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
+                  Ty.path "bytes::bytes::Bytes",
+                  M.get_trait_method (|
+                    "core::iter::traits::iterator::Iterator",
                     Ty.apply
                       (Ty.path "core::iter::adapters::copied::Copied")
                       []
@@ -1056,44 +1100,83 @@ Module bytes_.
                           T
                           "IntoIter"
                       ],
-                    M.get_trait_method (|
-                      "core::iter::traits::iterator::Iterator",
-                      Ty.associated_in_trait
-                        "core::iter::traits::collect::IntoIterator"
-                        []
-                        []
-                        T
-                        "IntoIter",
-                      [],
-                      [],
-                      "copied",
-                      [],
-                      [ Ty.path "u8" ]
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.associated_in_trait
-                          "core::iter::traits::collect::IntoIterator"
+                    [],
+                    [],
+                    "collect",
+                    [],
+                    [ Ty.path "bytes::bytes::Bytes" ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::copied::Copied")
                           []
-                          []
-                          T
-                          "IntoIter",
+                          [
+                            Ty.associated_in_trait
+                              "core::iter::traits::collect::IntoIterator"
+                              []
+                              []
+                              T
+                              "IntoIter"
+                          ],
                         M.get_trait_method (|
-                          "core::iter::traits::collect::IntoIterator",
-                          T,
+                          "core::iter::traits::iterator::Iterator",
+                          Ty.associated_in_trait
+                            "core::iter::traits::collect::IntoIterator"
+                            []
+                            []
+                            T
+                            "IntoIter",
                           [],
                           [],
-                          "into_iter",
+                          "copied",
                           [],
-                          []
+                          [ Ty.path "u8" ]
                         |),
-                        [ M.read (| iter |) ]
-                      |)
-                    ]
-                  |)
-                ]
-              |)
-            ]))
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.associated_in_trait
+                                "core::iter::traits::collect::IntoIterator"
+                                []
+                                []
+                                T
+                                "IntoIter",
+                              M.get_trait_method (|
+                                "core::iter::traits::collect::IntoIterator",
+                                T,
+                                [],
+                                [],
+                                "into_iter",
+                                [],
+                                []
+                              |),
+                              [ M.value_with_ty (M.read (| iter |)) T ]
+                            |))
+                            (Ty.associated_in_trait
+                              "core::iter::traits::collect::IntoIterator"
+                              []
+                              []
+                              T
+                              "IntoIter")
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::iter::adapters::copied::Copied")
+                        []
+                        [
+                          Ty.associated_in_trait
+                            "core::iter::traits::collect::IntoIterator"
+                            []
+                            []
+                            T
+                            "IntoIter"
+                        ])
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1138,9 +1221,15 @@ Module bytes_.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "alloy_primitives::bytes_::Bytes", 0 |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (|
+                    self,
+                    "alloy_primitives::bytes_::Bytes",
+                    0
+                  |)
+                |))
+                (Ty.path "bytes::bytes::Bytes")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1193,43 +1282,57 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_trait_method (|
-                      "core::ops::deref::Deref",
-                      Ty.path "bytes::bytes::Bytes",
-                      [],
-                      [],
-                      "deref",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.path "alloy_primitives::bytes_::Bytes",
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_trait_method (|
+                        "core::ops::deref::Deref",
+                        Ty.path "bytes::bytes::Bytes",
+                        [],
+                        [],
+                        "deref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.path "alloy_primitives::bytes_::Bytes",
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1262,7 +1365,9 @@ Module bytes_.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| Ty.path "bytes::bytes::Bytes", value |) in
-          Value.StructTuple "alloy_primitives::bytes_::Bytes" [] [] [ M.read (| value |) ]))
+          M.value_with_ty
+            (Value.StructTuple "alloy_primitives::bytes_::Bytes" [ M.read (| value |) ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1323,28 +1428,35 @@ Module bytes_.
                 [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
               value
             |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
+                  Ty.path "bytes::bytes::Bytes",
+                  M.get_trait_method (|
+                    "core::convert::Into",
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                    [],
+                    [ Ty.path "bytes::bytes::Bytes" ],
+                    "into",
+                    [],
                     []
-                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                  [],
-                  [ Ty.path "bytes::bytes::Bytes" ],
-                  "into",
-                  [],
-                  []
-                |),
-                [ M.read (| value |) ]
-              |)
-            ]))
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| value |))
+                      (Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ])
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1391,59 +1503,81 @@ Module bytes_.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "alloc::vec::Vec")
+                    []
+                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                    "to_vec",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.apply
+                                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                    [ N ]
+                                    [],
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, value |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                          [ N ]
+                                          []
+                                      ])
+                                ]
+                              |)
+                            |)
+                          |)
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "alloc::vec::Vec")
                   []
-                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                  "to_vec",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ])
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.apply
-                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                [ N ]
-                                [],
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, value |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                ]
-              |)
+                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1490,21 +1624,35 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "alloy_primitives::bits::fixed::FixedBytes") [ N ] [],
-                      "as_slice",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "alloy_primitives::bits::fixed::FixedBytes") [ N ] [],
+                        "as_slice",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                [ N ]
+                                []
+                            ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1555,34 +1703,44 @@ Module bytes_.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "alloc::vec::Vec")
+                    []
+                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                    "to_vec",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                        [ M.borrow (| Pointer.Kind.Ref, value |) ]
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "alloc::vec::Vec")
                   []
-                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                  "to_vec",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ])
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [ M.borrow (| Pointer.Kind.Ref, value |) ]
-                  |)
-                ]
-              |)
+                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1625,14 +1783,19 @@ Module bytes_.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |) ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1674,7 +1837,11 @@ Module bytes_.
               [],
               []
             |),
-            [ M.read (| value |) ]
+            [
+              M.value_with_ty
+                (M.read (| value |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1711,16 +1878,22 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1755,29 +1928,41 @@ Module bytes_.
                 [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]; Ty.path "alloc::alloc::Global" ],
               value
             |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  Ty.apply
-                    (Ty.path "alloc::boxed::Box")
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
+                  Ty.path "bytes::bytes::Bytes",
+                  M.get_trait_method (|
+                    "core::convert::Into",
+                    Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    [],
+                    [ Ty.path "bytes::bytes::Bytes" ],
+                    "into",
+                    [],
                     []
-                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]; Ty.path "alloc::alloc::Global"
-                    ],
-                  [],
-                  [ Ty.path "bytes::bytes::Bytes" ],
-                  "into",
-                  [],
-                  []
-                |),
-                [ M.read (| value |) ]
-              |)
-            ]))
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| value |))
+                      (Ty.apply
+                        (Ty.path "alloc::boxed::Box")
+                        []
+                        [
+                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ];
+                          Ty.path "alloc::alloc::Global"
+                        ])
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1809,25 +1994,25 @@ Module bytes_.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| Ty.path "alloc::string::String", value |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  Ty.path "alloc::string::String",
-                  [],
-                  [ Ty.path "bytes::bytes::Bytes" ],
-                  "into",
-                  [],
-                  []
-                |),
-                [ M.read (| value |) ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
+                  Ty.path "bytes::bytes::Bytes",
+                  M.get_trait_method (|
+                    "core::convert::Into",
+                    Ty.path "alloc::string::String",
+                    [],
+                    [ Ty.path "bytes::bytes::Bytes" ],
+                    "into",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (M.read (| value |)) (Ty.path "alloc::string::String") ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1874,13 +2059,15 @@ Module bytes_.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (|
-                  value,
-                  "alloy_primitives::bytes_::Bytes",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (|
+                    value,
+                    "alloy_primitives::bytes_::Bytes",
+                    0
+                  |)
+                |))
+                (Ty.path "bytes::bytes::Bytes")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1929,72 +2116,95 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_trait_method (|
-                      "core::ops::index::Index",
-                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.path "core::ops::range::RangeFull" ],
-                      "index",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.path "bytes::bytes::Bytes",
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                                    M.get_trait_method (|
-                                      "core::ops::deref::Deref",
-                                      Ty.path "alloy_primitives::bytes_::Bytes",
-                                      [],
-                                      [],
-                                      "deref",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_trait_method (|
+                        "core::ops::index::Index",
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.path "core::ops::range::RangeFull" ],
+                        "index",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.path "bytes::bytes::Bytes",
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "bytes::bytes::Bytes" ],
+                                          M.get_trait_method (|
+                                            "core::ops::deref::Deref",
+                                            Ty.path "alloy_primitives::bytes_::Bytes",
+                                            [],
+                                            [],
+                                            "deref",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                          ]
+                                        |)
                                       |)
-                                    ]
-                                  |)
-                                |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
+                                ]
                               |)
-                            ]
-                          |)
-                        |)
-                      |);
-                      Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                    ]
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple "core::ops::range::RangeFull" [])
+                            (Ty.path "core::ops::range::RangeFull"))
+                          (Ty.path "core::ops::range::RangeFull")
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2043,72 +2253,95 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_trait_method (|
-                      "core::ops::index::Index",
-                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.path "core::ops::range::RangeFull" ],
-                      "index",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.path "bytes::bytes::Bytes",
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                                    M.get_trait_method (|
-                                      "core::ops::deref::Deref",
-                                      Ty.path "alloy_primitives::bytes_::Bytes",
-                                      [],
-                                      [],
-                                      "deref",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| other |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_trait_method (|
+                        "core::ops::index::Index",
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.path "core::ops::range::RangeFull" ],
+                        "index",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.path "bytes::bytes::Bytes",
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "bytes::bytes::Bytes" ],
+                                          M.get_trait_method (|
+                                            "core::ops::deref::Deref",
+                                            Ty.path "alloy_primitives::bytes_::Bytes",
+                                            [],
+                                            [],
+                                            "deref",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| other |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                          ]
+                                        |)
                                       |)
-                                    ]
-                                  |)
-                                |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
+                                ]
                               |)
-                            ]
-                          |)
-                        |)
-                      |);
-                      Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                    ]
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple "core::ops::range::RangeFull" [])
+                            (Ty.path "core::ops::range::RangeFull"))
+                          (Ty.path "core::ops::range::RangeFull")
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2165,95 +2398,132 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_trait_method (|
-                      "core::ops::index::Index",
-                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.path "core::ops::range::RangeFull" ],
-                      "index",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.path "bytes::bytes::Bytes",
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                                    M.get_trait_method (|
-                                      "core::ops::deref::Deref",
-                                      Ty.path "alloy_primitives::bytes_::Bytes",
-                                      [],
-                                      [],
-                                      "deref",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        |)
-                      |);
-                      Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                    ]
-                  |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_trait_method (|
-                      "core::ops::index::Index",
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_trait_method (|
+                        "core::ops::index::Index",
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.path "core::ops::range::RangeFull" ],
+                        "index",
+                        [],
                         []
-                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                      [],
-                      [ Ty.path "core::ops::range::RangeFull" ],
-                      "index",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |);
-                      Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                    ]
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                M.get_trait_method (|
+                                  "core::ops::deref::Deref",
+                                  Ty.path "bytes::bytes::Bytes",
+                                  [],
+                                  [],
+                                  "deref",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "bytes::bytes::Bytes" ],
+                                          M.get_trait_method (|
+                                            "core::ops::deref::Deref",
+                                            Ty.path "alloy_primitives::bytes_::Bytes",
+                                            [],
+                                            [],
+                                            "deref",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                          ]
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
+                                ]
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple "core::ops::range::RangeFull" [])
+                            (Ty.path "core::ops::range::RangeFull"))
+                          (Ty.path "core::ops::range::RangeFull")
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_trait_method (|
+                        "core::ops::index::Index",
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [ Ty.path "core::ops::range::RangeFull" ],
+                        "index",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                            ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple "core::ops::range::RangeFull" [])
+                            (Ty.path "core::ops::range::RangeFull"))
+                          (Ty.path "core::ops::range::RangeFull")
+                      ]
+                    |)
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2317,8 +2587,20 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2364,26 +2646,40 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, other |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, other |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_trait_method (|
-                      "core::convert::AsRef",
-                      Ty.path "alloy_primitives::bytes_::Bytes",
-                      [],
-                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      "as_ref",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_trait_method (|
+                        "core::convert::AsRef",
+                        Ty.path "alloy_primitives::bytes_::Bytes",
+                        [],
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        "as_ref",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2446,8 +2742,30 @@ Module bytes_.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                      Ty.path "const_hex::error::FromHexError"
+                    ],
+                  M.get_function (|
+                    "const_hex::decode",
+                    [],
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| value |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
                   [
@@ -2456,26 +2774,28 @@ Module bytes_.
                       []
                       [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
                     Ty.path "const_hex::error::FromHexError"
-                  ],
-                M.get_function (|
-                  "const_hex::decode",
+                  ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::Into",
+                  Ty.apply
+                    (Ty.path "alloc::vec::Vec")
+                    []
+                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
                   [],
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                |),
-                [ M.read (| value |) ]
-              |);
-              M.get_trait_method (|
-                "core::convert::Into",
-                Ty.apply
-                  (Ty.path "alloc::vec::Vec")
+                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                  "into",
+                  [],
                   []
-                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                [],
-                [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                "into",
-                [],
-                []
-              |)
+                |))
+                (Ty.function
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                  ]
+                  (Ty.path "alloy_primitives::bytes_::Bytes"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2539,8 +2859,22 @@ Module bytes_.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                      Ty.path "const_hex::error::FromHexError"
+                    ],
+                  M.get_function (| "const_hex::decode", [], [ T ] |),
+                  [ M.value_with_ty (M.read (| hex |)) T ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
                   [
@@ -2549,24 +2883,30 @@ Module bytes_.
                       []
                       [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
                     Ty.path "const_hex::error::FromHexError"
+                  ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.path "alloy_primitives::bytes_::Bytes",
+                  [],
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
                   ],
-                M.get_function (| "const_hex::decode", [], [ T ] |),
-                [ M.read (| hex |) ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.path "alloy_primitives::bytes_::Bytes",
-                [],
-                [
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                ],
-                "from",
-                [],
-                []
-              |)
+                  "from",
+                  [],
+                  []
+                |))
+                (Ty.function
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                  ]
+                  (Ty.path "alloy_primitives::bytes_::Bytes"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2603,14 +2943,16 @@ Module bytes_.
             Ty.path "usize",
             M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "len", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloy_primitives::bytes_::Bytes",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloy_primitives::bytes_::Bytes",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2645,14 +2987,16 @@ Module bytes_.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::bytes_::Bytes",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
                 ]
               |)
             |)
@@ -2687,15 +3031,17 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloy_primitives::bytes_::Bytes",
-                  0
-                |)
-              |);
-              M.read (| cnt |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloy_primitives::bytes_::Bytes",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "bytes::bytes::Bytes" ]);
+              M.value_with_ty (M.read (| cnt |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2728,15 +3074,17 @@ Module bytes_.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloy_primitives::bytes_::Bytes",
-                  0
-                |)
-              |);
-              M.read (| len |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloy_primitives::bytes_::Bytes",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "bytes::bytes::Bytes" ]);
+              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2769,17 +3117,17 @@ Module bytes_.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "new", [], [] |),
-                []
-              |)
-            ]))
+          (M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
+                  Ty.path "bytes::bytes::Bytes",
+                  M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "new", [], [] |),
+                  []
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2801,22 +3149,26 @@ Module bytes_.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
               bytes
             |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
                   Ty.path "bytes::bytes::Bytes",
-                  "from_static",
-                  [],
-                  []
-                |),
-                [ M.read (| bytes |) ]
-              |)
-            ]))
+                  M.get_associated_function (|
+                    Ty.path "bytes::bytes::Bytes",
+                    "from_static",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| bytes |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2839,22 +3191,26 @@ Module bytes_.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
               data
             |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
                   Ty.path "bytes::bytes::Bytes",
-                  "copy_from_slice",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
-              |)
-            ]))
+                  M.get_associated_function (|
+                    Ty.path "bytes::bytes::Bytes",
+                    "copy_from_slice",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2878,32 +3234,34 @@ Module bytes_.
               self
             |) in
           let range := M.alloc (| impl_RangeBounds_usize_, range |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
                   Ty.path "bytes::bytes::Bytes",
-                  "slice",
-                  [],
-                  [ impl_RangeBounds_usize_ ]
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
-                    |)
-                  |);
-                  M.read (| range |)
-                ]
-              |)
-            ]))
+                  M.get_associated_function (|
+                    Ty.path "bytes::bytes::Bytes",
+                    "slice",
+                    [],
+                    [ impl_RangeBounds_usize_ ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloy_primitives::bytes_::Bytes",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ]);
+                    M.value_with_ty (M.read (| range |)) impl_RangeBounds_usize_
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2930,27 +3288,36 @@ Module bytes_.
               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
               subset
             |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "slice_ref", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| subset |) |) |)
-                ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
+                  Ty.path "bytes::bytes::Bytes",
+                  M.get_associated_function (|
+                    Ty.path "bytes::bytes::Bytes",
+                    "slice_ref",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloy_primitives::bytes_::Bytes",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| subset |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2974,27 +3341,34 @@ Module bytes_.
               self
             |) in
           let at_ := M.alloc (| Ty.path "usize", at_ |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "split_off", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
-                    |)
-                  |);
-                  M.read (| at_ |)
-                ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
+                  Ty.path "bytes::bytes::Bytes",
+                  M.get_associated_function (|
+                    Ty.path "bytes::bytes::Bytes",
+                    "split_off",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloy_primitives::bytes_::Bytes",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "bytes::bytes::Bytes" ]);
+                    M.value_with_ty (M.read (| at_ |)) (Ty.path "usize")
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3018,27 +3392,29 @@ Module bytes_.
               self
             |) in
           let at_ := M.alloc (| Ty.path "usize", at_ |) in
-          Value.StructTuple
-            "alloy_primitives::bytes_::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "bytes::bytes::Bytes",
-                M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "split_to", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::bytes_::Bytes",
-                      0
-                    |)
-                  |);
-                  M.read (| at_ |)
-                ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "alloy_primitives::bytes_::Bytes"
+              [
+                M.call_closure (|
+                  Ty.path "bytes::bytes::Bytes",
+                  M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "split_to", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloy_primitives::bytes_::Bytes",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "bytes::bytes::Bytes" ]);
+                    M.value_with_ty (M.read (| at_ |)) (Ty.path "usize")
+                  ]
+                |)
+              ])
+            (Ty.path "alloy_primitives::bytes_::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
